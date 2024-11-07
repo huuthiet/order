@@ -1,7 +1,7 @@
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import Layout from "./layout";
+import Layout from "./layouts/layout";
 
 // Create a client
 const queryClient = new QueryClient();

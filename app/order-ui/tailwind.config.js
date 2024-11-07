@@ -60,7 +60,14 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			}
-  		}
+		  },
+		  fontFamily: {
+			  sans: ['BeVietnam', 'Roboto', 'sans-serif'],
+			  inter: ['Inter', 'sans-serif'],
+			  
+			 
+			  beVietNam: ['BeVietnam', 'sans-serif'],
+		  },
   	}
   },
   plugins: [require("tailwindcss-animate")],
