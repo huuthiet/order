@@ -15,6 +15,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix(`api/${version}`);
   app.enableCors();
+  app.enableShutdownHooks();
 
   logger.log(`Server running on port ${port}`);
   await app.listen(port);
