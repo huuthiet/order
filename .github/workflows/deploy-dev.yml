@@ -8,6 +8,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    environment: development
 
     steps:
       - name: Checkout Repository
@@ -31,7 +32,7 @@ jobs:
           TF_VAR_ssh_port: ${{ secrets.SSH_PORT }}
         run: |
           cd .deploy/dev
-          teraform plan
+          terraform plan
 
       - name: Apply Terraform Changes
         env:
