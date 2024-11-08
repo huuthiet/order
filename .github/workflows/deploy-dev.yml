@@ -1,0 +1,40 @@
+name: Deploy to dev
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Init teraform
+        run: terraform init
+
+      - name: Plan Terraform Changes
+        working-directory: ./terraform
+        env:
+          TF_VAR_server_ip: ${{ secrets.SSH_HOST }}
+          TF_VAR_ssh_user: ${{ secrets.SSH_USER }}
+          TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          TF_VAR_ssh_port: ${{ secrets.SSH_PORT }}
+        run: teraform plan
+
+    #   - name: Apply Terraform Changes
+    #     working-directory: ./terraform
+    #     env:
+    #       TF_VAR_server_ip: ${{ secrets.SSH_HOST }}
+    #       TF_VAR_ssh_user: ${{ secrets.SSH_USER }}
+    #       TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+    #       TF_VAR_ssh_port: ${{ secrets.SSH_PORT }}
+    #     run: terraform apply -auto-approve
