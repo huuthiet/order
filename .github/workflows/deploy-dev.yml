@@ -19,22 +19,26 @@ jobs:
           terraform_wrapper: false
 
       - name: Init teraform
-        run: terraform init
+        run: |
+          cd .deploy/dev
+          terraform init
 
       - name: Plan Terraform Changes
-        working-directory: ./terraform
         env:
           TF_VAR_server_ip: ${{ secrets.SSH_HOST }}
           TF_VAR_ssh_user: ${{ secrets.SSH_USER }}
           TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           TF_VAR_ssh_port: ${{ secrets.SSH_PORT }}
-        run: teraform plan
+        run: |
+          cd .deploy/dev
+          teraform plan
 
-    #   - name: Apply Terraform Changes
-    #     working-directory: ./terraform
-    #     env:
-    #       TF_VAR_server_ip: ${{ secrets.SSH_HOST }}
-    #       TF_VAR_ssh_user: ${{ secrets.SSH_USER }}
-    #       TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-    #       TF_VAR_ssh_port: ${{ secrets.SSH_PORT }}
-    #     run: terraform apply -auto-approve
+      - name: Apply Terraform Changes
+        env:
+          TF_VAR_server_ip: ${{ secrets.SSH_HOST }}
+          TF_VAR_ssh_user: ${{ secrets.SSH_USER }}
+          TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          TF_VAR_ssh_port: ${{ secrets.SSH_PORT }}
+        run: |
+          cd .deploy/dev
+          terraform apply -auto-approve
