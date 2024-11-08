@@ -1,7 +1,7 @@
-import { SidebarProvider } from '@/components/ui/sidebar'
-import AppSidebar from '@/components/app/app-sidebar'
-import { AppHeader } from '@/components/app'
 import { Outlet } from 'react-router-dom'
+
+import { SidebarProvider } from '@/components/ui'
+import { AppSidebar, AppHeader } from '@/components/app'
 
 export default function StaffLayout() {
   return (
@@ -16,7 +16,7 @@ export default function StaffLayout() {
           <AppHeader />
 
           {/* Page content */}
-          <main className="flex-1 p-6 mt-12 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto">
             <Outlet />
           </main>
         </div>

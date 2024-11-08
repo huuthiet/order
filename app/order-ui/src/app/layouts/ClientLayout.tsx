@@ -1,6 +1,7 @@
-import { SidebarProvider } from '@/components/ui/sidebar'
-import AppSidebar from '@/components/app/app-sidebar'
 import { Outlet } from 'react-router-dom'
+
+import { SidebarProvider } from '@/components/ui'
+import { AppSidebar } from '@/components/app'
 
 export default function ClientLayout() {
   return (

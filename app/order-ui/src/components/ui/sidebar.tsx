@@ -5,12 +5,18 @@ import { PanelLeft } from 'lucide-react'
 
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
-import { Sheet, SheetContent } from '@/components/ui/sheet'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Button,
+  Input,
+  Separator,
+  Sheet,
+  SheetContent,
+  Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -339,7 +345,7 @@ const SidebarHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<'div
       <div
         ref={ref}
         data-sidebar="header"
-        className={cn('flex flex-col gap-2 p-2 items-center', className)}
+        className={cn('flex flex-col gap-2 p-2 z-50 items-center', className)}
         {...props}
       />
     )
@@ -353,7 +359,7 @@ const SidebarFooter = React.forwardRef<HTMLDivElement, React.ComponentProps<'div
       <div
         ref={ref}
         data-sidebar="footer"
-        className={cn('flex flex-col gap-2 p-2', className)}
+        className={cn('flex flex-col gap-2 p-2 z-50', className)}
         {...props}
       />
     )
