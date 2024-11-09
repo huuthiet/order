@@ -1,5 +1,6 @@
 import { SkeletonCard } from '@/components/app/skeleton'
 import { useDishes } from '@/hooks'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,13 +9,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from '@/components/ui'
+import MenuList from './menu-list'
+import { CartContent } from '@/router/loadable'
 
 export default function HomePage() {
   const { data, isLoading } = useDishes()
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {[...Array(6)].map((_, index) => (
           <SkeletonCard key={index} />
         ))}
@@ -27,30 +30,27 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem className="hidden md:block">
-            <BreadcrumbLink href="#">Home page</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="hidden md:block" />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {/* Render actual data sau khi load xong */}
-        {data.map((dish) => (
-          <div key={dish.id} className="flex flex-col p-4 space-y-3 border rounded-lg">
-            <div className="h-[125px] w-full rounded-xl bg-gray-200" />
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold">{dish.name}</h3>
-              <p className="text-sm text-gray-500">{dish.description}</p>
-              <p className="font-medium text-green-600">{dish.price.toLocaleString('vi-VN')} đ</p>
-            </div>
-          </div>
-        ))}
+    <div className="grid grid-cols-3 gap-2">
+      <div className="col-span-2">
+        <div className="pb-4">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="#">Home page</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <MenuList />
+      </div>
+      <div className="col-span-1 pl-2 border-l">
+        <div className="fixed bg-red-200">
+          <CartContent />
+        </div>
       </div>
     </div>
   )

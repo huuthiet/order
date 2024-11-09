@@ -16,7 +16,7 @@ export default function StaffLayout() {
           <AppHeader />
 
           {/* Page content */}
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 px-4 pt-4 pb-2 overflow-auto">
             <Outlet />
           </main>
         </div>

@@ -1,6 +1,7 @@
 'use client'
 
-import { ChevronRight, Command } from 'lucide-react'
+import { ChevronRight, Command, Sparkles } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
 import {
   Collapsible,
@@ -19,26 +20,35 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  IconWrapper
+  IconWrapper,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  Avatar,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+  DropdownMenuItem
 } from '@/components/ui'
 import { sidebarRoutes } from '@/router/routes'
 
 export default function AppSidebar() {
+  const location = useLocation()
+  const isActive = (path: string) => location.pathname === path
+
   return (
     <Sidebar variant="inset" className="z-50 bg-white border-r" collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="">
-            <SidebarMenuButton size="lg" asChild className="flex flex-row mt-2 ">
-              <a href="#">
-                <div className="flex items-center justify-center text-white rounded-lg children-center aspect-square size-8 bg-primary">
+          <SidebarMenuItem className="w-full">
+            <SidebarMenuButton size="lg" asChild>
+              <a href="#" className="flex items-center w-full gap-3">
+                <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0">
                   <Command className="size-4" />
                 </div>
-                <div className="grid flex-row items-center justify-center text-lg leading-tight text-left">
-                  <div className="flex flex-row items-center justify-center">
-                    <span className="truncate text-primary">SMART</span>
-                    <span className="truncate ">COFFEE</span>
-                  </div>
+                <div className="flex items-center">
+                  <span className="text-xl font-semibold text-primary">SMART</span>
+                  <span>COFFEE</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -47,17 +57,21 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Platform</SidebarGroupLabel>
+          <SidebarGroupLabel>Home</SidebarGroupLabel>
           <SidebarMenu>
             {sidebarRoutes.map((item) => (
               <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={isActive(item.path) ? 'text-primary' : ''}
+                  >
                     <a href={item.path}>
                       {item.icon && (
                         <IconWrapper
                           Icon={item.icon}
-                          className={`${item.isActive === true ? 'text-primary' : ''}`}
+                          className={isActive(item.path) ? 'text-primary' : ''}
                         />
                       )}
                       <span>{item.title}</span>
@@ -75,8 +89,11 @@ export default function AppSidebar() {
                         <SidebarMenuSub>
                           {item.children?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton asChild>
-                                <a href={subItem.path}>
+                              <SidebarMenuSubButton
+                                asChild
+                                className={isActive(subItem.path) ? 'text-primary' : ''}
+                              >
+                                <a href={subItem.path} className="flex flex-col gap-4">
                                   <span>{subItem.title}</span>
                                 </a>
                               </SidebarMenuSubButton>
@@ -152,43 +169,16 @@ export default function AppSidebar() {
         </SidebarGroup> */}
       </SidebarContent>
       <SidebarFooter>
-        {/* <SidebarMenu>
+        <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <Avatar className="w-8 h-8 rounded-lg">
-                    <AvatarImage src={data.user.avatar} alt={data.user.name} />
-                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-sm leading-tight text-left">
-                    <span className="font-semibold truncate">{data.user.name}</span>
-                    <span className="text-xs truncate">{data.user.email}</span>
-                  </div>
-                  <ChevronsUpDown className="ml-auto size-4" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild></DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
                 side="bottom"
                 align="end"
                 sideOffset={4}
               >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex children-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="w-8 h-8 rounded-lg">
-                      <AvatarImage src={data.user.avatar} alt={data.user.name} />
-                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-sm leading-tight text-left">
-                      <span className="font-semibold truncate">{data.user.name}</span>
-                      <span className="text-xs truncate">{data.user.email}</span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
@@ -197,29 +187,11 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <BadgeCheck />
-                    Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell />
-                    Notifications
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut />
-                  Log out
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
-        </SidebarMenu> */}
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   )
