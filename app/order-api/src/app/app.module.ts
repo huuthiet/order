@@ -10,6 +10,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { FileModule } from 'src/file/file.module';
 import { HealthModule } from 'src/health/health.module';
+import { TransactionModule } from 'src/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { HealthModule } from 'src/health/health.module';
     AuthModule,
     FileModule,
     HealthModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [
