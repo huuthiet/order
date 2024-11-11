@@ -1,17 +1,22 @@
-import { SkeletonCard } from '@/components/app/skeleton'
+import { SkeletonMenuList } from '@/components/app/skeleton'
 import { useDishes } from '@/hooks'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui'
 import { Minus, Plus } from 'lucide-react'
+import { CartToggleButton, QuantitySelector } from '@/components/app/button'
 
-export default function MenuList() {
+interface IMenuProps {
+  isCartOpen: boolean
+}
+
+export default function MenuList({ isCartOpen }: IMenuProps) {
   const { data, isLoading } = useDishes()
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {[...Array(6)].map((_, index) => (
-          <SkeletonCard key={index} />
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {[...Array(8)].map((_, index) => (
+          <SkeletonMenuList key={index} />
         ))}
       </div>
     )
@@ -28,60 +33,52 @@ export default function MenuList() {
   ]
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3`}>
       {data.map((dish) => (
-        <div key={dish.id} className="flex overflow-hidden bg-white border rounded-xl">
-          <div className="flex flex-col gap-3 w-[200px] p-2">
-            <img
-              src={dish.image}
-              alt={dish.name}
-              className="object-cover w-full rounded-lg h-4/5"
-            />
-            <div className="flex items-center justify-center ">
-              <Button
-                variant="outline"
-                className="p-2 text-gray-600 border rounded-full w-fit h-fit hover:text-gray-800"
-              >
-                <Minus className="text-xs" />
+        <div key={dish.id} className="flex flex-col bg-white border rounded-xl">
+          {/* Image Section - Reduced height */}
+          <div className="relative p-1.5">
+            <img src={dish.image} alt={dish.name} className="object-cover w-full h-32 rounded-lg" />
+            {/* <div className="absolute flex items-center gap-1 p-0.5 bg-white rounded-lg bottom-3 right-3">
+              <Button variant="ghost" size="icon" className="w-5 h-5 hover:bg-gray-100">
+                <Minus className="w-3 h-3" />
               </Button>
-              <span className="w-8 text-center">1</span>
-              <Button
-                variant="outline"
-                className="p-2 text-gray-600 border rounded-full w-fit h-fit hover:text-gray-800"
-              >
-                <Plus className="text-xs" />
+              <span className="w-4 text-xs text-center">1</span>
+              <Button variant="ghost" size="icon" className="w-5 h-5 hover:bg-gray-100">
+                <Plus className="w-3 h-3" />
               </Button>
-            </div>
+            </div> */}
           </div>
 
-          <div className="flex flex-col flex-1 px-2 py-4">
-            <h3 className="text-xl font-semibold text-gray-800">{dish.name}</h3>
-            <p className="mt-1 text-sm text-gray-500 line-clamp-2">{dish.description}</p>
+          {/* Content Section - More compact */}
+          <div className="flex flex-col flex-1 p-2 space-y-1.5">
+            <h3 className="text-sm font-medium line-clamp-1">{dish.name}</h3>
+            <p className="text-xs text-gray-500 line-clamp-2">{dish.description}</p>
 
-            <div className="mt-4 text-xl font-bold text-primary">
-              {dish.price.toLocaleString('vi-VN')} VND
-            </div>
-
-            <div className="flex flex-row items-center gap-4 mt-4">
-              <div className="text-sm text-gray-600">Size</div>
-              <div className="flex gap-2 mt-1">
-                {sizes.map((size) => (
+            <div className="flex items-center gap-1.5 mt-auto">
+              {/* <span className="text-xs text-gray-600">Size:</span> */}
+              <div className="flex">
+                {/* {sizes.map((size) => (
                   <button
                     key={size.value}
                     className={cn(
-                      'w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-sm font-medium transition-colors',
-                      size.value === 's' ? 'bg-gray-600 text-white' : 'hover:bg-gray-100'
+                      'w-5 h-5 rounded-full border text-xs flex items-center justify-center transition-colors',
+                      size.value === 's' ? 'bg-primary text-white' : 'hover:bg-gray-100'
                     )}
                   >
                     {size.label}
                   </button>
-                ))}
+                ))} */}
+                <QuantitySelector />
               </div>
             </div>
 
-            <div className="flex items-center justify-end w-full mt-6">
-              <Button className="px-6 py-2 w-full text-white rounded-full bg-[#F7941D] hover:bg-[#e88a19]">
-                Thêm vào đơn
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-sm font-medium text-primary">
+                {dish.price.toLocaleString('vi-VN')}đ
+              </span>
+              <Button size="sm" className="px-4 text-xs text-white rounded-full h-7">
+                Thêm vào giỏ
               </Button>
             </div>
           </div>

@@ -23,9 +23,7 @@ import {
   IconWrapper,
   DropdownMenu,
   DropdownMenuTrigger,
-  Avatar,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuGroup,
   DropdownMenuItem

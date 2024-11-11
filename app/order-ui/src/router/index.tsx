@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 
 // import { Authority, ROUTE } from '@/constants'
 import { Suspense } from 'react'
-import { SkeletonCard } from '@/components/app/skeleton'
+import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
 import { ROUTE } from '@/constants'
 import { HomePage, StaffLayout } from './loadable'
@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
   {
     path: ROUTE.STAFF_HOME,
     element: (
-      <Suspense fallback={<SkeletonCard />}>
+      <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />
       </Suspense>
     ),
