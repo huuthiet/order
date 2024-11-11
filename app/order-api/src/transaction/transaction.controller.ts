@@ -6,8 +6,15 @@ import { UpdateTransactionStatusRequestDto } from './transaction.dto';
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Post('/callback')
-  async callback(
+  @Post('status/callback')
+  async statusCallback(
+    @Body(ValidationPipe) requestData: UpdateTransactionStatusRequestDto,
+  ) {
+    return this.transactionService.callback(requestData);
+  }
+
+  @Post('qr-transaction/callback')
+  async qrTransactionCallback(
     @Body(ValidationPipe) requestData: UpdateTransactionStatusRequestDto,
   ) {
     return this.transactionService.callback(requestData);
