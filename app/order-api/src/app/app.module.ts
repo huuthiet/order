@@ -10,6 +10,12 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { FileModule } from 'src/file/file.module';
 import { HealthModule } from 'src/health/health.module';
+import { SizeModule } from 'src/size/size.module';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
+import { CatalogModule } from 'src/catalog/catalog.module';
+import { ProductModule } from 'src/product/product.module';
+import { VariantModule } from 'src/variant/variant.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 
 @Module({
@@ -23,6 +29,13 @@ import { TransactionModule } from 'src/transaction/transaction.module';
     AuthModule,
     FileModule,
     HealthModule,
+    SizeModule,
+    CatalogModule,
+    ProductModule,
+    VariantModule,
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+    }),
     TransactionModule,
   ],
   controllers: [AppController],

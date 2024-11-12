@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckService,
@@ -6,6 +7,7 @@ import {
 } from '@nestjs/terminus';
 import { Public } from 'src/auth/public.decorator';
 
+@ApiTags('Healthcheck')
 @Controller('health')
 export class HealthController {
   constructor(
@@ -20,8 +22,8 @@ export class HealthController {
     return this.healthCheckService.check([
       () =>
         this.httpHealthIndicator.pingCheck(
-          'nestjs-docs',
-          'https://docs.nestjs.com',
+          'order-api',
+          'http://localhost:8080/api/v1.0.0/hello',
         ),
     ]);
   }

@@ -1,9 +1,12 @@
-import { DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerDocumentOptions } from '@nestjs/swagger';
 
-export default () => {
-  return new DocumentBuilder()
-    .setTitle('Order API')
-    .setDescription('The Order API description')
-    .setVersion('1.0')
-    .build();
+export const config = new DocumentBuilder()
+  .setTitle('Order API')
+  .setDescription('API documentation')
+  .setVersion('1.0')
+  .setBasePath('api/v1')
+  .build();
+
+export const documentOptions: SwaggerDocumentOptions = {
+  ignoreGlobalPrefix: true,
 };

@@ -7,7 +7,13 @@ services:
       context: ../../app/order-api
       dockerfile: ../../.build/order-api/Dockerfile # current context at app/order-api/
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1.0.0/health"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8080/api/${VERSION:-v1.0.0}/health",
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -43,7 +49,7 @@ services:
       timeout: 60s # Increase timeout to give MySQL more time
       retries: 5
 
-  frontend:
+  order-ui:
     build:
       context: ../../app/order-ui
       dockerfile: ../../.build/order-ui/Dockerfile # Adjusted to be relative to the context
