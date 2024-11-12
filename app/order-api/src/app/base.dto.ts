@@ -1,4 +1,5 @@
-import { AutoMap } from "@automapper/classes";
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class BaseResponseDto {
   @AutoMap()
@@ -8,5 +9,6 @@ export class BaseResponseDto {
   updatedAt: string;
 
   @AutoMap()
+  @ApiProperty()
   slug: string;
 }

@@ -49,7 +49,7 @@ services:
       timeout: 60s # Increase timeout to give MySQL more time
       retries: 5
 
-  frontend:
+  order-ui:
     build:
       context: ../../app/order-ui
       dockerfile: ../../.build/order-ui/Dockerfile # Adjusted to be relative to the context
