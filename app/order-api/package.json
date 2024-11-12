@@ -24,6 +24,9 @@
     "typeorm:rv": "npm run typeorm -- -d ./src/config/database.config.ts migration:revert"
   },
   "dependencies": {
+    "@automapper/classes": "^8.8.1",
+    "@automapper/core": "^8.8.1",
+    "@automapper/nestjs": "^8.8.1",
     "@casl/ability": "^6.7.2",
     "@nestjs/axios": "^3.1.1",
     "@nestjs/common": "^10.0.0",
@@ -35,6 +38,7 @@
     "@nestjs/swagger": "^8.0.1",
     "@nestjs/terminus": "^10.2.3",
     "@nestjs/typeorm": "^10.0.2",
+    "@types/shortid": "^2.2.0",
     "axios": "^1.7.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -44,8 +48,9 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "reflect-metadata": "^0.2.0",
+    "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "shortid": "^2.2.16",
     "stack-trace": "^1.0.0-pre1",
     "typeorm": "^0.3.20",
     "winston-daily-rotate-file": "^5.0.0"
