@@ -1,9 +1,6 @@
 import { SkeletonMenuList } from '@/components/app/skeleton'
 import { useDishes } from '@/hooks'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui'
-import { Minus, Plus } from 'lucide-react'
-import { CartToggleButton, QuantitySelector } from '@/components/app/button'
 
 interface IMenuProps {
   isCartOpen: boolean
@@ -26,18 +23,18 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
     return <p className="text-center">Không có dữ liệu món ăn</p>
   }
 
-  const sizes = [
-    { label: 'S', value: 's' },
-    { label: 'M', value: 'm' },
-    { label: 'L', value: 'l' }
-  ]
+  // const sizes = [
+  //   { label: 'S', value: 's' },
+  //   { label: 'M', value: 'm' },
+  //   { label: 'L', value: 'l' }
+  // ]
 
   return (
     <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3`}>
       {data.map((dish) => (
         <div key={dish.id} className="flex flex-col bg-white border rounded-xl">
           {/* Image Section - Reduced height */}
-          <div className="relative p-1.5">
+          <div className="relative p-2">
             <img src={dish.image} alt={dish.name} className="object-cover w-full h-32 rounded-lg" />
             {/* <div className="absolute flex items-center gap-1 p-0.5 bg-white rounded-lg bottom-3 right-3">
               <Button variant="ghost" size="icon" className="w-5 h-5 hover:bg-gray-100">
@@ -51,7 +48,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
           </div>
 
           {/* Content Section - More compact */}
-          <div className="flex flex-col flex-1 p-2 space-y-1.5">
+          <div className="flex flex-col flex-1 p-4 space-y-1.5">
             <h3 className="text-sm font-medium line-clamp-1">{dish.name}</h3>
             <p className="text-xs text-gray-500 line-clamp-2">{dish.description}</p>
 
@@ -69,12 +66,12 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
                     {size.label}
                   </button>
                 ))} */}
-                <QuantitySelector />
+                {/* <QuantitySelector /> */}
               </div>
             </div>
 
             <div className="flex items-center justify-between gap-1">
-              <span className="text-sm font-medium text-primary">
+              <span className="text-lg font-bold text-primary">
                 {dish.price.toLocaleString('vi-VN')}đ
               </span>
               <Button size="sm" className="px-4 text-xs text-white rounded-full h-7">

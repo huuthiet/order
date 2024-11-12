@@ -22,7 +22,7 @@ export default function QuantitySelector() {
         onClick={handleDecrement}
         className="p-1 border rounded-full w-fit h-fit hover:bg-gray-100"
       >
-        <Minus className="w-3 h-3" />
+        <Minus size={12} />
       </Button>
       <span className="w-4 text-xs text-center">{quantity}</span>
       <Button
@@ -31,7 +31,7 @@ export default function QuantitySelector() {
         onClick={handleIncrement}
         className="p-1 border rounded-full w-fit h-fit hover:bg-gray-100"
       >
-        <Plus className="w-3 h-3" />
+        <Plus size={12} />
       </Button>
     </div>
   )
