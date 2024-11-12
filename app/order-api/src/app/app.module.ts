@@ -16,6 +16,7 @@ import { classes } from '@automapper/classes';
 import { CatalogModule } from 'src/catalog/catalog.module';
 import { ProductModule } from 'src/product/product.module';
 import { VariantModule } from 'src/variant/variant.module';
+import { TransactionModule } from 'src/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { VariantModule } from 'src/variant/variant.module';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [
