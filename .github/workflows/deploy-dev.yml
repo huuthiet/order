@@ -1,13 +1,16 @@
 name: Deploy-dev
 
 on:
-  pull_request_target:
-    branches: [main]
-    types: [opened, closed]
-  workflow_run:
-    workflows: ["Build and Test"] # Trigger after 'Build and Test' workflow succeeds
-    types:
-      - completed
+  # pull_request_target:
+  #   branches: [main]
+  #   types: [opened, closed]
+  # workflow_run:
+  #   workflows: ["Build and Test"] # Trigger after 'Build and Test' workflow succeeds
+  #   types:
+  #     - completed
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
