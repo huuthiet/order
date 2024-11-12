@@ -1,5 +1,5 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, ValidationPipe } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, ValidationPipe } from "@nestjs/common";
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./product.service";
 import { Public } from "src/auth/public.decorator";
 import { CreateProductRequestDto, ProductResponseDto } from "./product.dto";
@@ -17,7 +17,7 @@ export class ProductController {
   @ApiOperation({ summary: 'Create new product' })
   @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async createSize(
+  async createProduct(
     @Body(ValidationPipe)
     requestData: CreateProductRequestDto
   ): Promise<ProductResponseDto> {
@@ -30,7 +30,15 @@ export class ProductController {
   @ApiOperation({ summary: 'Get all products' })
   @ApiResponse({ status: 200, description: 'Get all products successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllSizes(): Promise<ProductResponseDto[]> {
-    return this.productService.getAllProducts();
+  @ApiQuery({
+    name: 'catalog',
+    required: false,
+    description: 'Filter products by catalog',
+    type: String,
+  })
+  async getAllProducts(
+    @Query('catalog') catalog: string
+  ): Promise<ProductResponseDto[]> {
+    return this.productService.getAllProducts(catalog);
   }
 }

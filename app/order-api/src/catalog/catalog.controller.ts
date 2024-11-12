@@ -1,4 +1,4 @@
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { 
   HttpStatus,
   HttpCode,
@@ -6,10 +6,12 @@ import {
   Body,
   Controller,
   ValidationPipe,
-  Get
+  Get,
+  Patch,
+  Param
 } from '@nestjs/common';
 
-import { CreateCatalogRequestDto, CatalogResponseDto } from './catalog.dto';
+import { CreateCatalogRequestDto, CatalogResponseDto, UpdateCatalogRequestDto } from './catalog.dto';
 import { CatalogService } from './catalog.service';
 import { Public } from 'src/auth/public.decorator';
 
@@ -17,7 +19,7 @@ import { Public } from 'src/auth/public.decorator';
 @Controller('catalogs')
 export class CatalogController {
   constructor(
-    private sizeService: CatalogService
+    private catalogService: CatalogService
   ){}
 
   @HttpCode(HttpStatus.OK)
@@ -30,7 +32,7 @@ export class CatalogController {
     @Body(ValidationPipe)
     requestData: CreateCatalogRequestDto
   ): Promise<CatalogResponseDto> {
-    return this.sizeService.createCatalog(requestData);
+    return this.catalogService.createCatalog(requestData);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -39,7 +41,29 @@ export class CatalogController {
   @ApiOperation({ summary: 'Get all catalogs' })
   @ApiResponse({ status: 200, description: 'Get all catalogs successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllSizes(): Promise<CatalogResponseDto[]> {
-    return this.sizeService.getAllCatalogs();
+  async getAllCatalogs(): Promise<CatalogResponseDto[]> {
+    return this.catalogService.getAllCatalogs();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Patch(':slug')
+  @Public()
+  @ApiOperation({ summary: 'Update catalogs' })
+  @ApiResponse({ status: 200, description: 'Update catalogs successfully' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @ApiParam({
+    name: 'slug',
+    description: 'The slug of the catalog to be updated',
+    required: true,
+    example: 'slug-123',
+  })
+  async updateCatalog(
+    @Param('slug') slug: string,
+    @Body(ValidationPipe) updateCatalogDto: UpdateCatalogRequestDto,
+  ): Promise<CatalogResponseDto> {
+    return this.catalogService.updateCatalog(
+      slug,
+      updateCatalogDto
+    );
   }
 }

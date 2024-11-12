@@ -36,8 +36,15 @@ export class ProductService {
     return productDto;
   }
 
-  async getAllProducts(): Promise<ProductResponseDto[]> {
+  async getAllProducts(
+    catalog?: string
+  ): Promise<ProductResponseDto[]> {
     const products = await this.productRepository.find({
+      where: {
+        catalog: {
+          slug: catalog
+        }
+      },
       relations: [
         'catalog',
         'variants.size'

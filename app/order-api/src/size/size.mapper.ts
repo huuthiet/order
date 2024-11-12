@@ -1,5 +1,5 @@
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { createMap, extend, Mapper } from '@automapper/core';
+import { createMap, extend, forMember, mapFrom, Mapper } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 
 import { CreateSizeRequestDto, SizeResponseDto } from './size.dto';
@@ -25,7 +25,13 @@ export class SizeProfile extends AutomapperProfile {
             createMap(
                 mapper, 
                 CreateSizeRequestDto,
-                Size, 
+                Size,
+                forMember(
+                    (destination) => destination.name,
+                    mapFrom(
+                      (source) => source.name?.toLocaleLowerCase()
+                    )
+                )
             );
         };
     }
