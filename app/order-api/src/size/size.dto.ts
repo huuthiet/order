@@ -10,15 +10,20 @@ export class CreateSizeRequestDto {
   name: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The description of size', example: 'Capacity 400ml' })
+  @ApiProperty({
+    description: 'The description of size',
+    example: 'Capacity 400ml',
+  })
   @IsOptional()
   description?: string;
 }
 
 export class SizeResponseDto extends BaseResponseDto {
+  @ApiProperty()
   @AutoMap()
   name: string;
 
   @AutoMap()
+  @ApiProperty()
   description?: string;
 }

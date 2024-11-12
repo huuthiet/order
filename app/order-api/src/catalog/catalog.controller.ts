@@ -1,5 +1,11 @@
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
-import { 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+} from '@nestjs/swagger';
+import {
   HttpStatus,
   HttpCode,
   Post,
@@ -14,9 +20,11 @@ import {
 import { CreateCatalogRequestDto, CatalogResponseDto, UpdateCatalogRequestDto } from './catalog.dto';
 import { CatalogService } from './catalog.service';
 import { Public } from 'src/auth/public.decorator';
+import { ApiResponseWithType } from 'src/app/app.decorator';
 
 @ApiTags('Catalog')
 @Controller('catalogs')
+@ApiBearerAuth()
 export class CatalogController {
   constructor(
     private catalogService: CatalogService
@@ -26,11 +34,15 @@ export class CatalogController {
   @Post()
   @Public()
   @ApiOperation({ summary: 'Create new catalog' })
-  @ApiResponse({ status: 200, description: 'Create new catalog successfully' })
+  @ApiResponseWithType({
+    status: HttpStatus.CREATED,
+    description: 'Catalog created successfully',
+    type: CatalogResponseDto,
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createCatalog(
     @Body(ValidationPipe)
-    requestData: CreateCatalogRequestDto
+    requestData: CreateCatalogRequestDto,
   ): Promise<CatalogResponseDto> {
     return this.catalogService.createCatalog(requestData);
   }

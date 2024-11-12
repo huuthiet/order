@@ -1,25 +1,38 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, ValidationPipe } from "@nestjs/common";
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { ProductService } from "./product.service";
-import { Public } from "src/auth/public.decorator";
-import { CreateProductRequestDto, ProductResponseDto } from "./product.dto";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ProductService } from './product.service';
+import { Public } from 'src/auth/public.decorator';
+import { CreateProductRequestDto, ProductResponseDto } from './product.dto';
 
 @ApiTags('Product')
 @Controller('products')
+@ApiBearerAuth()
 export class ProductController {
-  constructor(
-    private productService: ProductService
-  ){}
+  constructor(private productService: ProductService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  @Public()
   @ApiOperation({ summary: 'Create new product' })
   @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createProduct(
     @Body(ValidationPipe)
-    requestData: CreateProductRequestDto
+    requestData: CreateProductRequestDto,
   ): Promise<ProductResponseDto> {
     return this.productService.createProduct(requestData);
   }

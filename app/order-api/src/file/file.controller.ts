@@ -2,7 +2,9 @@ import { Controller, Get, StreamableFile } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { Public } from '../auth/public.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('file')
 export class FileController {
   @Get()

@@ -1,25 +1,36 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, ValidationPipe } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { VariantService } from "./variant.service";
-import { Public } from "src/auth/public.decorator";
-import { CreateVariantRequestDto, VariantResponseDto } from "./variant.dto";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { VariantService } from './variant.service';
+import { Public } from 'src/auth/public.decorator';
+import { CreateVariantRequestDto, VariantResponseDto } from './variant.dto';
 
 @ApiTags('Variant')
 @Controller('variants')
+@ApiBearerAuth()
 export class VariantController {
-  constructor(
-    private variantService: VariantService
-  ){}
+  constructor(private variantService: VariantService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  @Public()
   @ApiOperation({ summary: 'Create new variant' })
   @ApiResponse({ status: 200, description: 'Create new variant successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createVariant(
     @Body(ValidationPipe)
-    requestData: CreateVariantRequestDto
+    requestData: CreateVariantRequestDto,
   ): Promise<VariantResponseDto> {
     return this.variantService.createVariant(requestData);
   }

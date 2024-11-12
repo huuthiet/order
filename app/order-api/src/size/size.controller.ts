@@ -1,34 +1,42 @@
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import {
   HttpStatus,
   HttpCode,
   Post,
   Body,
   Controller,
   ValidationPipe,
-  Get
+  Get,
 } from '@nestjs/common';
 
 import { CreateSizeRequestDto, SizeResponseDto } from './size.dto';
 import { SizeService } from './size.service';
 import { Public } from 'src/auth/public.decorator';
+import { ApiResponseWithType } from 'src/app/app.decorator';
 
 @ApiTags('Size')
 @Controller('sizes')
+@ApiBearerAuth()
 export class SizeController {
-  constructor(
-    private sizeService: SizeService
-  ){}
+  constructor(private sizeService: SizeService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  @Public()
   @ApiOperation({ summary: 'Create new size' })
-  @ApiResponse({ status: 200, description: 'Create new size successfully' })
+  @ApiResponseWithType({
+    status: HttpStatus.CREATED,
+    description: 'Create new size successfully',
+    type: SizeResponseDto,
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createSize(
     @Body(ValidationPipe)
-    requestData: CreateSizeRequestDto
+    requestData: CreateSizeRequestDto,
   ): Promise<SizeResponseDto> {
     return this.sizeService.createSize(requestData);
   }
@@ -37,7 +45,12 @@ export class SizeController {
   @Get()
   @Public()
   @ApiOperation({ summary: 'Get all sizes' })
-  @ApiResponse({ status: 200, description: 'Get all sizes successfully' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Sizes retrieved successfully',
+    type: SizeResponseDto,
+    isArray: true,
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async getAllSizes(): Promise<SizeResponseDto[]> {
     return this.sizeService.getAllSizes();
