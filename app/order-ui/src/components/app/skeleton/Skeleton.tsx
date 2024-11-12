@@ -56,44 +56,31 @@ export function SkeletonCart() {
 
 export function SkeletonMenuList() {
   return (
-    <div className="flex overflow-hidden bg-muted/50 rounded-xl">
-      {/* Skeleton for the left side: Image and quantity buttons */}
-      <div className="flex flex-col gap-3 w-[200px] p-2">
-        {/* Image skeleton */}
-        <Skeleton className="object-cover w-full rounded-lg h-4/5" />
-
-        {/* Quantity buttons skeleton */}
-        <div className="flex items-center justify-center gap-2">
-          <Skeleton className="w-8 h-8 rounded-full" />
-          <Skeleton className="w-8 h-6 text-center rounded" />
-          <Skeleton className="w-8 h-8 rounded-full" />
-        </div>
+    <div className="flex flex-col border bg-muted/50 rounded-xl">
+      {/* Image Section */}
+      <div className="relative p-2">
+        <Skeleton className="w-full h-32 rounded-lg" />
+        {/* Status tag */}
+        {/* <div className="absolute top-4 left-4">
+          <Skeleton className="w-16 h-5 rounded-full" />
+        </div> */}
       </div>
 
-      {/* Skeleton for the right side: Details */}
-      <div className="flex flex-col flex-1 px-2 py-4 space-y-4">
-        {/* Dish name skeleton */}
-        <Skeleton className="w-3/4 h-6" />
+      {/* Content Section */}
+      <div className="flex flex-col flex-1 p-4 space-y-2">
+        {/* Name */}
+        <Skeleton className="w-3/4 h-4" />
 
-        {/* Description skeleton */}
-        <Skeleton className="w-full h-4" />
-        <Skeleton className="w-5/6 h-4" />
-
-        {/* Price skeleton */}
-        <Skeleton className="w-1/2 h-5 mt-4" />
-
-        {/* Size selector skeleton */}
-        <div className="flex flex-row items-center gap-4 mt-4">
-          <Skeleton className="w-1/5 h-5" />
-          <div className="flex gap-2">
-            <Skeleton className="w-8 h-8 rounded-full" />
-            <Skeleton className="w-8 h-8 rounded-full" />
-            <Skeleton className="w-8 h-8 rounded-full" />
-          </div>
+        {/* Description */}
+        <div className="space-y-1">
+          <Skeleton className="w-full h-3" />
         </div>
 
-        {/* Add to cart button skeleton */}
-        <Skeleton className="w-full h-10 mt-6 rounded-full" />
+        {/* Price and Add button */}
+        <div className="flex items-center justify-between gap-1 mt-auto">
+          <Skeleton className="w-24 h-6" />
+          <Skeleton className="w-24 rounded-full h-7" />
+        </div>
       </div>
     </div>
   )

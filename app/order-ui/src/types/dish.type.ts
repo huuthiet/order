@@ -8,5 +8,6 @@ export interface IDish {
   main_ingredients: string[]
   availability: boolean
   preparation_time: number
+  discount: number
   calories: number
 }

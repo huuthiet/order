@@ -5,43 +5,31 @@ import { cn } from '@/lib/utils'
 import { Button, ScrollArea } from '@/components/ui'
 import { QuantitySelector } from '@/components/app/button'
 import { CartNoteInput, PromotionInput } from '@/components/app/input'
+import { Trash2 } from 'lucide-react'
+import { useCartItemStore } from '@/stores'
 
-interface CartItem {
-  id: number
-  name: string
-  image: string
-  price: number
-  size: string
-  quantity: number
-}
+// interface CartItem {
+//   id: number
+//   name: string
+//   image: string
+//   price: number
+//   size: string
+//   quantity: number
+// }
 
 export default function CartContent() {
   const [activeTab, setActiveTab] = React.useState<'restaurant' | 'takeaway'>('restaurant')
-  const [cartItems] = React.useState<CartItem[]>([
-    {
-      id: 1,
-      name: 'Bún bò',
-      image: 'https://bizweb.dktcdn.net/100/489/006/files/cach-nau-bun-bo-gio-heo-2.jpg',
-      price: 55000,
-      size: 'S',
-      quantity: 1
-    },
-    {
-      id: 2,
-      name: 'Bánh mì',
-      image: 'https://static.vinwonders.com/production/banh-mi-sai-gon-2.jpg',
-      price: 20000,
-      size: 'S',
-      quantity: 1
-    }
-  ])
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const { getCartItems, removeCartItem } = useCartItemStore()
+  const subtotal = getCartItems().reduce((acc, item) => acc + item.price * item.quantity, 0)
   const discount = 0
   const total = subtotal - discount
 
+  const handleRemoveCartItem = (id: number) => {
+    removeCartItem(id)
+  }
+
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-transparent backdrop-blur-md">
       {/* Header */}
       <div className="px-4 pt-2">
         <h1 className="text-lg font-medium">Đơn hàng</h1>
@@ -72,21 +60,27 @@ export default function CartContent() {
       <ScrollArea className="flex-1">
         <div className="flex flex-col flex-1 gap-4 px-4 pb-8">
           <div className="flex flex-col gap-4 py-2 space-y-2">
-            {cartItems.map((item) => (
+            {getCartItems().map((item) => (
               <div key={item.id} className="flex flex-col items-center gap-4 pb-4 border-b">
-                <div className="flex flex-row items-center flex-1 w-full gap-2 bg-white rounded-xl">
+                <div className="flex flex-row items-center flex-1 w-full gap-2 rounded-xl">
                   <img
                     src={item.image}
                     alt={item.name}
                     className="object-cover w-20 h-20 rounded-2xl"
                   />
                   <div className="flex flex-col flex-1 gap-2">
-                    <div className="flex flex-col flex-1 min-w-0">
-                      <span className="font-bold truncate">{item.name}</span>
-                      <span className="text-xs font-thin text-muted-foreground">
-                        {item.price} VND
-                      </span>
+                    <div className="flex flex-row items-start justify-between">
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <span className="font-bold truncate">{item.name}</span>
+                        <span className="text-xs font-thin text-muted-foreground">
+                          {item.price} VND
+                        </span>
+                      </div>
+                      <Button variant="ghost" onClick={() => handleRemoveCartItem(item.id)}>
+                        <Trash2 size={20} className="text-muted-foreground" />
+                      </Button>
                     </div>
+
                     <div className="flex items-center justify-between flex-1 w-full text-sm font-medium">
                       <QuantitySelector />
                       <span className="font-semibold text-muted-foreground">

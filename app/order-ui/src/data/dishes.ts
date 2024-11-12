@@ -11,6 +11,7 @@ const dishes: IDish[] = [
     main_ingredients: ['Bún', 'Bò', 'Sả', 'Rau sống'],
     availability: true,
     preparation_time: 15,
+    discount: 10,
     calories: 350
   },
   {
@@ -23,6 +24,7 @@ const dishes: IDish[] = [
     main_ingredients: ['Bánh mì', 'Thịt', 'Pate', 'Rau sống'],
     availability: true,
     preparation_time: 5,
+    discount: 0,
     calories: 250
   },
   {
@@ -35,6 +37,7 @@ const dishes: IDish[] = [
     main_ingredients: ['Bún', 'Bò', 'Sả', 'Rau sống'],
     availability: true,
     preparation_time: 15,
+    discount: 10,
     calories: 350
   },
   {
@@ -48,6 +51,7 @@ const dishes: IDish[] = [
     main_ingredients: ['Bánh phở', 'Bò', 'Hành', 'Rau thơm'],
     availability: true,
     preparation_time: 20,
+    discount: 0,
     calories: 300
   },
   {
@@ -61,6 +65,7 @@ const dishes: IDish[] = [
     main_ingredients: ['Bánh phở', 'Bò', 'Hành', 'Rau thơm'],
     availability: true,
     preparation_time: 20,
+    discount: 15,
     calories: 300
   }
 ]

@@ -1,0 +1,7 @@
+{
+  "toast": {
+    "addSuccess": "Add item to cart successfully",
+    "itemAlreadyExists": "Item already exists in cart",
+    "removeSuccess": "Remove item from cart successfully"
+  }
+}

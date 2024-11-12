@@ -16,9 +16,9 @@ export default function CartToggleButton({ isCartOpen, setIsCartOpen }: Quantity
         className="p-2 transition rounded-full h-fit w-fit"
       >
         {isCartOpen ? (
-          <ChevronRight className="text-primary" />
+          <ChevronRight className="text-muted-foreground" />
         ) : (
-          <ChevronLeft className="text-primary" />
+          <ChevronLeft className="text-muted-foreground" />
         )}
       </Button>
     </div>
