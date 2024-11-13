@@ -3,8 +3,10 @@ import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 
 import enToast from '@/locales/en/toast.json'
+import enAuth from '@/locales/en/auth.json'
 
 import viToast from '@/locales/vi/toast.json'
+import viAuth from '@/locales/vi/auth.json'
 
 i18n
   .use(LanguageDetector) // Tự động phát hiện ngôn ngữ
@@ -12,10 +14,12 @@ i18n
   .init({
     resources: {
       en: {
-        toast: enToast
+        toast: enToast,
+        auth: enAuth
       },
       vi: {
-        toast: viToast
+        toast: viToast,
+        auth: viAuth
       }
     },
     lng: window.localStorage.getItem('i18nextLng') || 'vi',
@@ -24,7 +28,7 @@ i18n
       escapeValue: false // React đã tự động bảo vệ trước XSS
     },
     //Setup type-safe translation
-    ns: ['toast'], //Dùng để phân biệt các phần khác nhau của app
+    ns: ['toast', 'auth'], //Dùng để phân biệt các phần khác nhau của app
     defaultNS: 'auth' //Ngôn ngữ mặc định
   })
 

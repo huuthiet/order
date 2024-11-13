@@ -5,10 +5,10 @@ import { Suspense } from 'react'
 import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
 import { ROUTE } from '@/constants'
-import { HomePage, StaffLayout } from './loadable'
+import { HomePage, StaffLayout, LoginPage } from './loadable'
 
 export const router = createBrowserRouter([
-  // { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
+  { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
   // { path: ROUTE.REGISTER, element: <SuspenseElement component={RegisterPage} /> },
   {
     path: ROUTE.STAFF_HOME,

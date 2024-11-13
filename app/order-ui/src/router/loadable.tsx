@@ -7,6 +7,13 @@ export const StaffLayout = React.lazy(() =>
   }))
 )
 
+//Auth
+export const LoginPage = React.lazy(() =>
+  import('@/app/auth').then((module) => ({
+    default: module.LoginPage
+  }))
+)
+
 //Views
 export const HomePage = React.lazy(() =>
   import('@/app/system/home').then((module) => ({
