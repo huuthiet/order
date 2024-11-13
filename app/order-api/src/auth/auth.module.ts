@@ -18,7 +18,7 @@ import { LoggerModule } from 'src/logger/logger.module';
     LoggerModule.register(AuthModule.name),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],
