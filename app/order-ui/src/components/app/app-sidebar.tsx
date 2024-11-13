@@ -1,7 +1,8 @@
 'use client'
 
 import { ChevronRight, Command, Sparkles } from 'lucide-react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import {
   Collapsible,
@@ -29,10 +30,24 @@ import {
   DropdownMenuItem
 } from '@/components/ui'
 import { sidebarRoutes } from '@/router/routes'
+import { ISidebarRoute } from '@/types'
 
 export default function AppSidebar() {
+  const { t } = useTranslation('sidebar')
   const location = useLocation()
   const isActive = (path: string) => location.pathname === path
+
+  const translatedSidebarRoute = (sidebarRoutes: ISidebarRoute) => ({
+    ...sidebarRoutes,
+    title: t(`${sidebarRoutes.title}`),
+    children: sidebarRoutes.children?.map((child) => ({
+      ...child,
+      title: t(`${child.title}`)
+    }))
+  })
+
+  // Translate all sidebar routes
+  const translatedRoutes = sidebarRoutes.map(translatedSidebarRoute)
 
   return (
     <Sidebar variant="inset" className="z-50 bg-white border-r" collapsible="icon">
@@ -40,7 +55,7 @@ export default function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem className="w-full">
             <SidebarMenuButton size="lg" asChild>
-              <a href="#" className="flex items-center w-full gap-3">
+              <NavLink to="/staff/home" className="flex items-center w-full gap-3">
                 <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0">
                   <Command className="size-4" />
                 </div>
@@ -48,16 +63,16 @@ export default function AppSidebar() {
                   <span className="text-xl font-semibold text-primary">SMART</span>
                   <span>COFFEE</span>
                 </div>
-              </a>
+              </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Home</SidebarGroupLabel>
+          <SidebarGroupLabel></SidebarGroupLabel>
           <SidebarMenu>
-            {sidebarRoutes.map((item) => (
+            {translatedRoutes.map((item) => (
               <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
                 <SidebarMenuItem>
                   <SidebarMenuButton
@@ -65,7 +80,7 @@ export default function AppSidebar() {
                     tooltip={item.title}
                     className={isActive(item.path) ? 'text-primary' : ''}
                   >
-                    <a href={item.path}>
+                    <NavLink to={item.path}>
                       {item.icon && (
                         <IconWrapper
                           Icon={item.icon}
@@ -73,7 +88,7 @@ export default function AppSidebar() {
                         />
                       )}
                       <span>{item.title}</span>
-                    </a>
+                    </NavLink>
                   </SidebarMenuButton>
                   {item.children?.length ? (
                     <>
@@ -91,9 +106,9 @@ export default function AppSidebar() {
                                 asChild
                                 className={isActive(subItem.path) ? 'text-primary' : ''}
                               >
-                                <a href={subItem.path} className="flex flex-col gap-4">
+                                <NavLink to={subItem.path} className="flex flex-col gap-4">
                                   <span>{subItem.title}</span>
-                                </a>
+                                </NavLink>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           ))}
@@ -106,65 +121,6 @@ export default function AppSidebar() {
             ))}
           </SidebarMenu>
         </SidebarGroup>
-        {/* <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <SidebarGroupLabel>Projects</SidebarGroupLabel>
-          <SidebarMenu>
-            {data.projects.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild>
-                  <a href={item.path}>
-                    <item.icon />
-                    <span>{item.name}</span>
-                  </a>
-                </SidebarMenuButton>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover>
-                      <MoreHorizontal />
-                      <span className="sr-only">More</span>
-                    </SidebarMenuAction>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-48" side="bottom" align="end">
-                    <DropdownMenuItem>
-                      <Folder className="text-muted-foreground" />
-                      <span>View Project</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Share className="text-muted-foreground" />
-                      <span>Share Project</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Trash2 className="text-muted-foreground" />
-                      <span>Delete Project</span>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              ))}
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <MoreHorizontal />
-                  <span>More</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup> */}
-        {/* <SidebarGroup className="mt-auto">
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.navSecondary.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild size="sm">
-                    <a href={item.path}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup> */}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

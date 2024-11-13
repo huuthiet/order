@@ -1,0 +1,10 @@
+{
+  "common": {
+    "search": "Tìm kiếm",
+    "add": "Thêm",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "cancel": "Hủy"
+  }
+}

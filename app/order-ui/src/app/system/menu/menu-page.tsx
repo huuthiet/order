@@ -1,10 +1,12 @@
 import { useState } from 'react'
 
+import MenuList from './menu-list'
 import { CartContent } from '@/router/loadable'
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton } from '@/components/app/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
+import { DateSelect, MenuCategorySelect } from '@/components/app/select'
 
 export default function MenuPage() {
   const [isCartOpen, setIsCartOpen] = useState(true)
@@ -25,12 +27,14 @@ export default function MenuPage() {
               <BreadcrumbComponent />
               <CartToggleButton isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
             </div>
-            {/* <div className="flex justify-end w-full gap-2">
+            <div className="flex justify-end w-full gap-2">
               <DateSelect />
               <MenuCategorySelect />
-            </div> */}
+            </div>
           </div>
-          <div className="pr-4"></div>
+          <div className="pr-4">
+            <MenuList isCartOpen={isCartOpen} />
+          </div>
         </div>
       </ScrollArea>
 

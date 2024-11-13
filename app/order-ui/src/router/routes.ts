@@ -1,6 +1,7 @@
 import {
   ClipboardList,
   CookingPot,
+  FileChartColumnIncreasing,
   FileText,
   Grid2x2,
   LayoutGrid,
@@ -12,37 +13,42 @@ import { ROUTE } from '@/constants'
 
 export const sidebarRoutes: ISidebarRoute[] = [
   {
-    title: 'Trang chủ',
+    title: 'sidebar.home',
     path: ROUTE.STAFF_HOME,
     icon: SquareTerminal
   },
   {
-    title: 'Thực đơn',
+    title: 'sidebar.menu',
     path: ROUTE.STAFF_MENU,
     icon: LayoutGrid
   },
   {
-    title: 'Lịch sử đơn hàng',
+    title: 'sidebar.orderManagement',
+    path: ROUTE.STAFF_ORDER_HISTORY,
+    icon: FileChartColumnIncreasing
+  },
+  {
+    title: 'sidebar.orderHistory',
     path: ROUTE.STAFF_ORDER_HISTORY,
     icon: FileText
   },
   {
-    title: 'Quản lý bàn',
+    title: 'sidebar.tableManagement',
     path: ROUTE.STAFF_TABLE_MANAGEMENT,
     icon: Grid2x2
   },
   {
-    title: 'Ví nội bộ',
+    title: 'sidebar.internalWallet',
     path: ROUTE.STAFF_WALLET_MANAGEMENT,
     icon: Wallet
   },
   {
-    title: 'Quản lý thực đơn',
+    title: 'sidebar.menuManagement',
     path: ROUTE.ADMIN_MENU_MANAGEMENT,
     icon: ClipboardList
   },
   {
-    title: 'Quản lý món',
+    title: 'sidebar.dishManagement',
     path: ROUTE.STAFF_DISH_MANAGEMENT,
     icon: CookingPot
   }

@@ -1,0 +1,39 @@
+{
+  "menu": {
+    "noData": "No Data",
+    "chooseDate": "Choose Date",
+    "chooseDishCategory": "Choose Dish Category",
+    "addToCart": "Add to Cart",
+    "order": "Order",
+    "dineIn": "Dine In",
+    "takeAway": "Take Away",
+    "promotion": "Promotion",
+    "enterPromotion": "Enter Promotion",
+    "apply": "Apply",
+    "total": "Total",
+    "discount": "Discount",
+    "subTotal": "Sub Total"
+  },
+
+  "order": {
+    "orderInformation": "Order Information",
+    "customerName": "Customer Name",
+    "enterCustomerName": "Enter Customer Name",
+    "phoneNumber": "Phone Number",
+    "enterPhoneNumber": "Enter Phone Number",
+    "deliveryMethod": "Delivery Method",
+    "dineIn": "Dine In",
+    "takeAway": "Take Away",
+    "tableNumber": "Table Number",
+    "promotion": "Promotion",
+    "enterPromotion": "Enter Promotion",
+    "apply": "Apply",
+    "subTotal": "Sub Total",
+    "total": "Total",
+    "discount": "Discount",
+    "vat": "VAT",
+    "grandTotal": "Grand Total",
+    "confirmPaid": "Confirm Paid",
+    "complete": "Complete"
+  }
+}

@@ -4,12 +4,14 @@ import { Button } from '@/components/ui'
 import { useCartItemStore } from '@/stores/cart.store'
 import { IDish } from '@/types'
 import { ShoppingCart } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface IMenuProps {
   isCartOpen: boolean
 }
 
 export default function MenuList({ isCartOpen }: IMenuProps) {
+  const { t } = useTranslation('menu')
   const { data, isLoading } = useDishes()
   const { addCartItem } = useCartItemStore()
 
@@ -28,7 +30,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
   }
 
   if (!data || data.length === 0) {
-    return <p className="text-center">Không có dữ liệu món ăn</p>
+    return <p className="text-center">{t('menu.noData')}</p>
   }
 
   return (
@@ -75,7 +77,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
               className="flex flex-row items-center justify-center gap-1 px-4 text-white rounded-full"
             >
               <ShoppingCart size={12} />
-              Thêm vào giỏ
+              {t('menu.addToCart')}
             </Button>
           </div>
         </div>

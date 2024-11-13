@@ -15,13 +15,28 @@ export const LoginPage = React.lazy(() =>
 )
 
 //Views
+
+//Home page
 export const HomePage = React.lazy(() =>
   import('@/app/system/home').then((module) => ({
     default: module.HomePage
   }))
 )
+
+//Menu page
+export const MenuPage = React.lazy(() =>
+  import('@/app/system/menu').then((module) => ({
+    default: module.MenuPage
+  }))
+)
 export const CartContent = React.lazy(() =>
-  import('@/app/system/home').then((module) => ({
+  import('@/app/system/menu').then((module) => ({
     default: module.CartContent
+  }))
+)
+
+export const ConfirmOrderPage = React.lazy(() =>
+  import('@/app/system/menu').then((module) => ({
+    default: module.ConfirmOrderPage
   }))
 )

@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
-import { CartContent } from '@/router/loadable'
+// import { CartContent } from '@/router/loadable'
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton } from '@/components/app/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
+import CheckoutCart from './checkout-cart'
 
-export default function MenuPage() {
+export default function ConfirmOrderPage() {
   const [isCartOpen, setIsCartOpen] = useState(true)
   const { state } = useSidebar()
   const isCollapsed = state === 'collapsed'
@@ -40,7 +41,7 @@ export default function MenuPage() {
           isCartOpen ? 'w-[30%]' : 'w-0 opacity-0'
         } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
       >
-        {isCartOpen && <CartContent />}
+        {isCartOpen && <CheckoutCart />}
       </div>
     </div>
   )

@@ -19,3 +19,9 @@ export interface IRequestDishStore {
   incrementRequestQueueSize: () => void
   decrementRequestQueueSize: () => void
 }
+
+export interface IThemeStore {
+  theme: string
+  setTheme: (theme: string) => void
+  getTheme: () => string
+}

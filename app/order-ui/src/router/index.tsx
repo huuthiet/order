@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
 import { ROUTE } from '@/constants'
-import { HomePage, StaffLayout, LoginPage } from './loadable'
+import { HomePage, MenuPage, StaffLayout, LoginPage, ConfirmOrderPage } from './loadable'
 
 export const router = createBrowserRouter([
   { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
@@ -21,6 +21,34 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />
+      }
+    ]
+  },
+  {
+    path: ROUTE.STAFF_MENU,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: <MenuPage />
+      }
+    ]
+  },
+  {
+    path: ROUTE.STAFF_CONFIRM_ORDER,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: <ConfirmOrderPage />
       }
     ]
   }
