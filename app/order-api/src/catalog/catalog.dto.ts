@@ -2,11 +2,12 @@ import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
+import { INVALID_CATALOG_NAME } from './catalog.validation';
 
 export class CreateCatalogRequestDto {
   @AutoMap()
   @ApiProperty({ description: 'The name of catalog', example: 'Đồ ăn' })
-  @IsNotEmpty({ message: 'Catalog name is required' })
+  @IsNotEmpty({ message: INVALID_CATALOG_NAME })
   name: string;
 
   @AutoMap()

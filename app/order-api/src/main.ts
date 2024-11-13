@@ -28,6 +28,7 @@ async function bootstrap() {
   });
 
   logger.log(`Server running on port ${port}`);
+  logger.log(`Swagger running at http://localhost:${port}/api/api-docs`);
   await app.listen(port);
 }
 bootstrap();

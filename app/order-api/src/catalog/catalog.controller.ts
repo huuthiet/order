@@ -27,7 +27,6 @@ export class CatalogController {
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  @Public()
   @ApiOperation({ summary: 'Create new catalog' })
   @ApiResponseWithType({
     status: HttpStatus.CREATED,
