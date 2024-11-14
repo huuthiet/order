@@ -44,13 +44,26 @@ export class CatalogService {
     const catalog = await this.catalogRepository.findOneBy({ slug });
     if(!catalog) throw new BadRequestException('Catalog does not exist');
 
-    console.log({requestData})
     const catalogData = this.mapper.map(requestData, UpdateCatalogRequestDto, Catalog);
-    console.log({catalogData})
     Object.assign(catalog, catalogData);
     const updatedCatalog = await this.catalogRepository.save(catalog);
     const catalogDto = this.mapper.map(updatedCatalog, Catalog, CatalogResponseDto);
     return catalogDto;
+  }
+
+  async deleteCatalog(
+    slug: string
+  ): Promise<number> {
+    const catalog = await this.catalogRepository.findOne({
+      where: { slug },
+      relations: ['products']
+    });
+    if(!catalog) throw new BadRequestException('Catalog does not exist');
+    if(catalog.products.length > 0)
+      throw new BadRequestException('Must change catalog of products before delete this catalog');
+
+    const deleted = await this.catalogRepository.softDelete({ slug });
+    return deleted.affected || 0;
   }
 
   async findOne(slug: string): Promise<Catalog | null>{

@@ -1,12 +1,12 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Variant } from "./variant.entity";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { SizeService } from "src/size/size.service";
 import { ProductService } from "src/product/product.service";
-import { CreateVariantRequestDto, VariantResponseDto } from "./variant.dto";
+import { CreateVariantRequestDto, UpdateVariantRequestDto, VariantResponseDto } from "./variant.dto";
 
 @Injectable()
 export class VariantService {
@@ -15,7 +15,9 @@ export class VariantService {
     private readonly variantRepository: Repository<Variant>,
     @InjectMapper() private readonly mapper: Mapper,
     private sizeService: SizeService,
-    private productService: ProductService,
+    // private productService: ProductService,
+    @Inject(forwardRef(() => ProductService)) 
+    private readonly productService: ProductService
   ) {}
 
   async createVariant(
@@ -57,10 +59,47 @@ export class VariantService {
         'product'
       ]
     });
-    console.log({variants})
-    console.log({variants: variants[0].size})
     const variantsDto = this.mapper.mapArray(variants, Variant, VariantResponseDto);
-    console.log({variantsDto: variantsDto[0].size})
     return variantsDto;
+  }
+
+  async updateVariant(
+    slug: string,
+    requestData: UpdateVariantRequestDto
+  ): Promise<VariantResponseDto> {
+    const variant = await this.variantRepository.findOne({
+      where: { slug },
+      relations: [
+        'size',
+        'product'
+      ]
+    });
+    if(!variant) throw new BadRequestException('Variant not found');
+
+    Object.assign(variant, requestData);
+    const updatedVariant = await this.variantRepository.save(variant);
+    const variantDto = this.mapper.map(updatedVariant, Variant, VariantResponseDto);
+    return variantDto;
+  }
+
+  async deleteVariant(
+    slug: string
+  ): Promise<number>{
+    const variant = await this.variantRepository.findOneBy({ slug });
+    if(!variant) throw new BadRequestException('Variant not found');
+    
+    const deleted = await this.variantRepository.softDelete({ slug });
+    return deleted.affected || 0;
+  }
+
+  async deleteVariantArray(
+    variants: Variant[]
+  ): Promise<number>{
+    const slugList = variants.map((item) => item.slug);
+
+    if(slugList.length < 1) return 0;
+    
+    const deleted = await this.variantRepository.softDelete({ slug: In(slugList) });
+    return deleted.affected;
   }
 }

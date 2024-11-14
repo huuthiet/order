@@ -14,13 +14,15 @@ import {
   ValidationPipe,
   Get,
   Patch,
-  Param
+  Param,
+  Delete
 } from '@nestjs/common';
 
 import { CreateCatalogRequestDto, CatalogResponseDto, UpdateCatalogRequestDto } from './catalog.dto';
 import { CatalogService } from './catalog.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { isArray } from 'lodash';
 
 @ApiTags('Catalog')
 @Controller('catalogs')
@@ -32,7 +34,6 @@ export class CatalogController {
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  @Public()
   @ApiOperation({ summary: 'Create new catalog' })
   @ApiResponseWithType({
     status: HttpStatus.CREATED,
@@ -51,7 +52,12 @@ export class CatalogController {
   @Get()
   @Public()
   @ApiOperation({ summary: 'Get all catalogs' })
-  @ApiResponse({ status: 200, description: 'Get all catalogs successfully' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Get all catalogs successfully',
+    type: CatalogResponseDto,
+    isArray: true
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async getAllCatalogs(): Promise<CatalogResponseDto[]> {
     return this.catalogService.getAllCatalogs();
@@ -59,9 +65,12 @@ export class CatalogController {
 
   @HttpCode(HttpStatus.OK)
   @Patch(':slug')
-  @Public()
-  @ApiOperation({ summary: 'Update catalogs' })
-  @ApiResponse({ status: 200, description: 'Update catalogs successfully' })
+  @ApiOperation({ summary: 'Update catalog' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Update catalog successfully',
+    type: CatalogResponseDto,
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -77,5 +86,28 @@ export class CatalogController {
       slug,
       updateCatalogDto
     );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete(':slug')
+  @ApiOperation({ summary: 'Delete catalog' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Delete catalog successfully',
+    type: Number,
+  })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @ApiParam({
+    name: 'slug',
+    description: 'The slug of the catalog to be deleted',
+    required: true,
+    example: 'slug-123',
+  })
+  async deleteCatalog(
+    @Param('slug') slug: string
+  ): Promise<number>{
+    const s = await this.catalogService.deleteCatalog(slug);
+    console.log({s})
+    return s;
   }
 }
