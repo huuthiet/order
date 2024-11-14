@@ -10,6 +10,7 @@ export interface ICartItemStore {
   addCartItem: (item: IDish) => void
   updateCartItemQuantity: (id: number, quantity: number) => void
   addNote: (id: number, note: string) => void
+  addPaymentMethod: (paymentMethod: string) => void
   removeCartItem: (id: number) => void
   clearCart: () => void
 }

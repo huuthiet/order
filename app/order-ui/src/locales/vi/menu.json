@@ -13,7 +13,8 @@
     "total": "Tổng tiền hàng",
     "discount": "Giảm giá",
     "subTotal": "Tạm tính",
-    "continue": "Tiếp tục"
+    "continue": "Tiếp tục",
+    "confirm": "Xác nhận đơn hàng"
   },
 
   "order": {
@@ -46,7 +47,11 @@
     "deleteItem": "Xóa sản phẩm",
     "deleteNote": "Lưu ý: Hành động này không thể hoàn tác!",
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
-    "deleteContent2": " khỏi giỏ hàng không?"
+    "deleteContent2": " khỏi giỏ hàng không?",
+
+    "orderSuccess": "Đặt hàng thành công!",
+    "viewDetail": "Xem đơn hàng",
+    "backToMenu": "Quay lại menu"
   },
   "table": {
     "title": "Danh sách bàn"

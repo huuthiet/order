@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -61,8 +59,6 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
@@ -70,35 +66,35 @@
   body {
     @apply bg-background text-foreground;
   }
-  .auth-layout{
+  .auth-layout {
     @apply flex items-center justify-center w-full min-h-screen bg-muted text-foreground;
   }
-  .login-background{
+  .login-background {
     @apply absolute inset-0 z-10 object-cover w-full h-full;
   }
-  .header{
+  .header {
     @apply border-b border-b-gray-200 flex h-14 items-center justify-between gap-4 lg:h-[60px];
   }
-  .text-description{
+  .text-description {
     @apply text-sm;
   }
-  .text-normal{
+  .text-normal {
     @apply text-sm;
   }
-  .text-danger{
-    @apply  text-red-500;
+  .text-danger {
+    @apply text-red-500;
   }
-  .icon{
+  .icon {
     @apply w-3.5 h-3.5;
   }
 
-  .icon-sm{
+  .icon-sm {
     @apply w-2.5 h-2.5;
   }
-  .header-icon{
+  .header-icon {
     @apply w-4 h-4;
   }
-  .danger-icon{
+  .danger-icon {
     @apply w-3.5 h-3.5 text-red-500;
   }
 }
@@ -113,13 +109,6 @@
 @font-face {
   font-family: 'BeVietnam';
   src: url('./font/Be_Vietnam_Pro/BeVietnamPro-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Matemasie';
-  src: url('./font/Matemasie/Matemasie-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }

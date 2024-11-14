@@ -1,12 +1,23 @@
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Coins, CreditCard, WalletMinimal } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useCartItemStore } from '@/stores'
+
 export default function PaymentMethodRadioGroup() {
   const { t } = useTranslation('menu')
+  const { addPaymentMethod } = useCartItemStore()
+
+  const handlePaymentMethodChange = (paymentMethod: string) => {
+    addPaymentMethod(paymentMethod)
+  }
   return (
-    <RadioGroup defaultValue="internalWallet" className="gap-6">
+    <RadioGroup
+      defaultValue="internalWallet"
+      className="gap-6"
+      onValueChange={handlePaymentMethodChange}
+    >
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="internalWallet" id="r1" />
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">

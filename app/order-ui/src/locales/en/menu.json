@@ -12,7 +12,9 @@
     "apply": "Apply",
     "total": "Total",
     "discount": "Discount",
-    "subTotal": "Sub Total"
+    "subTotal": "Sub Total",
+    "continue": "Continue",
+    "confirm": "Confirm"
   },
 
   "order": {
@@ -43,7 +45,9 @@
     "deleteItem": "Delete Product",
     "deleteNote": "Note: This action cannot be undone!",
     "deleteContent": "Are you sure you want to delete ",
-    "deleteContent2": " from cart?"
+    "deleteContent2": " from cart?",
+    "orderSuccess": "Order successfully",
+    "viewDetail": "View Order"
   },
   "table": {
     "title": "Table List"

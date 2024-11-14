@@ -4,6 +4,7 @@ export const ROUTE = {
   ADMIN: '/admin',
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
+  ORDER_SUCCESS: '/order-success',
 
   // Staff Routes
   STAFF_HOME: '/staff/home',
