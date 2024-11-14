@@ -8,7 +8,7 @@ export const ROUTE = {
   // Staff Routes
   STAFF_HOME: '/staff/home',
   STAFF_MENU: '/staff/menu',
-  STAFF_CHECKOUT_ORDER: '/staff/confirm-order',
+  STAFF_CHECKOUT_ORDER: '/staff/checkout-order',
   STAFF_ORDER_MANAGEMENT: '/staff/order-management',
   STAFF_ORDER_HISTORY: '/staff/order-history',
   STAFF_ORDER_PREPARATION: '/staff/order-preparation',

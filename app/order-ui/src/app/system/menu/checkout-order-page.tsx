@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 // import { CartContent } from '@/router/loadable'
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton, QuantitySelector } from '@/components/app/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
-import CheckoutCart from './checkout-cart'
+import { CheckoutCart, PaymentMethodSelect, TableSelect } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
-import { useTranslation } from 'react-i18next'
 import { DialogDeleteCartItem } from '@/components/app/dialog'
 
 export default function ConfirmOrderPage() {
@@ -34,7 +34,7 @@ export default function ConfirmOrderPage() {
               <CartToggleButton isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
             </div>
 
-            <div className="grid w-full grid-cols-5 px-4 py-3 text-sm font-thin border rounded-md">
+            <div className="grid w-full grid-cols-5 px-4 py-3 text-sm font-thin rounded-md bg-muted/60">
               <span className="col-span-2">{t('order.product')}</span>
               <span className="text-center">{t('order.quantity')}</span>
               <span className="text-center">{t('order.grandTotal')}</span>
@@ -77,8 +77,9 @@ export default function ConfirmOrderPage() {
                 </div>
               ))}
             </div>
+            <TableSelect />
+            <PaymentMethodSelect />
           </div>
-          <div className="pr-4"></div>
         </div>
       </ScrollArea>
 

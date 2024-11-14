@@ -40,3 +40,10 @@ export const ConfirmOrderPage = React.lazy(() =>
     default: module.ConfirmOrderPage
   }))
 )
+
+//Table page
+export const TablePage = React.lazy(() =>
+  import('@/app/system/table').then((module) => ({
+    default: module.TablePage
+  }))
+)

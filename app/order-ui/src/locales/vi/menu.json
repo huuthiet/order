@@ -47,5 +47,15 @@
     "deleteNote": "Lưu ý: Hành động này không thể hoàn tác!",
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
     "deleteContent2": " khỏi giỏ hàng không?"
+  },
+  "table": {
+    "title": "Danh sách bàn"
+  },
+  "paymentMethod": {
+    "title": "Phương thức thanh toán",
+    "cash": "Tiền mặt",
+    "bankTransfer": "Chuyển khoản",
+    "internalWallet": "Ví nội bộ",
+    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý."
   }
 }

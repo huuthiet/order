@@ -44,5 +44,15 @@
     "deleteNote": "Note: This action cannot be undone!",
     "deleteContent": "Are you sure you want to delete ",
     "deleteContent2": " from cart?"
+  },
+  "table": {
+    "title": "Table List"
+  },
+  "paymentMethod": {
+    "title": "Payment Method",
+    "cash": "Cash",
+    "bankTransfer": "Bank Transfer",
+    "internalWallet": "Internal Wallet",
+    "bankTransferProcessing": "The bank transfer method may take up to 24 hours to process."
   }
 }
