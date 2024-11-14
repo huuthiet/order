@@ -1,16 +1,9 @@
-import {
-  Entity,
-  Column,
-  ManyToMany,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Base } from 'src/app/base.entity';
 import { Catalog } from 'src/catalog/catalog.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { AutoMap } from '@automapper/classes';
-import { MenuItem } from 'src/menu/menu-item.entity';
+import { MenuItem } from 'src/menu-item/entities/menu-item.entity';
 
 @Entity('product_tbl')
 export class Product extends Base {

@@ -6,14 +6,14 @@ import { INVALID_CATALOG_NAME } from './catalog.validation';
 
 export class CreateCatalogRequestDto {
   @AutoMap()
-  @ApiProperty({ description: 'The name of catalog', example: 'Đồ ăn' })
+  @ApiProperty({ description: 'The name of catalog', example: 'Nước uống' })
   @IsNotEmpty({ message: INVALID_CATALOG_NAME })
   name: string;
 
   @AutoMap()
   @ApiProperty({
     description: 'The description of catalog',
-    example: 'Các loại đồ ăn',
+    example: 'Các loại nước uống',
   })
   @IsOptional()
   description?: string;

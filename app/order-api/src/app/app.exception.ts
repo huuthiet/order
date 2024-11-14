@@ -4,7 +4,7 @@ import { getReasonPhrase } from 'http-status-codes';
 import { TErrorCodeValue } from './app.validation';
 
 export class AppException extends HttpException {
-  private _errorCodeValue: TErrorCodeValue;
+  protected _errorCodeValue: TErrorCodeValue;
 
   constructor(
     errorCodeValue: TErrorCodeValue | HttpStatus,

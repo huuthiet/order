@@ -1,8 +1,8 @@
-import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Base } from 'src/app/base.entity';
 import { AutoMap } from '@automapper/classes';
-import { Menu } from './menu.entity';
 import { Product } from 'src/product/product.entity';
+import { Menu } from 'src/menu/menu.entity';
 
 @Entity('menu_item_tbl')
 export class MenuItem extends Base {
@@ -21,7 +21,6 @@ export class MenuItem extends Base {
   menu: Menu;
 
   // Many to one with product
-  @AutoMap()
   @ManyToOne(() => Product, (product) => product.menuItems)
   @JoinColumn({ name: 'product_id_column' })
   product: Product;

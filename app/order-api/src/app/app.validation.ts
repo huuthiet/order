@@ -1,4 +1,5 @@
 import { CatalogValidation } from 'src/catalog/catalog.validation';
+import { MenuValidation } from 'src/menu/menu.validation';
 
 export type TErrorCodeValue = {
   code: number;
@@ -14,7 +15,10 @@ export function createErrorCode(
   return { code, message };
 }
 
-export const AppValidation: TErrorCode = { ...CatalogValidation };
+export const AppValidation: TErrorCode = {
+  ...CatalogValidation,
+  ...MenuValidation,
+};
 
 const errorCodeKeys = Object.keys(AppValidation);
 const errorCodeSet = new Set();
