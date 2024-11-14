@@ -2,16 +2,32 @@ import React from 'react'
 import { Minus, Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui'
+import { useCartItemStore } from '@/stores'
+import { ICartItem } from '@/types'
 
-export default function QuantitySelector() {
-  const [quantity, setQuantity] = React.useState(1)
+interface QuantitySelectorProps {
+  cartItem: ICartItem
+}
+
+export default function QuantitySelector({ cartItem }: QuantitySelectorProps) {
+  console.log(cartItem)
+  const [quantity, setQuantity] = React.useState(cartItem.quantity)
+  const { updateCartItemQuantity } = useCartItemStore()
 
   const handleIncrement = () => {
-    setQuantity((prev) => prev + 1)
+    setQuantity((prev) => {
+      const newQuantity = prev + 1
+      updateCartItemQuantity(cartItem.id, newQuantity)
+      return newQuantity
+    })
   }
 
   const handleDecrement = () => {
-    setQuantity((prev) => Math.max(prev - 1, 1))
+    setQuantity((prev) => {
+      const newQuantity = Math.max(prev - 1, 1)
+      updateCartItemQuantity(cartItem.id, newQuantity)
+      return newQuantity
+    })
   }
 
   return (

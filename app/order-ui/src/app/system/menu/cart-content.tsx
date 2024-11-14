@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { NavLink } from 'react-router-dom'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -9,7 +10,7 @@ import { Button, ScrollArea } from '@/components/ui'
 import { QuantitySelector } from '@/components/app/button'
 import { CartNoteInput, PromotionInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
-import { Menu } from '@/constants'
+import { Menu, ROUTE } from '@/constants'
 
 export default function CartContent() {
   const { t } = useTranslation('menu')
@@ -77,14 +78,14 @@ export default function CartContent() {
                     </div>
 
                     <div className="flex items-center justify-between flex-1 w-full text-sm font-medium">
-                      <QuantitySelector />
+                      <QuantitySelector cartItem={item} />
                       <span className="font-semibold text-muted-foreground">
                         {item.price.toLocaleString('vi-VN')} VND
                       </span>
                     </div>
                   </div>
                 </div>
-                <CartNoteInput />
+                <CartNoteInput cartItem={item} />
               </div>
             ))}
           </div>
@@ -113,9 +114,11 @@ export default function CartContent() {
             </span>
           </div>
         </div>
-        <Button className="w-full mt-4 text-white rounded-full bg-primary">
-          {t('menu.continue')}
-        </Button>
+        <NavLink to={ROUTE.STAFF_CHECKOUT_ORDER}>
+          <Button className="w-full mt-4 text-white rounded-full bg-primary">
+            {t('menu.continue')}
+          </Button>
+        </NavLink>
       </div>
     </div>
   )

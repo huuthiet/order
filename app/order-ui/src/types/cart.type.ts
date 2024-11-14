@@ -9,6 +9,7 @@ export interface ICartItemStore {
   getCartItems: () => CartItem[]
   addCartItem: (item: IDish) => void
   updateCartItemQuantity: (id: number, quantity: number) => void
+  addNote: (id: number, note: string) => void
   removeCartItem: (id: number) => void
   clearCart: () => void
 }

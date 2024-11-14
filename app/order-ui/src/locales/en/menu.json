@@ -16,6 +16,10 @@
   },
 
   "order": {
+    "product": "Product",
+    "unitPrice": "Unit Price",
+    "quantity": "Quantity",
+    "totalPrice": "Total Price",
     "orderInformation": "Order Information",
     "customerName": "Customer Name",
     "enterCustomerName": "Enter Customer Name",
@@ -34,6 +38,11 @@
     "vat": "VAT",
     "grandTotal": "Grand Total",
     "confirmPaid": "Confirm Paid",
-    "complete": "Complete"
+    "complete": "Complete",
+
+    "deleteItem": "Delete Product",
+    "deleteNote": "Note: This action cannot be undone!",
+    "deleteContent": "Are you sure you want to delete ",
+    "deleteContent2": " from cart?"
   }
 }

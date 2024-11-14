@@ -8,16 +8,21 @@ import { Button, Input, Label, ScrollArea } from '@/components/ui'
 import { QuantitySelector } from '@/components/app/button'
 import { CartNoteInput, PromotionInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
+import { useNavigate } from 'react-router-dom'
 // import { Menu } from '@/constants'
 
 export default function CheckoutCart() {
   const { t } = useTranslation('menu')
+  const { t: tCommon } = useTranslation('common')
+
   // const [activeTab, setActiveTab] = React.useState<Menu.DINE_IN | Menu.TAKE_AWAY>(Menu.DINE_IN)
   const { getCartItems, removeCartItem } = useCartItemStore()
   const subtotal = getCartItems().reduce((acc, item) => acc + item.price * item.quantity, 0)
   const discount = 0
   const vat = subtotal * 0.08 // Calculate 8% VAT
   const total = subtotal - discount + vat // Add VAT to total
+
+  const navigate = useNavigate()
 
   const handleRemoveCartItem = (id: number) => {
     removeCartItem(id)
@@ -105,14 +110,14 @@ export default function CheckoutCart() {
                     </div>
 
                     <div className="flex items-center justify-between flex-1 w-full text-sm font-medium">
-                      <QuantitySelector />
+                      <QuantitySelector cartItem={item} />
                       <span className="font-semibold text-muted-foreground">
                         {item.price.toLocaleString('vi-VN')} VND
                       </span>
                     </div>
                   </div>
                 </div>
-                <CartNoteInput />
+                <CartNoteInput cartItem={item} />
               </div>
             ))}
           </div>
@@ -148,9 +153,12 @@ export default function CheckoutCart() {
             </span>
           </div>
         </div>
-        <Button className="w-full mt-4 text-white rounded-full bg-primary">
-          {t('menu.continue')}
-        </Button>
+        <div className="flex justify-between">
+          <Button variant="outline" className="mt-4 rounded-full" onClick={() => navigate(-1)}>
+            {tCommon('common.back')}
+          </Button>
+          <Button className="mt-4 rounded-full">{t('menu.continue')}</Button>
+        </div>
       </div>
     </div>
   )

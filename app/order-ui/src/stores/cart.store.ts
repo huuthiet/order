@@ -28,6 +28,12 @@ export const useCartItemStore = create<ICartItemStore>()(
           cartItems: cartItems.map((item) => (item.id === id ? { ...item, quantity } : item))
         })
       },
+      addNote: (id: number, note: string) => {
+        const { cartItems } = get()
+        set({
+          cartItems: cartItems.map((item) => (item.id === id ? { ...item, note } : item))
+        })
+      },
       removeCartItem: (id: number) => {
         const { cartItems } = get()
         set({

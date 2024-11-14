@@ -57,7 +57,7 @@ export default function Login() {
       //   setUserRoles(Array.isArray(userRoles) ? userRoles : []) // Handle roles being non-array safely
       //   setUserInfo(userInfo as IUserInfo)
 
-      navigate(ROUTE.STAFF_HOME, { replace: true })
+      navigate(ROUTE.STAFF_MENU, { replace: true })
       showToast(t('toast.loginSuccess'))
     } catch (error) {
       if (isAxiosError(error)) {

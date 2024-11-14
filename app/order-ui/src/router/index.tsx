@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
     ]
   },
   {
-    path: ROUTE.STAFF_CONFIRM_ORDER,
+    path: ROUTE.STAFF_CHECKOUT_ORDER,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />
