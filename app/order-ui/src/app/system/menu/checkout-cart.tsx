@@ -1,6 +1,7 @@
 'use client'
 
 // import * as React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -8,7 +9,9 @@ import { Button, Input, Label, ScrollArea } from '@/components/ui'
 import { QuantitySelector } from '@/components/app/button'
 import { CartNoteInput, PromotionInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
-import { useNavigate } from 'react-router-dom'
+import { showToast } from '@/utils'
+import { ROUTE } from '@/constants'
+
 // import { Menu } from '@/constants'
 
 export default function CheckoutCart() {
@@ -26,6 +29,11 @@ export default function CheckoutCart() {
 
   const handleRemoveCartItem = (id: number) => {
     removeCartItem(id)
+  }
+
+  const handleConfirm = () => {
+    navigate(ROUTE.ORDER_SUCCESS)
+    showToast(t('toast.orderSuccess'))
   }
 
   return (
@@ -157,7 +165,9 @@ export default function CheckoutCart() {
           <Button variant="outline" className="mt-4 rounded-full" onClick={() => navigate(-1)}>
             {tCommon('common.back')}
           </Button>
-          <Button className="mt-4 rounded-full">{t('menu.continue')}</Button>
+          <Button onClick={handleConfirm} className="mt-4 rounded-full">
+            {t('menu.confirm')}
+          </Button>
         </div>
       </div>
     </div>

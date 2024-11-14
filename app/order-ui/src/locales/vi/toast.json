@@ -4,6 +4,8 @@
     "itemAlreadyExists": "Sản phẩm đã tồn tại trong giỏ hàng",
     "removeSuccess": "Xóa sản phẩm khỏi giỏ hàng thành công",
 
-    "loginSuccess": "Đăng nhập thành công"
+    "loginSuccess": "Đăng nhập thành công",
+
+    "orderSuccess": "Đặt hàng thành công"
   }
 }
