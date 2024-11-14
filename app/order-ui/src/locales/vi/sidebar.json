@@ -1,0 +1,12 @@
+{
+  "sidebar": {
+    "home": "Trang chủ",
+    "menu": "Thực đơn",
+    "orderManagement": "Quản lý đơn hàng",
+    "orderHistory": "Lịch sử đơn hàng",
+    "tableManagement": "Quản lý bàn",
+    "internalWallet": "Ví nội bộ",
+    "menuManagement": "Quản lý thực đơn",
+    "dishManagement": "Quản lý món"
+  }
+}

@@ -2,7 +2,7 @@ import toast from 'react-hot-toast'
 import i18next from 'i18next'
 
 const errorCodes: { [key: number]: string } = {
-  1000: 'toast.productAlreadyExists',
+  1000: 'toast.itemAlreadyExists',
   1001: 'toast.invalidEmail',
   1002: 'toast.pathNotFound',
   1003: 'toast.invalidUsername',

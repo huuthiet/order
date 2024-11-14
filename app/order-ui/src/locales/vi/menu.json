@@ -1,0 +1,61 @@
+{
+  "menu": {
+    "noData": "Không có dữ liệu",
+    "chooseDate": "Chọn thứ",
+    "chooseDishCategory": "Chọn loại món",
+    "addToCart": "Thêm vào giỏ",
+    "order": "Đơn hàng",
+    "dineIn": "Tại quán",
+    "takeAway": "Mang đi",
+    "promotion": "Mã giảm giá",
+    "enterPromotion": "Nhập mã giảm giá",
+    "apply": "Áp dụng",
+    "total": "Tổng tiền hàng",
+    "discount": "Giảm giá",
+    "subTotal": "Tạm tính",
+    "continue": "Tiếp tục"
+  },
+
+  "order": {
+    "product": "Sản phẩm",
+    "unitPrice": "Đơn giá",
+    "quantity": "Số lượng",
+    "totalPrice": "Thành tiền",
+    "orderInformation": "Thông tin đơn hàng",
+    "customerName": "Tên khách hàng",
+    "enterCustomerName": "Nhập tên khách hàng",
+    "phoneNumber": "Số điện thoại",
+    "enterPhoneNumber": "Nhập số điện thoại",
+    "note": "Ghi chú",
+    "enterNote": "Nhập ghi chú",
+    "deliveryMethod": "Phương thức giao hàng",
+    "dineIn": "Tại quán",
+    "takeAway": "Mang đi",
+    "tableNumber": "Số bàn",
+    "promotion": "Mã giảm giá",
+    "enterPromotion": "Nhập mã giảm giá",
+    "apply": "Áp dụng",
+    "subTotal": "Tạm tính",
+    "total": "Tổng tiền hàng",
+    "discount": "Giảm giá",
+    "vat": "Thuế VAT",
+    "grandTotal": "Thành tiền",
+    "confirmPaid": "Xác nhận đã thanh toán",
+    "complete": "Hoàn tất",
+
+    "deleteItem": "Xóa sản phẩm",
+    "deleteNote": "Lưu ý: Hành động này không thể hoàn tác!",
+    "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
+    "deleteContent2": " khỏi giỏ hàng không?"
+  },
+  "table": {
+    "title": "Danh sách bàn"
+  },
+  "paymentMethod": {
+    "title": "Phương thức thanh toán",
+    "cash": "Tiền mặt",
+    "bankTransfer": "Chuyển khoản",
+    "internalWallet": "Ví nội bộ",
+    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý."
+  }
+}

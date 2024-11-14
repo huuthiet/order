@@ -1,0 +1,12 @@
+{
+  "sidebar": {
+    "home": "Home",
+    "menu": "Menu",
+    "orderManagement": "Order Management",
+    "orderHistory": "Order History",
+    "tableManagement": "Table Management",
+    "internalWallet": "Internal Wallet",
+    "menuManagement": "Menu Management",
+    "dishManagement": "Dish Management"
+  }
+}
