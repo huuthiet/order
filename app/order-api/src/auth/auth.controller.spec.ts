@@ -43,15 +43,8 @@ describe('AuthController', () => {
 
   describe('login', () => {
     it('should throw an unauthorized exception if login fails', () => {
-      const mockRequest = {
-        method: 'POST',
-        originalUrl: '/auth/login',
-      };
       expect(
-        controller.login(
-          { phonenumber: 'invalid', password: 'invalid' },
-          mockRequest as any,
-        ),
+        controller.login({ phonenumber: 'invalid', password: 'invalid' }),
       ).rejects.toThrow(UnauthorizedException);
     });
 
