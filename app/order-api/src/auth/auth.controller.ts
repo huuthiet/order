@@ -11,6 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
 import {
+  AuthProfileResponseDto,
   LoginAuthRequestDto,
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
@@ -74,7 +75,19 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Get('profile')
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-  getProfile(@Request() req) {
-    return req.user;
+  @ApiResponseWithType({
+    type: AuthProfileResponseDto,
+    description: 'Profile retrieved successful',
+  })
+  async getProfile(
+    @Request() req: any,
+  ): Promise<AppResponseDto<AuthProfileResponseDto>> {
+    const result = await this.authService.getProfile(req.user);
+    return {
+      message: 'Profile retrieved successful',
+      status: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as unknown as AppResponseDto<AuthProfileResponseDto>;
   }
 }

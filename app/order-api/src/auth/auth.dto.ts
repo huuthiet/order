@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import {
   INVALID_FIRSTNAME,
@@ -42,7 +42,7 @@ export class LoginAuthResponseDto {
   // readonly refreshToken: string;
 }
 
-export class RegisterAuthResponseDto {
+export class AuthProfileResponseDto {
   @AutoMap()
   @ApiProperty()
   readonly slug: string;
@@ -58,4 +58,24 @@ export class RegisterAuthResponseDto {
   @ApiProperty()
   @AutoMap()
   readonly lastName: string;
+
+  @AutoMap()
+  @ApiProperty()
+  readonly dob: string;
+
+  @AutoMap()
+  @ApiProperty()
+  readonly email: string;
+
+  @AutoMap()
+  @ApiProperty()
+  readonly address: string;
 }
+
+// PickType: Get the fields from AuthProfileResponseDto
+export class RegisterAuthResponseDto extends PickType(AuthProfileResponseDto, [
+  'slug',
+  'phonenumber',
+  'firstName',
+  'lastName',
+]) {}

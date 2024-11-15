@@ -1,6 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
+  AuthProfileResponseDto,
   LoginAuthRequestDto,
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
@@ -55,7 +56,7 @@ export class AuthService {
     );
     if (!user) throw new UnauthorizedException();
 
-    const payload = { phonenumber: user.phonenumber, sub: user.slug };
+    const payload = { phonenumber: user.phonenumber, sub: user.id };
     this.logger.warn(`User ${user.phonenumber} logged in`);
     return {
       accessToken: this.jwtService.sign(payload),
@@ -82,5 +83,14 @@ export class AuthService {
     await this.userRepository.save(user);
     this.logger.warn(`User ${requestData.phonenumber} registered`);
     return this.mapper.map(user, User, RegisterAuthResponseDto);
+  }
+
+  async getProfile({ userId }: { userId: string; phonenumber: string }) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      this.logger.error(`User ${userId} not found`);
+      throw new UnauthorizedException();
+    }
+    return this.mapper.map(user, User, AuthProfileResponseDto);
   }
 }
