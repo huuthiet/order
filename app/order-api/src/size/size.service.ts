@@ -19,6 +19,11 @@ export class SizeService {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
+  /**
+   * Create a new size 
+   * @param  {CreateSizeRequestDto} createSizeDto The data to create a new size
+   * @returns {Promise<SizeResponseDto>} The size data is created
+   */
   async createSize(
     createSizeDto: CreateSizeRequestDto,
   ): Promise<SizeResponseDto> {
@@ -34,6 +39,10 @@ export class SizeService {
     return sizeDto;
   }
 
+  /**
+   * Get all sizes
+   * @returns {Promise<SizeResponseDto[]>} The size array is retrieved
+   */
   async getAllSizes(): Promise<SizeResponseDto[]> {
     const sizes = await this.sizeRepository.find();
     const sizesDto = this.mapper.mapArray(sizes, Size, SizeResponseDto);
@@ -54,6 +63,13 @@ export class SizeService {
     return sizeDto;
   }
 
+  /**
+   * Delete size by slug
+   * @param {string} slug The slug of size is deleted
+   * @returns {Promise<number>} The number of sizes is deleted
+   * @throws {BadRequestException} If the size is not found
+   * @throws {BadRequestException} If the size have related variants
+   */
   async deleteSize(slug: string): Promise<number> {
     const size = await this.sizeRepository.findOne({
       where: {
@@ -72,7 +88,12 @@ export class SizeService {
     return deleted.affected || 0;
   }
 
-  async findOne(slug: string): Promise<Size | undefined> {
+  /**
+   * Find a size by slug
+   * @param {string} slug The slug of size
+   * @returns {Promise<Size | null>} The size data is retrieve
+   */
+  async findOne(slug: string): Promise<Size | null> {
     return await this.sizeRepository.findOneBy({ slug });
   }
 }

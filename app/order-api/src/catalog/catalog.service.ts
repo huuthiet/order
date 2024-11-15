@@ -14,6 +14,12 @@ export class CatalogService {
     @InjectMapper() private readonly mapper: Mapper
   ) {}
 
+ /**
+  * Create a new catalog
+  * @param {CreateCatalogRequestDto} createCatalogDto The data to create catalog
+  * @returns {Promise<CatalogResponseDto>} The created catalog
+  * @throws {BadRequestException} if catalog name already exists
+  */
   async createCatalog(
     createCatalogDto: CreateCatalogRequestDto
   ): Promise<CatalogResponseDto>{
@@ -31,12 +37,23 @@ export class CatalogService {
     return catalogDto;
   }
 
+  /**
+   * Get all catalogs
+   * @returns {Promise<CatalogResponseDto[]>} Result of get all catalogs
+   */
   async getAllCatalogs(): Promise<CatalogResponseDto[]>{
     const catalogs = await this.catalogRepository.find();
     const catalogsDto = this.mapper.mapArray(catalogs, Catalog, CatalogResponseDto);
     return catalogsDto;
   }
 
+  /**
+   * Update catalog by slug
+   * @param {string} slug The slug of catalog is updated
+   * @param {UpdateCatalogRequestDto} requestData 
+   * @returns {Promise<CatalogResponseDto>} The updated catalog 
+   * @throws {BadRequestException} if the catalog with the specified slug is not found
+   */
   async updateCatalog(
     slug: string,
     requestData: UpdateCatalogRequestDto
@@ -51,6 +68,11 @@ export class CatalogService {
     return catalogDto;
   }
 
+  /**
+   * Delete a catalog by slug
+   * @param {string} slug The slug of catalog is deleted
+   * @returns {Promise<number>} The number of record is deleted
+   */
   async deleteCatalog(
     slug: string
   ): Promise<number> {
@@ -66,6 +88,11 @@ export class CatalogService {
     return deleted.affected || 0;
   }
 
+  /**
+   * Find a catalog by slug
+   * @param {string} slug The slug of catalog is retrieved
+   * @returns {Promise<Catalog | null>} The catalog information
+   */
   async findOne(slug: string): Promise<Catalog | null>{
     return await this.catalogRepository.findOneBy({ slug });
   }

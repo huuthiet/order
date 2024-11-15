@@ -7,12 +7,12 @@ import { Product } from './product.entity';
 import { ProductProfile } from './product.mapper';
 import { CatalogModule } from 'src/catalog/catalog.module';
 import { VariantModule } from 'src/variant/variant.module';
+import { Variant } from 'src/variant/variant.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product]),
+    TypeOrmModule.forFeature([Product, Variant]),
     CatalogModule,
-    forwardRef(() => VariantModule)
   ],
   controllers: [ProductController],
   providers: [
