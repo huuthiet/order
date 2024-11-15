@@ -57,7 +57,7 @@ axiosInstance.interceptors.request.use(
     } = useAuthStore.getState()
 
     // Allow requests to public routes (login, register, etc.)
-    const publicRoutes = ['/auth/authenticate', '/auth/register', '/auth/refresh']
+    const publicRoutes = ['/auth/login', '/auth/register', '/auth/refresh']
     if (publicRoutes.includes(config.url || '')) {
       return config
     }

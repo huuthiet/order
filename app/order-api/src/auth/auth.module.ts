@@ -10,6 +10,9 @@ import { JwtStrategy } from './jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LoggerModule } from 'src/logger/logger.module';
+import { Type } from 'class-transformer';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
 
 @Module({
   imports: [
@@ -20,6 +23,7 @@ import { LoggerModule } from 'src/logger/logger.module';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '1h' },
     }),
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
   providers: [

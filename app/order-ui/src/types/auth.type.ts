@@ -1,5 +1,5 @@
 export interface ILoginRequest {
-  phoneNumber: string
+  phonenumber: string
   password: string
 }
 

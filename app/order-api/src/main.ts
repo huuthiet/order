@@ -3,6 +3,7 @@ import { AppModule } from './app/app.module';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { corsOptions } from './config/cors.config';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -13,7 +14,7 @@ async function bootstrap() {
   const version = configService.get('VERSION');
 
   app.setGlobalPrefix(`api/${version}`);
-  app.enableCors();
+  app.enableCors(corsOptions);
   app.enableShutdownHooks();
 
   const config = new DocumentBuilder()
