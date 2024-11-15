@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException } from '@nestjs/common';
 import { LoggerService } from 'src/logger/logger.service';
 import {
   MockType,
@@ -10,11 +9,14 @@ import {
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { LoginAuthRequestDto } from './auth.dto';
+import { ConfigService } from '@nestjs/config';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 
 describe('AuthService', () => {
+  const mapperProvider = 'automapper:nestjs:default';
   let service: AuthService;
   let userRepositoryMock: MockType<Repository<User>>;
+  let config: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,6 +31,21 @@ describe('AuthService', () => {
         {
           provide: getRepositoryToken(User),
           useFactory: repositoryMockFactory,
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'SALT_ROUNDS') {
+                return 10;
+              }
+              return null;
+            }),
+          },
+        },
+        {
+          provide: mapperProvider,
+          useFactory: mapperMockFactory,
         },
         LoggerService,
       ],
