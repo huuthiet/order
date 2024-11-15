@@ -41,6 +41,11 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   VERSION: string;
+
+  @IsNumber()
+  @Min(10)
+  @Max(12)
+  SALT_ROUNDS: number;
 }
 
 export function validate(config: Record<string, unknown>) {

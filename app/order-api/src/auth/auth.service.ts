@@ -1,24 +1,34 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
 import { LoginAuthRequestDto, LoginAuthResponseDto } from './auth.dto';
 import { LoggerService } from 'src/logger/logger.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new LoggerService(AuthService.name);
   constructor(
-    private usersService: UserService,
-    private jwtService: JwtService,
-    private loggerService: LoggerService,
+    private readonly jwtService: JwtService,
+    private readonly loggerService: LoggerService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
+  async validateUser(phonenumber: string, pass: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { phonenumber } });
+    if (!user) {
+      this.logger.warn(`User ${phonenumber} not found`);
+      return null;
     }
-    return null;
+    const isMatch = await bcrypt.compare(pass, user.password);
+    if (!isMatch) {
+      this.logger.warn(`User ${phonenumber} provided invalid password`);
+      return null;
+    }
+    return user;
   }
 
   async login(
@@ -30,8 +40,8 @@ export class AuthService {
     );
     if (!user) throw new UnauthorizedException();
 
-    const payload = { username: user.username, sub: user.userId };
-    this.loggerService.log(`User ${user.username} logged in`);
+    const payload = { phonenumber: user.phonenumber, sub: user.slug };
+    this.logger.warn(`User ${user.phonenumber} logged in`);
     return {
       accessToken: this.jwtService.sign(payload),
     };

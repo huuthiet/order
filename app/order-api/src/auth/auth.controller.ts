@@ -18,7 +18,6 @@ import {
 } from '@nestjs/swagger';
 import { AppResponseDto } from 'src/app/app.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
-import { Request as ERequest } from 'express';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -37,16 +36,13 @@ export class AuthController {
   async login(
     @Body(ValidationPipe)
     requestData: LoginAuthRequestDto,
-    @Request() req: ERequest,
   ): Promise<AppResponseDto<LoginAuthResponseDto>> {
     const result = await this.authService.login(requestData);
     const response = {
       message: 'Login successful',
-      data: result,
-      method: req.method,
       status: HttpStatus.OK,
-      path: req.originalUrl,
       timestamp: new Date().toISOString(),
+      result,
     } as unknown as AppResponseDto<LoginAuthResponseDto>;
     return response;
   }
