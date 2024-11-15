@@ -1,29 +1,37 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Base } from "src/app/base.entity";
+import { Entity, Column } from 'typeorm';
+import { Base } from 'src/app/base.entity';
+import { AutoMap } from '@automapper/classes';
 
-@Entity("user_tbl")
+@Entity('user_tbl')
 export class User extends Base {
-  @Column({ name: "phonenumber_column" })
+  @AutoMap()
+  @Column({ name: 'phonenumber_column' })
   phonenumber: string;
 
-  @Column({ name: "password_column" })
+  @Column({ name: 'password_column' })
   password: string;
 
-  @Column({ name: "first_name_column" })
+  @Column({ name: 'first_name_column' })
+  @AutoMap()
   firstName: string;
 
-  @Column({ name: "last_name_column" })
+  @Column({ name: 'last_name_column' })
+  @AutoMap()
   lastName: string;
 
-  @Column({ name: "is_active_column", default: true })
+  @Column({ name: 'is_active_column', default: true })
+  @AutoMap()
   isActive: boolean;
 
-  @Column({ name: "dob_column", nullable: true })
+  @Column({ name: 'dob_column', nullable: true })
+  @AutoMap()
   dob?: string;
 
-  @Column({ name: "email_column", nullable: true })
+  @AutoMap()
+  @Column({ name: 'email_column', nullable: true })
   email?: string;
 
-  @Column({ name: "address_column", nullable: true })
+  @AutoMap()
+  @Column({ name: 'address_column', nullable: true })
   address?: string;
 }

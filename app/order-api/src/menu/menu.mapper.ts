@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { baseMapper } from 'src/app/base.mapper';
 import { Menu } from './menu.entity';
-import { MenuResponseDto } from './menu.dto';
+import { CreateMenuDto, MenuResponseDto } from './menu.dto';
 
 @Injectable()
 export class MenuProfile extends AutomapperProfile {
@@ -15,6 +15,7 @@ export class MenuProfile extends AutomapperProfile {
   override get profile() {
     return (mapper: Mapper) => {
       createMap(mapper, Menu, MenuResponseDto, extend(baseMapper(mapper)));
+      createMap(mapper, CreateMenuDto, Menu);
     };
   }
 }
