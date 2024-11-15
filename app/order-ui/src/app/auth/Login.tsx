@@ -39,7 +39,8 @@ export default function Login() {
     try {
       login(data, {
         onSuccess: () => {
-          showToast('login.loginSuccess')
+          // navigate(ROUTE.STAFF_MENU, { replace: true })
+          showToast(t('toast.loginSuccess'))
         }
       })
 
@@ -56,9 +57,6 @@ export default function Login() {
       //   const { data: userInfo } = await refetchUserInfo()
       //   setUserRoles(Array.isArray(userRoles) ? userRoles : []) // Handle roles being non-array safely
       //   setUserInfo(userInfo as IUserInfo)
-
-      navigate(ROUTE.STAFF_MENU, { replace: true })
-      showToast(t('toast.loginSuccess'))
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.code === 'ECONNABORTED') {
