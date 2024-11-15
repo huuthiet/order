@@ -29,7 +29,7 @@ export const LoginForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading })
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      phoneNumber: '',
+      phonenumber: '',
       password: ''
     }
   })
@@ -45,7 +45,7 @@ export const LoginForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading })
           <div className="grid grid-cols-1 md:w-[24rem]  text-white gap-2">
             <FormField
               control={form.control}
-              name="phoneNumber"
+              name="phonenumber"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('login.phoneNumber')}</FormLabel>
