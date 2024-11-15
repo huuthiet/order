@@ -5,7 +5,22 @@ import { BaseResponseDto } from 'src/app/base.dto';
 
 export class CreateSizeRequestDto {
   @AutoMap()
-  @ApiProperty({ description: 'The name of size', example: 'S' })
+  @ApiProperty({ description: 'The name of size', example: 's'})
+  @IsNotEmpty({ message: 'Size name is required' })
+  name: string;
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'The description of size',
+    example: 'Capacity 400ml',
+  })
+  @IsOptional()
+  description?: string;
+}
+
+export class UpdateSizeRequestDto {
+  @AutoMap()
+  @ApiProperty({ description: 'The name of size', example: 's'})
   @IsNotEmpty({ message: 'Size name is required' })
   name: string;
 
