@@ -27,6 +27,7 @@ services:
       NODE_ENV: ${NODE_ENV}
       PORT: ${PORT}
       VERSION: ${VERSION:-v1.0.0}
+      SALT_ROUNDS: ${SALT_ROUNDS:-10}
       TZ: Asia/Ho_Chi_Minh
     depends_on:
       mysql_db:
