@@ -1,1 +1,1 @@
-export { default as ProfileAvatar } from './ProfileAvatar'
+export { default as ProfileAvatar } from './profile-avatar'

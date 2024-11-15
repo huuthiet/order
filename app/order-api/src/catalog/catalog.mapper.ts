@@ -1,8 +1,18 @@
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { createMap, extend, Mapper } from '@automapper/core';
+import {
+  createMap,
+  extend,
+  forMember,
+  mapFrom,
+  Mapper,
+} from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 
-import { CatalogResponseDto, CreateCatalogRequestDto } from './catalog.dto';
+import {
+  CatalogResponseDto,
+  CreateCatalogRequestDto,
+  UpdateCatalogRequestDto,
+} from './catalog.dto';
 import { Catalog } from './catalog.entity';
 import { baseMapper } from 'src/app/base.mapper';
 
@@ -21,7 +31,25 @@ export class CatalogProfile extends AutomapperProfile {
         extend(baseMapper(mapper)),
       );
 
-      createMap(mapper, CreateCatalogRequestDto, Catalog);
+      createMap(
+        mapper,
+        CreateCatalogRequestDto,
+        Catalog,
+        forMember(
+          (destination) => destination.name,
+          mapFrom((source) => source.name?.toLocaleLowerCase()),
+        ),
+      );
+
+      createMap(
+        mapper,
+        UpdateCatalogRequestDto,
+        Catalog,
+        forMember(
+          (destination) => destination.name,
+          mapFrom((source) => source.name?.toLocaleLowerCase()),
+        ),
+      );
     };
   }
 }

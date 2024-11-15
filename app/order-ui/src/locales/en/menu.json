@@ -1,0 +1,62 @@
+{
+  "menu": {
+    "noData": "No Data",
+    "chooseDate": "Choose Date",
+    "chooseDishCategory": "Choose Dish Category",
+    "addToCart": "Add to Cart",
+    "order": "Order",
+    "dineIn": "Dine In",
+    "takeAway": "Take Away",
+    "promotion": "Promotion",
+    "enterPromotion": "Enter Promotion",
+    "apply": "Apply",
+    "total": "Total",
+    "discount": "Discount",
+    "subTotal": "Sub Total",
+    "continue": "Continue",
+    "confirm": "Confirm"
+  },
+
+  "order": {
+    "product": "Product",
+    "unitPrice": "Unit Price",
+    "quantity": "Quantity",
+    "totalPrice": "Total Price",
+    "orderInformation": "Order Information",
+    "customerName": "Customer Name",
+    "enterCustomerName": "Enter Customer Name",
+    "phoneNumber": "Phone Number",
+    "enterPhoneNumber": "Enter Phone Number",
+    "deliveryMethod": "Delivery Method",
+    "dineIn": "Dine In",
+    "takeAway": "Take Away",
+    "tableNumber": "Table Number",
+    "promotion": "Promotion",
+    "enterPromotion": "Enter Promotion",
+    "apply": "Apply",
+    "subTotal": "Sub Total",
+    "total": "Total",
+    "discount": "Discount",
+    "vat": "VAT",
+    "grandTotal": "Grand Total",
+    "confirmPaid": "Confirm Paid",
+    "complete": "Complete",
+
+    "deleteItem": "Delete Product",
+    "deleteNote": "Note: This action cannot be undone!",
+    "deleteContent": "Are you sure you want to delete ",
+    "deleteContent2": " from cart?",
+    "orderSuccess": "Order successfully",
+    "viewDetail": "View Order"
+  },
+  "table": {
+    "title": "Table List"
+  },
+  "paymentMethod": {
+    "title": "Payment Method",
+    "cash": "Cash",
+    "bankTransfer": "Bank Transfer",
+    "internalWallet": "Internal Wallet",
+    "bankTransferProcessing": "The bank transfer method may take up to 24 hours to process."
+  }
+}

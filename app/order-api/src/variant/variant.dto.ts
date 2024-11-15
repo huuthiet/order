@@ -26,6 +26,13 @@ export class CreateVariantRequestDto {
   product: string;
 }
 
+export class UpdateVariantRequestDto {
+  @AutoMap()
+  @ApiProperty({ description: 'The price of product at this size', example: '50000'})
+  @IsNotEmpty({ message: 'The price is required' })
+  price: number;
+}
+
 export class VariantResponseDto extends BaseResponseDto {
   @AutoMap()
   price: number;

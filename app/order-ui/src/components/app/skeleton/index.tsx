@@ -1,1 +1,3 @@
-export { default as SkeletonCard } from './SkeletonCard'
+// index.tsx
+export { SkeletonMenuList } from './Skeleton'
+export { SkeletonCart } from './Skeleton'

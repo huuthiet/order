@@ -19,6 +19,21 @@ export class CreateCatalogRequestDto {
   description?: string;
 }
 
+export class UpdateCatalogRequestDto {
+  @AutoMap()
+  @ApiProperty({ description: 'The name of catalog', example: 'Nước uống' })
+  @IsNotEmpty({ message: INVALID_CATALOG_NAME })
+  name: string;
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'The description of catalog',
+    example: 'Các loại nước uống',
+  })
+  @IsOptional()
+  description?: string;
+}
+
 export class CatalogResponseDto extends BaseResponseDto {
   @ApiProperty()
   @AutoMap()
