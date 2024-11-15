@@ -1,10 +1,5 @@
-import { applyDecorators, HttpCode, HttpStatus, Type } from '@nestjs/common';
-import {
-  ApiExtraModels,
-  ApiOkResponse,
-  ApiResponse,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { applyDecorators, HttpStatus, Type } from '@nestjs/common';
+import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { AppPaginatedResponseDto, AppResponseDto } from './app.dto';
 
 export interface IApiResponseOptions<TModel> {
@@ -24,6 +19,20 @@ export function ApiResponseWithType<TModel extends Type<any>>({
   status = HttpStatus.OK,
   isArray = false,
 }: IApiResponseOptions<TModel> & { isArray?: boolean }) {
+  const isPrimitive = [String, Number, Boolean].includes(type as any);
+  const getTypeSchema = (targetType: Type<any>) => {
+    if (isPrimitive) {
+      // For primitive types like string, number, boolean, use their string representation
+      return { type: targetType.name.toLowerCase() };
+    } else if (targetType === Date) {
+      // For Date, treat as string in OpenAPI
+      return { type: 'string', format: 'date-time' };
+    } else {
+      // For complex types, resolve via schema path
+      return { $ref: getSchemaPath(targetType) };
+    }
+  };
+
   return applyDecorators(
     ApiExtraModels(AppResponseDto, type),
     ApiResponse({
@@ -39,7 +48,7 @@ export function ApiResponseWithType<TModel extends Type<any>>({
                     type: 'array',
                     items: { $ref: getSchemaPath(type) }, // Each item in the array will follow the model type
                   }
-                : { $ref: getSchemaPath(type) },
+                : getTypeSchema(type),
             },
           },
         ],

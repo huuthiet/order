@@ -1,12 +1,16 @@
-import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Variant } from "./variant.entity";
-import { In, Repository } from "typeorm";
-import { InjectMapper } from "@automapper/nestjs";
-import { Mapper } from "@automapper/core";
-import { SizeService } from "src/size/size.service";
-import { ProductService } from "src/product/product.service";
-import { CreateVariantRequestDto, UpdateVariantRequestDto, VariantResponseDto } from "./variant.dto";
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Variant } from './variant.entity';
+import { In, Repository } from 'typeorm';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import {
+  CreateVariantRequestDto,
+  UpdateVariantRequestDto,
+  VariantResponseDto,
+} from './variant.dto';
+import { Product } from 'src/product/product.entity';
+import { Size } from 'src/size/size.entity';
 
 @Injectable()
 export class VariantService {
@@ -14,92 +18,104 @@ export class VariantService {
     @InjectRepository(Variant)
     private readonly variantRepository: Repository<Variant>,
     @InjectMapper() private readonly mapper: Mapper,
-    private sizeService: SizeService,
-    // private productService: ProductService,
-    @Inject(forwardRef(() => ProductService)) 
-    private readonly productService: ProductService
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(Size)
+    private readonly sizeRepository: Repository<Size>,
   ) {}
 
   async createVariant(
-    createVariantDto: CreateVariantRequestDto
-  ): Promise<VariantResponseDto>{
-    const size = await this.sizeService.findOne(createVariantDto.size);
-    if(!size) throw new BadRequestException('The size is not exist');
+    createVariantDto: CreateVariantRequestDto,
+  ): Promise<VariantResponseDto> {
+    const size = await this.sizeRepository.findOne({
+      where: { slug: createVariantDto.size },
+    });
+    if (!size) throw new BadRequestException('The size is not exist');
 
-    const product = await this.productService.findOne(createVariantDto.product);
-    if(!product) throw new BadRequestException('The product is not exist');
+    const product = await this.productRepository.findOne({
+      where: { slug: createVariantDto.product },
+    });
+    if (!product) throw new BadRequestException('The product is not exist');
 
     const variant = await this.variantRepository.findOne({
       where: {
         size: {
-          slug: createVariantDto.size
+          slug: createVariantDto.size,
         },
         product: {
-          slug: createVariantDto.product
-        }
-      }
+          slug: createVariantDto.product,
+        },
+      },
     });
-    if(variant) throw new BadRequestException('The variant is existed');
+    if (variant) throw new BadRequestException('The variant is existed');
 
-    const variantData = this.mapper.map(createVariantDto, CreateVariantRequestDto, Variant);
-    console.log({variantData})
+    const variantData = this.mapper.map(
+      createVariantDto,
+      CreateVariantRequestDto,
+      Variant,
+    );
     Object.assign(variantData, { size, product });
-    console.log({variantData})
-    const newVariant = await this.variantRepository.create(variantData);
+    const newVariant = this.variantRepository.create(variantData);
     const createdVariant = await this.variantRepository.save(newVariant);
-    console.log({createdVariant})
-    const variantDto = this.mapper.map(createdVariant, Variant, VariantResponseDto);
+    const variantDto = this.mapper.map(
+      createdVariant,
+      Variant,
+      VariantResponseDto,
+    );
     return variantDto;
   }
 
-  async getAllVariants(): Promise<VariantResponseDto[]>{
+  async getAllVariants(): Promise<VariantResponseDto[]> {
     const variants = await this.variantRepository.find({
-      relations: [
-        'size',
-        'product'
-      ]
+      relations: ['size', 'product'],
     });
-    const variantsDto = this.mapper.mapArray(variants, Variant, VariantResponseDto);
+    console.log({ variants });
+    console.log({ variants: variants[0].size });
+    const variantsDto = this.mapper.mapArray(
+      variants,
+      Variant,
+      VariantResponseDto,
+    );
+    console.log({ variantsDto: variantsDto[0].size });
     return variantsDto;
   }
 
   async updateVariant(
     slug: string,
-    requestData: UpdateVariantRequestDto
+    requestData: UpdateVariantRequestDto,
   ): Promise<VariantResponseDto> {
     const variant = await this.variantRepository.findOne({
       where: { slug },
-      relations: [
-        'size',
-        'product'
-      ]
+      relations: ['size', 'product'],
     });
-    if(!variant) throw new BadRequestException('Variant not found');
+    if (!variant) throw new BadRequestException('Variant not found');
 
     Object.assign(variant, requestData);
     const updatedVariant = await this.variantRepository.save(variant);
-    const variantDto = this.mapper.map(updatedVariant, Variant, VariantResponseDto);
+    const variantDto = this.mapper.map(
+      updatedVariant,
+      Variant,
+      VariantResponseDto,
+    );
     return variantDto;
   }
 
-  async deleteVariant(
-    slug: string
-  ): Promise<number>{
+  async deleteVariant(slug: string): Promise<number> {
     const variant = await this.variantRepository.findOneBy({ slug });
-    if(!variant) throw new BadRequestException('Variant not found');
-    
+    if (!variant) throw new BadRequestException('Variant not found');
+
     const deleted = await this.variantRepository.softDelete({ slug });
     return deleted.affected || 0;
   }
 
-  async deleteVariantArray(
-    variants: Variant[]
-  ): Promise<number>{
+  async deleteVariantArray(variants: Variant[]): Promise<number> {
     const slugList = variants.map((item) => item.slug);
 
-    if(slugList.length < 1) return 0;
-    
-    const deleted = await this.variantRepository.softDelete({ slug: In(slugList) });
+    if (slugList.length < 1) return 0;
+
+    const deleted = await this.variantRepository.softDelete({
+      slug: In(slugList),
+    });
     return deleted.affected;
   }
 }

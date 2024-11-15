@@ -4,14 +4,18 @@ import { Repository } from 'typeorm';
 import { Mapper } from '@automapper/core';
 import { Catalog } from './catalog.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CatalogResponseDto, CreateCatalogRequestDto, UpdateCatalogRequestDto } from './catalog.dto';
+import {
+  CatalogResponseDto,
+  CreateCatalogRequestDto,
+  UpdateCatalogRequestDto,
+} from './catalog.dto';
 import { BadRequestException } from '@nestjs/common';
 
 describe('CatalogService', () => {
   let service: CatalogService;
   let catalogRepository: Repository<Catalog>;
   let mapper: Mapper;
-  
+
   beforeEach(async () => {
     const mockCatalogRepository = {
       findOneBy: jest.fn(),
@@ -32,18 +36,19 @@ describe('CatalogService', () => {
         CatalogService,
         {
           provide: getRepositoryToken(Catalog),
-          useValue: mockCatalogRepository
+          useValue: mockCatalogRepository,
         },
         {
-          // provide: Mapper,
           provide: 'automapper:nestjs:default',
           useValue: mockMapper,
         },
-      ]
+      ],
     }).compile();
 
     service = module.get<CatalogService>(CatalogService);
-    catalogRepository = module.get<Repository<Catalog>>(getRepositoryToken(Catalog));
+    catalogRepository = module.get<Repository<Catalog>>(
+      getRepositoryToken(Catalog),
+    );
     mapper = module.get('automapper:nestjs:default');
   });
 
@@ -57,24 +62,28 @@ describe('CatalogService', () => {
     });
 
     it('should throw an error if catalog name already exists', async () => {
-      const createCatalogDto: CreateCatalogRequestDto = { name: 'Existing Catalog' };
+      const createCatalogDto: CreateCatalogRequestDto = {
+        name: 'Existing Catalog',
+      };
 
       (catalogRepository.findOneBy as jest.Mock).mockResolvedValue({
         id: '17b0df8f-7af3-45d1-8615-efebc08e7d12',
-        name: 'Existing Catalog'
-      } as Catalog);  
-      await expect(service.createCatalog(createCatalogDto)).rejects.toThrow(BadRequestException);
+        name: 'Existing Catalog',
+      } as Catalog);
+      await expect(service.createCatalog(createCatalogDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should create and return a new catalog', async () => {
       const createCatalogDto: CreateCatalogRequestDto = { name: 'New Catalog' };
       const catalogData = {
         name: 'New Catalog',
-        description: 'description for new catalog'
+        description: 'description for new catalog',
       };
       const newCatalog = {
         name: 'New Catalog',
-        description: 'description for new catalog'
+        description: 'description for new catalog',
       };
       const createdCatalog: Catalog = {
         id: '17b0df8f-7af3-45d1-8615-efebc08e7d12',
@@ -82,28 +91,27 @@ describe('CatalogService', () => {
         products: [],
         slug: '',
         createdAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
       };
       const catalogResponseDto: CatalogResponseDto = {
         slug: 'efebc08e7d12',
         name: 'New Catalog',
         createdAt: '',
-        updatedAt: ''
       };
 
       (catalogRepository.findOneBy as jest.Mock).mockResolvedValue(null);
-      (mapper.map as jest.Mock).mockImplementationOnce(
-        () => catalogData
-      );
+      (mapper.map as jest.Mock).mockImplementationOnce(() => catalogData);
       (catalogRepository.create as jest.Mock).mockResolvedValue(newCatalog);
       (catalogRepository.save as jest.Mock).mockResolvedValue(createdCatalog);
       (mapper.map as jest.Mock).mockImplementationOnce(
-        () => catalogResponseDto
+        () => catalogResponseDto,
       );
 
       const result = await service.createCatalog(createCatalogDto);
 
-      expect(catalogRepository.findOneBy).toHaveBeenCalledWith({ name: 'New Catalog' });
+      expect(catalogRepository.findOneBy).toHaveBeenCalledWith({
+        name: 'New Catalog',
+      });
       expect(catalogRepository.create).toHaveBeenCalledWith(catalogData);
       expect(catalogRepository.save).toHaveBeenCalledWith(newCatalog);
       expect(mapper.map).toHaveBeenCalledTimes(2);
@@ -116,7 +124,7 @@ describe('CatalogService', () => {
       jest.clearAllMocks();
     });
 
-    it('should get all catalogs success', async () =>{
+    it('should get all catalogs success', async () => {
       const catalogs: Catalog[] = [
         {
           id: '17b0df8f-7af3-45d1-8615-efebc08e7d12',
@@ -124,16 +132,15 @@ describe('CatalogService', () => {
           products: [],
           slug: '',
           createdAt: undefined,
-          updatedAt: undefined
-        }
+          updatedAt: undefined,
+        },
       ];
       const catalogsDto: CatalogResponseDto[] = [
         {
           slug: 'efebc08e7d12',
           name: 'New Catalog',
           createdAt: '',
-          updatedAt: ''
-        }
+        },
       ];
 
       (catalogRepository.find as jest.Mock).mockResolvedValue(catalogs);
@@ -145,7 +152,7 @@ describe('CatalogService', () => {
       expect(mapper.mapArray).toHaveBeenCalledWith(
         catalogs,
         Catalog,
-        CatalogResponseDto
+        CatalogResponseDto,
       );
       expect(results).toEqual(catalogsDto);
     });
@@ -158,17 +165,21 @@ describe('CatalogService', () => {
 
     it('should bad request when update catalog not exist', async () => {
       const slug: string = 'slug-not-found';
-      const updateCatalogDto: UpdateCatalogRequestDto = { name: 'Update Catalog' };
+      const updateCatalogDto: UpdateCatalogRequestDto = {
+        name: 'Update Catalog',
+      };
       (catalogRepository.findOneBy as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.updateCatalog(slug, updateCatalogDto)).rejects.toThrow(BadRequestException);
+      await expect(
+        service.updateCatalog(slug, updateCatalogDto),
+      ).rejects.toThrow(BadRequestException);
     });
 
-    it("Should update catalog success", async () => {
+    it('Should update catalog success', async () => {
       const slug: string = 'slug-catalog';
-      const requestData: UpdateCatalogRequestDto = { 
+      const requestData: UpdateCatalogRequestDto = {
         name: 'Update Catalog',
-        description: 'description for update catalog'
+        description: 'description for update catalog',
       };
       const catalog: Catalog = {
         id: '17b0df8f-7af3-45d1-8615-efebc08e7d12',
@@ -176,11 +187,11 @@ describe('CatalogService', () => {
         products: [],
         slug: '',
         createdAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
       };
       const catalogData = {
         name: 'Update Catalog',
-        description: 'description for update catalog'
+        description: 'description for update catalog',
       };
       const updatedCatalog: Catalog = {
         id: '17b0df8f-7af3-45d1-8615-efebc08e7d12',
@@ -189,38 +200,35 @@ describe('CatalogService', () => {
         products: [],
         slug: '',
         createdAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
       };
       const catalogResponseDto: CatalogResponseDto = {
         slug: 'efebc08e7d12',
         name: 'Update Catalog',
         description: 'description for update catalog',
         createdAt: '',
-        updatedAt: ''
       };
 
       (catalogRepository.findOneBy as jest.Mock).mockResolvedValue(catalog);
-      (mapper.map as jest.Mock).mockImplementationOnce(
-        () => catalogData
-      );
+      (mapper.map as jest.Mock).mockImplementationOnce(() => catalogData);
       (catalogRepository.save as jest.Mock).mockResolvedValue(catalog);
       (mapper.map as jest.Mock).mockImplementationOnce(
-        () => catalogResponseDto
+        () => catalogResponseDto,
       );
 
       const result = await service.updateCatalog(slug, requestData);
 
       expect(catalogRepository.findOneBy).toHaveBeenCalledWith({ slug });
       expect(mapper.map).toHaveBeenCalledWith(
-        requestData, 
+        requestData,
         UpdateCatalogRequestDto,
-        Catalog
+        Catalog,
       );
       expect(catalogRepository.save).toHaveBeenCalledWith(catalog);
       expect(mapper.map).toHaveBeenCalledWith(
-        updatedCatalog, 
+        updatedCatalog,
         Catalog,
-        CatalogResponseDto
+        CatalogResponseDto,
       );
       expect(mapper.map).toHaveBeenCalledTimes(2);
       expect(result).toEqual(catalogResponseDto);
@@ -232,11 +240,13 @@ describe('CatalogService', () => {
       const slug: string = 'slug-not-exist';
       (catalogRepository.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.deleteCatalog(slug)).rejects.toThrow(BadRequestException);
+      await expect(service.deleteCatalog(slug)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(catalogRepository.findOne).toHaveBeenCalledWith({
         where: { slug },
         relations: ['products'],
-      });      
+      });
     });
 
     it('should return bad request when catalog have related product', async () => {
@@ -247,25 +257,27 @@ describe('CatalogService', () => {
         description: 'description for update catalog',
         products: [
           {
-            name: "Product",
+            name: 'Product',
             isActive: false,
             isLimit: false,
-            catalog: new Catalog,
+            catalog: new Catalog(),
             variants: [],
             id: '',
             slug: '',
             createdAt: undefined,
-            updatedAt: undefined
-          }
+            updatedAt: undefined,
+            menuItems: [],
+          },
         ],
         slug: '',
         createdAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
       };
 
       (catalogRepository.findOne as jest.Mock).mockResolvedValue(catalog);
-      await expect(service.deleteCatalog(slug))
-        .rejects.toThrow('Must change catalog of products before delete this catalog');
+      await expect(service.deleteCatalog(slug)).rejects.toThrow(
+        'Must change catalog of products before delete this catalog',
+      );
     });
 
     it('should return count when delete success', async () => {
@@ -277,12 +289,14 @@ describe('CatalogService', () => {
         products: [],
         slug: '',
         createdAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
       };
       const deleteResult = { affected: 1 };
 
       (catalogRepository.findOne as jest.Mock).mockResolvedValue(catalog);
-      (catalogRepository.softDelete as jest.Mock).mockResolvedValue(deleteResult);
+      (catalogRepository.softDelete as jest.Mock).mockResolvedValue(
+        deleteResult,
+      );
 
       const result = await service.deleteCatalog(slug);
 
@@ -301,14 +315,14 @@ describe('CatalogService', () => {
     });
 
     it('should return a catalog by slug', async () => {
-      const slug : string = 'slug-catalog';
+      const slug: string = 'slug-catalog';
       const catalog: Catalog = {
         id: '17b0df8f-7af3-45d1-8615-efebc08e7d12',
         name: 'New Catalog',
         products: [],
         slug: '',
         createdAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
       };
 
       (catalogRepository.findOneBy as jest.Mock).mockResolvedValue(catalog);
@@ -320,7 +334,7 @@ describe('CatalogService', () => {
     });
 
     it('should return null if catalog does not exist', async () => {
-      const slug : string = 'slug-catalog';
+      const slug: string = 'slug-catalog';
 
       (catalogRepository.findOneBy as jest.Mock).mockResolvedValue(null);
 
@@ -330,4 +344,4 @@ describe('CatalogService', () => {
       expect(result).toBeNull();
     });
   });
-})
+});

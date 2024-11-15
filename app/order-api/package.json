@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "dev": "nest start --watch",
+    "dev": "nest start -w",
     "start:debug": "nest start --debug --watch",
     "start": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -42,6 +42,7 @@
     "axios": "^1.7.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "http-status-codes": "^2.3.0",
     "lodash": "^4.17.21",
     "mysql2": "^3.11.3",
     "nest-winston": "^1.9.7",
@@ -56,9 +57,12 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "@compodoc/compodoc": "^1.1.26",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.4.6",
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "^1.9.2",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.2",
     "@types/lodash": "^4.17.13",

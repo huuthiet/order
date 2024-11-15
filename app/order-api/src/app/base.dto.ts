@@ -6,9 +6,6 @@ export class BaseResponseDto {
   createdAt: string;
 
   @AutoMap()
-  updatedAt: string;
-
-  @AutoMap()
   @ApiProperty()
   slug: string;
 }

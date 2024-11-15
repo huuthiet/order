@@ -17,6 +17,8 @@ import { CatalogModule } from 'src/catalog/catalog.module';
 import { ProductModule } from 'src/product/product.module';
 import { VariantModule } from 'src/variant/variant.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
+import { MenuModule } from 'src/menu/menu.module';
+import { BranchModule } from 'src/branch/branch.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { TransactionModule } from 'src/transaction/transaction.module';
     CatalogModule,
     ProductModule,
     VariantModule,
+    MenuModule,
+    BranchModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
