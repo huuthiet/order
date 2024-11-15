@@ -4,7 +4,7 @@ import { Catalog } from "./catalog.entity";
 import { Repository } from "typeorm";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
-import { CatalogResponseDto, CreateCatalogRequestDto } from "./catalog.dto";
+import { CatalogResponseDto, CreateCatalogRequestDto, UpdateCatalogRequestDto } from "./catalog.dto";
 
 @Injectable()
 export class CatalogService {
@@ -23,16 +23,11 @@ export class CatalogService {
     if(catalog) throw new BadRequestException('Catalog name is existed');
 
     const catalogData = this.mapper.map(createCatalogDto, CreateCatalogRequestDto, Catalog);
-    console.log({catalogData})
     const newCatalog = await this.catalogRepository.create(catalogData);
-    console.log({newCatalog})
 
     const createdCatalog = await this.catalogRepository.save(newCatalog);
-    console.log({createdCatalog})
 
     const catalogDto = this.mapper.map(createdCatalog, Catalog, CatalogResponseDto);
-    console.log({catalogDto})
-
     return catalogDto;
   }
 
@@ -42,7 +37,36 @@ export class CatalogService {
     return catalogsDto;
   }
 
-  async findOne(slug: string): Promise<Catalog | undefined>{
+  async updateCatalog(
+    slug: string,
+    requestData: UpdateCatalogRequestDto
+  ): Promise<CatalogResponseDto>{
+    const catalog = await this.catalogRepository.findOneBy({ slug });
+    if(!catalog) throw new BadRequestException('Catalog does not exist');
+
+    const catalogData = this.mapper.map(requestData, UpdateCatalogRequestDto, Catalog);
+    Object.assign(catalog, catalogData);
+    const updatedCatalog = await this.catalogRepository.save(catalog);
+    const catalogDto = this.mapper.map(updatedCatalog, Catalog, CatalogResponseDto);
+    return catalogDto;
+  }
+
+  async deleteCatalog(
+    slug: string
+  ): Promise<number> {
+    const catalog = await this.catalogRepository.findOne({
+      where: { slug },
+      relations: ['products']
+    });
+    if(!catalog) throw new BadRequestException('Catalog does not exist');
+    if(catalog.products.length > 0)
+      throw new BadRequestException('Must change catalog of products before delete this catalog');
+
+    const deleted = await this.catalogRepository.softDelete({ slug });
+    return deleted.affected || 0;
+  }
+
+  async findOne(slug: string): Promise<Catalog | null>{
     return await this.catalogRepository.findOneBy({ slug });
   }
 }

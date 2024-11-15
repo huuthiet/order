@@ -2,7 +2,7 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, extend, forMember, Mapper, mapWith } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 
-import { CreateProductRequestDto, ProductResponseDto } from './product.dto';
+import { CreateProductRequestDto, ProductResponseDto, UpdateProductRequestDto } from './product.dto';
 import { Product } from './product.entity';
 import { baseMapper  } from 'src/app/base.mapper';
 import { CatalogResponseDto } from 'src/catalog/catalog.dto';
@@ -39,6 +39,13 @@ export class ProductProfile extends AutomapperProfile {
             createMap(
                 mapper, 
                 CreateProductRequestDto,
+                Product, 
+            );
+
+            // Map request object to entity
+            createMap(
+                mapper, 
+                UpdateProductRequestDto,
                 Product, 
             );
         };

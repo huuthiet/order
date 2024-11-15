@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { VariantController } from './variant.controller';
@@ -12,7 +12,7 @@ import { ProductModule } from 'src/product/product.module';
   imports: [
     TypeOrmModule.forFeature([Variant]),
     SizeModule,
-    ProductModule
+    forwardRef(() => ProductModule)
   ],
   controllers: [VariantController],
   providers: [
