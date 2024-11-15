@@ -28,7 +28,7 @@ export class SizeService {
     if (size) throw new BadRequestException('Size name is existed');
 
     const sizeData = this.mapper.map(createSizeDto, CreateSizeRequestDto, Size);
-    const newSize = await this.sizeRepository.create(sizeData);
+    const newSize = this.sizeRepository.create(sizeData);
     const createdSize = await this.sizeRepository.save(newSize);
     const sizeDto = this.mapper.map(createdSize, Size, SizeResponseDto);
     return sizeDto;

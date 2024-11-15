@@ -10,7 +10,12 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
-import { LoginAuthRequestDto, LoginAuthResponseDto } from './auth.dto';
+import {
+  LoginAuthRequestDto,
+  LoginAuthResponseDto,
+  RegisterAuthRequestDto,
+  RegisterAuthResponseDto,
+} from './auth.dto';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -44,6 +49,25 @@ export class AuthController {
       timestamp: new Date().toISOString(),
       result,
     } as unknown as AppResponseDto<LoginAuthResponseDto>;
+    return response;
+  }
+
+  @HttpCode(HttpStatus.CREATED)
+  @Post('register')
+  @Public()
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiResponseWithType({
+    type: RegisterAuthResponseDto,
+    description: 'Register successful',
+  })
+  async register(@Body(ValidationPipe) requestData: RegisterAuthRequestDto) {
+    const result = await this.authService.register(requestData);
+    const response = {
+      message: 'Registration successful',
+      status: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as unknown as AppResponseDto<RegisterAuthResponseDto>;
     return response;
   }
 

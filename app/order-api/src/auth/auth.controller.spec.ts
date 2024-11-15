@@ -1,15 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
-import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException } from '@nestjs/common';
 import { LoggerService } from 'src/logger/logger.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { ConfigService } from '@nestjs/config';
 
 describe('AuthController', () => {
+  const mapperProvider = 'automapper:nestjs:default';
   let controller: AuthController;
 
   beforeEach(async () => {
@@ -26,6 +27,21 @@ describe('AuthController', () => {
           useValue: {
             sign: jest.fn().mockReturnValue('mocked-token'),
           },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'SALT_ROUNDS') {
+                return 10;
+              }
+              return null;
+            }),
+          },
+        },
+        {
+          provide: mapperProvider,
+          useFactory: mapperMockFactory,
         },
         LoggerService,
       ],
