@@ -39,8 +39,21 @@ export default function Login() {
     try {
       login(data, {
         onSuccess: () => {
-          // navigate(ROUTE.STAFF_MENU, { replace: true })
+          navigate(ROUTE.STAFF_MENU, { replace: true })
           showToast(t('toast.loginSuccess'))
+        },
+        onError: (error) => {
+          if (isAxiosError(error)) {
+            if (error.code === 'ECONNABORTED') {
+              showToast(error.response?.data?.errorCode)
+              return
+            }
+            if (error.code === 'ERR_NETWORK') {
+              showErrorToast(error.response?.data?.errorCode)
+              return
+            }
+            showErrorToast(error.response?.data?.statusCode)
+          }
         }
       })
 
