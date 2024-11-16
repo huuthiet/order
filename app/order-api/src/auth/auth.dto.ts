@@ -78,4 +78,4 @@ export class RegisterAuthResponseDto extends PickType(AuthProfileResponseDto, [
   'phonenumber',
   'firstName',
   'lastName',
-]) {}
+] as const) {}

@@ -44,6 +44,10 @@ describe('MenuService', () => {
     mapperMock = module.get(mapperProvider);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });

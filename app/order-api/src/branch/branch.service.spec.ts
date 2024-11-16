@@ -24,6 +24,10 @@ describe('BranchService', () => {
     service = module.get<BranchService>(BranchService);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });

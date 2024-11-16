@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -24,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { AppResponseDto } from 'src/app/app.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { User, UserRequest } from './user.decorator';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -80,9 +80,10 @@ export class AuthController {
     description: 'Profile retrieved successful',
   })
   async getProfile(
-    @Request() req: any,
+    @User(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserRequest,
   ): Promise<AppResponseDto<AuthProfileResponseDto>> {
-    const result = await this.authService.getProfile(req.user);
+    const result = await this.authService.getProfile(user);
     return {
       message: 'Profile retrieved successful',
       status: HttpStatus.OK,

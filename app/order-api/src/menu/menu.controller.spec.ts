@@ -31,6 +31,10 @@ describe('MenuController', () => {
     controller = module.get<MenuController>(MenuController);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });

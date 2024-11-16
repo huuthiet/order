@@ -26,6 +26,10 @@ describe('BranchController', () => {
     controller = module.get<BranchController>(BranchController);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
