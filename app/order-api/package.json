@@ -55,7 +55,8 @@
     "shortid": "^2.2.16",
     "stack-trace": "^1.0.0-pre1",
     "typeorm": "^0.3.20",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston": "^3.17.0",
+    "winston-transport": "^4.9.0"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.26",
