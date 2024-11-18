@@ -15,22 +15,23 @@ import {
   Get,
   Patch,
   Param,
-  Delete
+  Delete,
 } from '@nestjs/common';
 
-import { CreateCatalogRequestDto, CatalogResponseDto, UpdateCatalogRequestDto } from './catalog.dto';
+import {
+  CreateCatalogRequestDto,
+  CatalogResponseDto,
+  UpdateCatalogRequestDto,
+} from './catalog.dto';
 import { CatalogService } from './catalog.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
-import { isArray } from 'lodash';
 
 @ApiTags('Catalog')
 @Controller('catalogs')
 @ApiBearerAuth()
 export class CatalogController {
-  constructor(
-    private catalogService: CatalogService
-  ){}
+  constructor(private catalogService: CatalogService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post()
@@ -56,7 +57,7 @@ export class CatalogController {
     status: HttpStatus.OK,
     description: 'Get all catalogs successfully',
     type: CatalogResponseDto,
-    isArray: true
+    isArray: true,
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async getAllCatalogs(): Promise<CatalogResponseDto[]> {
@@ -82,10 +83,7 @@ export class CatalogController {
     @Param('slug') slug: string,
     @Body(ValidationPipe) updateCatalogDto: UpdateCatalogRequestDto,
   ): Promise<CatalogResponseDto> {
-    return this.catalogService.updateCatalog(
-      slug,
-      updateCatalogDto
-    );
+    return this.catalogService.updateCatalog(slug, updateCatalogDto);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -103,11 +101,9 @@ export class CatalogController {
     required: true,
     example: 'slug-123',
   })
-  async deleteCatalog(
-    @Param('slug') slug: string
-  ): Promise<number>{
+  async deleteCatalog(@Param('slug') slug: string): Promise<number> {
     const s = await this.catalogService.deleteCatalog(slug);
-    console.log({s})
+    console.log({ s });
     return s;
   }
 }

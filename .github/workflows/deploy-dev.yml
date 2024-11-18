@@ -24,8 +24,10 @@ jobs:
       - name: Copy Environment Configuration
         env:
           ENV_DEV: ${{ secrets.ENV_DEV }}
+          FE_ENV_DEV: ${{ secrets.FE_ENV_DEV }}
         run: |
           echo "$ENV_DEV" > .deploy/dev/.env
+          echo "$FE_ENV_DEV" > app/order-ui/.env
 
       - name: Deploy with Docker Compose
         env:

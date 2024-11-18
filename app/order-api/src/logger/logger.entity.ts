@@ -1,22 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { AutoMap } from '@automapper/classes';
+import { Base } from 'src/app/base.entity';
+import { Entity, Column } from 'typeorm';
 
-@Entity()
-export class Logger {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+@Entity('logger_tbl')
+export class Logger extends Base {
+  @AutoMap()
+  @Column({ name: 'level_column' })
   level: string;
 
-  @Column()
+  @AutoMap()
+  @Column({ name: 'message_column', type: 'text' })
   message: string;
 
-  @Column({ default: true })
-  context: boolean;
+  @AutoMap()
+  @Column({ nullable: true, name: 'context_column' })
+  context: string;
 
-  @Column()
+  @AutoMap()
+  @Column({ name: 'timestamp_column' })
   timestamp: string;
 
-  @Column()
+  @AutoMap()
+  @Column({ name: 'pid_column' })
   pid: number;
 }

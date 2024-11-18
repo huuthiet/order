@@ -5,12 +5,12 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
 import {
+  AuthProfileResponseDto,
   LoginAuthRequestDto,
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
@@ -23,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { AppResponseDto } from 'src/app/app.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { User, UserRequest } from './user.decorator';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -39,9 +40,15 @@ export class AuthController {
     description: 'Login successful',
   })
   async login(
-    @Body(ValidationPipe)
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     requestData: LoginAuthRequestDto,
   ): Promise<AppResponseDto<LoginAuthResponseDto>> {
+    console.log({ requestData });
     const result = await this.authService.login(requestData);
     const response = {
       message: 'Login successful',
@@ -60,7 +67,10 @@ export class AuthController {
     type: RegisterAuthResponseDto,
     description: 'Register successful',
   })
-  async register(@Body(ValidationPipe) requestData: RegisterAuthRequestDto) {
+  async register(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    requestData: RegisterAuthRequestDto,
+  ) {
     const result = await this.authService.register(requestData);
     const response = {
       message: 'Registration successful',
@@ -74,7 +84,20 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Get('profile')
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-  getProfile(@Request() req) {
-    return req.user;
+  @ApiResponseWithType({
+    type: AuthProfileResponseDto,
+    description: 'Profile retrieved successful',
+  })
+  async getProfile(
+    @User(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserRequest,
+  ): Promise<AppResponseDto<AuthProfileResponseDto>> {
+    const result = await this.authService.getProfile(user);
+    return {
+      message: 'Profile retrieved successful',
+      status: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as unknown as AppResponseDto<AuthProfileResponseDto>;
   }
 }

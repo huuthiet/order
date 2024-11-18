@@ -1,21 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { LoggerController } from './logger.controller';
 import { LoggerService } from './logger.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Logger } from './logger.entity';
-import {
-  MockType,
-  repositoryMockFactory,
-} from 'src/test-utils/repository-mock.factory';
-import { Repository } from 'typeorm';
+import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 
-describe('LoggerService', () => {
-  let service: LoggerService;
-  let loggerRepositoryMock: MockType<Repository<Logger>>;
+describe('LoggerController', () => {
+  let controller: LoggerController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      controllers: [LoggerController],
       providers: [
         LoggerService,
         {
@@ -29,11 +26,10 @@ describe('LoggerService', () => {
       ],
     }).compile();
 
-    service = module.get<LoggerService>(LoggerService);
-    loggerRepositoryMock = module.get(getRepositoryToken(Logger));
+    controller = module.get<LoggerController>(LoggerController);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(controller).toBeDefined();
   });
 });
