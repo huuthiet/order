@@ -10,7 +10,6 @@ interface QuantitySelectorProps {
 }
 
 export default function QuantitySelector({ cartItem }: QuantitySelectorProps) {
-  console.log(cartItem)
   const [quantity, setQuantity] = React.useState(cartItem.quantity)
   const { updateCartItemQuantity } = useCartItemStore()
 

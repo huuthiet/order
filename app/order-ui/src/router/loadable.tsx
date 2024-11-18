@@ -59,3 +59,10 @@ export const TablePage = React.lazy(() =>
     default: module.TablePage
   }))
 )
+
+//Dishes page
+export const DishesManagementPage = React.lazy(() =>
+  import('@/app/system/dishes').then((module) => ({
+    default: module.DishesManagementPage
+  }))
+)

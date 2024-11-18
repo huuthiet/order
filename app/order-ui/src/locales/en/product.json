@@ -1,0 +1,13 @@
+{
+  "product": {
+    "title": "Dish management",
+    "add": "Add dish",
+
+    "image": "Image",
+    "slug": "Slug",
+    "createdAt": "Created at",
+    "name": "Name",
+    "catalog": "Catalog",
+    "description": "Description"
+  }
+}
