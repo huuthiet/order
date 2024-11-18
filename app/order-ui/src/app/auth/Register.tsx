@@ -1,60 +1,45 @@
 import { useEffect, useState } from 'react'
 import { isAxiosError } from 'axios'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-// import toast from 'react-hot-toast'
-// import { jwtDecode } from 'jwt-decode'
 import _ from 'lodash'
 
-import { loginSchema } from '@/schemas'
+import { registerSchema } from '@/schemas'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
+  CardFooter
 } from '@/components/ui'
 import { LoginBackground } from '@/assets/images'
-import { LoginForm } from '@/components/app/form'
-// import { useLogin, useUser, useUserInfoPermission } from '@/hooks'
-// import { IApiResponse, ILoginResponse } from '@/types'
+import { RegisterForm } from '@/components/app/form'
 import { useAuthStore } from '@/stores'
 import { ROUTE } from '@/constants'
 import { showErrorToast, showToast } from '@/utils'
 import { cn } from '@/lib/utils'
-import { useLogin } from '@/hooks'
+import { useRegister } from '@/hooks'
 
-export default function Login() {
+export default function Register() {
   const { t } = useTranslation(['auth'])
-  const { setToken } = useAuthStore()
+  //   const { setToken, setRefreshToken, setExpireTime, setExpireTimeRefreshToken, setSlug } =
+  //     useAuthStore()
   //   const { getTheme } = useThemeStore()
   const { isAuthenticated } = useAuthStore()
 
-  //   const { setUserRoles } = useUserInfoPermissionsStore()
-  //   const { setUserInfo } = useUserStore()
   const navigate = useNavigate()
-  const { mutate: login } = useLogin()
+  const { mutate: register } = useRegister()
   const [isLoading, setIsLoading] = useState(false)
-  //   const { refetch: refetchUserInfoPermission } = useUserInfoPermission()
-  //   const { refetch: refetchUserInfo } = useUser()
 
-  const handleSubmit = async (data: z.infer<typeof loginSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof registerSchema>) => {
     setIsLoading(true)
     try {
-      login(data, {
-        onSuccess: (response) => {
-          const { accessToken } = response.result
-          console.log('accessToken', accessToken)
-          // const decodedToken = jwtDecode(response.result.accessToken) as { sub: string }
-          // setSlug(decodedToken.sub)
-          setToken(response.result.accessToken)
-          // setRefreshToken(response.result.refreshToken)
-          // setExpireTime(response.result.expireTime)
-          // setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
-          navigate(ROUTE.STAFF_MENU, { replace: true })
-          showToast(t('toast.loginSuccess'))
+      register(data, {
+        onSuccess: () => {
+          navigate(ROUTE.LOGIN, { replace: true })
+          showToast(t('toast.registerSuccess'))
         },
         onError: (error) => {
           if (isAxiosError(error)) {
@@ -72,12 +57,12 @@ export default function Login() {
       })
 
       // Save to auth store
-      // const decodedToken = jwtDecode(response.result.token) as { sub: string }
-      // setSlug(decodedToken.sub)
-      // setToken(response.result.token)
-      // setRefreshToken(response.result.refreshToken)
-      // setExpireTime(response.result.expireTime)
-      // setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
+      //   const decodedToken = jwtDecode(response.result.token) as { sub: string }
+      //   setSlug(decodedToken.sub)
+      //   setToken(response.result.token)
+      //   setRefreshToken(response.result.refreshToken)
+      //   setExpireTime(response.result.expireTime)
+      //   setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
 
       // Fetch user info and permissions
       //   const { data: userRoles } = await refetchUserInfoPermission()
@@ -114,21 +99,21 @@ export default function Login() {
         <Card className="sm:min-w-[24rem] bg-white border border-muted-foreground bg-opacity-10 mx-auto shadow-xl backdrop-blur-xl">
           <CardHeader>
             <CardTitle className={cn('text-2xl text-center text-white')}>
-              {t('login.welcome')}{' '}
+              {t('register.welcome')}{' '}
             </CardTitle>
             {/* <CardTitle className={cn('text-2xl text-white')}>{t('login.title')} </CardTitle> */}
             <CardDescription className="text-center text-white">
               {' '}
-              {t('login.description')}{' '}
+              {t('register.description')}{' '}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <RegisterForm onSubmit={handleSubmit} isLoading={isLoading} />
           </CardContent>
           <CardFooter className="flex gap-1 text-white">
-            <span>{t('login.noAccount')}</span>
-            <NavLink to={ROUTE.REGISTER} className="text-center text-primary">
-              {t('login.register')}
+            <span>{t('register.haveAccount')}</span>
+            <NavLink to={ROUTE.LOGIN} className="text-center text-primary">
+              {t('register.login')}
             </NavLink>
           </CardFooter>
         </Card>

@@ -5,6 +5,10 @@
     "removeSuccess": "Remove item from cart successfully",
 
     "loginSuccess": "Login successfully",
+    "logoutSuccess": "Logout successfully",
+    "loginFailed": "Login failed",
+
+    "registerSuccess": "Register account successfully",
 
     "orderSuccess": "Order successfully"
   }

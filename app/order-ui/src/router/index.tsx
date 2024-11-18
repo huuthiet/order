@@ -12,12 +12,13 @@ import {
   LoginPage,
   ConfirmOrderPage,
   TablePage,
-  OrderSuccessPage
+  OrderSuccessPage,
+  RegisterPage
 } from './loadable'
 
 export const router = createBrowserRouter([
   { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
-  // { path: ROUTE.REGISTER, element: <SuspenseElement component={RegisterPage} /> },
+  { path: ROUTE.REGISTER, element: <SuspenseElement component={RegisterPage} /> },
   {
     path: ROUTE.STAFF_HOME,
     element: (
