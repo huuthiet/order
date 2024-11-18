@@ -43,7 +43,7 @@ export class CatalogController {
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createCatalog(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({ transform: true }))
     requestData: CreateCatalogRequestDto,
   ): Promise<CatalogResponseDto> {
     return this.catalogService.createCatalog(requestData);
@@ -81,7 +81,8 @@ export class CatalogController {
   })
   async updateCatalog(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateCatalogDto: UpdateCatalogRequestDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateCatalogDto: UpdateCatalogRequestDto,
   ): Promise<CatalogResponseDto> {
     return this.catalogService.updateCatalog(slug, updateCatalogDto);
   }

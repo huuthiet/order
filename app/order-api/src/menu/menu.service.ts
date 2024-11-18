@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
 import { Repository } from 'typeorm';
@@ -8,16 +8,17 @@ import { MenuValidation } from './menu.validation';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class MenuService {
-  private readonly logger = new Logger(MenuService.name);
   constructor(
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
     @InjectRepository(Branch)
     private readonly branchRepository: Repository<Branch>,
     @InjectMapper() private readonly mapper: Mapper,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
   /**
@@ -27,11 +28,15 @@ export class MenuService {
    * @throws {MenuException} Menu not found
    */
   async restoreMenu(slug: string): Promise<MenuResponseDto> {
+    const context = `${MenuService.name}.${this.restoreMenu.name}`;
     const menu = await this.menuRepository.findOne({
       where: { slug },
       withDeleted: true,
     });
-    if (!menu) throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    if (!menu) {
+      this.logger.warn(`Menu ${slug} not found`, context);
+      throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    }
 
     const restored = await this.menuRepository.recover(menu);
     return this.mapper.map(restored, Menu, MenuResponseDto);
@@ -44,8 +49,12 @@ export class MenuService {
    * @throws {MenuException} Menu not found
    */
   async getMenu(slug: string): Promise<MenuResponseDto> {
+    const context = `${MenuService.name}.${this.getMenu.name}`;
     const menu = await this.menuRepository.findOne({ where: { slug } });
-    if (!menu) throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    if (!menu) {
+      this.logger.warn(`Menu ${slug} not found`, context);
+      throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    }
     return this.mapper.map(menu, Menu, MenuResponseDto);
   }
 
@@ -81,11 +90,12 @@ export class MenuService {
    * @throws {MenuException} Invalid branch slug
    */
   async createMenu(requestData: CreateMenuDto): Promise<MenuResponseDto> {
+    const context = `${MenuService.name}.${this.createMenu.name}`;
     const branch = await this.branchRepository.findOne({
       where: { slug: requestData.branchSlug },
     });
     if (!branch) {
-      this.logger.error(`Invalid branch slug: ${requestData.branchSlug}`);
+      this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
       throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
     }
 
@@ -94,7 +104,7 @@ export class MenuService {
 
     this.menuRepository.create(menu);
     const createdMenu = await this.menuRepository.save(menu);
-    this.logger.log(`New menu created: ${createdMenu.slug}`);
+    this.logger.log(`New menu created: ${createdMenu.slug}`, context);
 
     return this.mapper.map(createdMenu, Menu, MenuResponseDto);
   }
@@ -105,7 +115,9 @@ export class MenuService {
    * @returns {Promise<MenuResponseDto[]>} All menus retrieved successfully
    */
   async getAllMenus(query: any): Promise<MenuResponseDto[]> {
-    const menus = await this.menuRepository.find();
+    const menus = await this.menuRepository.find({
+      order: { createdAt: 'DESC' },
+    });
     return this.mapper.mapArray(menus, Menu, MenuResponseDto);
   }
 }

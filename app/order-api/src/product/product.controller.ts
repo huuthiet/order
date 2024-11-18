@@ -21,7 +21,11 @@ import {
 } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { Public } from 'src/auth/public.decorator';
-import { CreateProductRequestDto, ProductResponseDto, UpdateProductRequestDto } from './product.dto';
+import {
+  CreateProductRequestDto,
+  ProductResponseDto,
+  UpdateProductRequestDto,
+} from './product.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 
 @ApiTags('Product')
@@ -37,7 +41,7 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createProduct(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({ transform: true }))
     requestData: CreateProductRequestDto,
   ): Promise<ProductResponseDto> {
     return this.productService.createProduct(requestData);
@@ -56,7 +60,7 @@ export class ProductController {
     type: String,
   })
   async getAllProducts(
-    @Query('catalog') catalog: string
+    @Query('catalog') catalog: string,
   ): Promise<ProductResponseDto[]> {
     return this.productService.getAllProducts(catalog);
   }
@@ -79,12 +83,10 @@ export class ProductController {
   })
   async updateProduct(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateProductDto: UpdateProductRequestDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateProductDto: UpdateProductRequestDto,
   ): Promise<ProductResponseDto> {
-    return this.productService.updateProduct(
-      slug,
-      updateProductDto
-    );
+    return this.productService.updateProduct(slug, updateProductDto);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -103,9 +105,7 @@ export class ProductController {
     required: true,
     example: 'slug-123',
   })
-  async deleteProduct(
-    @Param('slug') slug: string
-  ): Promise<number>{
+  async deleteProduct(@Param('slug') slug: string): Promise<number> {
     return await this.productService.deleteProduct(slug);
   }
 }

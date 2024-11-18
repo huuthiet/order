@@ -18,7 +18,11 @@ import {
   Delete,
 } from '@nestjs/common';
 
-import { CreateSizeRequestDto, SizeResponseDto, UpdateSizeRequestDto } from './size.dto';
+import {
+  CreateSizeRequestDto,
+  SizeResponseDto,
+  UpdateSizeRequestDto,
+} from './size.dto';
 import { SizeService } from './size.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
@@ -39,7 +43,7 @@ export class SizeController {
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createSize(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({ transform: true }))
     requestData: CreateSizeRequestDto,
   ): Promise<SizeResponseDto> {
     return this.sizeService.createSize(requestData);
@@ -78,12 +82,10 @@ export class SizeController {
   })
   async updateSize(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateSizeDto: UpdateSizeRequestDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateSizeDto: UpdateSizeRequestDto,
   ): Promise<SizeResponseDto> {
-    return this.sizeService.updateSize(
-      slug,
-      updateSizeDto
-    );
+    return this.sizeService.updateSize(slug, updateSizeDto);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -102,9 +104,7 @@ export class SizeController {
     required: true,
     example: 'slug-123',
   })
-  async deleteSize(
-    @Param('slug') slug: string
-  ): Promise<number>{
+  async deleteSize(@Param('slug') slug: string): Promise<number> {
     return await this.sizeService.deleteSize(slug);
   }
 }

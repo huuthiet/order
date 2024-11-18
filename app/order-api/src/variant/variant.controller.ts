@@ -19,7 +19,11 @@ import {
 } from '@nestjs/swagger';
 import { VariantService } from './variant.service';
 import { Public } from 'src/auth/public.decorator';
-import { CreateVariantRequestDto, UpdateVariantRequestDto, VariantResponseDto } from './variant.dto';
+import {
+  CreateVariantRequestDto,
+  UpdateVariantRequestDto,
+  VariantResponseDto,
+} from './variant.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 
 @ApiTags('Variant')
@@ -35,7 +39,7 @@ export class VariantController {
   @ApiResponse({ status: 200, description: 'Create new variant successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createVariant(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({ transform: true }))
     requestData: CreateVariantRequestDto,
   ): Promise<VariantResponseDto> {
     return this.variantService.createVariant(requestData);
@@ -69,12 +73,10 @@ export class VariantController {
   })
   async updateVariant(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateVariantDto: UpdateVariantRequestDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateVariantDto: UpdateVariantRequestDto,
   ): Promise<VariantResponseDto> {
-    return this.variantService.updateVariant(
-      slug,
-      updateVariantDto
-    );
+    return this.variantService.updateVariant(slug, updateVariantDto);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -93,9 +95,7 @@ export class VariantController {
     required: true,
     example: 'slug-123',
   })
-  async deleteVariant(
-    @Param('slug') slug: string
-  ): Promise<number>{
+  async deleteVariant(@Param('slug') slug: string): Promise<number> {
     return await this.variantService.deleteVariant(slug);
   }
 }
