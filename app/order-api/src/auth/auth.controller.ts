@@ -40,9 +40,15 @@ export class AuthController {
     description: 'Login successful',
   })
   async login(
-    @Body(ValidationPipe)
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     requestData: LoginAuthRequestDto,
   ): Promise<AppResponseDto<LoginAuthResponseDto>> {
+    console.log({ requestData });
     const result = await this.authService.login(requestData);
     const response = {
       message: 'Login successful',
@@ -61,7 +67,10 @@ export class AuthController {
     type: RegisterAuthResponseDto,
     description: 'Register successful',
   })
-  async register(@Body(ValidationPipe) requestData: RegisterAuthRequestDto) {
+  async register(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    requestData: RegisterAuthRequestDto,
+  ) {
     const result = await this.authService.register(requestData);
     const response = {
       message: 'Registration successful',

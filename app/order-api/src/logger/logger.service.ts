@@ -4,7 +4,7 @@ import { Logger } from './logger.entity';
 import { Repository } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { LoggerResponseDto } from './logger.dto';
+import { GetLoggerRequestDto, LoggerResponseDto } from './logger.dto';
 
 @Injectable()
 export class LoggerService {
@@ -15,8 +15,11 @@ export class LoggerService {
     private readonly mapper: Mapper,
   ) {}
 
-  async getAllLogs() {
-    const logs = await this.loggerRepository.find();
+  async getAllLogs(query: GetLoggerRequestDto) {
+    const logs = await this.loggerRepository.find({
+      where: { level: query.level },
+      order: { createdAt: 'DESC' },
+    });
     return this.mapper.mapArray(logs, Logger, LoggerResponseDto);
   }
 }

@@ -8,9 +8,11 @@ import { User } from 'src/user/user.entity';
 import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { ConfigService } from '@nestjs/config';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Logger } from 'src/logger/logger.entity';
 
 describe('AuthController', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let controller: AuthController;
 
   beforeEach(async () => {
@@ -20,6 +22,10 @@ describe('AuthController', () => {
         AuthService,
         {
           provide: getRepositoryToken(User),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Logger),
           useFactory: repositoryMockFactory,
         },
         {
@@ -40,8 +46,12 @@ describe('AuthController', () => {
           },
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console, // Mock logger (or a custom mock)
         },
         LoggerService,
       ],

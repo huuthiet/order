@@ -20,6 +20,8 @@ import { ConfigService } from '@nestjs/config';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { AuthException } from './auth.exception';
+import AuthValidation from './auth.validation';
 
 @Injectable()
 export class AuthService {
@@ -38,14 +40,18 @@ export class AuthService {
   }
 
   async validateUser(phonenumber: string, pass: string): Promise<User | null> {
+    const context = `${AuthService.name}.${this.validateUser.name}`;
     const user = await this.userRepository.findOne({ where: { phonenumber } });
     if (!user) {
-      this.logger.warn(`User ${phonenumber} not found`);
+      this.logger.warn(`User ${phonenumber} not found`, `${context}`);
       return null;
     }
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) {
-      this.logger.warn(`User ${phonenumber} provided invalid password`);
+      this.logger.warn(
+        `User ${phonenumber} provided invalid password`,
+        context,
+      );
       return null;
     }
     return user;
@@ -73,6 +79,7 @@ export class AuthService {
   }
 
   async register(requestData: RegisterAuthRequestDto) {
+    const context = `${AuthService.name}.${this.register.name}`;
     // Validation
     const userExists = await this.userRepository.findOne({
       where: {
@@ -80,25 +87,29 @@ export class AuthService {
       },
     });
     if (userExists) {
-      this.logger.warn(`User ${requestData.phonenumber} already exists`);
-      throw new UnauthorizedException();
+      this.logger.warn(
+        `User ${requestData.phonenumber} already exists`,
+        context,
+      );
+      throw new AuthException(AuthValidation.USER_EXISTS);
     }
 
     const user = this.mapper.map(requestData, RegisterAuthRequestDto, User);
-    this.logger.warn(`Salt of rounds: ${this.saltOfRounds}`);
+    this.logger.warn(`Salt of rounds: ${this.saltOfRounds}`, context);
     user.password = await bcrypt.hash(requestData.password, this.saltOfRounds);
 
     this.userRepository.create(user);
     await this.userRepository.save(user);
-    this.logger.warn(`User ${requestData.phonenumber} registered`);
+    this.logger.warn(`User ${requestData.phonenumber} registered`, context);
     return this.mapper.map(user, User, RegisterAuthResponseDto);
   }
 
   async getProfile({ userId }: { userId: string; phonenumber: string }) {
+    const context = `${AuthService.name}.${this.getProfile.name}`;
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
-      this.logger.error(`User ${userId} not found`);
-      throw new UnauthorizedException();
+      this.logger.error(`User ${userId} not found`, context);
+      throw new AuthException(AuthValidation.USER_NOT_FOUND);
     }
     return this.mapper.map(user, User, AuthProfileResponseDto);
   }

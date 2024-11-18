@@ -4,6 +4,7 @@ import { MenuService } from './menu.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
 import { Branch } from 'src/branch/branch.entity';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 describe('MenuController', () => {
   let controller: MenuController;
@@ -22,7 +23,7 @@ describe('MenuController', () => {
           useValue: {},
         },
         {
-          provide: 'automapper:nestjs:default',
+          provide: MAPPER_MODULE_PROVIDER,
           useValue: {},
         },
       ],

@@ -31,7 +31,10 @@ export class BranchController {
     description: 'The new branch was created successfully',
     type: BranchResponseDto,
   })
-  async createBranch(@Body(ValidationPipe) requestData: CreateBranchDto) {
+  async createBranch(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    requestData: CreateBranchDto,
+  ) {
     const result = await this.branchService.createBranch(requestData);
     return {
       message: 'The new branch was created successfully',

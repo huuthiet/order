@@ -1,4 +1,6 @@
 import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 
 export class LoggerResponseDto extends BaseResponseDto {
@@ -16,4 +18,11 @@ export class LoggerResponseDto extends BaseResponseDto {
 
   @AutoMap()
   pid: number;
+}
+
+export class GetLoggerRequestDto {
+  @AutoMap()
+  @ApiProperty({ example: 'info', description: 'Log level' })
+  @IsOptional()
+  level: string;
 }

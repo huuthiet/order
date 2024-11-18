@@ -12,7 +12,6 @@ export class DatabaseTransport extends Transport {
   }
 
   async log(info: any, next: () => void) {
-    console.log({ info });
     setImmediate(() => this.emit('logged', info));
     try {
       const loggerRepository = this.dataSource.getRepository(Logger);

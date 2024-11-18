@@ -10,6 +10,7 @@ import {
   UpdateCatalogRequestDto,
 } from './catalog.dto';
 import { BadRequestException } from '@nestjs/common';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 describe('CatalogService', () => {
   let service: CatalogService;
@@ -39,7 +40,7 @@ describe('CatalogService', () => {
           useValue: mockCatalogRepository,
         },
         {
-          provide: 'automapper:nestjs:default',
+          provide: MAPPER_MODULE_PROVIDER,
           useValue: mockMapper,
         },
       ],
@@ -49,7 +50,7 @@ describe('CatalogService', () => {
     catalogRepository = module.get<Repository<Catalog>>(
       getRepositoryToken(Catalog),
     );
-    mapper = module.get('automapper:nestjs:default');
+    mapper = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {

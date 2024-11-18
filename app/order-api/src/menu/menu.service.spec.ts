@@ -11,9 +11,9 @@ import { Repository } from 'typeorm';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 describe('MenuService', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let service: MenuService;
   let menuRepositoryMock: MockType<Repository<Menu>>;
   let branchRepositoryMock: MockType<Repository<Branch>>;
@@ -32,7 +32,7 @@ describe('MenuService', () => {
           useFactory: repositoryMockFactory,
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
         },
       ],
@@ -41,7 +41,7 @@ describe('MenuService', () => {
     service = module.get<MenuService>(MenuService);
     menuRepositoryMock = module.get(getRepositoryToken(Menu));
     branchRepositoryMock = module.get(getRepositoryToken(Branch));
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   afterEach(() => {

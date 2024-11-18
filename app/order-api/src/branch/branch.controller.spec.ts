@@ -3,6 +3,7 @@ import { BranchController } from './branch.controller';
 import { BranchService } from './branch.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Branch } from './branch.entity';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 describe('BranchController', () => {
   let controller: BranchController;
@@ -13,7 +14,7 @@ describe('BranchController', () => {
       providers: [
         BranchService,
         {
-          provide: 'automapper:nestjs:default',
+          provide: MAPPER_MODULE_PROVIDER,
           useValue: {},
         },
         {

@@ -23,12 +23,12 @@ export class LoginAuthRequestDto {
 }
 
 export class RegisterAuthRequestDto extends LoginAuthRequestDto {
-  @ApiProperty({ example: 'John Doe' })
+  @ApiProperty({ example: 'John' })
   @IsNotEmpty({ message: INVALID_FIRSTNAME })
   @AutoMap()
   firstName: string;
 
-  @ApiProperty({ example: 'John Doe' })
+  @ApiProperty({ example: 'Doe' })
   @IsNotEmpty({ message: INVALID_LASTNAME })
   @AutoMap()
   lastName: string;

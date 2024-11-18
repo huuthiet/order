@@ -20,9 +20,12 @@ import { UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { jwtServiceMockFactory } from 'src/test-utils/jwt-mock.factory';
 import { Mapper } from '@automapper/core';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { Logger } from 'src/logger/logger.entity';
+import { AuthException } from './auth.exception';
 
 describe('AuthService', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let service: AuthService;
   let userRepositoryMock: MockType<Repository<User>>;
   let config: ConfigService;
@@ -53,8 +56,16 @@ describe('AuthService', () => {
           },
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console, // Mock logger (or a custom mock)
+        },
+        {
+          provide: getRepositoryToken(Logger),
+          useFactory: repositoryMockFactory,
         },
         LoggerService,
       ],
@@ -63,7 +74,7 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     userRepositoryMock = module.get(getRepositoryToken(User));
     jwtService = module.get(JwtService);
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {
@@ -177,7 +188,7 @@ describe('AuthService', () => {
   });
 
   describe('Register', () => {
-    it('should be thrown unauthorization exception if the user is found', async () => {
+    it('should be thrown auth exception if the user is found', async () => {
       // mock input
       const mockInput = {
         firstName: '',
@@ -198,9 +209,7 @@ describe('AuthService', () => {
       userRepositoryMock.findOne.mockReturnValue(mockUserEntity);
 
       // Assertions
-      expect(service.register(mockInput)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      expect(service.register(mockInput)).rejects.toThrow(AuthException);
     });
     it('should return user if register succeeds', async () => {
       // mock input
