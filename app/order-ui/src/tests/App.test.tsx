@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, beforeEach, vi, expect } from 'vitest'
-import App from '@/app/App'
+// import App from '@/app/App'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 

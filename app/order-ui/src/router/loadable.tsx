@@ -14,6 +14,12 @@ export const LoginPage = React.lazy(() =>
   }))
 )
 
+export const RegisterPage = React.lazy(() =>
+  import('@/app/auth').then((module) => ({
+    default: module.RegisterPage
+  }))
+)
+
 //Views
 
 //Home page

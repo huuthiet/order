@@ -6,8 +6,9 @@
 
     "loginSuccess": "Đăng nhập thành công",
     "logoutSuccess": "Đăng xuất thành công",
-
     "loginFailed": "Đăng nhập thất bại",
+
+    "registerSuccess": "Đăng ký tài khoản thành công",
 
     "orderSuccess": "Đặt hàng thành công"
   }
