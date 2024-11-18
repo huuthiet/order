@@ -21,6 +21,7 @@ import { VariantService } from './variant.service';
 import { Public } from 'src/auth/public.decorator';
 import { CreateVariantRequestDto, UpdateVariantRequestDto, VariantResponseDto } from './variant.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Variant')
 @Controller('variants')
@@ -28,38 +29,62 @@ import { ApiResponseWithType } from 'src/app/app.decorator';
 export class VariantController {
   constructor(private variantService: VariantService) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post()
   @Public()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiResponseWithType({
+    status: HttpStatus.CREATED,
+    description: 'Create a new variant successfully',
+    type: VariantResponseDto,
+  })
   @ApiOperation({ summary: 'Create new variant' })
   @ApiResponse({ status: 200, description: 'Create new variant successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createVariant(
     @Body(ValidationPipe)
     requestData: CreateVariantRequestDto,
-  ): Promise<VariantResponseDto> {
-    return this.variantService.createVariant(requestData);
+  ) {
+    const result = await this.variantService.createVariant(requestData);
+    return {
+      message: 'The variant have been created successfully',
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VariantResponseDto>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get()
   @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'All variants have been retrieved successfully',
+    type: VariantResponseDto,
+    isArray: true,
+  })
   @ApiOperation({ summary: 'Get all variants' })
   @ApiResponse({ status: 200, description: 'Get all variants successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllSizes(): Promise<VariantResponseDto[]> {
-    return this.variantService.getAllVariants();
+  async getAllSizes() {
+    const result = await this.variantService.getAllVariants();
+    return {
+      message: 'All variants have been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VariantResponseDto[]>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Patch(':slug')
   @Public()
-  @ApiOperation({ summary: 'Update variant' })
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
-    description: 'Update variant successfully',
+    description: 'Variants have been update successfully',
     type: VariantResponseDto,
   })
+  @ApiOperation({ summary: 'Update variant' })
+  @ApiResponse({ status: 200, description: 'Update variant successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -70,22 +95,29 @@ export class VariantController {
   async updateVariant(
     @Param('slug') slug: string,
     @Body(ValidationPipe) updateVariantDto: UpdateVariantRequestDto,
-  ): Promise<VariantResponseDto> {
-    return this.variantService.updateVariant(
+  ) {
+    const result = await this.variantService.updateVariant(
       slug,
       updateVariantDto
     );
+    return {
+      message: 'The variant have been updated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VariantResponseDto>;
   }
 
   @HttpCode(HttpStatus.OK)
   @Delete(':slug')
   @Public()
-  @ApiOperation({ summary: 'Delete variant' })
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Delete variant successfully',
-    type: Number,
+    type: String,
   })
+  @ApiOperation({ summary: 'Delete variant' })
+  @ApiResponse({ status: 200, description: 'Delete variant successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -93,9 +125,13 @@ export class VariantController {
     required: true,
     example: 'slug-123',
   })
-  async deleteVariant(
-    @Param('slug') slug: string
-  ): Promise<number>{
-    return await this.variantService.deleteVariant(slug);
+  async deleteVariant(@Param('slug') slug: string) {
+    const result = await this.variantService.deleteVariant(slug);
+    return {
+      message: 'The variant have been deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result: `${result} variant have been deleted successfully`,
+    } as AppResponseDto<string>;
   }
 }

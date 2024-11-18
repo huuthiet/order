@@ -5,14 +5,12 @@ import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
 import { ProductProfile } from './product.mapper';
-import { CatalogModule } from 'src/catalog/catalog.module';
-import { VariantModule } from 'src/variant/variant.module';
+import { Variant } from 'src/variant/variant.entity';
+import { Catalog } from 'src/catalog/catalog.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product]),
-    CatalogModule,
-    forwardRef(() => VariantModule)
+    TypeOrmModule.forFeature([Product, Variant, Catalog]),
   ],
   controllers: [ProductController],
   providers: [

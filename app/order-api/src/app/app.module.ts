@@ -19,6 +19,8 @@ import { VariantModule } from 'src/variant/variant.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { MenuModule } from 'src/menu/menu.module';
 import { BranchModule } from 'src/branch/branch.module';
+import { LoggerModule } from 'src/logger/logger.module';
+import { AppSubscriber } from './app.subscriber';
 
 @Module({
   imports: [
@@ -37,14 +39,16 @@ import { BranchModule } from 'src/branch/branch.module';
     VariantModule,
     MenuModule,
     BranchModule,
+    TransactionModule,
+    LoggerModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
-    TransactionModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    AppSubscriber,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

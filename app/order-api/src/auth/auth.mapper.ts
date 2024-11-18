@@ -2,7 +2,11 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, Mapper } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 
-import { RegisterAuthRequestDto, RegisterAuthResponseDto } from './auth.dto';
+import {
+  AuthProfileResponseDto,
+  RegisterAuthRequestDto,
+  RegisterAuthResponseDto,
+} from './auth.dto';
 import { User } from 'src/user/user.entity';
 
 @Injectable()
@@ -15,6 +19,7 @@ export class AuthProfile extends AutomapperProfile {
     return (mapper: Mapper) => {
       createMap(mapper, RegisterAuthRequestDto, User);
       createMap(mapper, User, RegisterAuthResponseDto);
+      createMap(mapper, User, AuthProfileResponseDto);
     };
   }
 }
