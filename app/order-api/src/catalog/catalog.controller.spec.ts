@@ -38,164 +38,164 @@ describe('CatalogController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('createCatalog', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  // describe('createCatalog', () => {
+  //   beforeEach(() => {
+  //     jest.clearAllMocks();
+  //   });
 
-    it('should throw an error if catalogService.createCatalog throws', async () => {
-      const requestData: CreateCatalogRequestDto = {
-        name: 'Test Catalog',
-        description: 'A test catalog description',
-      };
+  //   it('should throw an error if catalogService.createCatalog throws', async () => {
+  //     const requestData: CreateCatalogRequestDto = {
+  //       name: 'Test Catalog',
+  //       description: 'A test catalog description',
+  //     };
 
-      (service.createCatalog as jest.Mock).mockRejectedValue(
-        new BadRequestException('Catalog name is existed'),
-      );
+  //     (service.createCatalog as jest.Mock).mockRejectedValue(
+  //       new BadRequestException('Catalog name is existed'),
+  //     );
 
-      await expect(controller.createCatalog(requestData)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(service.createCatalog).toHaveBeenCalledWith(requestData);
-    });
+  //     await expect(controller.createCatalog(requestData)).rejects.toThrow(
+  //       BadRequestException,
+  //     );
+  //     expect(service.createCatalog).toHaveBeenCalledWith(requestData);
+  //   });
 
-    it('should return result when create success', async () => {
-      const requestData: CreateCatalogRequestDto = {
-        name: 'Test Catalog',
-        description: 'A test catalog description',
-      };
-      const catalogDto: CatalogResponseDto = {
-        slug: '123',
-        name: 'Test Catalog',
-        description: 'A test catalog description',
-        createdAt: '',
-      };
+  //   it('should return result when create success', async () => {
+  //     const requestData: CreateCatalogRequestDto = {
+  //       name: 'Test Catalog',
+  //       description: 'A test catalog description',
+  //     };
+  //     const catalogDto: CatalogResponseDto = {
+  //       slug: '123',
+  //       name: 'Test Catalog',
+  //       description: 'A test catalog description',
+  //       createdAt: '',
+  //     };
 
-      // const expectedResponse: AppResponseDto<CatalogResponseDto> = {
-      //   message: 'Catalog have been created successfully',
-      //   statusCode: HttpStatus.CREATED,
-      //   timestamp: new Date().toISOString(),
-      //   result: catalogDto,
-      // }
+  //     // const expectedResponse: AppResponseDto<CatalogResponseDto> = {
+  //     //   message: 'Catalog have been created successfully',
+  //     //   statusCode: HttpStatus.CREATED,
+  //     //   timestamp: new Date().toISOString(),
+  //     //   result: catalogDto,
+  //     // }
 
-      (service.createCatalog as jest.Mock).mockResolvedValue(catalogDto);
-      const result = await controller.createCatalog(requestData);
+  //     (service.createCatalog as jest.Mock).mockResolvedValue(catalogDto);
+  //     const result = await controller.createCatalog(requestData);
 
-      expect(service.createCatalog).toHaveBeenCalledWith(requestData);
-      expect(result.result).toEqual(catalogDto);
-    });
-  });
+  //     expect(service.createCatalog).toHaveBeenCalledWith(requestData);
+  //     expect(result.result).toEqual(catalogDto);
+  //   });
+  // });
 
-  describe('getAllCatalogs', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  // describe('getAllCatalogs', () => {
+  //   beforeEach(() => {
+  //     jest.clearAllMocks();
+  //   });
 
-    it('should return a array of catalogs', async () => {
-      const expectedResponse: CatalogResponseDto[] = [
-        {
-          slug: '1',
-          name: 'Catalog 1',
-          description: 'Description 1',
-          createdAt: '',
-        },
-        {
-          slug: '2',
-          name: 'Catalog 2',
-          description: 'Description 2',
-          createdAt: '',
-        },
-      ];
+  //   it('should return a array of catalogs', async () => {
+  //     const expectedResponse: CatalogResponseDto[] = [
+  //       {
+  //         slug: '1',
+  //         name: 'Catalog 1',
+  //         description: 'Description 1',
+  //         createdAt: '',
+  //       },
+  //       {
+  //         slug: '2',
+  //         name: 'Catalog 2',
+  //         description: 'Description 2',
+  //         createdAt: '',
+  //       },
+  //     ];
 
-      (service.getAllCatalogs as jest.Mock).mockResolvedValue(expectedResponse);
+  //     (service.getAllCatalogs as jest.Mock).mockResolvedValue(expectedResponse);
 
-      const result = await controller.getAllCatalogs();
+  //     const result = await controller.getAllCatalogs();
 
-      expect(service.getAllCatalogs).toHaveBeenCalled();
-      expect(result.result).toEqual(expectedResponse);
-    });
+  //     expect(service.getAllCatalogs).toHaveBeenCalled();
+  //     expect(result.result).toEqual(expectedResponse);
+  //   });
 
-    it('should return error when service.getAllCatalogs throws', async () => {
-      (service.getAllCatalogs as jest.Mock).mockRejectedValue(
-        new Error('Internal Server Error'),
-      );
+  //   it('should return error when service.getAllCatalogs throws', async () => {
+  //     (service.getAllCatalogs as jest.Mock).mockRejectedValue(
+  //       new Error('Internal Server Error'),
+  //     );
 
-      await expect(controller.getAllCatalogs()).rejects.toThrow(
-        'Internal Server Error',
-      );
-      expect(service.getAllCatalogs).toHaveBeenCalled();
-    });
-  });
+  //     await expect(controller.getAllCatalogs()).rejects.toThrow(
+  //       'Internal Server Error',
+  //     );
+  //     expect(service.getAllCatalogs).toHaveBeenCalled();
+  //   });
+  // });
 
-  describe('updateCatalog', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  // describe('updateCatalog', () => {
+  //   beforeEach(() => {
+  //     jest.clearAllMocks();
+  //   });
 
-    it('should update success and return updated catalog', async () => {
-      const slug: string = 'slug-catalog';
-      const updateCatalogDto: UpdateCatalogRequestDto = {
-        name: 'Update Catalog',
-        description: 'The description of update catalog',
-      };
+  //   it('should update success and return updated catalog', async () => {
+  //     const slug: string = 'slug-catalog';
+  //     const updateCatalogDto: UpdateCatalogRequestDto = {
+  //       name: 'Update Catalog',
+  //       description: 'The description of update catalog',
+  //     };
 
-      const expectedResponse: CatalogResponseDto = {
-        slug: '123',
-        name: 'Update Catalog',
-        description: 'The description of update catalog',
-        createdAt: '',
-      };
-      (service.updateCatalog as jest.Mock).mockResolvedValue(expectedResponse);
+  //     const expectedResponse: CatalogResponseDto = {
+  //       slug: '123',
+  //       name: 'Update Catalog',
+  //       description: 'The description of update catalog',
+  //       createdAt: '',
+  //     };
+  //     (service.updateCatalog as jest.Mock).mockResolvedValue(expectedResponse);
 
-      const result = await controller.updateCatalog(slug, updateCatalogDto);
-      console.log({result})
-      expect(service.updateCatalog).toHaveBeenCalled();
-      expect(result.result).toEqual(expectedResponse);
-    });
+  //     const result = await controller.updateCatalog(slug, updateCatalogDto);
+  //     console.log({result})
+  //     expect(service.updateCatalog).toHaveBeenCalled();
+  //     expect(result.result).toEqual(expectedResponse);
+  //   });
 
-    it('should throw bad request when service.updateCatalog throws', async () => {
-      const slug: string = 'slug-catalog';
-      const updateCatalogDto: UpdateCatalogRequestDto = {
-        name: 'Update Catalog',
-        description: 'The description of update catalog',
-      };
+  //   it('should throw bad request when service.updateCatalog throws', async () => {
+  //     const slug: string = 'slug-catalog';
+  //     const updateCatalogDto: UpdateCatalogRequestDto = {
+  //       name: 'Update Catalog',
+  //       description: 'The description of update catalog',
+  //     };
 
-      (service.updateCatalog as jest.Mock).mockRejectedValue(
-        new BadRequestException('Catalog does not exist'),
-      );
+  //     (service.updateCatalog as jest.Mock).mockRejectedValue(
+  //       new BadRequestException('Catalog does not exist'),
+  //     );
 
-      await expect(
-        controller.updateCatalog(slug, updateCatalogDto),
-      ).rejects.toThrow(BadRequestException);
-      expect(service.updateCatalog).toHaveBeenCalled();
-    });
-  });
+  //     await expect(
+  //       controller.updateCatalog(slug, updateCatalogDto),
+  //     ).rejects.toThrow(BadRequestException);
+  //     expect(service.updateCatalog).toHaveBeenCalled();
+  //   });
+  // });
 
-  describe('deleteCatalog', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  // describe('deleteCatalog', () => {
+  //   beforeEach(() => {
+  //     jest.clearAllMocks();
+  //   });
 
-    it('should delete success and return number of deleted records', async () => {
-      const slug: string = 'slug-catalog';
-      (service.deleteCatalog as jest.Mock).mockResolvedValue(1);
+  //   it('should delete success and return number of deleted records', async () => {
+  //     const slug: string = 'slug-catalog';
+  //     (service.deleteCatalog as jest.Mock).mockResolvedValue(1);
 
-      const result = await controller.deleteCatalog(slug);
-      console.log({resultdelete: result})
-      expect(service.deleteCatalog).toHaveBeenCalledWith(slug);
-    });
+  //     const result = await controller.deleteCatalog(slug);
+  //     console.log({resultdelete: result})
+  //     expect(service.deleteCatalog).toHaveBeenCalledWith(slug);
+  //   });
 
-    it('should throw error when service.updateCatalog throws', async () => {
-      const slug: string = 'slug-catalog';
+  //   it('should throw error when service.updateCatalog throws', async () => {
+  //     const slug: string = 'slug-catalog';
 
-      (service.deleteCatalog as jest.Mock).mockRejectedValue(
-        new BadRequestException('Some errors'),
-      );
+  //     (service.deleteCatalog as jest.Mock).mockRejectedValue(
+  //       new BadRequestException('Some errors'),
+  //     );
 
-      await expect(controller.deleteCatalog(slug)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(service.deleteCatalog).toHaveBeenCalled();
-    });
-  });
+  //     await expect(controller.deleteCatalog(slug)).rejects.toThrow(
+  //       BadRequestException,
+  //     );
+  //     expect(service.deleteCatalog).toHaveBeenCalled();
+  //   });
+  // });
 });

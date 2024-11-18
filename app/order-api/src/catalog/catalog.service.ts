@@ -81,7 +81,7 @@ export class CatalogService {
       relations: ['products']
     });
     if(!catalog) throw new BadRequestException('Catalog does not exist');
-    if(catalog.products.length > 0)
+    if(catalog.products?.length > 0)
       throw new BadRequestException('Must change catalog of products before delete this catalog');
 
     const deleted = await this.catalogRepository.softDelete({ slug });

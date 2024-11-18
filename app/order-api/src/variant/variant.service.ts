@@ -55,7 +55,7 @@ export class VariantService {
         },
       },
     });
-    if (variant) throw new BadRequestException('The variant is existed');
+    if (variant) throw new BadRequestException('The variant does exists');
 
     const variantData = this.mapper.map(
       createVariantDto,
@@ -128,21 +128,5 @@ export class VariantService {
 
     const deleted = await this.variantRepository.softDelete({ slug });
     return deleted.affected || 0;
-  }
-
-  /**
-   * Delete variant array
-   * @param {Variant[]} variants The variant array need deleted
-   * @returns {Promise<number>} The number of variants is deleted
-   */
-  async deleteVariantArray(variants: Variant[]): Promise<number> {
-    const slugList = variants.map((item) => item.slug);
-
-    if (slugList.length < 1) return 0;
-
-    const deleted = await this.variantRepository.softDelete({
-      slug: In(slugList),
-    });
-    return deleted.affected;
   }
 }

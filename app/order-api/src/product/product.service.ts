@@ -5,9 +5,8 @@ import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateProductRequestDto, ProductResponseDto, UpdateProductRequestDto } from "./product.dto";
-import { CatalogService } from 'src/catalog/catalog.service';
-import { VariantService } from 'src/variant/variant.service';
 import { Variant } from "src/variant/variant.entity";
+import { Catalog } from "src/catalog/catalog.entity";
 
 @Injectable()
 export class ProductService {
@@ -16,8 +15,9 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Variant)
     private readonly variantRepository: Repository<Variant>,
+    @InjectRepository(Catalog)
+    private readonly catalogRepository: Repository<Catalog>,
     @InjectMapper() private readonly mapper: Mapper,
-    private catalogService: CatalogService,
   ) {}
 
   /**
@@ -35,7 +35,7 @@ export class ProductService {
     });
     if(product) throw new BadRequestException('Product name is existed');
 
-    const catalog = await this.catalogService.findOne( createProductDto.catalog );
+    const catalog = await this.catalogRepository.findOneBy({ slug: createProductDto.catalog });
     if(!catalog) throw new BadRequestException('Catalog is not found');
 
     const productData = this.mapper.map(createProductDto, CreateProductRequestDto, Product);
@@ -85,7 +85,7 @@ export class ProductService {
     const product = await this.productRepository.findOneBy({ slug });
     if(!product) throw new BadRequestException('Product not found');
 
-    const catalog = await this.catalogService.findOne( requestData.catalog );
+    const catalog = await this.catalogRepository.findOneBy({ slug: requestData.catalog });
     if(!catalog) throw new BadRequestException('Catalog not found');
 
     const productData = this.mapper.map(requestData, UpdateProductRequestDto, Product);
@@ -113,24 +113,24 @@ export class ProductService {
     if(!product) throw new BadRequestException('Product not found');
 
     // Delete variants
-    if(product.variants?.length > 0) {
-      const variantSlugs = product.variants.map((item) => item.slug);
-
-      await this.variantRepository.softDelete({
-        slug: In(variantSlugs),
-      })
-    }
+    await this.deleteVariantsRelatedProduct(product.variants);
 
     const deleted = await this.productRepository.softDelete({ slug });
     return deleted.affected || 0;
   }
 
   /**
-   * Find a product by slug
-   * @param {string} slug The slug of product is retrieved
-   * @returns {Promise<Product | null>} The product information
+   * Deleted list variants is related to product
+   * @param {Variant[]} variants The array of variants is deleted 
    */
- async findOne(slug: string): Promise<Product | null>{
-  return await this.productRepository.findOneBy({ slug });
- }
+  async deleteVariantsRelatedProduct(
+  variants: Variant[]
+  ): Promise<void> {
+    if(variants.length < 1) return;
+
+    const variantSlugs = variants.map((item) => item.slug);
+    await this.variantRepository.softDelete({
+      slug: In(variantSlugs),
+    })
+  }
 }
