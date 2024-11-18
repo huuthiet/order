@@ -5,6 +5,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
 import { Branch } from 'src/branch/branch.entity';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 describe('MenuController', () => {
   let controller: MenuController;
@@ -20,11 +23,15 @@ describe('MenuController', () => {
         },
         {
           provide: getRepositoryToken(Branch),
-          useValue: {},
+          useValue: repositoryMockFactory,
         },
         {
           provide: MAPPER_MODULE_PROVIDER,
-          useValue: {},
+          useValue: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
         },
       ],
     }).compile();
