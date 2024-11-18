@@ -23,6 +23,7 @@ import { ProductService } from './product.service';
 import { Public } from 'src/auth/public.decorator';
 import { CreateProductRequestDto, ProductResponseDto, UpdateProductRequestDto } from './product.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Product')
 @Controller('products')
@@ -30,22 +31,39 @@ import { ApiResponseWithType } from 'src/app/app.decorator';
 export class ProductController {
   constructor(private productService: ProductService) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post()
   @Public()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Create a new product successfully',
+    type: ProductResponseDto,
+  })
   @ApiOperation({ summary: 'Create new product' })
   @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createProduct(
     @Body(ValidationPipe)
     requestData: CreateProductRequestDto,
-  ): Promise<ProductResponseDto> {
-    return this.productService.createProduct(requestData);
+  ){
+    const result = await this.productService.createProduct(requestData);
+    return {
+      message: 'Product have been created successfully',
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<ProductResponseDto>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get()
   @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'All products have been retrieved successfully',
+    type: ProductResponseDto,
+    isArray: true,
+  })
   @ApiOperation({ summary: 'Get all products' })
   @ApiResponse({ status: 200, description: 'Get all products successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
@@ -55,15 +73,24 @@ export class ProductController {
     description: 'Filter products by catalog',
     type: String,
   })
-  async getAllProducts(
-    @Query('catalog') catalog: string
-  ): Promise<ProductResponseDto[]> {
-    return this.productService.getAllProducts(catalog);
+  async getAllProducts(@Query('catalog') catalog: string){
+    const result = await  this.productService.getAllProducts(catalog);
+    return {
+      message: 'All products have been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<ProductResponseDto[]>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Patch(':slug')
   @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Update product successfully',
+    type: ProductResponseDto,
+  })
   @ApiOperation({ summary: 'Update product' })
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -80,22 +107,30 @@ export class ProductController {
   async updateProduct(
     @Param('slug') slug: string,
     @Body(ValidationPipe) updateProductDto: UpdateProductRequestDto,
-  ): Promise<ProductResponseDto> {
-    return this.productService.updateProduct(
+  ){
+    const result = await this.productService.updateProduct(
       slug,
       updateProductDto
     );
+
+    return {
+      message: 'Product have been updated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<ProductResponseDto>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Delete(':slug')
   @Public()
-  @ApiOperation({ summary: 'Delete product' })
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Delete product successfully',
-    type: Number,
+    type: String,
   })
+  @ApiOperation({ summary: 'Delete product' })
+  @ApiResponse({ status: 200, description: 'Delete product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -103,9 +138,13 @@ export class ProductController {
     required: true,
     example: 'slug-123',
   })
-  async deleteProduct(
-    @Param('slug') slug: string
-  ): Promise<number>{
-    return await this.productService.deleteProduct(slug);
+  async deleteProduct(@Param('slug') slug: string){
+    const result = await this.productService.deleteProduct(slug);
+    return {
+      message: 'Product have been deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result: `${result} product have been deleted successfully`,
+    } as AppResponseDto<string>;
   }
 }
