@@ -1,13 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
-import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException } from '@nestjs/common';
 import { LoggerService } from 'src/logger/logger.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { ConfigService } from '@nestjs/config';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Logger } from 'src/logger/logger.entity';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -22,16 +25,43 @@ describe('AuthController', () => {
           useFactory: repositoryMockFactory,
         },
         {
+          provide: getRepositoryToken(Logger),
+          useFactory: repositoryMockFactory,
+        },
+        {
           provide: JwtService,
           useValue: {
             sign: jest.fn().mockReturnValue('mocked-token'),
           },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'SALT_ROUNDS') {
+                return 10;
+              }
+              return null;
+            }),
+          },
+        },
+        {
+          provide: MAPPER_MODULE_PROVIDER,
+          useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console, // Mock logger (or a custom mock)
         },
         LoggerService,
       ],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {

@@ -1,29 +1,25 @@
-import { Injectable, Logger } from '@nestjs/common';
-import * as winston from 'winston';
-import 'winston-daily-rotate-file';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Logger } from './logger.entity';
+import { Repository } from 'typeorm';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import { GetLoggerRequestDto, LoggerResponseDto } from './logger.dto';
 
 @Injectable()
-export class LoggerService extends Logger {
-  private readonly logger: winston.Logger;
+export class LoggerService {
+  constructor(
+    @InjectRepository(Logger)
+    private readonly loggerRepository: Repository<Logger>,
+    @InjectMapper()
+    private readonly mapper: Mapper,
+  ) {}
 
-  constructor(context: string) {
-    super(context);
-    this.logger = winston.createLogger({
-      levels: winston.config.syslog.levels,
-      format: winston.format.combine(
-        winston.format((info) => {
-          return {
-            ...info,
-            context,
-          };
-        })(),
-        winston.format.timestamp({ format: 'MM/DD/YYYY, h:mm:ss A' }),
-        winston.format.printf(({ timestamp, level, message, context }) => {
-          const pid = process.pid;
-          return `[Nest] ${pid}  - ${timestamp}     ${level.toUpperCase()} [${context || 'Application'}] ${message}`;
-        }),
-      ),
-      transports: [new winston.transports.Console()],
+  async getAllLogs(query: GetLoggerRequestDto) {
+    const logs = await this.loggerRepository.find({
+      where: { level: query.level },
+      order: { createdAt: 'DESC' },
     });
+    return this.mapper.mapArray(logs, Logger, LoggerResponseDto);
   }
 }

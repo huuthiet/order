@@ -32,8 +32,8 @@ export class Base {
   @Column({ name: 'created_by_column', nullable: true })
   createdBy?: string;
 
-  @BeforeInsert()
-  initSlug?() {
-    this.slug = shortid.generate();
-  }
+  // @BeforeInsert()
+  // initSlug?() {
+  //   this.slug = shortid.generate();
+  // }
 }

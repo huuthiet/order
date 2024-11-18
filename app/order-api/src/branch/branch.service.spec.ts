@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BranchService } from './branch.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Branch } from './branch.entity';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 describe('BranchService', () => {
   let service: BranchService;
@@ -15,13 +16,17 @@ describe('BranchService', () => {
           useValue: {},
         },
         {
-          provide: 'automapper:nestjs:default',
+          provide: MAPPER_MODULE_PROVIDER,
           useValue: {},
         },
       ],
     }).compile();
 
     service = module.get<BranchService>(BranchService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {

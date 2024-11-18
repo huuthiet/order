@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import { MenuException } from './menu.exception';
 
 @Injectable()
 export class MenuService {
+  private readonly logger = new Logger(MenuService.name);
   constructor(
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
@@ -83,13 +84,18 @@ export class MenuService {
     const branch = await this.branchRepository.findOne({
       where: { slug: requestData.branchSlug },
     });
-    if (!branch) throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
+    if (!branch) {
+      this.logger.error(`Invalid branch slug: ${requestData.branchSlug}`);
+      throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
+    }
 
-    const menu = new Menu();
-    Object.assign(menu, { day: requestData.day, branch });
+    const menu = this.mapper.map(requestData, CreateMenuDto, Menu);
+    Object.assign(menu, { branch });
 
     this.menuRepository.create(menu);
     const createdMenu = await this.menuRepository.save(menu);
+    this.logger.log(`New menu created: ${createdMenu.slug}`);
+
     return this.mapper.map(createdMenu, Menu, MenuResponseDto);
   }
 

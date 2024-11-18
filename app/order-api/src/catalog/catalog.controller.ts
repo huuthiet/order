@@ -15,10 +15,14 @@ import {
   Get,
   Patch,
   Param,
-  Delete
+  Delete,
 } from '@nestjs/common';
 
-import { CreateCatalogRequestDto, CatalogResponseDto, UpdateCatalogRequestDto } from './catalog.dto';
+import {
+  CreateCatalogRequestDto,
+  CatalogResponseDto,
+  UpdateCatalogRequestDto,
+} from './catalog.dto';
 import { CatalogService } from './catalog.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
@@ -29,9 +33,7 @@ import { AppResponseDto } from 'src/app/app.dto';
 @Controller('catalogs')
 @ApiBearerAuth()
 export class CatalogController {
-  constructor(
-    private catalogService: CatalogService
-  ){}
+  constructor(private catalogService: CatalogService) {}
 
   @Post()
   @Public()
@@ -64,7 +66,7 @@ export class CatalogController {
     status: HttpStatus.OK,
     description: 'Get all catalogs successfully',
     type: CatalogResponseDto,
-    isArray: true
+    isArray: true,
   })
   @ApiOperation({ summary: 'Get all catalogs' })
   @ApiResponse({ status: 200, description: 'Get all catalog successfully' })
