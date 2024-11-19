@@ -47,7 +47,10 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createProduct(
-    @Body(new ValidationPipe({ transform: true }))
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }))
     requestData: CreateProductRequestDto,
   ) {
     const result = await this.productService.createProduct(requestData);
@@ -112,9 +115,12 @@ export class ProductController {
   })
   async updateProduct(
     @Param('slug') slug: string,
-    @Body(new ValidationPipe({ transform: true }))
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    })) 
     updateProductDto: UpdateProductRequestDto,
-  ): Promise<AppResponseDto<ProductResponseDto>> {
+  ){
     const result = await this.productService.updateProduct(
       slug,
       updateProductDto,

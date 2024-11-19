@@ -140,6 +140,7 @@ describe('ProductService', () => {
     });
 
     it('should get all product success and return product array', async () => {
+      const catalogSlug: string = 'mock-catalog-slug';
       const product = {
         name: "Mock product name",
         isActive: false,
@@ -156,7 +157,7 @@ describe('ProductService', () => {
       (catalogRepositoryMock.find as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.mapArray as jest.Mock).mockReturnValue(mockOutput);
 
-      const result = await service.getAllProducts();
+      const result = await service.getAllProducts(catalogSlug);
       expect(result).toEqual(mockOutput);
     })
   });
