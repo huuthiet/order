@@ -3,7 +3,7 @@ import { Base } from 'src/app/base.entity';
 import { Catalog } from 'src/catalog/catalog.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { AutoMap } from '@automapper/classes';
-import { MenuItem } from 'src/menu-item/entities/menu-item.entity';
+import { MenuItem } from 'src/menu-item/menu-item.entity';
 
 @Entity('product_tbl')
 export class Product extends Base {

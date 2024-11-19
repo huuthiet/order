@@ -46,6 +46,15 @@ export class MenuController {
     } as AppResponseDto<MenuResponseDto[]>;
   }
 
+  @Get('date/:date')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Retrieve menu by slug' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'The specific menu was retrieved successfully',
+    type: MenuResponseDto,
+  })
   @Get(':slug')
   @Public()
   @HttpCode(HttpStatus.OK)
@@ -73,7 +82,9 @@ export class MenuController {
     description: 'The new menu was created successfully',
     type: MenuResponseDto,
   })
-  async createMenu(@Body(ValidationPipe) requestData: CreateMenuDto) {
+  async createMenu(
+    @Body(new ValidationPipe({ transform: true })) requestData: CreateMenuDto,
+  ) {
     const result = await this.menuService.createMenu(requestData);
     return {
       message: 'The new menu was created successfully',
@@ -93,7 +104,7 @@ export class MenuController {
   })
   async updateMenu(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) requestData: UpdateMenuDto,
+    @Body(new ValidationPipe({ transform: true })) requestData: UpdateMenuDto,
   ) {
     const result = await this.menuService.updateMenu(slug, requestData);
     return {

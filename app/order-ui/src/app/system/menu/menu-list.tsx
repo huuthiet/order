@@ -1,5 +1,5 @@
 import { SkeletonMenuList } from '@/components/app/skeleton'
-import { useDishes } from '@/hooks'
+import { useDishes } from '@/hooks/use-dishes'
 import { Button } from '@/components/ui'
 import { useCartItemStore } from '@/stores/cart.store'
 import { IDish } from '@/types'

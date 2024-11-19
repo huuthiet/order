@@ -18,7 +18,11 @@ import {
   Delete,
 } from '@nestjs/common';
 
-import { CreateSizeRequestDto, SizeResponseDto, UpdateSizeRequestDto } from './size.dto';
+import {
+  CreateSizeRequestDto,
+  SizeResponseDto,
+  UpdateSizeRequestDto,
+} from './size.dto';
 import { SizeService } from './size.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';

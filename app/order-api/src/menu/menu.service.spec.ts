@@ -12,6 +12,7 @@ import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 describe('MenuService', () => {
   let service: MenuService;
@@ -34,6 +35,10 @@ describe('MenuService', () => {
         {
           provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
         },
       ],
     }).compile();

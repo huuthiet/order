@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
 import {
   AuthProfileResponseDto,
+  AuthRefreshRequestDto,
   LoginAuthRequestDto,
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
@@ -48,7 +49,6 @@ export class AuthController {
     )
     requestData: LoginAuthRequestDto,
   ): Promise<AppResponseDto<LoginAuthResponseDto>> {
-    console.log({ requestData });
     const result = await this.authService.login(requestData);
     const response = {
       message: 'Login successful',
@@ -99,5 +99,26 @@ export class AuthController {
       timestamp: new Date().toISOString(),
       result,
     } as unknown as AppResponseDto<AuthProfileResponseDto>;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiResponseWithType({
+    type: LoginAuthResponseDto,
+    description: 'User refreshed token successfully',
+  })
+  @Public()
+  async refresh(
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: AuthRefreshRequestDto,
+  ): Promise<AppResponseDto<LoginAuthResponseDto>> {
+    const result = await this.authService.refresh(requestData);
+    return {
+      message: 'User refreshed token successfully',
+      status: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as unknown as AppResponseDto<LoginAuthResponseDto>;
   }
 }

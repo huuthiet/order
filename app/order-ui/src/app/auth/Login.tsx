@@ -45,8 +45,7 @@ export default function Login() {
     try {
       login(data, {
         onSuccess: (response) => {
-          const { accessToken } = response.result
-          console.log('accessToken', accessToken)
+          // const { accessToken } = response.result
           // const decodedToken = jwtDecode(response.result.accessToken) as { sub: string }
           // setSlug(decodedToken.sub)
           setToken(response.result.accessToken)
