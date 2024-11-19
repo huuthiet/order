@@ -22,7 +22,11 @@ export class LoggerResponseDto extends BaseResponseDto {
 
 export class GetLoggerRequestDto {
   @AutoMap()
-  @ApiProperty({ example: 'info', description: 'Log level' })
+  @ApiProperty({
+    example: 'info',
+    description: 'Log level',
+    enum: ['info', 'warn', 'error', 'debug'],
+  })
   @IsOptional()
   level: string;
 }

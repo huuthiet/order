@@ -46,6 +46,15 @@ export class MenuController {
     } as AppResponseDto<MenuResponseDto[]>;
   }
 
+  @Get('date/:date')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Retrieve menu by slug' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'The specific menu was retrieved successfully',
+    type: MenuResponseDto,
+  })
   @Get(':slug')
   @Public()
   @HttpCode(HttpStatus.OK)
