@@ -47,9 +47,14 @@ export class CatalogController {
   @ApiResponse({ status: 200, description: 'Create a new catalog successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createCatalog(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  )
     requestData: CreateCatalogRequestDto,
   ){
+    console.log({requestData})
     const result = await this.catalogService.createCatalog(requestData);
     return {
       message: 'Catalog have been created successfully',
@@ -99,7 +104,11 @@ export class CatalogController {
   })
   async updateCatalog(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateCatalogDto: UpdateCatalogRequestDto,
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    })) 
+    updateCatalogDto: UpdateCatalogRequestDto,
   ) {
     const result = await this.catalogService.updateCatalog(
       slug,

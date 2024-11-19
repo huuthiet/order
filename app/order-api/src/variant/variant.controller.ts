@@ -8,12 +8,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -41,7 +43,10 @@ export class VariantController {
   @ApiResponse({ status: 200, description: 'Create new variant successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createVariant(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }))
     requestData: CreateVariantRequestDto,
   ) {
     const result = await this.variantService.createVariant(requestData);
@@ -65,8 +70,14 @@ export class VariantController {
   @ApiOperation({ summary: 'Get all variants' })
   @ApiResponse({ status: 200, description: 'Get all variants successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllSizes() {
-    const result = await this.variantService.getAllVariants();
+  @ApiQuery({
+    name: 'product',
+    required: false,
+    description: 'Filter variants by catalog',
+    type: String,
+  })
+  async getAllVariants(@Query('product') product: string) {
+    const result = await this.variantService.getAllVariants(product);
     return {
       message: 'All variants have been retrieved successfully',
       statusCode: HttpStatus.OK,
@@ -94,7 +105,11 @@ export class VariantController {
   })
   async updateVariant(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateVariantDto: UpdateVariantRequestDto,
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    })) 
+    updateVariantDto: UpdateVariantRequestDto,
   ) {
     const result = await this.variantService.updateVariant(
       slug,

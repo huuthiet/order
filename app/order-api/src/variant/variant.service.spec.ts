@@ -180,6 +180,7 @@ describe('VariantService', () => {
     });
 
     it('should get success and return all variants', async () => {
+      const productSlug: string = 'mock-product-slug';
       const variant = {
         size: new Size(),
         product: new Product(),
@@ -193,7 +194,7 @@ describe('VariantService', () => {
       (variantRepositoryMock.find as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.mapArray as jest.Mock).mockReturnValue(mockOutput);
 
-      const result = await service.getAllVariants();
+      const result = await service.getAllVariants(productSlug);
       expect(result).toEqual(mockOutput);
     })
   });

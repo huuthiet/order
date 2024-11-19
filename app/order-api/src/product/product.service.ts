@@ -53,7 +53,7 @@ export class ProductService {
    * @returns {Promise<ProductResponseDto[]>} The products array is retrieved
    */
   async getAllProducts(
-    catalog?: string
+    catalog: string
   ): Promise<ProductResponseDto[]> {
     const products = await this.productRepository.find({
       where: {

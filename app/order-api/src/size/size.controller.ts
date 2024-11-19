@@ -41,7 +41,10 @@ export class SizeController {
   @ApiResponse({ status: 200, description: 'Create size successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createSize(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }))
     requestData: CreateSizeRequestDto,
   ) {
     const result = await this.sizeService.createSize(requestData);
@@ -94,7 +97,11 @@ export class SizeController {
   })
   async updateSize(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateSizeDto: UpdateSizeRequestDto,
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    })) 
+    updateSizeDto: UpdateSizeRequestDto,
   ) {
     const result = await this.sizeService.updateSize(
       slug,
