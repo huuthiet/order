@@ -18,7 +18,11 @@ import {
   Delete,
 } from '@nestjs/common';
 
-import { CreateSizeRequestDto, SizeResponseDto, UpdateSizeRequestDto } from './size.dto';
+import {
+  CreateSizeRequestDto,
+  SizeResponseDto,
+  UpdateSizeRequestDto,
+} from './size.dto';
 import { SizeService } from './size.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
@@ -41,7 +45,7 @@ export class SizeController {
   @ApiResponse({ status: 200, description: 'Create size successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createSize(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({ transform: true }))
     requestData: CreateSizeRequestDto,
   ) {
     const result = await this.sizeService.createSize(requestData);
@@ -94,12 +98,10 @@ export class SizeController {
   })
   async updateSize(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateSizeDto: UpdateSizeRequestDto,
-  ) {
-    const result = await this.sizeService.updateSize(
-      slug,
-      updateSizeDto
-    );
+    @Body(new ValidationPipe({ transform: true }))
+    updateSizeDto: UpdateSizeRequestDto,
+  ): Promise<AppResponseDto<SizeResponseDto>> {
+    const result = await this.sizeService.updateSize(slug, updateSizeDto);
     return {
       message: 'The size have been updated successfully',
       statusCode: HttpStatus.OK,

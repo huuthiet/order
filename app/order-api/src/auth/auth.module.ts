@@ -20,7 +20,6 @@ import { AuthProfile } from './auth.mapper';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1h' },
     }),
     TypeOrmModule.forFeature([User]),
     ConfigModule,

@@ -21,7 +21,11 @@ import {
 } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { Public } from 'src/auth/public.decorator';
-import { CreateProductRequestDto, ProductResponseDto, UpdateProductRequestDto } from './product.dto';
+import {
+  CreateProductRequestDto,
+  ProductResponseDto,
+  UpdateProductRequestDto,
+} from './product.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
 
@@ -43,9 +47,9 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createProduct(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({ transform: true }))
     requestData: CreateProductRequestDto,
-  ){
+  ) {
     const result = await this.productService.createProduct(requestData);
     return {
       message: 'Product have been created successfully',
@@ -73,8 +77,10 @@ export class ProductController {
     description: 'Filter products by catalog',
     type: String,
   })
-  async getAllProducts(@Query('catalog') catalog: string){
-    const result = await  this.productService.getAllProducts(catalog);
+  async getAllProducts(
+    @Query('catalog') catalog: string,
+  ): Promise<AppResponseDto<ProductResponseDto[]>> {
+    const result = await this.productService.getAllProducts(catalog);
     return {
       message: 'All products have been retrieved successfully',
       statusCode: HttpStatus.OK,
@@ -106,11 +112,12 @@ export class ProductController {
   })
   async updateProduct(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateProductDto: UpdateProductRequestDto,
-  ){
+    @Body(new ValidationPipe({ transform: true }))
+    updateProductDto: UpdateProductRequestDto,
+  ): Promise<AppResponseDto<ProductResponseDto>> {
     const result = await this.productService.updateProduct(
       slug,
-      updateProductDto
+      updateProductDto,
     );
 
     return {
@@ -138,7 +145,9 @@ export class ProductController {
     required: true,
     example: 'slug-123',
   })
-  async deleteProduct(@Param('slug') slug: string){
+  async deleteProduct(
+    @Param('slug') slug: string,
+  ): Promise<AppResponseDto<string>> {
     const result = await this.productService.deleteProduct(slug);
     return {
       message: 'Product have been deleted successfully',
