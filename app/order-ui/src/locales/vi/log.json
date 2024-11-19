@@ -1,0 +1,11 @@
+{
+  "log": {
+    "title": "Quản lý log",
+    "level": "Cấp độ",
+    "slug": "Slug",
+    "timestamp": "Thời gian",
+    "message": "Nội dung",
+    "context": "Ngữ cảnh",
+    "createdAt": "Thời gian tạo"
+  }
+}

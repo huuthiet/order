@@ -9,6 +9,7 @@ import enSidebar from '@/locales/en/sidebar.json'
 import enMenu from '@/locales/en/menu.json'
 import enSetting from '@/locales/en/setting.json'
 import enProduct from '@/locales/en/product.json'
+import enLog from '@/locales/en/log.json'
 
 import viToast from '@/locales/vi/toast.json'
 import viAuth from '@/locales/vi/auth.json'
@@ -17,6 +18,7 @@ import viSidebar from '@/locales/vi/sidebar.json'
 import viMenu from '@/locales/vi/menu.json'
 import viSetting from '@/locales/vi/setting.json'
 import viProduct from '@/locales/vi/product.json'
+import viLog from '@/locales/vi/log.json'
 
 i18n
   .use(LanguageDetector) // Tự động phát hiện ngôn ngữ
@@ -30,7 +32,8 @@ i18n
         sidebar: enSidebar,
         menu: enMenu,
         setting: enSetting,
-        product: enProduct
+        product: enProduct,
+        log: enLog
       },
       vi: {
         toast: viToast,
@@ -39,7 +42,8 @@ i18n
         sidebar: viSidebar,
         menu: viMenu,
         setting: viSetting,
-        product: viProduct
+        product: viProduct,
+        log: viLog
       }
     },
     lng: window.localStorage.getItem('i18nextLng') || 'vi',
@@ -48,7 +52,7 @@ i18n
       escapeValue: false // React đã tự động bảo vệ trước XSS
     },
     //Setup type-safe translation
-    ns: ['toast', 'auth', 'common', 'sidebar', 'menu', 'setting', 'product'], //Dùng để phân biệt các phần khác nhau của app
+    ns: ['toast', 'auth', 'common', 'sidebar', 'menu', 'setting', 'product', 'log'], //Dùng để phân biệt các phần khác nhau của app
     defaultNS: 'auth' //Ngôn ngữ mặc định
   })
 

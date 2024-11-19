@@ -7,6 +7,7 @@
     "tableManagement": "Quản lý bàn",
     "internalWallet": "Ví nội bộ",
     "menuManagement": "Quản lý thực đơn",
-    "dishManagement": "Quản lý món"
+    "dishManagement": "Quản lý món",
+    "logManagement": "Quản lý log"
   }
 }

@@ -66,3 +66,10 @@ export const DishesManagementPage = React.lazy(() =>
     default: module.DishesManagementPage
   }))
 )
+
+//Log page
+export const LoggerPage = React.lazy(() =>
+  import('@/app/system/logger').then((module) => ({
+    default: module.LoggerPage
+  }))
+)

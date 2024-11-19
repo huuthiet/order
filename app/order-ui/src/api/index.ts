@@ -1,5 +1,6 @@
 export * from './auth'
 export * from './catalog'
 export * from './dishes'
+export * from './logger'
 export * from './product'
 export * from './size'
