@@ -50,7 +50,7 @@ axiosInstance.interceptors.request.use(
     // console.log('Request interceptor - Initial token check:', token, isAuthenticated())
 
     // Allow requests to public routes (login, register, etc.)
-    const publicRoutes = ['/auth/login', '/auth/register', '/products']
+    const publicRoutes = ['/auth/login', '/auth/register', '/products', '/logger']
     if (publicRoutes.includes(config.url || '')) {
       return config
     }

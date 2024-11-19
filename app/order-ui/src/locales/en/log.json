@@ -1,0 +1,11 @@
+{
+  "log": {
+    "title": "Log Management",
+    "level": "Level",
+    "slug": "Slug",
+    "timestamp": "Timestamp",
+    "message": "Message",
+    "context": "Context",
+    "createdAt": "Created At"
+  }
+}

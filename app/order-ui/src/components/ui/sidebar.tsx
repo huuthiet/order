@@ -345,7 +345,7 @@ const SidebarHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<'div
       <div
         ref={ref}
         data-sidebar="header"
-        className={cn('flex flex-col gap-2 p-2 z-50 items-center', className)}
+        className={cn('flex flex-col gap-2 p-4 z-50 items-center justify-center', className)}
         {...props}
       />
     )
@@ -359,7 +359,7 @@ const SidebarFooter = React.forwardRef<HTMLDivElement, React.ComponentProps<'div
       <div
         ref={ref}
         data-sidebar="footer"
-        className={cn('flex flex-col gap-2 p-2 z-50', className)}
+        className={cn('flex flex-col gap-2 p-2 z-50 justify-center items-center', className)}
         {...props}
       />
     )
@@ -476,8 +476,8 @@ const SidebarMenu = React.forwardRef<HTMLUListElement, React.ComponentProps<'ul'
       ref={ref}
       data-sidebar="menu"
       className={cn(
-        'flex w-full min-w-0 flex-col gap-4',
-        'group-data-[collapsible=icon]:items-center', // Add this line
+        'flex w-full min-w-0 flex-col gap-4 justify-center',
+        'group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center', // Add this line
         className
       )}
       {...props}

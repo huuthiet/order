@@ -136,6 +136,8 @@ export function DataTable<TData, TValue>({
     debugTable: true
   })
 
+  console.log('check data', data)
+
   return (
     <div className="w-full">
       <div className="flex justify-end gap-2">

@@ -12,7 +12,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuAction,
@@ -56,11 +55,11 @@ export default function AppSidebar() {
           <SidebarMenuItem className="w-full">
             <SidebarMenuButton size="lg" asChild>
               <NavLink to="/staff/home" className="flex items-center w-full gap-3">
-                <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0">
+                <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0 group-data-[collapsible=icon]:w-full">
                   <Command className="size-4" />
                 </div>
                 <div className="flex items-center">
-                  <span className="text-xl font-semibold text-primary">SMART</span>
+                  <span className="font-semibold text-primary">SMART</span>
                   <span>COFFEE</span>
                 </div>
               </NavLink>
@@ -70,7 +69,6 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel></SidebarGroupLabel>
           <SidebarMenu>
             {translatedRoutes.map((item) => (
               <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
