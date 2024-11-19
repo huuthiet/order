@@ -21,6 +21,7 @@ export class MenuItem extends Base {
   menu: Menu;
 
   // Many to one with product
+  @AutoMap(() => Product)
   @ManyToOne(() => Product, (product) => product.menuItems)
   @JoinColumn({ name: 'product_id_column' })
   product: Product;

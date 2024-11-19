@@ -5,15 +5,15 @@ import {
   forMember,
   mapFrom,
   Mapper,
+  mapWith,
 } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
-
-import { MenuItem } from './menu-item.entity';
-import { CreateMenuItemDto, MenuItemResponseDto } from './menu-item.dto';
+import { File } from './file.entity';
+import { FileResponseDto } from './file.dto';
 import { baseMapper } from 'src/app/base.mapper';
 
 @Injectable()
-export class MenuItemProfile extends AutomapperProfile {
+export class FileProfile extends AutomapperProfile {
   constructor(@InjectMapper() mapper: Mapper) {
     super(mapper);
   }
@@ -22,17 +22,13 @@ export class MenuItemProfile extends AutomapperProfile {
     return (mapper: Mapper) => {
       createMap(
         mapper,
-        CreateMenuItemDto,
-        MenuItem,
+        File,
+        FileResponseDto,
         forMember(
-          (d) => d.currentStock,
-          mapFrom((s) => s.defaultStock),
+          (d) => d.data,
+          // mapWith(Buffer, String, (s) => Buffer.from(s.data, 'base64')),
+          mapFrom((s) => Buffer.from(s.data, 'base64')),
         ),
-      );
-      createMap(
-        mapper,
-        MenuItem,
-        MenuItemResponseDto,
         extend(baseMapper(mapper)),
       );
     };

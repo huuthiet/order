@@ -2,13 +2,19 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
 import { Repository } from 'typeorm';
-import { CreateMenuDto, MenuResponseDto, UpdateMenuDto } from './menu.dto';
+import {
+  CreateMenuDto,
+  GetMenuRequestDto,
+  MenuResponseDto,
+  UpdateMenuDto,
+} from './menu.dto';
 import { Branch } from 'src/branch/branch.entity';
 import { MenuValidation } from './menu.validation';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import * as _ from 'lodash';
 
 @Injectable()
 export class MenuService {
@@ -44,15 +50,22 @@ export class MenuService {
 
   /**
    *
-   * @param {string} slug
-   * @returns {Promise<MenuResponseDto>} New menu created successfully
+   * @param {GetMenuRequestDto} query
+   * @returns {Promise<MenuResponseDto>} The specific menu was retrieved
    * @throws {MenuException} Menu not found
    */
-  async getMenu(slug: string): Promise<MenuResponseDto> {
+  async getMenu(query: GetMenuRequestDto): Promise<MenuResponseDto> {
     const context = `${MenuService.name}.${this.getMenu.name}`;
-    const menu = await this.menuRepository.findOne({ where: { slug } });
+    if (_.isEmpty(query)) {
+      this.logger.warn(`Query is empty`, context);
+      throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    }
+    const menu = await this.menuRepository.findOne({
+      where: { slug: query.slug, date: query.date },
+      relations: ['menuItems.product.variants.size'],
+    });
     if (!menu) {
-      this.logger.warn(`Menu ${slug} not found`, context);
+      this.logger.warn(`Menu not found`, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
     return this.mapper.map(menu, Menu, MenuResponseDto);
@@ -117,6 +130,7 @@ export class MenuService {
   async getAllMenus(query: any): Promise<MenuResponseDto[]> {
     const menus = await this.menuRepository.find({
       order: { createdAt: 'DESC' },
+      relations: ['menuItems.product.variants.size'],
     });
     return this.mapper.mapArray(menus, Menu, MenuResponseDto);
   }
