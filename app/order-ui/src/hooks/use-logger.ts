@@ -6,6 +6,8 @@ export const useLogger = () => {
   return useQuery({
     queryKey: ['logs'],
     queryFn: () => logger(),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 5, // 5 seconds
+    refetchInterval: 1000 * 5 // 5 seconds
   })
 }

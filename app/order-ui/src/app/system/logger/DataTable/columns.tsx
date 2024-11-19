@@ -1,11 +1,10 @@
+import moment from 'moment'
 import { ColumnDef } from '@tanstack/react-table'
 import { useTranslation } from 'react-i18next'
-// import { format } from 'date-fns'
 
 import { DataTableColumnHeader } from '@/components/ui'
 import { ILogger } from '@/types'
-import moment from 'moment'
-// import { DialogDeleteProject, DialogUpdateProject } from '@/components/app/dialog'
+import { LogLevelBadge } from '@/components/app/badge/index'
 
 export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
   const { t } = useTranslation(['log'])
@@ -20,11 +19,11 @@ export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
     },
     {
       accessorKey: 'level',
-      header: ({ column }) => <DataTableColumnHeader column={column} title={t('log.level')} />
-    },
-    {
-      accessorKey: 'slug',
-      header: ({ column }) => <DataTableColumnHeader column={column} title={t('log.slug')} />
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('log.level')} />,
+      cell: ({ row }) => {
+        const { level } = row.original
+        return level ? <LogLevelBadge level={level} /> : ''
+      }
     },
     {
       accessorKey: 'message',
@@ -34,7 +33,6 @@ export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
       accessorKey: 'context',
       header: ({ column }) => <DataTableColumnHeader column={column} title={t('log.context')} />
     },
-
     {
       accessorKey: 'pid',
       header: ({ column }) => <DataTableColumnHeader column={column} title={t('log.pid')} />

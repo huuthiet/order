@@ -7,7 +7,7 @@ import { useLoggerColumns } from './DataTable/columns'
 import { useLogger } from '@/hooks'
 
 export default function LoggerPage() {
-  const { t } = useTranslation(['product'])
+  const { t } = useTranslation(['log'])
   const { data: loggers, isLoading } = useLogger()
   return (
     <div className="flex flex-row gap-2 h-[calc(100vh-4rem)]">
@@ -21,7 +21,7 @@ export default function LoggerPage() {
             <div className="flex flex-col flex-1 w-full mt-4">
               <span className="flex items-center gap-1 text-lg">
                 <SquareMenu />
-                {t('product.title')}
+                {t('log.title')}
               </span>
               <DataTable
                 columns={useLoggerColumns()}
