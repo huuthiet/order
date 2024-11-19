@@ -26,6 +26,7 @@ import {
 import { CatalogService } from './catalog.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Catalog')
 @Controller('catalogs')
@@ -33,45 +34,64 @@ import { ApiResponseWithType } from 'src/app/app.decorator';
 export class CatalogController {
   constructor(private catalogService: CatalogService) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post()
-  @ApiOperation({ summary: 'Create new catalog' })
+  @Public()
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponseWithType({
     status: HttpStatus.CREATED,
     description: 'Catalog created successfully',
     type: CatalogResponseDto,
   })
+  @ApiOperation({ summary: 'Create a new catalog' })
+  @ApiResponse({
+    status: 200,
+    description: 'Create a new catalog successfully',
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createCatalog(
     @Body(new ValidationPipe({ transform: true }))
     requestData: CreateCatalogRequestDto,
-  ): Promise<CatalogResponseDto> {
-    return this.catalogService.createCatalog(requestData);
+  ) {
+    const result = await this.catalogService.createCatalog(requestData);
+    return {
+      message: 'Catalog have been created successfully',
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<CatalogResponseDto>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get()
   @Public()
-  @ApiOperation({ summary: 'Get all catalogs' })
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Get all catalogs successfully',
     type: CatalogResponseDto,
     isArray: true,
   })
+  @ApiOperation({ summary: 'Get all catalogs' })
+  @ApiResponse({ status: 200, description: 'Get all catalog successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllCatalogs(): Promise<CatalogResponseDto[]> {
-    return this.catalogService.getAllCatalogs();
+  async getAllCatalogs() {
+    const result = await this.catalogService.getAllCatalogs();
+    return {
+      message: 'Catalog have been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<CatalogResponseDto[]>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Patch(':slug')
-  @ApiOperation({ summary: 'Update catalog' })
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Update catalog successfully',
     type: CatalogResponseDto,
   })
+  @ApiOperation({ summary: 'Update catalog' })
+  @ApiResponse({ status: 200, description: 'Update catalog successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -83,18 +103,29 @@ export class CatalogController {
     @Param('slug') slug: string,
     @Body(new ValidationPipe({ transform: true }))
     updateCatalogDto: UpdateCatalogRequestDto,
-  ): Promise<CatalogResponseDto> {
-    return this.catalogService.updateCatalog(slug, updateCatalogDto);
+  ): Promise<AppResponseDto<CatalogResponseDto>> {
+    const result = await this.catalogService.updateCatalog(
+      slug,
+      updateCatalogDto,
+    );
+    return {
+      message: 'Catalog have been deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<CatalogResponseDto>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Delete(':slug')
-  @ApiOperation({ summary: 'Delete catalog' })
+  @Public()
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Delete catalog successfully',
-    type: Number,
+    type: String,
   })
+  @ApiOperation({ summary: 'Delete catalog' })
+  @ApiResponse({ status: 200, description: 'Delete catalog successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -102,9 +133,13 @@ export class CatalogController {
     required: true,
     example: 'slug-123',
   })
-  async deleteCatalog(@Param('slug') slug: string): Promise<number> {
-    const s = await this.catalogService.deleteCatalog(slug);
-    console.log({ s });
-    return s;
+  async deleteCatalog(@Param('slug') slug: string) {
+    const result = await this.catalogService.deleteCatalog(slug);
+    return {
+      message: 'Catalog have been deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result: `${result} catalog have been deleted successfully`,
+    } as AppResponseDto<string>;
   }
 }

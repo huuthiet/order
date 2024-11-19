@@ -26,6 +26,7 @@ import {
 import { SizeService } from './size.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Size')
 @Controller('sizes')
@@ -33,46 +34,61 @@ import { ApiResponseWithType } from 'src/app/app.decorator';
 export class SizeController {
   constructor(private sizeService: SizeService) {}
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post()
-  @ApiOperation({ summary: 'Create new size' })
   @ApiResponseWithType({
     status: HttpStatus.CREATED,
-    description: 'Create new size successfully',
+    description: 'Create a new size successfully',
     type: SizeResponseDto,
   })
+  @ApiOperation({ summary: 'Create a new size' })
+  @ApiResponse({ status: 200, description: 'Create size successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createSize(
     @Body(new ValidationPipe({ transform: true }))
     requestData: CreateSizeRequestDto,
-  ): Promise<SizeResponseDto> {
-    return this.sizeService.createSize(requestData);
+  ) {
+    const result = await this.sizeService.createSize(requestData);
+    return {
+      message: 'Size have been created successfully',
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<SizeResponseDto>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get()
   @Public()
-  @ApiOperation({ summary: 'Get all sizes' })
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Sizes retrieved successfully',
     type: SizeResponseDto,
     isArray: true,
   })
+  @ApiOperation({ summary: 'Get all sizes' })
+  @ApiResponse({ status: 200, description: 'Get all sizes successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllSizes(): Promise<SizeResponseDto[]> {
-    return this.sizeService.getAllSizes();
+  async getAllSizes() {
+    const result = await this.sizeService.getAllSizes();
+    return {
+      message: 'All sizes have been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<SizeResponseDto[]>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Patch(':slug')
   @Public()
-  @ApiOperation({ summary: 'Update size' })
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Update size successfully',
     type: SizeResponseDto,
   })
+  @ApiOperation({ summary: 'Update size' })
+  @ApiResponse({ status: 200, description: 'Update size successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -84,19 +100,26 @@ export class SizeController {
     @Param('slug') slug: string,
     @Body(new ValidationPipe({ transform: true }))
     updateSizeDto: UpdateSizeRequestDto,
-  ): Promise<SizeResponseDto> {
-    return this.sizeService.updateSize(slug, updateSizeDto);
+  ): Promise<AppResponseDto<SizeResponseDto>> {
+    const result = await this.sizeService.updateSize(slug, updateSizeDto);
+    return {
+      message: 'The size have been updated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<SizeResponseDto>;
   }
 
-  @HttpCode(HttpStatus.OK)
   @Delete(':slug')
   @Public()
-  @ApiOperation({ summary: 'Delete size' })
+  @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Delete size successfully',
-    type: Number,
+    type: String,
   })
+  @ApiOperation({ summary: 'Delete size' })
+  @ApiResponse({ status: 200, description: 'Delete size successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -104,7 +127,13 @@ export class SizeController {
     required: true,
     example: 'slug-123',
   })
-  async deleteSize(@Param('slug') slug: string): Promise<number> {
-    return await this.sizeService.deleteSize(slug);
+  async deleteSize(@Param('slug') slug: string) {
+    const result = await this.sizeService.deleteSize(slug);
+    return {
+      message: 'The size have been deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result: `${result} size have been deleted successfully`,
+    } as AppResponseDto<string>;
   }
 }

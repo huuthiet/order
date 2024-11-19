@@ -1,0 +1,13 @@
+{
+  "product": {
+    "title": "Quản lý món ăn",
+    "add": "Thêm món ăn",
+
+    "image": "Hình ảnh",
+    "slug": "Slug",
+    "createdAt": "Thời gian tạo",
+    "name": "Tên",
+    "catalog": "Danh mục",
+    "description": "Mô tả"
+  }
+}

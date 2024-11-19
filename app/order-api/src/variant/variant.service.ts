@@ -24,6 +24,14 @@ export class VariantService {
     private readonly sizeRepository: Repository<Size>,
   ) {}
 
+  /**
+   * Create a new variant
+   * @param {CreateVariantRequestDto} createVariantDto The data to create a new variant
+   * @returns {Promise<VariantResponseDto>} The created variant data
+   * @throws {BadRequestException} If the size is not found
+   * @throws {BadRequestException} If the product is not found
+   * @throws {BadRequestException} If the variant already exists
+   */
   async createVariant(
     createVariantDto: CreateVariantRequestDto,
   ): Promise<VariantResponseDto> {
@@ -47,7 +55,7 @@ export class VariantService {
         },
       },
     });
-    if (variant) throw new BadRequestException('The variant is existed');
+    if (variant) throw new BadRequestException('The variant does exists');
 
     const variantData = this.mapper.map(
       createVariantDto,
@@ -65,21 +73,29 @@ export class VariantService {
     return variantDto;
   }
 
+  /**
+   * Get all variants
+   * @returns {Promise<VariantResponseDto[]>} The variant array is retrieved
+   */
   async getAllVariants(): Promise<VariantResponseDto[]> {
     const variants = await this.variantRepository.find({
       relations: ['size', 'product'],
     });
-    console.log({ variants });
-    console.log({ variants: variants[0].size });
     const variantsDto = this.mapper.mapArray(
       variants,
       Variant,
       VariantResponseDto,
     );
-    console.log({ variantsDto: variantsDto[0].size });
     return variantsDto;
   }
 
+  /**
+   * Update variant data
+   * @param {string} slug The slug of variant is updated 
+   * @param {UpdateVariantRequestDto} requestData The data to update variant
+   * @returns {Promise<VariantResponseDto>} The updated variant data
+   * @throws {BadRequestException} If variant is not found
+   */
   async updateVariant(
     slug: string,
     requestData: UpdateVariantRequestDto,
@@ -100,22 +116,17 @@ export class VariantService {
     return variantDto;
   }
 
+  /**
+   * Delete variant by slug
+   * @param {string} slug The slug of variant is deleted
+   * @returns {Promise<number>} The number of variants is deleted
+   * @throws {BadRequestException} If variant is not found
+   */
   async deleteVariant(slug: string): Promise<number> {
     const variant = await this.variantRepository.findOneBy({ slug });
     if (!variant) throw new BadRequestException('Variant not found');
 
     const deleted = await this.variantRepository.softDelete({ slug });
     return deleted.affected || 0;
-  }
-
-  async deleteVariantArray(variants: Variant[]): Promise<number> {
-    const slugList = variants.map((item) => item.slug);
-
-    if (slugList.length < 1) return 0;
-
-    const deleted = await this.variantRepository.softDelete({
-      slug: In(slugList),
-    });
-    return deleted.affected;
   }
 }

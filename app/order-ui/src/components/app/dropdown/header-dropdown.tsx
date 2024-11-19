@@ -1,4 +1,4 @@
-import { LifeBuoy, LogOut, Settings, User } from 'lucide-react'
+import { LifeBuoy, Settings, User } from 'lucide-react'
 
 import {
   Button,
@@ -12,8 +12,9 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui'
 import { ProfileAvatar } from '@/components/app/avatar'
+import { DialogLogout } from '@/components/app/dialog'
 
-export default function DropdownMenuDemo() {
+export default function HeaderDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -43,11 +44,7 @@ export default function DropdownMenuDemo() {
           <span>Support</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogOut />
-          <span>Log out</span>
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <DialogLogout />
       </DropdownMenuContent>
     </DropdownMenu>
   )

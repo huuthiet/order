@@ -44,20 +44,13 @@ const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    const {
-      token,
-      // expireTime,
-      // refreshToken,
-      // setExpireTime,
-      // setToken,
-      // setLogout,
-      // setRefreshToken,
-      // setExpireTimeRefreshToken,
-      isAuthenticated
-    } = useAuthStore.getState()
+    const authState = useAuthStore.getState()
+    const { isAuthenticated } = authState
+
+    // console.log('Request interceptor - Initial token check:', token, isAuthenticated())
 
     // Allow requests to public routes (login, register, etc.)
-    const publicRoutes = ['/auth/login', '/auth/register', '/auth/refresh']
+    const publicRoutes = ['/auth/login', '/auth/register', '/products']
     if (publicRoutes.includes(config.url || '')) {
       return config
     }
@@ -67,49 +60,14 @@ axiosInstance.interceptors.request.use(
       return Promise.reject(new Error('User is not authenticated'))
     }
 
-    // if (expireTime && isTokenExpired(expireTime) && !isRefreshing) {
-    //   isRefreshing = true
-    //   try {
-    //     const response: AxiosResponse<IApiResponse<IRefreshTokenResponse>> = await axios.post(
-    //       `${baseURL}/auth/refresh`,
-    //       {
-    //         refreshToken,
-    //         expiredToken: token
-    //       }
-    //     )
+    // Get fresh token state
+    const currentToken = useAuthStore.getState().token
+    // console.log('Request interceptor - Current token before setting header:', currentToken)
 
-    //     const newToken = response.data.result.token
-    //     setToken(newToken)
-    //     setRefreshToken(response.data.result.refreshToken)
-    //     setExpireTime(response.data.result.expireTime)
-    //     setExpireTimeRefreshToken(response.data.result.expireTimeRefreshToken)
-    //     processQueue(null, newToken)
-    //   } catch (error) {
-    //     console.log({ error })
-    //     processQueue(error, null)
-    //     setLogout()
-    //     // redirect('/auth/login')
-    //     showErrorToast(1017)
-    //     // You can redirect to the login page
-    //     window.location.href = ROUTE.LOGIN
-    //   } finally {
-    //     isRefreshing = false
-    //   }
-    // } else if (isRefreshing) {
-    //   return new Promise((resolve, reject) => {
-    //     failedQueue.push({
-    //       resolve: (token: string) => {
-    //         config.headers['Authorization'] = `Bearer ${token}`
-    //         resolve(config)
-    //       },
-    //       reject: (error: unknown) => {
-    //         reject(error)
-    //       }
-    //     })
-    //   })
-    // }
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+    if (currentToken) {
+      config.headers['Authorization'] = `Bearer ${currentToken}`
+      // console.log('Token set in headers:', currentToken)
+
       if (!config?.doNotShowLoading) {
         const requestStore = useRequestStore.getState()
         if (requestStore.requestQueueSize === 0) {
@@ -117,6 +75,8 @@ axiosInstance.interceptors.request.use(
         }
         requestStore.incrementRequestQueueSize()
       }
+    } else {
+      console.log('No token available when trying to set headers')
     }
     return config
   },
