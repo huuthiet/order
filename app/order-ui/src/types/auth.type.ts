@@ -7,6 +7,9 @@ export interface ILoginResponse {
   message: string
   result: {
     accessToken: string
+    expireTime: string
+    refreshToken: string
+    expireTimeRefreshToken: string
   }
   method: string
   status: number
@@ -18,4 +21,11 @@ export interface IRegisterRequest {
   password: string
   firstName: string
   lastName: string
+}
+
+export interface IRefreshTokenResponse {
+  expireTime: string
+  expireTimeRefreshToken: string
+  token: string
+  refreshToken: string
 }

@@ -14,8 +14,8 @@ export const useAuthStore = create<IAuthStore>()(
       isAuthenticated: () => {
         if (
           !get().token ||
-          // !get().expireTime ||
-          // !get().refreshToken ||
+          !get().expireTime ||
+          !get().refreshToken ||
           !get().expireTimeRefreshToken
         )
           return false

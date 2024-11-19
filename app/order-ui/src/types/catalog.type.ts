@@ -6,7 +6,7 @@ export interface ICatalog {
 
 export interface ICreateCatalogRequest {
   name: string
-  description: string
+  description?: string
 }
 
 export interface IUpdateCatalogRequest {

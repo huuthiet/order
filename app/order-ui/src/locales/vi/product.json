@@ -1,4 +1,26 @@
 {
+  "tab": {
+    "catalog": "Danh mục",
+    "product": "Món ăn"
+  },
+  "catalog": {
+    "title": "Quản lý danh mục",
+    "add": "Thêm danh mục",
+    "name": "Tên",
+    "slug": "Slug",
+    "description": "Mô tả",
+    "createdAt": "Thời gian tạo",
+
+    "create": "Tạo danh mục",
+    "createCatalogDescription": "Điền thông tin để tạo danh mục",
+    "catalogName": "Tên danh mục",
+    "enterCatalogName": "Nhập tên danh mục",
+    "catalogDescription": "Mô tả danh mục",
+    "enterCatalogDescription": "Nhập mô tả danh mục",
+
+    "update": "Cập nhật danh mục",
+    "updateCatalogDescription": "Điền thông tin để cập nhật danh mục"
+  },
   "product": {
     "title": "Quản lý món ăn",
     "add": "Thêm món ăn",

@@ -14,7 +14,7 @@ import {
   TablePage,
   OrderSuccessPage,
   RegisterPage,
-  DishesManagementPage,
+  ProductManagementPage,
   LoggerPage
 } from './loadable'
 
@@ -101,7 +101,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DishesManagementPage />
+        element: <ProductManagementPage />
       }
     ]
   },

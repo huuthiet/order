@@ -1,8 +1,8 @@
 import { http } from '@/utils'
 import { IApiResponse, ICatalog, ICreateCatalogRequest, IUpdateCatalogRequest } from '@/types'
 
-export async function getCatalog(): Promise<IApiResponse<ICatalog>> {
-  const response = await http.get<IApiResponse<ICatalog>>('/catalogs')
+export async function getCatalog(): Promise<IApiResponse<ICatalog[]>> {
+  const response = await http.get<IApiResponse<ICatalog[]>>('/catalogs')
   return response.data
 }
 

@@ -10,6 +10,9 @@
 
     "registerSuccess": "Đăng ký tài khoản thành công",
 
-    "orderSuccess": "Đặt hàng thành công"
+    "orderSuccess": "Đặt hàng thành công",
+
+    "createCatalogSuccess": "Tạo danh mục thành công",
+    "updateCatalogSuccess": "Cập nhật danh mục thành công"
   }
 }
