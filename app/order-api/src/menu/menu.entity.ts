@@ -2,7 +2,7 @@ import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Base } from 'src/app/base.entity';
 import { AutoMap } from '@automapper/classes';
 import { Branch } from 'src/branch/branch.entity';
-import { MenuItem } from 'src/menu-item/entities/menu-item.entity';
+import { MenuItem } from 'src/menu-item/menu-item.entity';
 
 @Entity('menu_tbl')
 export class Menu extends Base {

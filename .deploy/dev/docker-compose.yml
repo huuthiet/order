@@ -26,8 +26,10 @@ services:
       DATABASE_PORT: ${DATABASE_PORT}
       NODE_ENV: ${NODE_ENV}
       PORT: ${PORT}
-      VERSION: ${VERSION:-v1.0.0}
-      SALT_ROUNDS: ${SALT_ROUNDS:-10}
+      VERSION: ${VERSION}
+      SALT_ROUNDS: ${SALT_ROUNDS}
+      DURATION: ${DURATION}
+      REFRESHABLE_DURATION: ${REFRESHABLE_DURATION}
       TZ: Asia/Ho_Chi_Minh
     depends_on:
       mysql_db:

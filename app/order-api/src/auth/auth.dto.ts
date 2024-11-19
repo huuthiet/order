@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import {
   INVALID_FIRSTNAME,
   INVALID_LASTNAME,
@@ -38,8 +38,26 @@ export class LoginAuthResponseDto {
   @ApiProperty()
   readonly accessToken: string;
 
-  // @ApiProperty()
-  // readonly refreshToken: string;
+  @ApiProperty()
+  readonly refreshToken: string;
+
+  @ApiProperty()
+  readonly expireTime: string;
+
+  @ApiProperty()
+  readonly expireTimeRefreshToken: string;
+}
+
+export class AuthRefreshRequestDto {
+  @ApiProperty()
+  @AutoMap()
+  @IsString()
+  accessToken: string;
+
+  @ApiProperty()
+  @AutoMap()
+  @IsString()
+  refreshToken: string;
 }
 
 export class AuthProfileResponseDto {

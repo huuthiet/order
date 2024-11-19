@@ -46,6 +46,12 @@ class EnvironmentVariables {
   @Min(10)
   @Max(12)
   SALT_ROUNDS: number;
+
+  @IsNumber()
+  DURATION: number;
+
+  @IsNumber()
+  REFRESHABLE_DURATION: number;
 }
 
 export function validate(config: Record<string, unknown>) {

@@ -26,7 +26,6 @@ import {
 import { CatalogService } from './catalog.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
-import { isArray } from 'lodash';
 import { AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Catalog')
@@ -44,12 +43,15 @@ export class CatalogController {
     type: CatalogResponseDto,
   })
   @ApiOperation({ summary: 'Create a new catalog' })
-  @ApiResponse({ status: 200, description: 'Create a new catalog successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Create a new catalog successfully',
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createCatalog(
-    @Body(ValidationPipe)
+    @Body(new ValidationPipe({ transform: true }))
     requestData: CreateCatalogRequestDto,
-  ){
+  ) {
     const result = await this.catalogService.createCatalog(requestData);
     return {
       message: 'Catalog have been created successfully',
@@ -99,11 +101,12 @@ export class CatalogController {
   })
   async updateCatalog(
     @Param('slug') slug: string,
-    @Body(ValidationPipe) updateCatalogDto: UpdateCatalogRequestDto,
-  ) {
+    @Body(new ValidationPipe({ transform: true }))
+    updateCatalogDto: UpdateCatalogRequestDto,
+  ): Promise<AppResponseDto<CatalogResponseDto>> {
     const result = await this.catalogService.updateCatalog(
       slug,
-      updateCatalogDto
+      updateCatalogDto,
     );
     return {
       message: 'Catalog have been deleted successfully',
