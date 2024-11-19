@@ -77,8 +77,13 @@ export class VariantService {
    * Get all variants
    * @returns {Promise<VariantResponseDto[]>} The variant array is retrieved
    */
-  async getAllVariants(): Promise<VariantResponseDto[]> {
+  async getAllVariants(product: string): Promise<VariantResponseDto[]> {
     const variants = await this.variantRepository.find({
+      where: {
+        product: {
+          slug: product
+        }
+      },
       relations: ['size', 'product'],
     });
     const variantsDto = this.mapper.mapArray(

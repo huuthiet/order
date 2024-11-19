@@ -45,7 +45,10 @@ export class SizeController {
   @ApiResponse({ status: 200, description: 'Create size successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createSize(
-    @Body(new ValidationPipe({ transform: true }))
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }))
     requestData: CreateSizeRequestDto,
   ) {
     const result = await this.sizeService.createSize(requestData);
@@ -98,10 +101,16 @@ export class SizeController {
   })
   async updateSize(
     @Param('slug') slug: string,
-    @Body(new ValidationPipe({ transform: true }))
+    @Body(new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    })) 
     updateSizeDto: UpdateSizeRequestDto,
-  ): Promise<AppResponseDto<SizeResponseDto>> {
-    const result = await this.sizeService.updateSize(slug, updateSizeDto);
+  ) {
+    const result = await this.sizeService.updateSize(
+      slug,
+      updateSizeDto
+    );
     return {
       message: 'The size have been updated successfully',
       statusCode: HttpStatus.OK,
