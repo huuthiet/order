@@ -14,6 +14,7 @@ import {
 import { MenuItemService } from './menu-item.service';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -57,6 +58,10 @@ export class MenuItemController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create multiple menu items' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiBody({
+    description: 'Array of menu items to be created',
+    type: [CreateMenuItemDto],
+  })
   @ApiResponseWithType({
     type: MenuItemResponseDto,
     isArray: true,
@@ -76,19 +81,49 @@ export class MenuItemController {
   }
 
   @Get()
-  findAll() {
-    return this.menuItemService.findAll();
+  @ApiOperation({ summary: 'Retrieve all menu items' })
+  @ApiResponseWithType({
+    type: MenuItemResponseDto,
+    isArray: true,
+    description: 'Retrieve all menu items',
+  })
+  async findAll() {
+    const result = await this.menuItemService.findAll();
+    return {
+      message: 'Retrieve all menu items successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<MenuItemResponseDto[]>;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.menuItemService.findOne(+id);
+  @Get(':slug')
+  @ApiOperation({ summary: 'Retrieve specific menu item' })
+  @ApiResponseWithType({
+    type: MenuItemResponseDto,
+    description: 'Retrieve specific menu item',
+  })
+  async findOne(@Param('slug') slug: string) {
+    const result = await this.menuItemService.findOne(slug);
+    return {
+      message: 'Retrieve menu item successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<MenuItemResponseDto>;
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateMenuItemDto: UpdateMenuItemDto,
+  @Patch(':slug')
+  @ApiOperation({ summary: 'Update menu item' })
+  @ApiResponseWithType({
+    type: MenuItemResponseDto,
+    description: 'Menu item updated successfully',
+  })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  async update(
+    @Param('slug') id: string,
+    @Body(new ValidationPipe({ transform: true }))
+    updateMenuItemDto: UpdateMenuItemDto,
   ) {
     return this.menuItemService.update(+id, updateMenuItemDto);
   }

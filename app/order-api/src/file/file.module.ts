@@ -9,5 +9,6 @@ import { FileProfile } from './file.mapper';
   imports: [TypeOrmModule.forFeature([File])],
   controllers: [FileController],
   providers: [FileService, FileProfile],
+  exports: [FileService],
 })
 export class FileModule {}
