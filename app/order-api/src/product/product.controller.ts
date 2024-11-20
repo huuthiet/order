@@ -101,11 +101,7 @@ export class ProductController {
     type: ProductResponseDto,
   })
   @ApiOperation({ summary: 'Update product' })
-  @ApiResponseWithType({
-    status: HttpStatus.OK,
-    description: 'Update product successfully',
-    type: ProductResponseDto,
-  })
+  @ApiResponse({ status: 200, description: 'Update product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
