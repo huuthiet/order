@@ -15,7 +15,7 @@ export interface IProduct {
 
 export interface ICreateProductRequest {
   name: string
-  description: string
+  description?: string
   isLimit: boolean
   catalog: string
 }
@@ -23,8 +23,8 @@ export interface ICreateProductRequest {
 export interface IUpdateProductRequest {
   slug: string //Slug of the product
   name: string
-  description: string
+  description?: string
   isLimit: boolean
-  isActive: boolean
+  isActive?: boolean
   catalog: string
 }

@@ -48,7 +48,25 @@
   },
   "product": {
     "title": "Quản lý món ăn",
-    "add": "Thêm món ăn",
+
+    "create": "Thêm món ăn",
+    "createProductDescription": "Điền thông tin để tạo món ăn",
+    "productImage": "Hình ảnh món ăn",
+    "enterProductImage": "Nhập hình ảnh món ăn",
+    "productName": "Tên món ăn",
+    "enterProductName": "Nhập tên món ăn",
+    "productDescription": "Mô tả món ăn",
+    "enterProductDescription": "Nhập mô tả món ăn",
+    "productCatalog": "Danh mục món ăn",
+    "selectProductCatalog": "Chọn danh mục món ăn",
+    "isLimited": "Có giới hạn",
+
+    "update": "Cập nhật món ăn",
+    "updateProductDescription": "Điền thông tin để cập nhật món ăn",
+
+    "delete": "Xóa món ăn",
+    "deleteProductWarning1": "Bạn sắp sửa xóa món ăn",
+    "deleteProductConfirmation": "Bạn có chắc muốn xóa món ăn",
 
     "image": "Hình ảnh",
     "slug": "Slug",
