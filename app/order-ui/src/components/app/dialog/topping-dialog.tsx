@@ -20,7 +20,7 @@ interface DialogDeleteCartItemProps {
   cartItem: IDish
 }
 
-export default function DialogTopping({ cartItem }: DialogDeleteCartItemProps) {
+export default function ToppingDialog({ cartItem }: DialogDeleteCartItemProps) {
   const { t } = useTranslation('menu')
   const { t: tCommon } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)

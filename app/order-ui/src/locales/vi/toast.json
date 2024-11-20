@@ -7,9 +7,18 @@
     "loginSuccess": "Đăng nhập thành công",
     "logoutSuccess": "Đăng xuất thành công",
     "loginFailed": "Đăng nhập thất bại",
+    "requestFailed": "Yêu cầu thất bại",
 
     "registerSuccess": "Đăng ký tài khoản thành công",
 
-    "orderSuccess": "Đặt hàng thành công"
+    "orderSuccess": "Đặt hàng thành công",
+
+    "createCatalogSuccess": "Tạo danh mục thành công",
+    "updateCatalogSuccess": "Cập nhật danh mục thành công",
+    "deleteCatalogSuccess": "Xóa danh mục thành công",
+
+    "createSizeSuccess": "Tạo kích thước thành công",
+    "updateSizeSuccess": "Cập nhật kích thước thành công",
+    "deleteSizeSuccess": "Xóa kích thước thành công"
   }
 }

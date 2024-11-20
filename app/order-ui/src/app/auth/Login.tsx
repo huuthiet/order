@@ -28,7 +28,7 @@ import { useLogin } from '@/hooks'
 
 export default function Login() {
   const { t } = useTranslation(['auth'])
-  const { setToken } = useAuthStore()
+  const { setToken, setRefreshToken, setExpireTime, setExpireTimeRefreshToken } = useAuthStore()
   //   const { getTheme } = useThemeStore()
   const { isAuthenticated } = useAuthStore()
 
@@ -49,9 +49,9 @@ export default function Login() {
           // const decodedToken = jwtDecode(response.result.accessToken) as { sub: string }
           // setSlug(decodedToken.sub)
           setToken(response.result.accessToken)
-          // setRefreshToken(response.result.refreshToken)
-          // setExpireTime(response.result.expireTime)
-          // setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
+          setRefreshToken(response.result.refreshToken)
+          setExpireTime(response.result.expireTime)
+          setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
           navigate(ROUTE.STAFF_MENU, { replace: true })
           showToast(t('toast.loginSuccess'))
         },

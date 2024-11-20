@@ -6,11 +6,11 @@ export interface ICatalog {
 
 export interface ICreateCatalogRequest {
   name: string
-  description: string
+  description?: string
 }
 
 export interface IUpdateCatalogRequest {
   slug: string //Slug of the catalog
   name: string
-  description: string
+  description?: string
 }

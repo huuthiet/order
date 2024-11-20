@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui'
 import { CheckoutCart, PaymentMethodSelect, TableSelect } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
-import { DialogDeleteCartItem } from '@/components/app/dialog'
+import { DeleteCartItemDialog } from '@/components/app/dialog'
 
 export default function ConfirmOrderPage() {
   const { t } = useTranslation('menu')
@@ -70,7 +70,7 @@ export default function ConfirmOrderPage() {
                       </span>
                     </div>
                     <div className="flex justify-center">
-                      <DialogDeleteCartItem cartItem={item} />
+                      <DeleteCartItemDialog cartItem={item} />
                     </div>
                   </div>
                   <CartNoteInput cartItem={item} />
