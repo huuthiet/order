@@ -6,3 +6,7 @@ export * from './register-form'
 export * from './create-catalog-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './update-catalog-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './create-size-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './update-size-form'

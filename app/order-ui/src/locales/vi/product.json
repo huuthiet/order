@@ -1,6 +1,7 @@
 {
   "tab": {
     "catalog": "Danh mục",
+    "size": "Kích thước",
     "product": "Món ăn"
   },
   "catalog": {
@@ -19,7 +20,31 @@
     "enterCatalogDescription": "Nhập mô tả danh mục",
 
     "update": "Cập nhật danh mục",
-    "updateCatalogDescription": "Điền thông tin để cập nhật danh mục"
+    "updateCatalogDescription": "Điền thông tin để cập nhật danh mục",
+
+    "delete": "Xóa danh mục",
+    "deleteCatalogWarning1": "Bạn sắp sửa xóa danh mục",
+    "deleteCatalogConfirmation": "Bạn có chắc muốn xóa danh mục"
+  },
+  "size": {
+    "title": "Quản lý kích thước",
+    "name": "Tên kích thước",
+    "description": "Mô tả",
+    "createdAt": "Thời gian tạo",
+
+    "create": "Thêm kích thước",
+    "createSizeDescription": "Điền thông tin để tạo kích thước",
+    "sizeName": "Tên kích thước",
+    "enterSizeName": "Nhập tên kích thước",
+    "sizeDescription": "Mô tả kích thước",
+    "enterSizeDescription": "Nhập mô tả kích thước",
+
+    "update": "Cập nhật kích thước",
+    "updateSizeDescription": "Điền thông tin để cập nhật kích thước",
+
+    "delete": "Xóa kích thước",
+    "deleteSizeWarning1": "Bạn sắp sửa xóa kích thước",
+    "deleteSizeConfirmation": "Bạn có chắc muốn xóa kích thước"
   },
   "product": {
     "title": "Quản lý món ăn",

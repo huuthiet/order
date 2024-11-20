@@ -5,7 +5,7 @@ import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { ScrollArea, DataTable, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
 import { useProducts } from '@/hooks/use-product'
 import { useProductColumns } from './DataTable/columns/columns'
-import { CatalogTab } from '.'
+import { CatalogTab, SizeTab } from '.'
 
 export default function ProductManagementPage() {
   const { t } = useTranslation(['product'])
@@ -25,12 +25,16 @@ export default function ProductManagementPage() {
                 {t('product.title')}
               </span>
               <Tabs defaultValue="catalog" className="w-full">
-                <TabsList className="grid grid-cols-2 w-72">
+                <TabsList className="grid grid-cols-3 w-96">
                   <TabsTrigger value="catalog">{t('tab.catalog')}</TabsTrigger>
+                  <TabsTrigger value="size">{t('tab.size')}</TabsTrigger>
                   <TabsTrigger value="product">{t('tab.product')}</TabsTrigger>
                 </TabsList>
                 <TabsContent value="catalog" className="w-full">
                   <CatalogTab />
+                </TabsContent>
+                <TabsContent value="size" className="w-full">
+                  <SizeTab />
                 </TabsContent>
                 <TabsContent value="product">
                   <DataTable

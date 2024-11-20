@@ -4,9 +4,14 @@
     "add": "Thêm",
     "edit": "Sửa",
     "delete": "Xóa",
+    "deleteNote": "Lưu ý: Hành động này không thể hoàn tác!",
     "save": "Lưu",
     "cancel": "Hủy",
     "back": "Quay lại",
-    "confirmDelete": "Tôi đã hiểu, xác nhận xóa"
+    "confirmDelete": "Tôi đã hiểu, xác nhận xóa",
+
+    "noData": "Không có dữ liệu",
+
+    "action": "Thao tác"
   }
 }

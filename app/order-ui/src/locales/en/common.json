@@ -4,9 +4,14 @@
     "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
+    "deleteNote": "Note: This action cannot be undone!",
     "save": "Save",
     "cancel": "Cancel",
     "back": "Back",
-    "confirmDelete": "I understand, confirm delete"
+    "confirmDelete": "I understand, confirm delete",
+
+    "noData": "No data",
+
+    "action": "Action"
   }
 }

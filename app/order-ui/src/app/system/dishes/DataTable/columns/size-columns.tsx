@@ -11,19 +11,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui'
-import { ICatalog } from '@/types'
-import { DeleteCatalogDialog, UpdateCatalogDialog } from '@/components/app/dialog'
+import { ISize } from '@/types'
+import { DeleteSizeDialog, UpdateSizeDialog } from '@/components/app/dialog'
 // import { DialogDeleteProject, DialogUpdateProject } from '@/components/app/dialog'
 
-export const useCatalogColumns = (): ColumnDef<ICatalog>[] => {
+export const useSizeColumns = (): ColumnDef<ISize>[] => {
   const { t } = useTranslation(['product'])
   const { t: tCommon } = useTranslation(['common'])
+
   return [
     {
       accessorKey: 'createdAt',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('catalog.createdAt')} />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('size.createdAt')} />,
       cell: ({ row }) => {
         const createdAt = row.getValue('createdAt')
         return createdAt ? moment(new Date(createdAt as string)).format('HH:mm DD/MM/YYYY') : ''
@@ -31,19 +30,19 @@ export const useCatalogColumns = (): ColumnDef<ICatalog>[] => {
     },
     {
       accessorKey: 'name',
-      header: ({ column }) => <DataTableColumnHeader column={column} title={t('catalog.name')} />
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('size.name')} />
     },
     {
       accessorKey: 'description',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('catalog.description')} />
+        <DataTableColumnHeader column={column} title={t('size.description')} />
       )
     },
     {
       id: 'actions',
       header: tCommon('common.action'),
       cell: ({ row }) => {
-        const catalog = row.original
+        const size = row.original
         return (
           <div>
             <DropdownMenu>
@@ -58,8 +57,8 @@ export const useCatalogColumns = (): ColumnDef<ICatalog>[] => {
                 className="flex flex-col justify-start min-w-[14rem] w-full"
               >
                 <DropdownMenuLabel>{tCommon('common.action')}</DropdownMenuLabel>
-                <UpdateCatalogDialog catalog={catalog} />
-                <DeleteCatalogDialog catalog={catalog} />
+                <UpdateSizeDialog size={size} />
+                <DeleteSizeDialog size={size} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

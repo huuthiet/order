@@ -12,12 +12,13 @@ import {
   Form,
   Button
 } from '@/components/ui'
-import { createCatalogSchema, TCreateCatalogSchema } from '@/schemas'
+import { updateCatalogSchema, TUpdateCatalogSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ICatalog, ICreateCatalogRequest } from '@/types'
-import { useCreateCatalog } from '@/hooks'
+import { ICatalog, IUpdateCatalogRequest } from '@/types'
+import { useUpdateCatalog } from '@/hooks'
 import { showToast } from '@/utils'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface IFormUpdateCatalogProps {
   catalog: ICatalog
@@ -25,19 +26,24 @@ interface IFormUpdateCatalogProps {
 }
 
 export const UpdateCatalogForm: React.FC<IFormUpdateCatalogProps> = ({ catalog, onSubmit }) => {
+  const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
-  const { mutate: createCatalog } = useCreateCatalog()
-  const form = useForm<TCreateCatalogSchema>({
-    resolver: zodResolver(createCatalogSchema),
+  const { mutate: updateCatalog } = useUpdateCatalog()
+  const form = useForm<TUpdateCatalogSchema>({
+    resolver: zodResolver(updateCatalogSchema),
     defaultValues: {
+      slug: catalog.slug,
       name: catalog.name || '',
       description: catalog.description || ''
     }
   })
 
-  const handleSubmit = (data: ICreateCatalogRequest) => {
-    createCatalog(data, {
+  const handleSubmit = (data: IUpdateCatalogRequest) => {
+    updateCatalog(data, {
       onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['catalog']
+        })
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateCatalogSuccess'))

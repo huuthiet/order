@@ -12,39 +12,39 @@ import {
   Form,
   Button
 } from '@/components/ui'
-import { createCatalogSchema, TCreateCatalogSchema } from '@/schemas'
+import { createSizeSchema, TCreateSizeSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ICreateCatalogRequest } from '@/types'
-import { useCreateCatalog } from '@/hooks'
+import { ICreateSizeRequest } from '@/types'
+import { useCreateSize } from '@/hooks'
 import { showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
 
-interface IFormCreateCatalogProps {
+interface IFormCreateSizeProps {
   onSubmit: (isOpen: boolean) => void
 }
 
-export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({ onSubmit }) => {
+export const CreateSizeForm: React.FC<IFormCreateSizeProps> = ({ onSubmit }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
-  const { mutate: createCatalog } = useCreateCatalog()
-  const form = useForm<TCreateCatalogSchema>({
-    resolver: zodResolver(createCatalogSchema),
+  const { mutate: createSize } = useCreateSize()
+  const form = useForm<TCreateSizeSchema>({
+    resolver: zodResolver(createSizeSchema),
     defaultValues: {
       name: '',
       description: ''
     }
   })
 
-  const handleSubmit = (data: ICreateCatalogRequest) => {
-    createCatalog(data, {
+  const handleSubmit = (data: ICreateSizeRequest) => {
+    createSize(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['catalog']
+          queryKey: ['size']
         })
         onSubmit(false)
         form.reset()
-        showToast(t('toast.createCatalogSuccess'))
+        showToast(t('toast.createSizeSuccess'))
       }
     })
   }
@@ -56,9 +56,9 @@ export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({ onSubmit 
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('catalog.catalogName')}</FormLabel>
+            <FormLabel>{t('size.sizeName')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('catalog.enterCatalogName')} />
+              <Input {...field} placeholder={t('size.enterSizeName')} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -71,9 +71,9 @@ export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({ onSubmit 
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('catalog.catalogDescription')}</FormLabel>
+            <FormLabel>{t('size.sizeDescription')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('catalog.enterCatalogDescription')} />
+              <Input {...field} placeholder={t('size.enterSizeDescription')} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -95,7 +95,7 @@ export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({ onSubmit 
           </div>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
-              {t('catalog.create')}
+              {t('size.create')}
             </Button>
           </div>
         </form>

@@ -12,14 +12,14 @@ import {
   DialogTrigger
 } from '@/components/ui'
 
-import { UpdateCatalogForm } from '@/components/app/form'
-import { ICatalog } from '@/types'
+import { UpdateSizeForm } from '@/components/app/form'
+import { ISize } from '@/types'
 
-interface DialogUpdateCatalogProps {
-  catalog: ICatalog
+interface DialogUpdateSizeProps {
+  size: ISize
 }
 
-export default function UpdateCatalogDialog({ catalog }: DialogUpdateCatalogProps) {
+export default function UpdateSizeDialog({ size }: DialogUpdateSizeProps) {
   const { t } = useTranslation(['product'])
   const [isOpen, setIsOpen] = useState(false)
   const handleSubmit = (isOpen: boolean) => {
@@ -35,15 +35,15 @@ export default function UpdateCatalogDialog({ catalog }: DialogUpdateCatalogProp
           onClick={() => setIsOpen(true)}
         >
           <SquarePen className="icon" />
-          {t('catalog.update')}
+          {t('size.update')}
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-md max-w-[20rem] sm:max-w-[36rem]">
         <DialogHeader>
-          <DialogTitle>{t('catalog.update')}</DialogTitle>
-          <DialogDescription>{t('catalog.updateCatalogDescription')}</DialogDescription>
+          <DialogTitle>{t('size.update')}</DialogTitle>
+          <DialogDescription>{t('size.updateSizeDescription')}</DialogDescription>
         </DialogHeader>
-        <UpdateCatalogForm catalog={catalog} onSubmit={handleSubmit} />
+        <UpdateSizeForm size={size} onSubmit={handleSubmit} />
       </DialogContent>
     </Dialog>
   )

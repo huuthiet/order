@@ -12,5 +12,5 @@ export interface ICreateCatalogRequest {
 export interface IUpdateCatalogRequest {
   slug: string //Slug of the catalog
   name: string
-  description: string
+  description?: string
 }

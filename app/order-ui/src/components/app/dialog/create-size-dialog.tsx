@@ -12,9 +12,9 @@ import {
   DialogTrigger
 } from '@/components/ui'
 
-import { CreateCatalogForm } from '@/components/app/form'
+import { CreateSizeForm } from '@/components/app/form'
 
-export default function CreateCatalogDialog() {
+export default function CreateSizeDialog() {
   const { t } = useTranslation(['product'])
   const [isOpen, setIsOpen] = useState(false)
   const handleSubmit = (isOpen: boolean) => {
@@ -26,15 +26,15 @@ export default function CreateCatalogDialog() {
       <DialogTrigger asChild>
         <Button variant="outline" className="h-10 gap-1 text-sm" onClick={() => setIsOpen(true)}>
           <PlusCircledIcon className="icon" />
-          {t('catalog.create')}
+          {t('size.create')}
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-md max-w-[20rem] sm:max-w-[36rem]">
         <DialogHeader>
-          <DialogTitle>{t('catalog.create')}</DialogTitle>
-          <DialogDescription>{t('catalog.createCatalogDescription')}</DialogDescription>
+          <DialogTitle>{t('size.create')}</DialogTitle>
+          <DialogDescription>{t('size.createSizeDescription')}</DialogDescription>
         </DialogHeader>
-        <CreateCatalogForm onSubmit={handleSubmit} />
+        <CreateSizeForm onSubmit={handleSubmit} />
       </DialogContent>
     </Dialog>
   )
