@@ -21,6 +21,7 @@ import { MenuModule } from 'src/menu/menu.module';
 import { BranchModule } from 'src/branch/branch.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { AppSubscriber } from './app.subscriber';
+import { TableModule } from 'src/table/table.module';
 import { MenuItemModule } from 'src/menu-item/menu-item.module';
 
 @Module({
@@ -43,6 +44,7 @@ import { MenuItemModule } from 'src/menu-item/menu-item.module';
     BranchModule,
     TransactionModule,
     LoggerModule,
+    TableModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
