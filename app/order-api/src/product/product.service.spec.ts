@@ -125,7 +125,7 @@ describe('ProductService', () => {
       (productRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(catalog);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
-      (productRepositoryMock.create as jest.Mock).mockResolvedValue(mockOutput);
+      (productRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (productRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
 

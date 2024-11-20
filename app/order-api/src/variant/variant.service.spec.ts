@@ -164,7 +164,7 @@ describe('VariantService', () => {
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(size);
       (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
-      (variantRepositoryMock.create as jest.Mock).mockResolvedValue(mockOutput);
+      (variantRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (variantRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);      
 

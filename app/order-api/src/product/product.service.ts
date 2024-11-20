@@ -41,7 +41,7 @@ export class ProductService {
     const productData = this.mapper.map(createProductDto, CreateProductRequestDto, Product);
     Object.assign(productData, { catalog });
     
-    const newProduct = await this.productRepository.create(productData);
+    const newProduct = this.productRepository.create(productData);
     const createdProduct = await this.productRepository.save(newProduct);
     const productDto = this.mapper.map(createdProduct, Product, ProductResponseDto);
     return productDto;

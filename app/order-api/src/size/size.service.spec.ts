@@ -80,7 +80,7 @@ describe('SizeService', () => {
       } as Size;
 
       (sizeRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
-      (sizeRepositoryMock.create as jest.Mock).mockResolvedValue(mockInput);
+      (sizeRepositoryMock.create as jest.Mock).mockReturnValue(mockInput);
       (sizeRepositoryMock.save as jest.Mock).mockResolvedValue(mockInput);
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
 
@@ -233,7 +233,7 @@ describe('SizeService', () => {
   }); 
 
   describe('isExistUpdatedName', () => {
-    it('should return true when updated name and current name are same', async () => {
+    it('should return true when updated name and current name are the same', async () => {
       const updatedName = 'Mock size name';
       const currentName = 'Mock size name';
       expect(await service.isExistUpdatedName(updatedName, currentName)).toEqual(false);

@@ -29,7 +29,7 @@ export class CatalogService {
     if(catalog) throw new BadRequestException('Catalog name is existed');
 
     const catalogData = this.mapper.map(createCatalogDto, CreateCatalogRequestDto, Catalog);
-    const newCatalog = await this.catalogRepository.create(catalogData);
+    const newCatalog = this.catalogRepository.create(catalogData);
 
     const createdCatalog = await this.catalogRepository.save(newCatalog);
 

@@ -45,7 +45,7 @@ export class TableService {
     if(existedTable) throw new BadRequestException('Table name already exists');
     
     Object.assign(tableData, { branch });
-    const table = await this.tableRepository.create(tableData);
+    const table = this.tableRepository.create(tableData);
     const createdTable = await this.tableRepository.save(table);
     const tableDto = this.mapper.map(createdTable, Table, TableResponseDto);
     return tableDto;
