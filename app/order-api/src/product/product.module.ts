@@ -7,16 +7,12 @@ import { Product } from './product.entity';
 import { ProductProfile } from './product.mapper';
 import { Variant } from 'src/variant/variant.entity';
 import { Catalog } from 'src/catalog/catalog.entity';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Product, Variant, Catalog]),
-  ],
+  imports: [TypeOrmModule.forFeature([Product, Variant, Catalog]), FileModule],
   controllers: [ProductController],
-  providers: [
-    ProductService,
-    ProductProfile,
-  ],
-  exports: [ProductService]
+  providers: [ProductService, ProductProfile],
+  exports: [ProductService],
 })
-export class ProductModule{}
+export class ProductModule {}

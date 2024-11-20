@@ -30,7 +30,7 @@ export class FileService {
     const context = `${FileService.name}.${this.uploadFile.name}`;
     const createdFile = await this.saveFile(file);
     this.logger.log(`File ${createdFile.name} uploaded successfully`, context);
-    return this.mapper.map(createdFile, File, FileResponseDto);
+    return createdFile;
   }
 
   private async saveFile(requestData: Express.Multer.File): Promise<File> {

@@ -2,6 +2,7 @@ import AuthValidation from 'src/auth/auth.validation1';
 import { CatalogValidation } from 'src/catalog/catalog.validation';
 import FileValidation from 'src/file/file.validation';
 import { MenuValidation } from 'src/menu/menu.validation';
+import ProductValidation from 'src/product/product.validation';
 
 export type TErrorCodeValue = {
   code: number;
@@ -22,6 +23,7 @@ export const AppValidation: TErrorCode = {
   ...CatalogValidation,
   ...MenuValidation,
   ...FileValidation,
+  ...ProductValidation,
 };
 
 const errorCodeKeys = Object.keys(AppValidation);
