@@ -6,6 +6,8 @@ import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { Product } from 'src/product/product.entity';
+import { Menu } from 'src/menu/menu.entity';
 
 describe('MenuItemService', () => {
   let service: MenuItemService;
@@ -16,6 +18,14 @@ describe('MenuItemService', () => {
         MenuItemService,
         {
           provide: getRepositoryToken(MenuItem),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Menu),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Product),
           useFactory: repositoryMockFactory,
         },
         {

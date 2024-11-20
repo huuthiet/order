@@ -19,6 +19,7 @@ import {
 } from './auth.dto';
 import {
   ApiBearerAuth,
+  ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -35,6 +36,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @Public()
+  @ApiOperation({ summary: 'Login' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @ApiResponseWithType({
     type: LoginAuthResponseDto,
@@ -62,6 +64,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
   @Public()
+  @ApiOperation({ summary: 'Register account' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @ApiResponseWithType({
     type: RegisterAuthResponseDto,
@@ -83,6 +86,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Get('profile')
+  @ApiOperation({ summary: 'Get profile' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @ApiResponseWithType({
     type: AuthProfileResponseDto,
@@ -103,6 +107,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
+  @ApiOperation({ summary: 'Refresh token' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @ApiResponseWithType({
     type: LoginAuthResponseDto,

@@ -75,7 +75,7 @@ export class AuthService {
   private async generateToken(payload: any): Promise<LoginAuthResponseDto> {
     return {
       accessToken: this.jwtService.sign(payload),
-      expireTime: moment().add(60, 'seconds').toString(),
+      expireTime: moment().add(this.duration, 'seconds').toString(),
       refreshToken: this.jwtService.sign(payload, {
         expiresIn: this.refeshableDuration,
       }),
