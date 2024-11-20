@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckService,
@@ -9,6 +9,7 @@ import { Public } from 'src/auth/public.decorator';
 
 @ApiTags('Healthcheck')
 @Controller('health')
+@ApiExcludeController(true)
 export class HealthController {
   constructor(
     private readonly healthCheckService: HealthCheckService,

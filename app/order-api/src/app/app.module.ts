@@ -21,6 +21,7 @@ import { MenuModule } from 'src/menu/menu.module';
 import { BranchModule } from 'src/branch/branch.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { AppSubscriber } from './app.subscriber';
+import { MenuItemModule } from 'src/menu-item/menu-item.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AppSubscriber } from './app.subscriber';
     ProductModule,
     VariantModule,
     MenuModule,
+    MenuItemModule,
     BranchModule,
     TransactionModule,
     LoggerModule,

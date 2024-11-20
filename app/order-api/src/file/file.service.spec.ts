@@ -1,19 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FileController } from './file.controller';
 import { FileService } from './file.service';
-import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
-import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { File } from './file.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
-import { File } from './file.entity';
 
-describe('FileController', () => {
-  let controller: FileController;
+describe('FileService', () => {
+  let service: FileService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [FileController],
       providers: [
         FileService,
         {
@@ -31,10 +29,10 @@ describe('FileController', () => {
       ],
     }).compile();
 
-    controller = module.get<FileController>(FileController);
+    service = module.get<FileService>(FileService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 });
