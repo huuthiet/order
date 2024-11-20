@@ -1,5 +1,5 @@
 import { AutoMap } from '@automapper/classes';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import { ProductResponseDto } from 'src/product/product.dto';
 
@@ -20,7 +20,7 @@ export class CreateMenuItemDto {
   defaultStock: number;
 }
 
-export class UpdateMenuItemDto extends CreateMenuItemDto {}
+export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {}
 
 export class MenuItemResponseDto {
   @AutoMap()
