@@ -1,11 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ValidationPipe,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { TableService } from './table.service';
-import { 
+import {
   CreateTableRequestDto,
   TableResponseDto,
-  UpdateTableRequestDto 
+  UpdateTableRequestDto,
 } from './table.dto';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
@@ -17,7 +36,6 @@ export class TableController {
   constructor(private readonly tableService: TableService) {}
 
   @Post()
-  @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseWithType({
     status: HttpStatus.CREATED,
@@ -31,11 +49,13 @@ export class TableController {
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async create(
-    @Body(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-    })) 
-    createTableDto: CreateTableRequestDto
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
+    createTableDto: CreateTableRequestDto,
   ) {
     const result = await this.tableService.create(createTableDto);
     return {
@@ -75,7 +95,6 @@ export class TableController {
   }
 
   @Patch('status/:slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -91,9 +110,7 @@ export class TableController {
     required: true,
     example: 'slug-123',
   })
-  async changeStatus(
-    @Param('slug') slug: string,  
-  ) {
+  async changeStatus(@Param('slug') slug: string) {
     const result = await this.tableService.changeStatus(slug);
     return {
       message: 'Status table have been changed successfully',
@@ -104,7 +121,6 @@ export class TableController {
   }
 
   @Patch(':slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -121,12 +137,14 @@ export class TableController {
     example: 'slug-123',
   })
   async update(
-    @Param('slug') slug: string, 
-    @Body(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    })) 
-    updateTableDto: UpdateTableRequestDto
+    @Param('slug') slug: string,
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
+    updateTableDto: UpdateTableRequestDto,
   ) {
     const result = await this.tableService.update(slug, updateTableDto);
     return {
@@ -138,7 +156,6 @@ export class TableController {
   }
 
   @Delete(':slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,

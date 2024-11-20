@@ -12,6 +12,7 @@ import {
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
   RegisterAuthResponseDto,
+  UpdateAuthProfileRequestDto,
 } from './auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
@@ -25,6 +26,10 @@ import { AuthException } from './auth.exception';
 import AuthValidation from './auth.validation';
 import * as moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import { Branch } from 'src/branch/branch.entity';
+import { BranchValidation } from 'src/branch/branch.validation';
+import { BranchException } from 'src/branch/branch.exception';
+import { UserRequest } from './user.decorator';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +42,8 @@ export class AuthService {
     private readonly configService: ConfigService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Branch)
+    private readonly branchRepository: Repository<Branch>,
     @InjectMapper()
     private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
@@ -46,6 +53,46 @@ export class AuthService {
     this.refeshableDuration = this.configService.get<number>(
       'REFRESHABLE_DURATION',
     );
+  }
+
+  /**
+   * Update user profile
+   * @param {UserRequest} UserRequest
+   * @param {UpdateAuthProfileRequestDto} requestData
+   * @returns {Promise<AuthProfileResponseDto>} Updated user profile
+   * @throws {BranchException} Branch not found
+   * @throws {AuthException} User not found
+   */
+  async updateProfile(
+    UserRequest: UserRequest,
+    requestData: UpdateAuthProfileRequestDto,
+  ): Promise<AuthProfileResponseDto> {
+    const context = `${AuthService.name}.${this.updateProfile.name}`;
+    // Validation branch
+    const branch = await this.branchRepository.findOne({
+      where: { slug: requestData.branchSlug },
+    });
+    if (!branch) {
+      this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
+      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: UserRequest.userId },
+    });
+    if (!user) {
+      this.logger.warn(`User ${user.id} not found`, context);
+      throw new AuthException(AuthValidation.USER_NOT_FOUND);
+    }
+
+    Object.assign(user, {
+      ...requestData,
+      branch,
+    });
+    const updatedUser = await this.userRepository.save(user);
+    this.logger.log(`User ${user.id} updated profile`, context);
+
+    return this.mapper.map(updatedUser, User, AuthProfileResponseDto);
   }
 
   /**
@@ -121,6 +168,16 @@ export class AuthService {
   ): Promise<RegisterAuthResponseDto> {
     const context = `${AuthService.name}.${this.register.name}`;
     // Validation
+    const branch = await this.branchRepository.findOne({
+      where: {
+        slug: requestData.branchSlug,
+      },
+    });
+    if (!branch) {
+      this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
+      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
+    }
+
     const userExists = await this.userRepository.findOne({
       where: {
         phonenumber: requestData.phonenumber,
@@ -135,13 +192,18 @@ export class AuthService {
     }
 
     const user = this.mapper.map(requestData, RegisterAuthRequestDto, User);
-    this.logger.warn(`Salt of rounds: ${this.saltOfRounds}`, context);
-    user.password = await bcrypt.hash(requestData.password, this.saltOfRounds);
 
+    this.logger.warn(`Salt of rounds: ${this.saltOfRounds}`, context);
+    const hashedPass = await bcrypt.hash(
+      requestData.password,
+      this.saltOfRounds,
+    );
+
+    Object.assign(user, { branch, password: hashedPass });
     this.userRepository.create(user);
-    await this.userRepository.save(user);
+    const createdUser = await this.userRepository.save(user);
     this.logger.warn(`User ${requestData.phonenumber} registered`, context);
-    return this.mapper.map(user, User, RegisterAuthResponseDto);
+    return this.mapper.map(createdUser, User, RegisterAuthResponseDto);
   }
 
   /**
@@ -154,10 +216,12 @@ export class AuthService {
     userId,
   }: {
     userId: string;
-    phonenumber: string;
   }): Promise<AuthProfileResponseDto> {
     const context = `${AuthService.name}.${this.getProfile.name}`;
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['branch'],
+    });
     if (!user) {
       this.logger.error(`User ${userId} not found`, context);
       throw new AuthException(AuthValidation.USER_NOT_FOUND);
