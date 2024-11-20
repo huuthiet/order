@@ -1,10 +1,11 @@
+import { ShoppingCart } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+
 import { SkeletonMenuList } from '@/components/app/skeleton'
-import { useDishes } from '@/hooks/use-dishes'
+import { useDishes } from '@/hooks'
 import { Button } from '@/components/ui'
 import { useCartItemStore } from '@/stores/cart.store'
 import { IDish } from '@/types'
-import { ShoppingCart } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 
 interface IMenuProps {
   isCartOpen: boolean
@@ -12,14 +13,15 @@ interface IMenuProps {
 
 export default function MenuList({ isCartOpen }: IMenuProps) {
   const { t } = useTranslation('menu')
-  const { data, isLoading } = useDishes()
+  // const { data, isLoading } = useProducts()
+  const { data: dishes, isLoading: dishIsLoading } = useDishes()
   const { addCartItem } = useCartItemStore()
 
   const handleAddCartItem = (dish: IDish) => {
     addCartItem(dish)
   }
 
-  if (isLoading) {
+  if (dishIsLoading) {
     return (
       <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3`}>
         {[...Array(8)].map((_, index) => (
@@ -29,20 +31,20 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
     )
   }
 
-  if (!data || data.length === 0) {
+  if (!dishes || dishes.length === 0) {
     return <p className="text-center">{t('menu.noData')}</p>
   }
 
   return (
     <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6`}>
-      {data.map((dish) => (
+      {dishes.map((dish) => (
         <div key={dish.id} className="flex flex-col border backdrop-blur-md rounded-xl">
           {/* Image Section with Discount Tag */}
           <div className="relative">
             <img
               src={dish.image}
               alt={dish.name}
-              className="object-cover w-full h-32 rounded-t-md"
+              className="object-cover w-full h-40 rounded-t-md"
             />
 
             {/* Discount Tag */}
@@ -62,9 +64,9 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
 
             <div className="flex items-center justify-between gap-1">
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-primary">
-                  {dish.price.toLocaleString('vi-VN')}đ
-                </span>
+                {/* <span className="text-lg font-bold text-primary">
+                  {dish..toLocaleString('vi-VN')}đ
+                </span> */}
                 {/* {dish.discount && (
                   <span className="text-xs line-through text-muted-foreground">
                     {((dish.price * (100 + dish.discount)) / 100).toLocaleString('vi-VN')}đ

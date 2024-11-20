@@ -3,12 +3,12 @@ import { SquareMenu } from 'lucide-react'
 
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { ScrollArea, DataTable } from '@/components/ui'
-import { useProducts } from '@/hooks/use-product'
-import { useProductColumns } from './DataTable/columns'
+import { useLoggerColumns } from './DataTable/columns'
+import { useLogger } from '@/hooks'
 
-export default function DishesManagementPage() {
-  const { t } = useTranslation(['product'])
-  const { data: products, isLoading } = useProducts()
+export default function LoggerPage() {
+  const { t } = useTranslation(['log'])
+  const { data: loggers, isLoading } = useLogger()
   return (
     <div className="flex flex-row gap-2 h-[calc(100vh-4rem)]">
       {/* Menu Section - Scrollable */}
@@ -21,11 +21,11 @@ export default function DishesManagementPage() {
             <div className="flex flex-col flex-1 w-full mt-4">
               <span className="flex items-center gap-1 text-lg">
                 <SquareMenu />
-                {t('product.title')}
+                {t('log.title')}
               </span>
               <DataTable
-                columns={useProductColumns()}
-                data={products?.result || []}
+                columns={useLoggerColumns()}
+                data={loggers?.result || []}
                 isLoading={isLoading}
                 pages={1}
                 onPageChange={() => {}}

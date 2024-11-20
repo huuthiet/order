@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui'
 import { ProfileAvatar } from '@/components/app/avatar'
-import { DialogLogout } from '@/components/app/dialog'
+import { LogoutDialog } from '@/components/app/dialog'
 
 export default function HeaderDropdown() {
   return (
@@ -44,7 +44,7 @@ export default function HeaderDropdown() {
           <span>Support</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DialogLogout />
+        <LogoutDialog />
       </DropdownMenuContent>
     </DropdownMenu>
   )

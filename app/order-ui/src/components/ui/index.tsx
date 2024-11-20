@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 export * from './IconWrapper'
 export * from './avatar'
+export * from './badge'
 export * from './button'
 export * from './breadcrumb'
 export * from './card'
@@ -19,4 +20,5 @@ export * from './sheet'
 export * from './sidebar'
 export * from './skeleton'
 export * from './table'
+export * from './tabs'
 export * from './tooltip'

@@ -17,7 +17,7 @@ import { useAuthStore } from '@/stores'
 import { showToast } from '@/utils'
 import { ROUTE } from '@/constants'
 
-export default function DialogLogout() {
+export default function LogoutDialog() {
   const { t } = useTranslation(['auth'])
   const { t: tToast } = useTranslation('toast')
   const [isOpen, setIsOpen] = useState(false)

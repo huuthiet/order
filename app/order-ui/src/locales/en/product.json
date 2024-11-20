@@ -1,4 +1,51 @@
 {
+  "tab": {
+    "catalog": "Catalog",
+    "size": "Size",
+    "product": "Product"
+  },
+  "catalog": {
+    "title": "Catalog management",
+    "add": "Add catalog",
+    "name": "Name",
+    "slug": "Slug",
+    "description": "Description",
+    "createdAt": "Created at",
+
+    "create": "Create catalog",
+    "createCatalogDescription": "Fill in the information to create a catalog",
+    "catalogName": "Catalog name",
+    "enterCatalogName": "Enter catalog name",
+    "catalogDescription": "Catalog description",
+    "enterCatalogDescription": "Enter catalog description",
+
+    "update": "Update catalog",
+    "updateCatalogDescription": "Fill in the information to update the catalog",
+
+    "delete": "Delete catalog",
+    "deleteCatalogWarning1": "You are about to delete the catalog",
+    "deleteCatalogConfirmation": "Are you sure you want to delete the catalog"
+  },
+  "size": {
+    "title": "Size management",
+    "name": "Size name",
+    "description": "Description",
+    "createdAt": "Created at",
+
+    "create": "Add size",
+    "createSizeDescription": "Fill in the information to create size",
+    "sizeName": "Size name",
+    "enterSizeName": "Enter size name",
+    "sizeDescription": "Size description",
+    "enterSizeDescription": "Enter size description",
+
+    "update": "Update size",
+    "updateSizeDescription": "Fill in the information to update size",
+
+    "delete": "Delete size",
+    "deleteSizeWarning1": "You are about to delete the size",
+    "deleteSizeConfirmation": "Are you sure you want to delete the size"
+  },
   "product": {
     "title": "Dish management",
     "add": "Add dish",

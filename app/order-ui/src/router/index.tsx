@@ -14,7 +14,8 @@ import {
   TablePage,
   OrderSuccessPage,
   RegisterPage,
-  DishesManagementPage
+  ProductManagementPage,
+  LoggerPage
 } from './loadable'
 
 export const router = createBrowserRouter([
@@ -100,7 +101,21 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DishesManagementPage />
+        element: <ProductManagementPage />
+      }
+    ]
+  },
+  {
+    path: ROUTE.STAFF_LOG_MANAGEMENT,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: <LoggerPage />
       }
     ]
   }

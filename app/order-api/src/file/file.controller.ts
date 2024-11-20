@@ -1,19 +1,65 @@
-import { Controller, Get, StreamableFile } from '@nestjs/common';
-import { createReadStream } from 'fs';
-import { join } from 'path';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  StreamableFile,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Public } from '../auth/public.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { FileService } from './file.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AppResponseDto } from 'src/app/app.dto';
 
 @ApiBearerAuth()
 @Controller('file')
+@ApiTags('File')
 export class FileController {
-  @Get()
+  constructor(private fileService: FileService) {}
+
+  @Get(':filename')
   @Public()
-  getFile(): StreamableFile {
-    const file = createReadStream(join(process.cwd(), 'package.json'));
-    return new StreamableFile(file, {
-      type: 'application/json',
-      disposition: 'attachment; filename="package.json"',
+  @ApiOperation({ summary: 'Get file by filename' })
+  async getFile(@Param('filename') filename: string): Promise<StreamableFile> {
+    const result = await this.fileService.getFile(filename);
+    return new StreamableFile(result.data, {
+      type: result.mimetype,
+      length: result.size,
+      disposition: `attachment; filename="${result.name}.${result.extension}"`,
     });
+  }
+
+  @Public()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload file' })
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const result = await this.fileService.uploadFile(file);
+    return {
+      message: `File ${result.name} uploaded successfully`,
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+    } as AppResponseDto<void>;
   }
 }

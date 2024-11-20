@@ -61,8 +61,15 @@ export const TablePage = React.lazy(() =>
 )
 
 //Dishes page
-export const DishesManagementPage = React.lazy(() =>
+export const ProductManagementPage = React.lazy(() =>
   import('@/app/system/dishes').then((module) => ({
-    default: module.DishesManagementPage
+    default: module.ProductManagementPage
+  }))
+)
+
+//Log page
+export const LoggerPage = React.lazy(() =>
+  import('@/app/system/logger').then((module) => ({
+    default: module.LoggerPage
   }))
 )

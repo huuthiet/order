@@ -51,5 +51,10 @@ export const sidebarRoutes: ISidebarRoute[] = [
     title: 'sidebar.dishManagement',
     path: ROUTE.STAFF_DISH_MANAGEMENT,
     icon: CookingPot
+  },
+  {
+    title: 'sidebar.logManagement',
+    path: ROUTE.STAFF_LOG_MANAGEMENT,
+    icon: FileChartColumnIncreasing
   }
 ]

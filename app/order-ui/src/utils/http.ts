@@ -1,40 +1,41 @@
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
-  // AxiosResponse,
+  AxiosResponse,
   InternalAxiosRequestConfig
 } from 'axios'
 import NProgress from 'nprogress'
-// import moment from 'moment'
+import moment from 'moment'
 
 import { useRequestStore } from '@/stores'
 import { useAuthStore } from '@/stores'
-// import { IApiResponse } from '@/types'
+import { IApiResponse, IRefreshTokenResponse } from '@/types'
 // import { showErrorToast } from './toast'
-import { baseURL } from '@/constants'
+import { baseURL, ROUTE } from '@/constants'
 import { useLoadingStore } from '@/stores'
+import { showErrorToast } from './toast'
 
 NProgress.configure({ showSpinner: false, trickleSpeed: 200 })
 
-// let isRefreshing = false
-// let failedQueue: { resolve: (token: string) => void; reject: (error: unknown) => void }[] = []
+let isRefreshing = false
+let failedQueue: { resolve: (token: string) => void; reject: (error: unknown) => void }[] = []
 
-// const processQueue = (error: unknown, token: string | null = null) => {
-//   failedQueue.forEach((prom) => {
-//     if (token) {
-//       prom.resolve(token)
-//     } else {
-//       prom.reject(error)
-//     }
-//   })
-//   failedQueue = []
-// }
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (token) {
+      prom.resolve(token)
+    } else {
+      prom.reject(error)
+    }
+  })
+  failedQueue = []
+}
 
-// const isTokenExpired = (expiryTime: string): boolean => {
-//   const currentDate = moment()
-//   const expireDate = moment(expiryTime)
-//   return currentDate.isAfter(expireDate)
-// }
+const isTokenExpired = (expiryTime: string): boolean => {
+  const currentDate = moment()
+  const expireDate = moment(expiryTime)
+  return currentDate.isAfter(expireDate)
+}
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,
@@ -44,13 +45,22 @@ const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    const authState = useAuthStore.getState()
-    const { isAuthenticated } = authState
+    const {
+      token,
+      expireTime,
+      refreshToken,
+      setExpireTime,
+      setToken,
+      setLogout,
+      setRefreshToken,
+      setExpireTimeRefreshToken,
+      isAuthenticated
+    } = useAuthStore.getState()
 
     // console.log('Request interceptor - Initial token check:', token, isAuthenticated())
 
     // Allow requests to public routes (login, register, etc.)
-    const publicRoutes = ['/auth/login', '/auth/register', '/products']
+    const publicRoutes = ['/auth/login', '/auth/register', '/auth/refresh']
     if (publicRoutes.includes(config.url || '')) {
       return config
     }
@@ -63,6 +73,48 @@ axiosInstance.interceptors.request.use(
     // Get fresh token state
     const currentToken = useAuthStore.getState().token
     // console.log('Request interceptor - Current token before setting header:', currentToken)
+
+    if (expireTime && isTokenExpired(expireTime) && !isRefreshing) {
+      isRefreshing = true
+      try {
+        const response: AxiosResponse<IApiResponse<IRefreshTokenResponse>> = await axios.post(
+          `${baseURL}/auth/refresh`,
+          {
+            refreshToken,
+            expiredToken: token
+          }
+        )
+
+        const newToken = response.data.result.token
+        setToken(newToken)
+        setRefreshToken(response.data.result.refreshToken)
+        setExpireTime(response.data.result.expireTime)
+        setExpireTimeRefreshToken(response.data.result.expireTimeRefreshToken)
+        processQueue(null, newToken)
+      } catch (error) {
+        console.log({ error })
+        processQueue(error, null)
+        setLogout()
+        // redirect('/auth/login')
+        showErrorToast(1017)
+        // You can redirect to the login page
+        window.location.href = ROUTE.LOGIN
+      } finally {
+        isRefreshing = false
+      }
+    } else if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: (token: string) => {
+            config.headers['Authorization'] = `Bearer ${token}`
+            resolve(config)
+          },
+          reject: (error: unknown) => {
+            reject(error)
+          }
+        })
+      })
+    }
 
     if (currentToken) {
       config.headers['Authorization'] = `Bearer ${currentToken}`

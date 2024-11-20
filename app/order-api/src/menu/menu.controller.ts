@@ -9,14 +9,22 @@ import {
   Patch,
   Post,
   Query,
-  Request,
   ValidationPipe,
 } from '@nestjs/common';
-import * as express from 'express';
 import { MenuService } from './menu.service';
 import { Public } from 'src/auth/public.decorator';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateMenuDto, MenuResponseDto, UpdateMenuDto } from './menu.dto';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  CreateMenuDto,
+  GetMenuRequestDto,
+  MenuResponseDto,
+  UpdateMenuDto,
+} from './menu.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
 
@@ -46,26 +54,26 @@ export class MenuController {
     } as AppResponseDto<MenuResponseDto[]>;
   }
 
-  @Get('date/:date')
+  @Get('specific')
   @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Retrieve menu by slug' })
+  @ApiOperation({ summary: 'Retrieve specific menu' })
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'The specific menu was retrieved successfully',
     type: MenuResponseDto,
   })
-  @Get(':slug')
-  @Public()
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Retrieve menu by slug' })
-  @ApiResponseWithType({
-    status: HttpStatus.OK,
-    description: 'The specific menu was retrieved successfully',
-    type: MenuResponseDto,
+  @ApiQuery({ name: 'slug', required: false, type: String })
+  @ApiQuery({
+    name: 'date',
+    required: false,
+    type: String,
+    example: '2024-11-20',
   })
-  async getMenu(@Request() req: express.Request, @Param('slug') slug: string) {
-    const result = await this.menuService.getMenu(slug);
+  async getMenu(
+    @Query(new ValidationPipe({ transform: true })) query: GetMenuRequestDto,
+  ) {
+    const result = await this.menuService.getMenu(query);
     return {
       message: 'The specific menu was retrieved successfully',
       statusCode: HttpStatus.OK,

@@ -107,7 +107,7 @@ export function DataTable<TData, TValue>({
   filterOptions: DataTableFilterOptions,
   actionOptions: DataTableActionOptions
 }: DataTableProps<TData, TValue>) {
-  const { t } = useTranslation('tableData')
+  const { t } = useTranslation('common')
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -135,6 +135,8 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     debugTable: true
   })
+
+  console.log('check data', data)
 
   return (
     <div className="w-full">
@@ -206,7 +208,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-full text-center">
-                  {t('tablePaging.noData')}
+                  {t('common.noData')}
                 </TableCell>
               </TableRow>
             )}

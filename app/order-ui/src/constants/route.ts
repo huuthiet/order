@@ -17,6 +17,7 @@ export const ROUTE = {
   STAFF_DISH_MANAGEMENT: '/staff/dish-management',
   STAFF_DELIVERY_MANAGEMENT: '/staff/delivery-management',
   STAFF_WALLET_MANAGEMENT: '/staff/wallet-management',
+  STAFF_LOG_MANAGEMENT: '/staff/log-management',
 
   // Admin Routes
   ADMIN_DASHBOARD: '/admin/dashboard',
