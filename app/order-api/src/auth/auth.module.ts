@@ -13,6 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthProfile } from './auth.mapper';
+import { Branch } from 'src/branch/branch.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { AuthProfile } from './auth.mapper';
     JwtModule.register({
       secret: jwtConstants.secret,
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Branch]),
     ConfigModule,
   ],
   controllers: [AuthController],

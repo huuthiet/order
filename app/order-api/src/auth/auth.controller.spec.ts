@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Logger } from 'src/logger/logger.entity';
+import { Branch } from 'src/branch/branch.entity';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -22,6 +23,10 @@ describe('AuthController', () => {
         AuthService,
         {
           provide: getRepositoryToken(User),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Branch),
           useFactory: repositoryMockFactory,
         },
         {
