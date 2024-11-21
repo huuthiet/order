@@ -44,7 +44,7 @@ export default function ConfirmOrderPage() {
             </div>
             <div className="flex flex-col w-full border rounded-md">
               {getCartItems().map((item) => (
-                <div key={item.id} className="grid items-center w-full gap-4 p-4 pb-4 rounded-md">
+                <div key={item.slug} className="grid items-center w-full gap-4 p-4 pb-4 rounded-md">
                   <div className="grid flex-row items-center w-full grid-cols-5">
                     <div className="flex w-full col-span-2 gap-2">
                       <div className="flex flex-row items-center justify-center gap-2">
@@ -56,7 +56,7 @@ export default function ConfirmOrderPage() {
                         <div className="flex flex-col">
                           <span className="font-bold truncate">{item.name}</span>
                           <span className="text-sm text-muted-foreground">
-                            {item.price.toLocaleString('vi-VN')} VND
+                            {item.variants.toLocaleString('vi-VN')} VND
                           </span>
                         </div>
                       </div>
@@ -66,7 +66,7 @@ export default function ConfirmOrderPage() {
                     </div>
                     <div className="text-center">
                       <span className="text-sm font-semibold text-primary">
-                        {item.price.toLocaleString('vi-VN')} VND
+                        {item.variants.toLocaleString('vi-VN')} VND
                       </span>
                     </div>
                     <div className="flex justify-center">

@@ -14,3 +14,7 @@ export * from './update-size-form'
 export * from './create-product-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './update-product-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './create-product-variant-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './update-product-variant-form'

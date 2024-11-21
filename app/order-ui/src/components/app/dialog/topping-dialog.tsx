@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trash2, TriangleAlert } from 'lucide-react'
 
@@ -12,12 +13,11 @@ import {
   DialogTrigger,
   Label
 } from '@/components/ui'
-import { IDish } from '@/types'
-import { useState } from 'react'
+import { IProduct } from '@/types'
 import { useCartItemStore } from '@/stores'
 
 interface DialogDeleteCartItemProps {
-  cartItem: IDish
+  cartItem: IProduct
 }
 
 export default function ToppingDialog({ cartItem }: DialogDeleteCartItemProps) {
@@ -26,9 +26,9 @@ export default function ToppingDialog({ cartItem }: DialogDeleteCartItemProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { removeCartItem } = useCartItemStore()
 
-  const handleDelete = (itemId: number) => {
+  const handleDelete = (slug: string) => {
     setIsOpen(false)
-    removeCartItem(itemId)
+    removeCartItem(slug)
   }
 
   return (
@@ -60,7 +60,7 @@ export default function ToppingDialog({ cartItem }: DialogDeleteCartItemProps) {
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>
-          <Button variant="destructive" onClick={() => cartItem && handleDelete(cartItem.id)}>
+          <Button variant="destructive" onClick={() => cartItem && handleDelete(cartItem.slug)}>
             {tCommon('common.confirmDelete')}
           </Button>
         </DialogFooter>

@@ -1,5 +1,6 @@
 export * from './auth.type'
 export * from './base.type'
+export * from './branch.type'
 export * from './cart.type'
 export * from './catalog.type'
 export * from './component.type'

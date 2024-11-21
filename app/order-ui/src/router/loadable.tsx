@@ -60,10 +60,16 @@ export const TablePage = React.lazy(() =>
   }))
 )
 
-//Dishes page
+//Product page
 export const ProductManagementPage = React.lazy(() =>
   import('@/app/system/dishes').then((module) => ({
     default: module.ProductManagementPage
+  }))
+)
+
+export const ProductDetailPage = React.lazy(() =>
+  import('@/app/system/dishes').then((module) => ({
+    default: module.ProductDetail
   }))
 )
 

@@ -3,7 +3,13 @@
     "noData": "Không có dữ liệu",
     "chooseDate": "Chọn thứ",
     "chooseDishCategory": "Chọn loại món",
+
     "addToCart": "Thêm vào giỏ",
+    "confirmProduct": "Xác nhận thông tin sản phẩm",
+    "confirmProductDescription": "Vui lòng kiểm tra thông tin sản phẩm trước khi thêm vào giỏ hàng",
+    "selectSize": "Chọn kích thước",
+    "price": "Giá: ",
+
     "order": "Đơn hàng",
     "dineIn": "Tại quán",
     "takeAway": "Mang đi",

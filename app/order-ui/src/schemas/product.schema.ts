@@ -16,5 +16,18 @@ export const updateProductSchema = z.object({
   catalog: z.string().min(1, 'Danh mục không được để trống')
 })
 
+export const createProductVariantSchema = z.object({
+  price: z.number().min(0, 'Giá sản phẩm không được nhỏ hơn 0'),
+  size: z.string().min(1, 'Kích thước không được để trống'),
+  product: z.string().min(1, 'Sản phẩm không được để trống')
+})
+
+export const updateProductVariantSchema = z.object({
+  price: z.number().min(0, 'Giá sản phẩm không được nhỏ hơn 0'),
+  product: z.string().min(1, 'Sản phẩm không được để trống')
+})
+
 export type TCreateProductSchema = z.infer<typeof createProductSchema>
 export type TUpdateProductSchema = z.infer<typeof updateProductSchema>
+export type TCreateProductVariantSchema = z.infer<typeof createProductVariantSchema>
+export type TUpdateProductVariantSchema = z.infer<typeof updateProductVariantSchema>
