@@ -9,6 +9,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { CreateTableRequestDto, UpdateTableRequestDto } from './table.dto';
 import { BadRequestException } from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+
 
 describe('TableService', () => {
   const mapperProvider = 'automapper:nestjs:default';
@@ -30,8 +33,12 @@ describe('TableService', () => {
           useFactory: repositoryMockFactory
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
         },
       ],
     }).compile();
@@ -39,7 +46,7 @@ describe('TableService', () => {
     service = module.get<TableService>(TableService);
     tableRepositoryMock = module.get(getRepositoryToken(Table));
     branchRepositoryMock = module.get(getRepositoryToken(Branch));
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {

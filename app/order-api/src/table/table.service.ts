@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
 import { 
   CreateTableRequestDto, 
   TableResponseDto, 
@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { Branch } from 'src/branch/branch.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class TableService {
@@ -19,6 +20,7 @@ export class TableService {
     @InjectRepository(Branch)
     private readonly branchRepository: Repository<Branch>,
     @InjectMapper() private readonly mapper: Mapper,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ){}
 
   /**
@@ -30,8 +32,12 @@ export class TableService {
   async create(
     createTableDto: CreateTableRequestDto
   ): Promise<TableResponseDto> {
+    const context = `${TableService.name}.${this.create.name}`;
     const branch = await this.branchRepository.findOneBy({ slug: createTableDto.branch });
-    if(!branch) throw new BadRequestException('Branch is not found');
+    if(!branch) {
+      this.logger.warn(`Branch ${createTableDto.branch} not found`, context);
+      throw new BadRequestException('Branch is not found');
+    }
 
     const tableData = this.mapper.map(createTableDto, CreateTableRequestDto, Table);
     const existedTable = await this.tableRepository.findOne({
@@ -42,11 +48,18 @@ export class TableService {
         name: tableData.name
       }
     });
-    if(existedTable) throw new BadRequestException('Table name already exists');
+    if(existedTable) {
+      this.logger.warn(`Table name ${createTableDto.name} already exists`, context);
+      throw new BadRequestException('Table name already exists');
+    }
     
     Object.assign(tableData, { branch });
     const table = this.tableRepository.create(tableData);
     const createdTable = await this.tableRepository.save(table);
+    this.logger.log(
+      `Table ${createTableDto.name} created successfully`,
+      context,
+    );
     const tableDto = this.mapper.map(createdTable, Table, TableResponseDto);
     return tableDto;
   }
@@ -57,8 +70,12 @@ export class TableService {
    * @returns {Promise<TableResponseDto[]>} The array of retrieved tables
    */
   async findAll(branch: string): Promise<TableResponseDto[]> {
+    const context = `${TableService.name}.${this.findAll.name}`;
     const branchData = await this.branchRepository.findOneBy({ slug: branch });
-    if(!branchData) throw new BadRequestException('Branch is not found');
+    if(!branchData) {
+      this.logger.warn(`Branch ${branch} not found`, context);
+      throw new BadRequestException('Branch is not found');
+    }
 
     const tables = await this.tableRepository.find({
       where: {
@@ -80,12 +97,20 @@ export class TableService {
   async changeStatus(
     slug: string
   ): Promise<TableResponseDto> {
+    const context = `${TableService.name}.${this.changeStatus.name}`;
     const table = await this.tableRepository.findOneBy({ slug });
-    if(!table) throw new BadRequestException('Table is not found');
+    if(!table) {
+      this.logger.warn(`Table ${slug} not found`, context);
+      throw new BadRequestException('Table is not found');
+    }
 
     const currentStatus = table.isEmpty;
     Object.assign(table, { isEmpty: !currentStatus });
     const updatedTable = await this.tableRepository.save(table);
+    this.logger.log(
+      `Table ${slug} changed status successfully`,
+      context,
+    );
     const tableDto = this.mapper.map(updatedTable, Table, TableResponseDto);
     return tableDto;
   }
@@ -102,13 +127,17 @@ export class TableService {
     slug: string, 
     updateTableDto: UpdateTableRequestDto
   ): Promise<TableResponseDto> {
+    const context = `${TableService.name}.${this.update.name}`;
     const table = await this.tableRepository.findOne({
       where: {
         slug
       },
       relations: ['branch']
     });
-    if(!table) throw new BadRequestException('Table is not found');
+    if(!table) {
+      this.logger.warn(`Table ${slug} not found`, context);
+      throw new BadRequestException('Table is not found');
+    } 
 
     const tableData = this.mapper.map(updateTableDto, UpdateTableRequestDto, Table);
     const isExist = await this.isExistUpdatedName(
@@ -116,10 +145,17 @@ export class TableService {
       table.name,
       table.branch.id
     );
-    if(isExist) throw new BadRequestException('The updated name already exists in this branch');
+    if(isExist) {
+      this.logger.warn(`Table name ${tableData.name} already exist in this branch`, context);
+      throw new BadRequestException('The updated name already exists in this branch');
+    }
 
     Object.assign(table, tableData);
     const updatedTable = await this.tableRepository.save(table);
+    this.logger.log(
+      `Table ${slug} updated successfully`,
+      context,
+    );
     const tableDto = this.mapper.map(updatedTable, Table, TableResponseDto);
     return tableDto;
   }
@@ -157,9 +193,17 @@ export class TableService {
    * @returns {Promise<number>} The number of deleted records
    */
   async remove(slug: string): Promise<number> {
+    const context = `${TableService.name}.${this.remove.name}`;
     const table = await this.tableRepository.findOneBy({ slug });
-    if(!table) throw new BadRequestException('Table is not found');
+    if(!table) {
+      this.logger.warn(`Table ${slug} not found`, context);
+      throw new BadRequestException('Table is not found');
+    }
     const deleted = await this.tableRepository.softDelete({ slug });
+    this.logger.log(
+      `Table ${slug} deleted successfully`,
+      context,
+    );
     return deleted.affected || 0;
   }
 }

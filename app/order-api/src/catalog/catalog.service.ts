@@ -1,17 +1,19 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Catalog } from "./catalog.entity";
 import { Repository } from "typeorm";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { CatalogResponseDto, CreateCatalogRequestDto, UpdateCatalogRequestDto } from "./catalog.dto";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 @Injectable()
 export class CatalogService {
   constructor(
     @InjectRepository(Catalog)
     private readonly catalogRepository: Repository<Catalog>,
-    @InjectMapper() private readonly mapper: Mapper
+    @InjectMapper() private readonly mapper: Mapper,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
  /**
@@ -23,15 +25,23 @@ export class CatalogService {
   async createCatalog(
     createCatalogDto: CreateCatalogRequestDto
   ): Promise<CatalogResponseDto>{
+    const context = `${CatalogService.name}.${this.createCatalog.name}`;
     const catalog = await this.catalogRepository.findOneBy({
       name: createCatalogDto.name
     });
-    if(catalog) throw new BadRequestException('Catalog name is existed');
+    if(catalog) {
+      this.logger.warn(`Catalog name ${createCatalogDto.name} does exists`, context);
+      throw new BadRequestException('Catalog name does exists');
+    }
 
     const catalogData = this.mapper.map(createCatalogDto, CreateCatalogRequestDto, Catalog);
     const newCatalog = this.catalogRepository.create(catalogData);
 
     const createdCatalog = await this.catalogRepository.save(newCatalog);
+    this.logger.log(
+      `Catalog ${createCatalogDto.name} created successfully`,
+      context,
+    );
 
     const catalogDto = this.mapper.map(createdCatalog, Catalog, CatalogResponseDto);
     return catalogDto;
@@ -58,12 +68,20 @@ export class CatalogService {
     slug: string,
     requestData: UpdateCatalogRequestDto
   ): Promise<CatalogResponseDto>{
+    const context = `${CatalogService.name}.${this.updateCatalog.name}`;
     const catalog = await this.catalogRepository.findOneBy({ slug });
-    if(!catalog) throw new BadRequestException('Catalog does not exist');
+    if(!catalog) {
+      this.logger.warn(`Catalog ${slug} not found`, context);
+      throw new BadRequestException('Catalog does not exist');
+    }
 
     const catalogData = this.mapper.map(requestData, UpdateCatalogRequestDto, Catalog);
     Object.assign(catalog, catalogData);
     const updatedCatalog = await this.catalogRepository.save(catalog);
+    this.logger.log(
+      `Catalog ${slug} updated successfully`,
+      context,
+    );
     const catalogDto = this.mapper.map(updatedCatalog, Catalog, CatalogResponseDto);
     return catalogDto;
   }
@@ -76,15 +94,25 @@ export class CatalogService {
   async deleteCatalog(
     slug: string
   ): Promise<number> {
+    const context = `${CatalogService.name}.${this.deleteCatalog.name}`;
     const catalog = await this.catalogRepository.findOne({
       where: { slug },
       relations: ['products']
     });
-    if(!catalog) throw new BadRequestException('Catalog does not exist');
-    if(catalog.products?.length > 0)
+    if(!catalog) {
+      this.logger.warn(`Catalog ${slug} not found`, context);
+      throw new BadRequestException('Catalog does not exist');
+    }
+    if(catalog.products?.length > 0) {
+      this.logger.warn(`Must change catalog of products before delete catalog ${slug}`, context);
       throw new BadRequestException('Must change catalog of products before delete this catalog');
+    }
 
     const deleted = await this.catalogRepository.softDelete({ slug });
+    this.logger.log(
+      `Catalog ${slug} deleted successfully`,
+      context,
+    );
     return deleted.affected || 0;
   }
 

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Variant } from './variant.entity';
 import { In, Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import {
 } from './variant.dto';
 import { Product } from 'src/product/product.entity';
 import { Size } from 'src/size/size.entity';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class VariantService {
@@ -22,6 +23,7 @@ export class VariantService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Size)
     private readonly sizeRepository: Repository<Size>,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
   /**
@@ -35,15 +37,22 @@ export class VariantService {
   async createVariant(
     createVariantDto: CreateVariantRequestDto,
   ): Promise<VariantResponseDto> {
+    const context = `${VariantService.name}.${this.createVariant.name}`;
     const size = await this.sizeRepository.findOne({
       where: { slug: createVariantDto.size },
     });
-    if (!size) throw new BadRequestException('The size is not exist');
+    if (!size) {
+      this.logger.warn(`Size ${createVariantDto.size} not found`, context);
+      throw new BadRequestException('The size is not exist');
+    }
 
     const product = await this.productRepository.findOne({
       where: { slug: createVariantDto.product },
     });
-    if (!product) throw new BadRequestException('The product is not exist');
+    if (!product) {
+      this.logger.warn(`Product ${createVariantDto.product} not found`, context);
+      throw new BadRequestException('The product is not exist');
+    }
 
     const variant = await this.variantRepository.findOne({
       where: {
@@ -55,7 +64,10 @@ export class VariantService {
         },
       },
     });
-    if (variant) throw new BadRequestException('The variant does exists');
+    if (variant) {
+      this.logger.warn(`Variant both size ${createVariantDto.size} and product ${createVariantDto.product} does exists`, context);
+      throw new BadRequestException('The variant does exists');
+    }
 
     const variantData = this.mapper.map(
       createVariantDto,
@@ -65,6 +77,10 @@ export class VariantService {
     Object.assign(variantData, { size, product });
     const newVariant = this.variantRepository.create(variantData);
     const createdVariant = await this.variantRepository.save(newVariant);
+    this.logger.log(
+      `Variant with both size ${createVariantDto.size} and product ${createVariantDto.product} created successfully`,
+      context,
+    );
     const variantDto = this.mapper.map(
       createdVariant,
       Variant,
@@ -105,14 +121,22 @@ export class VariantService {
     slug: string,
     requestData: UpdateVariantRequestDto,
   ): Promise<VariantResponseDto> {
+    const context = `${VariantService.name}.${this.updateVariant.name}`;
     const variant = await this.variantRepository.findOne({
       where: { slug },
       relations: ['size', 'product'],
     });
-    if (!variant) throw new BadRequestException('Variant not found');
+    if (!variant) {
+      this.logger.warn(`Variant ${slug} not found`, context);
+      throw new BadRequestException('Variant not found');
+    }
 
     Object.assign(variant, requestData);
     const updatedVariant = await this.variantRepository.save(variant);
+    this.logger.log(
+      `Variant ${slug} updated successfully`,
+      context,
+    );
     const variantDto = this.mapper.map(
       updatedVariant,
       Variant,
@@ -128,10 +152,19 @@ export class VariantService {
    * @throws {BadRequestException} If variant is not found
    */
   async deleteVariant(slug: string): Promise<number> {
+    const context = `${VariantService.name}.${this.deleteVariant.name}`;
+
     const variant = await this.variantRepository.findOneBy({ slug });
-    if (!variant) throw new BadRequestException('Variant not found');
+    if (!variant) {
+      this.logger.warn(`Variant ${slug} not found`, context);
+      throw new BadRequestException('Variant not found');
+    }
 
     const deleted = await this.variantRepository.softDelete({ slug });
+    this.logger.log(
+      `Variant ${slug} deleted successfully`,
+      context,
+    );
     return deleted.affected || 0;
   }
 }

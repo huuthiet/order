@@ -10,9 +10,11 @@ import { CreateSizeRequestDto, UpdateSizeRequestDto } from "./size.dto";
 import { BadRequestException } from "@nestjs/common";
 import { Variant } from "src/variant/variant.entity";
 import { Product } from "src/product/product.entity";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+
 
 describe('SizeService', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let service: SizeService;
   let sizeRepositoryMock: MockType<Repository<Size>>;
   let mapperMock: MockType<Mapper>;
@@ -26,15 +28,19 @@ describe('SizeService', () => {
           useFactory: repositoryMockFactory,
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
-        }
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
+        },
       ]
     }).compile();
 
     service = module.get<SizeService>(SizeService);
     sizeRepositoryMock = module.get(getRepositoryToken(Size));
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {
