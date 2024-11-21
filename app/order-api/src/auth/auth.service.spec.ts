@@ -24,6 +24,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { Logger } from 'src/logger/logger.entity';
 import { AuthException } from './auth.exception';
+import { Branch } from 'src/branch/branch.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -42,6 +43,10 @@ describe('AuthService', () => {
         },
         {
           provide: getRepositoryToken(User),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Branch),
           useFactory: repositoryMockFactory,
         },
         {

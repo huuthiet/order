@@ -7,6 +7,7 @@ import {
   INVALID_PHONENUMBER,
 } from './auth.validation';
 import { AutoMap } from '@automapper/classes';
+import { BranchResponseDto } from 'src/branch/branch.dto';
 
 export class LoginAuthRequestDto {
   @ApiProperty({ example: '08123456789' })
@@ -32,6 +33,11 @@ export class RegisterAuthRequestDto extends LoginAuthRequestDto {
   @IsNotEmpty({ message: INVALID_LASTNAME })
   @AutoMap()
   lastName: string;
+
+  @ApiProperty({ example: 'XOT7hr58Q' })
+  @IsNotEmpty({ message: INVALID_LASTNAME })
+  @AutoMap()
+  branchSlug: string;
 }
 
 export class LoginAuthResponseDto {
@@ -58,6 +64,34 @@ export class AuthRefreshRequestDto {
   @AutoMap()
   @IsString()
   refreshToken: string;
+}
+
+export class UpdateAuthProfileRequestDto {
+  @ApiProperty({ example: 'John' })
+  @AutoMap()
+  @IsNotEmpty({ message: INVALID_FIRSTNAME })
+  readonly firstName: string;
+
+  @ApiProperty({ example: 'Doe' })
+  @AutoMap()
+  @IsNotEmpty({ message: INVALID_LASTNAME })
+  readonly lastName: string;
+
+  @ApiProperty({ example: '1990-01-01' })
+  @AutoMap()
+  readonly dob: string;
+
+  @ApiProperty({ example: 'johndoe@gmail.com' })
+  @AutoMap()
+  readonly email: string;
+
+  @ApiProperty({ example: 'Jl. Raya' })
+  @AutoMap()
+  readonly address: string;
+
+  @ApiProperty({ example: 'XOT7hr58Q' })
+  @AutoMap()
+  readonly branchSlug: string;
 }
 
 export class AuthProfileResponseDto {
@@ -88,6 +122,10 @@ export class AuthProfileResponseDto {
   @AutoMap()
   @ApiProperty()
   readonly address: string;
+
+  @AutoMap(() => BranchResponseDto)
+  @ApiProperty()
+  readonly branch: BranchResponseDto;
 }
 
 // PickType: Get the fields from AuthProfileResponseDto
