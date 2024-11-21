@@ -19,6 +19,10 @@
 
     "createSizeSuccess": "Tạo kích thước thành công",
     "updateSizeSuccess": "Cập nhật kích thước thành công",
-    "deleteSizeSuccess": "Xóa kích thước thành công"
+    "deleteSizeSuccess": "Xóa kích thước thành công",
+
+    "createProductSuccess": "Tạo món ăn thành công",
+    "updateProductSuccess": "Cập nhật món ăn thành công",
+    "deleteProductSuccess": "Xóa món ăn thành công"
   }
 }
