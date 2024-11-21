@@ -19,7 +19,7 @@ export interface ICartItem {
   image: string
   name: string
   quantity: number
-  // price: number
+  price: number
   description: string
   isLimit: boolean
   catalog: ICatalog

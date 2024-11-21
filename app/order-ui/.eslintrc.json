@@ -16,7 +16,7 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["react", "prettier"],
+  "plugins": ["react", "prettier", "prettier-plugin-tailwindcss"],
   "rules": {
     "@typescript-eslint/triple-slash-reference": "off"
   }

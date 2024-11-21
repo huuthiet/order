@@ -10,6 +10,7 @@ export interface IProduct {
   catalog: ICatalog
   variants: IProductVariant[]
   slug: string
+  note?: string
   createdAt: string
 }
 

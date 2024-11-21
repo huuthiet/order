@@ -12,12 +12,12 @@ import {
   DialogTrigger,
   Label
 } from '@/components/ui'
-import { IProduct } from '@/types'
+import { ICartItem } from '@/types'
 import { useState } from 'react'
 import { useCartItemStore } from '@/stores'
 
 interface DialogDeleteCartItemProps {
-  cartItem: IProduct
+  cartItem: ICartItem
 }
 
 export default function DeleteCartItemDialog({ cartItem }: DialogDeleteCartItemProps) {

@@ -11,6 +11,7 @@ import { CheckoutCart, PaymentMethodSelect, TableSelect } from '@/app/system/men
 import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
 import { DeleteCartItemDialog } from '@/components/app/dialog'
+import { publicFileURL } from '@/constants'
 
 export default function ConfirmOrderPage() {
   const { t } = useTranslation('menu')
@@ -49,14 +50,14 @@ export default function ConfirmOrderPage() {
                     <div className="flex w-full col-span-2 gap-2">
                       <div className="flex flex-row items-center justify-center gap-2">
                         <img
-                          src={item.image}
+                          src={`${publicFileURL}/${item.image}`}
                           alt={item.name}
                           className="object-cover w-24 h-16 rounded-lg"
                         />
                         <div className="flex flex-col">
                           <span className="font-bold truncate">{item.name}</span>
                           <span className="text-sm text-muted-foreground">
-                            {item.variants.toLocaleString('vi-VN')} VND
+                            {`${item.price.toLocaleString('vi-VN')}đ`}
                           </span>
                         </div>
                       </div>
@@ -66,7 +67,7 @@ export default function ConfirmOrderPage() {
                     </div>
                     <div className="text-center">
                       <span className="text-sm font-semibold text-primary">
-                        {item.variants.toLocaleString('vi-VN')} VND
+                        {`${item.price.toLocaleString('vi-VN')}đ`}
                       </span>
                     </div>
                     <div className="flex justify-center">
