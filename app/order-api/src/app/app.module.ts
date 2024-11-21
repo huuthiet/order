@@ -23,6 +23,7 @@ import { LoggerModule } from 'src/logger/logger.module';
 import { AppSubscriber } from './app.subscriber';
 import { TableModule } from 'src/table/table.module';
 import { MenuItemModule } from 'src/menu-item/menu-item.module';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MenuItemModule } from 'src/menu-item/menu-item.module';
     TransactionModule,
     LoggerModule,
     TableModule,
+    PaymentModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
