@@ -20,15 +20,15 @@ export default function CheckoutCart() {
 
   // const [activeTab, setActiveTab] = React.useState<Menu.DINE_IN | Menu.TAKE_AWAY>(Menu.DINE_IN)
   const { getCartItems, removeCartItem } = useCartItemStore()
-  const subtotal = getCartItems().reduce((acc, item) => acc + item.price * item.quantity, 0)
+  // const subtotal = getCartItems().reduce((acc, item) => acc + item.price * item.quantity, 0)
   const discount = 0
-  const vat = subtotal * 0.08 // Calculate 8% VAT
-  const total = subtotal - discount + vat // Add VAT to total
+  // const vat = subtotal * 0.08 // Calculate 8% VAT
+  // const total = subtotal - discount + vat // Add VAT to total
 
   const navigate = useNavigate()
 
-  const handleRemoveCartItem = (id: number) => {
-    removeCartItem(id)
+  const handleRemoveCartItem = (slug: string) => {
+    removeCartItem(slug)
   }
 
   const handleConfirm = () => {
@@ -97,7 +97,7 @@ export default function CheckoutCart() {
               </div>
             </div>
             {getCartItems().map((item) => (
-              <div key={item.id} className="flex flex-col items-center gap-4 pb-4 border-b">
+              <div key={item.slug} className="flex flex-col items-center gap-4 pb-4 border-b">
                 <div className="flex flex-row items-center flex-1 w-full gap-2 rounded-xl">
                   <img
                     src={item.image}
@@ -109,10 +109,10 @@ export default function CheckoutCart() {
                       <div className="flex flex-col flex-1 min-w-0">
                         <span className="font-bold truncate">{item.name}</span>
                         <span className="text-xs font-thin text-muted-foreground">
-                          {item.price} VND
+                          {/* {item.price} VND */}
                         </span>
                       </div>
-                      <Button variant="ghost" onClick={() => handleRemoveCartItem(item.id)}>
+                      <Button variant="ghost" onClick={() => handleRemoveCartItem(item.slug)}>
                         <Trash2 size={20} className="text-muted-foreground" />
                       </Button>
                     </div>
@@ -120,7 +120,7 @@ export default function CheckoutCart() {
                     <div className="flex items-center justify-between flex-1 w-full text-sm font-medium">
                       <QuantitySelector cartItem={item} />
                       <span className="font-semibold text-muted-foreground">
-                        {item.price.toLocaleString('vi-VN')} VND
+                        {/* {item.price.toLocaleString('vi-VN')} VND */}
                       </span>
                     </div>
                   </div>
@@ -138,7 +138,7 @@ export default function CheckoutCart() {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('order.total')}</span>
-            <span>{subtotal.toLocaleString('vi-VN')} VND</span>
+            {/* <span>{subtotal.toLocaleString('vi-VN')} VND</span> */}
           </div>
           <div className="flex justify-between">
             <span className=" text-muted-foreground">{t('order.discount')}</span>
@@ -151,13 +151,13 @@ export default function CheckoutCart() {
             <span className="text-xs text-muted-foreground">{t('order.vat')}</span>
             <span className="text-xs text-muted-foreground">
               {' '}
-              {vat.toLocaleString('vi-VN')} VND
+              {/* {vat.toLocaleString('vi-VN')} VND */}
             </span>
           </div>
           <div className="flex justify-between pt-2 font-medium border-t">
             <span className="font-semibold">{t('order.subTotal')}</span>
             <span className="text-lg font-bold text-primary">
-              {total.toLocaleString('vi-VN')} VND
+              {/* {total.toLocaleString('vi-VN')} VND */}
             </span>
           </div>
         </div>

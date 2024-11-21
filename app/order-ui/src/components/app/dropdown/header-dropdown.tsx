@@ -1,4 +1,4 @@
-import { LifeBuoy, Settings, User } from 'lucide-react'
+import { User } from 'lucide-react'
 
 import {
   Button,
@@ -31,19 +31,13 @@ export default function HeaderDropdown() {
             <span>Profile</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Settings />
-            <span>Settings</span>
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        {/* <DropdownMenuItem>
           <LifeBuoy />
           <span>Support</span>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator /> */}
         <LogoutDialog />
       </DropdownMenuContent>
     </DropdownMenu>

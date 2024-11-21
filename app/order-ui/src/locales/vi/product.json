@@ -51,8 +51,6 @@
 
     "create": "Thêm món ăn",
     "createProductDescription": "Điền thông tin để tạo món ăn",
-    "productImage": "Hình ảnh món ăn",
-    "enterProductImage": "Nhập hình ảnh món ăn",
     "productName": "Tên món ăn",
     "enterProductName": "Nhập tên món ăn",
     "productDescription": "Mô tả món ăn",
@@ -64,15 +62,55 @@
     "update": "Cập nhật món ăn",
     "updateProductDescription": "Điền thông tin để cập nhật món ăn",
 
+    "uploadImage": "Tải hình ảnh",
+    "uploadImageDescription": "Chọn hình ảnh từ máy tính của bạn",
+    "addImage": "Thêm hình ảnh",
+
     "delete": "Xóa món ăn",
     "deleteProductWarning1": "Bạn sắp sửa xóa món ăn",
     "deleteProductConfirmation": "Bạn có chắc muốn xóa món ăn",
+
+    "createVariant": "Thêm biến thể",
+    "createVariantDescription": "Điền thông tin để tạo biến thể",
+    "price": "Giá",
+    "enterPrice": "Nhập giá",
+    "size": "Kích thước",
+    "selectSize": "Chọn kích thước",
+
+    "updateVariant": "Cập nhật biến thể",
+    "deleteVariant": "Xóa biến thể",
 
     "image": "Hình ảnh",
     "slug": "Slug",
     "createdAt": "Thời gian tạo",
     "name": "Tên",
     "catalog": "Danh mục",
-    "description": "Mô tả"
+    "description": "Mô tả",
+    "rating": "Đánh giá",
+    "variant": "Biến thể"
+  },
+  "productVariant": {
+    "title": "Quản lý biến thể",
+    "name": "Tên biến thể",
+    "price": "Giá",
+    "size": "Kích thước",
+    "createdAt": "Thời gian tạo",
+
+    "create": "Thêm biến thể",
+    "createProductVariantDescription": "Điền thông tin để tạo biến thể",
+    "productVariantName": "Tên biến thể",
+    "enterProductVariantName": "Nhập tên biến thể",
+    "productVariantPrice": "Giá biến thể",
+    "enterProductVariantPrice": "Nhập giá biến thể",
+    "productVariantSize": "Kích thước biến thể",
+    "selectProductVariantSize": "Chọn kích thước biến thể",
+
+    "update": "Cập nhật biến thể",
+    "updateProductVariantDescription": "Điền thông tin để cập nhật biến thể",
+
+    "delete": "Xóa biến thể",
+    "deleteProductVariantWarning1": "Bạn sắp sửa xóa biến thể",
+    "deleteProductVariantWarning2": " của món ăn hiện tại.",
+    "deleteProductVariantConfirmation": "Bạn có chắc muốn xóa biến thể này không?"
   }
 }

@@ -21,7 +21,7 @@ export default function ProductManagementPage() {
                 <SquareMenu />
                 {t('product.title')}
               </span>
-              <Tabs defaultValue="catalog" className="w-full">
+              <Tabs defaultValue="product" className="w-full">
                 <TabsList className="grid grid-cols-3 w-96">
                   <TabsTrigger value="catalog">{t('tab.catalog')}</TabsTrigger>
                   <TabsTrigger value="size">{t('tab.size')}</TabsTrigger>

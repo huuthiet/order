@@ -1,16 +1,18 @@
-import { IDish } from './dish.type'
+import { IProduct, IProductVariant } from '@/types'
 
-interface CartItem extends IDish {
+interface CartItem extends IProduct {
   quantity: number
+  selectedVariant?: IProductVariant // Add this line
+  note?: string
 }
 
 export interface ICartItemStore {
   cartItems: CartItem[]
   getCartItems: () => CartItem[]
-  addCartItem: (item: IDish) => void
-  updateCartItemQuantity: (id: number, quantity: number) => void
-  addNote: (id: number, note: string) => void
+  addCartItem: (item: IProduct) => void
+  updateCartItemQuantity: (id: string, quantity: number) => void
+  addNote: (id: string, note: string) => void
   addPaymentMethod: (paymentMethod: string) => void
-  removeCartItem: (id: number) => void
+  removeCartItem: (id: string) => void
   clearCart: () => void
 }

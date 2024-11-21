@@ -23,6 +23,12 @@
 
     "createProductSuccess": "Tạo món ăn thành công",
     "updateProductSuccess": "Cập nhật món ăn thành công",
-    "deleteProductSuccess": "Xóa món ăn thành công"
+    "deleteProductSuccess": "Xóa món ăn thành công",
+    "uploadImageSuccess": "Tải hình ảnh thành công",
+    "uploadImageError": "Tải hình ảnh thất bại",
+
+    "createProductVariantSuccess": "Tạo biến thể món ăn thành công",
+    "updateProductVariantSuccess": "Cập nhật biến thể món ăn thành công",
+    "deleteProductVariantSuccess": "Xóa biến thể món ăn thành công"
   }
 }

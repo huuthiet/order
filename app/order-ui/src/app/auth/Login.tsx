@@ -102,7 +102,7 @@ export default function Login() {
   // Redirect if the user is already authenticated
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate(ROUTE.HOME, { replace: true })
+      navigate(ROUTE.STAFF_MENU, { replace: true })
     }
   }, [isAuthenticated, navigate])
 

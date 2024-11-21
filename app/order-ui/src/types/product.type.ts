@@ -8,9 +8,20 @@ export interface IProduct {
   image: string
   rating: number
   catalog: ICatalog
-  variants: []
+  variants: IProductVariant[]
   slug: string
   createdAt: string
+}
+
+export interface IProductVariant {
+  price: number
+  product: IProduct
+  size: {
+    name: string
+    description: string
+    slug: string
+  }
+  slug: string
 }
 
 export interface ICreateProductRequest {
@@ -27,4 +38,15 @@ export interface IUpdateProductRequest {
   isLimit: boolean
   isActive?: boolean
   catalog: string
+}
+
+export interface ICreateProductVariantRequest {
+  price: number
+  size: string //Slug of size of the product
+  product: string //Slug of the product
+}
+
+export interface IUpdateProductVariantRequest {
+  price: number
+  product: string //Slug of the product
 }

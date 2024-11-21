@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal, SquareMousePointer } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 
@@ -12,7 +12,13 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui'
 import { IProduct } from '@/types'
-import { UpdateProductDialog, DeleteProductDialog } from '@/components/app/dialog'
+import {
+  UpdateProductDialog,
+  DeleteProductDialog,
+  UploadProductImageDialog
+} from '@/components/app/dialog'
+import { publicFileURL, ROUTE } from '@/constants'
+import { NavLink } from 'react-router-dom'
 
 export const useProductColumns = (): ColumnDef<IProduct>[] => {
   const { t } = useTranslation(['product'])
@@ -20,7 +26,13 @@ export const useProductColumns = (): ColumnDef<IProduct>[] => {
   return [
     {
       accessorKey: 'image',
-      header: ({ column }) => <DataTableColumnHeader column={column} title={t('product.image')} />
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('product.image')} />,
+      cell: ({ row }) => {
+        const image = row.getValue('image')
+        return image ? (
+          <img src={`${publicFileURL}/${image}`} className="object-contain w-32 rounded-md" />
+        ) : null
+      }
     },
     {
       accessorKey: 'slug',
@@ -66,8 +78,18 @@ export const useProductColumns = (): ColumnDef<IProduct>[] => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>{tCommon('common.action')}</DropdownMenuLabel>
+                <NavLink
+                  to={`${ROUTE.STAFF_PRODUCT_DETAIL}/${product.slug}`}
+                  className="flex items-center justify-start w-full"
+                >
+                  <Button variant="ghost" className="flex justify-start w-full gap-1 px-2 text-sm">
+                    <SquareMousePointer className="icon" />
+                    {tCommon('common.viewDetail')}
+                  </Button>
+                </NavLink>
                 <UpdateProductDialog product={product} />
                 <DeleteProductDialog product={product} />
+                <UploadProductImageDialog product={product} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
