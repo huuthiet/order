@@ -116,7 +116,7 @@ export class ProductService {
       Product,
     );
     Object.assign(productData, { catalog });
-
+    
     const newProduct = this.productRepository.create(productData);
     const createdProduct = await this.productRepository.save(newProduct);
     this.logger.log(

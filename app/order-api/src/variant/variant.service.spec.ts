@@ -11,6 +11,9 @@ import { mapperMockFactory } from "src/test-utils/mapper-mock.factory";
 import { CreateVariantRequestDto, UpdateVariantRequestDto } from "./variant.dto";
 import { BadRequestException } from "@nestjs/common";
 import { Catalog } from "src/catalog/catalog.entity";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+
 
 describe('VariantService', () => {
   const mapperProvider = 'automapper:nestjs:default';
@@ -37,8 +40,12 @@ describe('VariantService', () => {
           useFactory: repositoryMockFactory
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
         },
       ]
     }).compile();
@@ -47,7 +54,7 @@ describe('VariantService', () => {
     productRepositoryMock = module.get(getRepositoryToken(Product));
     variantRepositoryMock = module.get(getRepositoryToken(Variant));
     sizeRepositoryMock = module.get(getRepositoryToken(Size));
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {
@@ -164,7 +171,7 @@ describe('VariantService', () => {
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(size);
       (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
-      (variantRepositoryMock.create as jest.Mock).mockResolvedValue(mockOutput);
+      (variantRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (variantRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);      
 
