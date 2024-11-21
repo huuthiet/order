@@ -1,12 +1,25 @@
-import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
-import { Product } from "./product.entity";
-import { In, Repository } from "typeorm";
-import { InjectMapper } from "@automapper/nestjs";
-import { Mapper } from "@automapper/core";
-import { InjectRepository } from "@nestjs/typeorm";
-import { CreateProductRequestDto, ProductResponseDto, UpdateProductRequestDto } from "./product.dto";
-import { Variant } from "src/variant/variant.entity";
-import { Catalog } from "src/catalog/catalog.entity";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
+import { Product } from './product.entity';
+import { In, Repository } from 'typeorm';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  CreateProductRequestDto,
+  ProductResponseDto,
+  UpdateProductRequestDto,
+} from './product.dto';
+import { Variant } from 'src/variant/variant.entity';
+import { Catalog } from 'src/catalog/catalog.entity';
+import { FileService } from 'src/file/file.service';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { ProductException } from './product.exception';
+import ProductValidation from './product.validation';
 
 @Injectable()
 export class ProductService {
@@ -18,7 +31,60 @@ export class ProductService {
     @InjectRepository(Catalog)
     private readonly catalogRepository: Repository<Catalog>,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly fileService: FileService,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
+
+  /**
+   * Get product by slug
+   * @param {string} slug The product slug is retrieved
+   * @returns {Promise<ProductResponseDto>} The product data is retrieved
+   * @throws {ProductException} if product not found
+   */
+  async getProduct(slug: string): Promise<ProductResponseDto> {
+    const product = await this.productRepository.findOne({
+      where: { slug },
+      relations: ['catalog', 'variants.size'],
+    });
+    if (!product) {
+      throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
+    }
+    return this.mapper.map(product, Product, ProductResponseDto);
+  }
+
+  /**
+   * Upload product image
+   * @param {string} slug The product slug is uploaded image
+   * @param {Express.Multer.File} file The image file is uploaded
+   * @returns {Promise<ProductResponseDto>} The product data after uploaded image
+   * @throws {ProductException} if product is not found
+   */
+  async uploadProductImage(
+    slug: string,
+    file: Express.Multer.File,
+  ): Promise<ProductResponseDto> {
+    const context = `${ProductService.name}.${this.uploadProductImage.name}`;
+    const product = await this.productRepository.findOne({
+      where: {
+        slug,
+      },
+    });
+    if (!product) {
+      this.logger.error(ProductValidation.PRODUCT_NOT_FOUND.message, context);
+      throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
+    }
+
+    const image = await this.fileService.uploadFile(file);
+    product.image = `${image.name}`;
+    const updatedProduct = await this.productRepository.save(product);
+
+    this.logger.log(
+      `Product image ${image.name} uploaded successfully`,
+      context,
+    );
+
+    return this.mapper.map(updatedProduct, Product, ProductResponseDto);
+  }
 
   /**
    * Create a new product
@@ -28,109 +94,141 @@ export class ProductService {
    * @throws {BadRequestException} if the catalog with specified slug is not found
    */
   async createProduct(
-    createProductDto: CreateProductRequestDto
-  ): Promise<ProductResponseDto>{
+    createProductDto: CreateProductRequestDto,
+  ): Promise<ProductResponseDto> {
+    const context = `${ProductService.name}.${this.createProduct.name}`;
     const product = await this.productRepository.findOneBy({
-      name: createProductDto.name
+      name: createProductDto.name,
     });
-    if(product) throw new BadRequestException('Product name is existed');
+    if (product) {
+      this.logger.error(ProductValidation.PRODUCT_NAME_EXIST.message, context);
+      throw new ProductException(ProductValidation.PRODUCT_NAME_EXIST);
+    }
 
-    const catalog = await this.catalogRepository.findOneBy({ slug: createProductDto.catalog });
-    if(!catalog) throw new BadRequestException('Catalog is not found');
+    const catalog = await this.catalogRepository.findOneBy({
+      slug: createProductDto.catalog,
+    });
+    if (!catalog) throw new BadRequestException('Catalog is not found');
 
-    const productData = this.mapper.map(createProductDto, CreateProductRequestDto, Product);
+    const productData = this.mapper.map(
+      createProductDto,
+      CreateProductRequestDto,
+      Product,
+    );
     Object.assign(productData, { catalog });
     
-    const newProduct = await this.productRepository.create(productData);
+    const newProduct = this.productRepository.create(productData);
     const createdProduct = await this.productRepository.save(newProduct);
-    const productDto = this.mapper.map(createdProduct, Product, ProductResponseDto);
+    this.logger.log(
+      `Product ${createdProduct.name} created successfully`,
+      context,
+    );
+
+    const productDto = this.mapper.map(
+      createdProduct,
+      Product,
+      ProductResponseDto,
+    );
     return productDto;
   }
 
   /**
    * Get all products or get products by catalog
-   * @param {string} catalog The catalog slug if get product by catalog 
+   * @param {string} catalog The catalog slug if get product by catalog
    * @returns {Promise<ProductResponseDto[]>} The products array is retrieved
    */
-  async getAllProducts(
-    catalog: string
-  ): Promise<ProductResponseDto[]> {
+  async getAllProducts(catalog?: string): Promise<ProductResponseDto[]> {
     const products = await this.productRepository.find({
       where: {
         catalog: {
-          slug: catalog
-        }
+          slug: catalog,
+        },
       },
-      relations: [
-        'catalog',
-        'variants.size'
-      ]
+      relations: ['catalog', 'variants.size'],
     });
-    const productsDto = this.mapper.mapArray(products, Product, ProductResponseDto);
+    const productsDto = this.mapper.mapArray(
+      products,
+      Product,
+      ProductResponseDto,
+    );
     return productsDto;
   }
 
   /**
    * Update the product information
    * @param {string} slug The product slug is updated
-   * @param {UpdateProductRequestDto} requestData The data to update product 
+   * @param {UpdateProductRequestDto} requestData The data to update product
    * @returns {Promise<ProductResponseDto>} The product data after updated
    * @throws {BadRequestException} if product that need updating is not found
    * @throws {BadRequestException} if catalog update for product is not found
    */
   async updateProduct(
     slug: string,
-    requestData: UpdateProductRequestDto
+    requestData: UpdateProductRequestDto,
   ): Promise<ProductResponseDto> {
+    const context = `${ProductService.name}.${this.updateProduct.name}`;
     const product = await this.productRepository.findOneBy({ slug });
-    if(!product) throw new BadRequestException('Product not found');
+    if (!product)
+      throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
 
-    const catalog = await this.catalogRepository.findOneBy({ slug: requestData.catalog });
-    if(!catalog) throw new BadRequestException('Catalog not found');
+    const catalog = await this.catalogRepository.findOneBy({
+      slug: requestData.catalog,
+    });
+    if (!catalog) throw new BadRequestException('Catalog not found');
 
-    const productData = this.mapper.map(requestData, UpdateProductRequestDto, Product);
+    const productData = this.mapper.map(
+      requestData,
+      UpdateProductRequestDto,
+      Product,
+    );
 
-    Object.assign(productData, { catalog });
-    Object.assign(product, productData);
+    Object.assign(product, { ...productData, catalog });
     const updatedProduct = await this.productRepository.save(product);
-    const productDto = this.mapper.map(updatedProduct, Product, ProductResponseDto);
+    this.logger.log(
+      `Product ${updatedProduct.name} updated successfully`,
+      context,
+    );
+
+    const productDto = this.mapper.map(
+      updatedProduct,
+      Product,
+      ProductResponseDto,
+    );
     return productDto;
   }
-  
+
   /**
    * Delete product by slug
    * @param {string} slug The slug of product is deleted
    * @returns {Promise<number>} The number of product records is deleted
    * @throws {BadRequestException} if product is not found
    */
-  async deleteProduct(
-    slug: string
-  ): Promise<number>{
+  async deleteProduct(slug: string): Promise<number> {
+    const context = `${ProductService.name}.${this.deleteProduct.name}`;
     const product = await this.productRepository.findOne({
       where: { slug },
-      relations: ['variants']
+      relations: ['variants'],
     });
-    if(!product) throw new BadRequestException('Product not found');
+    if (!product) throw new BadRequestException('Product not found');
 
     // Delete variants
     await this.deleteVariantsRelatedProduct(product.variants);
-
     const deleted = await this.productRepository.softDelete({ slug });
+    this.logger.log(`Product ${slug} deleted successfully`, context);
+
     return deleted.affected || 0;
   }
 
   /**
    * Deleted list variants is related to product
-   * @param {Variant[]} variants The array of variants is deleted 
+   * @param {Variant[]} variants The array of variants is deleted
    */
-  async deleteVariantsRelatedProduct(
-  variants: Variant[]
-  ): Promise<void> {
-    if(variants.length < 1) return;
+  async deleteVariantsRelatedProduct(variants: Variant[]): Promise<void> {
+    if (variants.length < 1) return;
 
     const variantSlugs = variants.map((item) => item.slug);
     await this.variantRepository.softDelete({
       slug: In(variantSlugs),
-    })
+    });
   }
 }

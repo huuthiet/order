@@ -9,10 +9,14 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -28,6 +32,7 @@ import {
 } from './product.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Product')
 @Controller('products')
@@ -36,7 +41,6 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Post()
-  @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -93,7 +97,6 @@ export class ProductController {
   }
 
   @Patch(':slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -101,11 +104,7 @@ export class ProductController {
     type: ProductResponseDto,
   })
   @ApiOperation({ summary: 'Update product' })
-  @ApiResponseWithType({
-    status: HttpStatus.OK,
-    description: 'Update product successfully',
-    type: ProductResponseDto,
-  })
+  @ApiResponse({ status: 200, description: 'Update product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -135,7 +134,6 @@ export class ProductController {
   }
 
   @Delete(':slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -161,5 +159,67 @@ export class ProductController {
       timestamp: new Date().toISOString(),
       result: `${result} product have been deleted successfully`,
     } as AppResponseDto<string>;
+  }
+
+  @Patch(':slug/upload')
+  @HttpCode(HttpStatus.OK)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Product image have been uploaded successfully',
+    type: ProductResponseDto,
+  })
+  @ApiOperation({ summary: 'Upload product image' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product image have been uploaded successfully',
+  })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadProductImage(
+    @Param('slug') slug: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const result = await this.productService.uploadProductImage(slug, file);
+    return {
+      message: 'Product have been created successfully',
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<ProductResponseDto>;
+  }
+
+  @Get(':slug')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Product retrieved successfully',
+    type: ProductResponseDto,
+  })
+  @ApiOperation({ summary: 'Get product' })
+  @ApiResponse({ status: 200, description: 'Product retrieved successfully' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  async getProduct(
+    @Param('slug') slug: string,
+  ): Promise<AppResponseDto<ProductResponseDto>> {
+    const result = await this.productService.getProduct(slug);
+    return {
+      message: 'Product retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<ProductResponseDto>;
   }
 }

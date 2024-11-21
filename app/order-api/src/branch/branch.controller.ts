@@ -24,6 +24,7 @@ export class BranchController {
   constructor(private branchService: BranchService) {}
 
   @Post()
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create new branch' })
   @ApiResponseWithType({

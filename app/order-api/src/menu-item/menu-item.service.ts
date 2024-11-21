@@ -26,9 +26,16 @@ export class MenuItemService {
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
+  /**
+   * Create a menu item
+   * @param {CreateMenuItemDto[]} createMenuItemDto The menu item data to be created
+   * @returns {Promise<MenuItemResponseDto>} The menu item data after created
+   * @throws {Error} if product or menu is not found
+   */
   async bulkCreate(
     createMenuItemDto: CreateMenuItemDto[],
   ): Promise<MenuItemResponseDto[]> {
+    const context = `${MenuItemService.name}.${this.bulkCreate.name}`;
     let menuItems: MenuItem[] = [];
 
     for (const menuItemDto of createMenuItemDto) {
@@ -54,12 +61,24 @@ export class MenuItemService {
     await this.menuRepository.manager.transaction(async (manager) => {
       await manager.insert(MenuItem, menuItems);
     });
-    this.logger.log(`Menu items created: ${menuItems.map((m) => m.id)}`);
+    this.logger.log(
+      `Menu items created: ${menuItems.map((m) => m.id)}`,
+      context,
+    );
 
     return this.mapper.mapArray(menuItems, MenuItem, MenuItemResponseDto);
   }
 
-  async create(createMenuItemDto: CreateMenuItemDto) {
+  /**
+   * Create a menu item
+   * @param {CreateMenuItemDto} createMenuItemDto The menu item data to be created
+   * @returns {Promise<MenuItemResponseDto>} The menu item data after created
+   * @throws {Error} if product or menu is not found
+   */
+  async create(
+    createMenuItemDto: CreateMenuItemDto,
+  ): Promise<MenuItemResponseDto> {
+    const context = `${MenuItemService.name}.${this.create.name}`;
     const product = await this.productRepository.findOne({
       where: { slug: createMenuItemDto.productSlug },
     });
@@ -79,17 +98,34 @@ export class MenuItemService {
 
     this.menuItemRepository.create(menuItem);
     const createdMenuItem = await this.menuItemRepository.save(menuItem);
-    this.logger.log(`Menu item created: ${createdMenuItem.id}`);
+    this.logger.log(`Menu item created: ${createdMenuItem.id}`, context);
 
     return this.mapper.map(createdMenuItem, MenuItem, MenuItemResponseDto);
   }
 
-  findAll() {
-    return `This action returns all menuItem`;
+  /**
+   * Retrieve all menu items
+   * @returns {Promise<MenuItemResponseDto[]>} The menu items data
+   */
+  async findAll(): Promise<MenuItemResponseDto[]> {
+    const menuItems = await this.menuItemRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['product'],
+    });
+    return this.mapper.mapArray(menuItems, MenuItem, MenuItemResponseDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} menuItem`;
+  /**
+   * Retrieve specific menu item
+   * @param {string} slug
+   * @returns {Promise<MenuItemResponseDto>} The menu item data
+   */
+  async findOne(slug: string): Promise<MenuItemResponseDto> {
+    const menuItem = await this.menuItemRepository.findOne({
+      where: { slug },
+    });
+    if (!menuItem) throw new Error('Menu item not found');
+    return this.mapper.map(menuItem, MenuItem, MenuItemResponseDto);
   }
 
   update(id: number, updateMenuItemDto: UpdateMenuItemDto) {

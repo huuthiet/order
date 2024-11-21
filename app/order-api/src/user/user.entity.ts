@@ -1,6 +1,7 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Base } from 'src/app/base.entity';
 import { AutoMap } from '@automapper/classes';
+import { Branch } from 'src/branch/branch.entity';
 
 @Entity('user_tbl')
 export class User extends Base {
@@ -34,4 +35,14 @@ export class User extends Base {
   @AutoMap()
   @Column({ name: 'address_column', nullable: true })
   address?: string;
+
+  @AutoMap()
+  @Column({ name: 'image_column', nullable: true })
+  image?: string;
+
+  // Many to one with branch
+  @AutoMap(() => Branch)
+  @ManyToOne(() => Branch, (branch) => branch.users)
+  @JoinColumn({ name: 'branch_id_column' })
+  branch: Branch;
 }

@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   ValidationPipe,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
   RegisterAuthResponseDto,
+  UpdateAuthProfileRequestDto,
 } from './auth.dto';
 import {
   ApiBearerAuth,
@@ -98,7 +100,30 @@ export class AuthController {
   ): Promise<AppResponseDto<AuthProfileResponseDto>> {
     const result = await this.authService.getProfile(user);
     return {
-      message: 'Profile retrieved successful',
+      message: 'Profile retrieved successfully',
+      status: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as unknown as AppResponseDto<AuthProfileResponseDto>;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Patch('profile')
+  @ApiOperation({ summary: 'Update profile' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiResponseWithType({
+    type: AuthProfileResponseDto,
+    description: 'Profile updated successfully',
+  })
+  async updateProfile(
+    @User(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserRequest,
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: UpdateAuthProfileRequestDto,
+  ): Promise<AppResponseDto<AuthProfileResponseDto>> {
+    const result = await this.authService.updateProfile(user, requestData);
+    return {
+      message: 'Profile retrieved successfully',
       status: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
