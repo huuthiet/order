@@ -1,11 +1,10 @@
-import { ShoppingCart } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { SkeletonMenuList } from '@/components/app/skeleton'
-import { useDishes } from '@/hooks'
-import { Button } from '@/components/ui'
-import { useCartItemStore } from '@/stores/cart.store'
-import { IDish } from '@/types'
+import { useProducts } from '@/hooks'
+import { IProduct } from '@/types'
+import { publicFileURL } from '@/constants'
+import AddToCartDialog from '@/components/app/dialog/add-to-cart-dialog'
 
 interface IMenuProps {
   isCartOpen: boolean
@@ -13,15 +12,25 @@ interface IMenuProps {
 
 export default function MenuList({ isCartOpen }: IMenuProps) {
   const { t } = useTranslation('menu')
-  // const { data, isLoading } = useProducts()
-  const { data: dishes, isLoading: dishIsLoading } = useDishes()
-  const { addCartItem } = useCartItemStore()
+  const { data, isLoading } = useProducts()
 
-  const handleAddCartItem = (dish: IDish) => {
-    addCartItem(dish)
+  const products = data?.result
+
+  const getPriceRange = (variants: IProduct['variants']) => {
+    if (!variants || variants.length === 0) return null
+
+    const prices = variants.map((v) => v.price)
+    const minPrice = Math.min(...prices)
+    const maxPrice = Math.max(...prices)
+
+    return {
+      min: minPrice,
+      max: maxPrice,
+      isSinglePrice: minPrice === maxPrice
+    }
   }
 
-  if (dishIsLoading) {
+  if (isLoading) {
     return (
       <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3`}>
         {[...Array(8)].map((_, index) => (
@@ -31,21 +40,25 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
     )
   }
 
-  if (!dishes || dishes.length === 0) {
+  if (!products || products.length === 0) {
     return <p className="text-center">{t('menu.noData')}</p>
   }
 
   return (
     <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6`}>
-      {dishes.map((dish) => (
-        <div key={dish.id} className="flex flex-col border backdrop-blur-md rounded-xl">
+      {products.map((item) => (
+        <div key={item.slug} className="flex flex-col border rounded-xl backdrop-blur-md">
           {/* Image Section with Discount Tag */}
           <div className="relative">
-            <img
-              src={dish.image}
-              alt={dish.name}
-              className="object-cover w-full h-40 rounded-t-md"
-            />
+            {item.image ? (
+              <img
+                src={`${publicFileURL}/${item.image}`}
+                alt={item.name}
+                className="object-cover w-full h-40 rounded-t-md"
+              />
+            ) : (
+              <div className="w-full h-40 rounded-t-md bg-muted/60" />
+            )}
 
             {/* Discount Tag */}
             {/* {dish.discount && (
@@ -59,28 +72,27 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
 
           {/* Content Section - More compact */}
           <div className="flex flex-col flex-1 p-4 space-y-1.5">
-            <h3 className="font-bold text-md line-clamp-1">{dish.name}</h3>
-            <p className="text-xs text-gray-500 line-clamp-2">{dish.description}</p>
+            <h3 className="font-bold text-md line-clamp-1">{item.name}</h3>
+            <p className="text-xs text-gray-500 line-clamp-2">{item.description}</p>
 
             <div className="flex items-center justify-between gap-1">
               <div className="flex flex-col">
-                {/* <span className="text-lg font-bold text-primary">
-                  {dish..toLocaleString('vi-VN')}đ
-                </span> */}
-                {/* {dish.discount && (
-                  <span className="text-xs line-through text-muted-foreground">
-                    {((dish.price * (100 + dish.discount)) / 100).toLocaleString('vi-VN')}đ
+                {item.variants.length > 0 ? (
+                  <span className="text-lg font-bold text-primary">
+                    {(() => {
+                      const range = getPriceRange(item.variants)
+                      if (!range) return '0đ'
+                      return range.isSinglePrice
+                        ? `${range.min.toLocaleString('vi-VN')}đ`
+                        : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
+                    })()}
                   </span>
-                )} */}
+                ) : (
+                  <span className="text-lg font-bold text-primary">Liên hệ</span>
+                )}
               </div>
             </div>
-            <Button
-              onClick={() => handleAddCartItem(dish)}
-              className="flex flex-row items-center justify-center gap-1 px-4 text-white rounded-full"
-            >
-              <ShoppingCart size={12} />
-              {t('menu.addToCart')}
-            </Button>
+            <AddToCartDialog product={item} />
           </div>
         </div>
       ))}

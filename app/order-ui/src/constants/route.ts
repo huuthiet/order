@@ -1,10 +1,11 @@
 export const ROUTE = {
-  HOME: '/',
+  // HOME: '/',
   PERSONAL_ACCOUNT: '/personal-account',
   ADMIN: '/admin',
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
   ORDER_SUCCESS: '/order-success',
+  PROFILE: '/profile',
 
   // Staff Routes
   STAFF_HOME: '/staff/home',
@@ -14,7 +15,8 @@ export const ROUTE = {
   STAFF_ORDER_HISTORY: '/staff/order-history',
   STAFF_ORDER_PREPARATION: '/staff/order-preparation',
   STAFF_TABLE_MANAGEMENT: '/staff/table-management',
-  STAFF_DISH_MANAGEMENT: '/staff/dish-management',
+  STAFF_PRODUCT_MANAGEMENT: '/staff/dish-management',
+  STAFF_PRODUCT_DETAIL: '/staff/product',
   STAFF_DELIVERY_MANAGEMENT: '/staff/delivery-management',
   STAFF_WALLET_MANAGEMENT: '/staff/wallet-management',
   STAFF_LOG_MANAGEMENT: '/staff/log-management',
@@ -22,7 +24,8 @@ export const ROUTE = {
   // Admin Routes
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_MENU_MANAGEMENT: '/admin/menu-management',
-  ADMIN_ADD_DISH: '/admin/add-dish',
+  // ADMIN_ADD_PRODUCT: '/admin/add-product',
+  ADMIN_PRODUCT_DETAIL: '/admin/product',
   ADMIN_TABLE_MANAGEMENT: '/admin/table-management',
   ADMIN_ORDER_HISTORY: '/admin/order-history',
   ADMIN_WALLET_APPROVALS: '/admin/wallet-approvals',
@@ -35,5 +38,5 @@ export const ROUTE = {
   HELP: '/help',
 
   // Notification
-  NOTIFICATION: '/notification'
+  NOTIFICATION: '/notification',
 }

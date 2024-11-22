@@ -74,6 +74,9 @@ export class ProductService {
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
 
+    // Remove old image
+    this.fileService.removeFile(product.image);
+
     const image = await this.fileService.uploadFile(file);
     product.image = `${image.name}`;
     const updatedProduct = await this.productRepository.save(product);
@@ -116,7 +119,7 @@ export class ProductService {
       Product,
     );
     Object.assign(productData, { catalog });
-
+    
     const newProduct = this.productRepository.create(productData);
     const createdProduct = await this.productRepository.save(newProduct);
     this.logger.log(

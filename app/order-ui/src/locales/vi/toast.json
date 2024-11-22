@@ -19,6 +19,19 @@
 
     "createSizeSuccess": "Tạo kích thước thành công",
     "updateSizeSuccess": "Cập nhật kích thước thành công",
-    "deleteSizeSuccess": "Xóa kích thước thành công"
+    "deleteSizeSuccess": "Xóa kích thước thành công",
+
+    "createProductSuccess": "Tạo món ăn thành công",
+    "updateProductSuccess": "Cập nhật món ăn thành công",
+    "deleteProductSuccess": "Xóa món ăn thành công",
+    "uploadImageSuccess": "Tải hình ảnh thành công",
+    "uploadImageError": "Tải hình ảnh thất bại",
+
+    "createProductVariantSuccess": "Tạo phân loại món ăn thành công",
+    "updateProductVariantSuccess": "Cập nhật phân loại món ăn thành công",
+    "deleteProductVariantSuccess": "Xóa phân loại món ăn thành công",
+
+    "updateProfileSuccess": "Cập nhật thông tin cá nhân thành công",
+    "deleteProfileSuccess": "Xóa thông tin cá nhân thành công"
   }
 }

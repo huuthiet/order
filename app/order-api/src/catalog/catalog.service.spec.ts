@@ -13,10 +13,12 @@ import { BadRequestException } from '@nestjs/common';
 import { MockType, repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { Product } from 'src/product/product.entity';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+
 
 
 describe('CatalogService', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let service: CatalogService;
   let catalogRepositoryMock: MockType<Repository<Catalog>>;
   let mapperMock: MockType<Mapper>;
@@ -30,15 +32,19 @@ describe('CatalogService', () => {
           useFactory: repositoryMockFactory,
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
         },
       ],
     }).compile();
 
     service = module.get<CatalogService>(CatalogService);
     catalogRepositoryMock = module.get(getRepositoryToken(Catalog));
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {
@@ -85,7 +91,7 @@ describe('CatalogService', () => {
 
       (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
-      (catalogRepositoryMock.create as jest.Mock).mockResolvedValue(mockOutput);
+      (catalogRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (catalogRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockImplementationOnce(
         () => mockOutput

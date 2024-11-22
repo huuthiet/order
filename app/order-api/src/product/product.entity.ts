@@ -4,6 +4,7 @@ import { Catalog } from 'src/catalog/catalog.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { AutoMap } from '@automapper/classes';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
+import { OrderItem } from 'src/order-item/order-item.entity';
 
 @Entity('product_tbl')
 export class Product extends Base {

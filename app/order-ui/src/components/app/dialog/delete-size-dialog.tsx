@@ -69,7 +69,7 @@ export default function DeleteSizeDialog({ size }: { size: ISize }) {
             {tCommon('common.deleteNote')}
           </DialogDescription>
 
-          <div className="py-4 text-sm text-gray-500">
+          <div className="py-4 text-sm text-muted-foreground">
             {t('size.deleteSizeWarning1')} <span className="font-bold">{size?.name}</span> <br />
             <br />
             {t('size.deleteSizeConfirmation')}

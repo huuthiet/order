@@ -148,7 +148,7 @@ describe('ProductService', () => {
       (productRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(catalog);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
-      (productRepositoryMock.create as jest.Mock).mockResolvedValue(mockOutput);
+      (productRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (productRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
 
@@ -290,7 +290,7 @@ describe('ProductService', () => {
 
     it('it should delete success', async () => {
       const productSlug = 'mock-product-slug';
-      const variant: Variant = {
+      const variant = {
         price: 0,
         size: new Size(),
         product: new Product(),
@@ -298,7 +298,7 @@ describe('ProductService', () => {
         slug: 'mock-variant-slug',
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      } as Variant;
       const product = {
         name: 'Mock product name',
         isActive: false,
@@ -340,7 +340,7 @@ describe('ProductService', () => {
     });
 
     it('should not perform deletion when variant array is not empty', async () => {
-      const variant: Variant = {
+      const variant = {
         price: 0,
         size: new Size(),
         product: new Product(),
@@ -348,7 +348,7 @@ describe('ProductService', () => {
         slug: 'mock-variant-slug',
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      } as Variant;
       const mockInput = [variant];
       (variantRepositoryMock.softDelete as jest.Mock).mockResolvedValue(
         undefined,

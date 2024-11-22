@@ -6,6 +6,7 @@
     "timestamp": "Thời gian",
     "message": "Nội dung",
     "context": "Ngữ cảnh",
+    "pid": "PID",
     "createdAt": "Thời gian tạo"
   }
 }

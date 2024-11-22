@@ -48,7 +48,26 @@
   },
   "product": {
     "title": "Dish management",
-    "add": "Add dish",
+
+    "create": "Add dish",
+    "createProductDescription": "Fill in the information to create a dish",
+    "productName": "Dish name",
+    "enterProductName": "Enter dish name",
+    "productDescription": "Dish description",
+    "enterProductDescription": "Enter dish description",
+    "productCatalog": "Dish catalog",
+    "selectProductCatalog": "Select dish catalog",
+    "isLimited": "Is limited",
+
+    "update": "Update dish",
+    "updateProductDescription": "Fill in the information to update the dish",
+
+    "uploadImage": "Upload image",
+    "uploadImageDescription": "Upload image for dish",
+
+    "delete": "Delete dish",
+    "deleteProductWarning1": "You are about to delete the dish",
+    "deleteProductConfirmation": "Are you sure you want to delete the dish",
 
     "image": "Image",
     "slug": "Slug",

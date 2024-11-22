@@ -10,9 +10,11 @@ import { CreateSizeRequestDto, UpdateSizeRequestDto } from "./size.dto";
 import { BadRequestException } from "@nestjs/common";
 import { Variant } from "src/variant/variant.entity";
 import { Product } from "src/product/product.entity";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+
 
 describe('SizeService', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let service: SizeService;
   let sizeRepositoryMock: MockType<Repository<Size>>;
   let mapperMock: MockType<Mapper>;
@@ -26,15 +28,19 @@ describe('SizeService', () => {
           useFactory: repositoryMockFactory,
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
-        }
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
+        },
       ]
     }).compile();
 
     service = module.get<SizeService>(SizeService);
     sizeRepositoryMock = module.get(getRepositoryToken(Size));
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {
@@ -80,7 +86,7 @@ describe('SizeService', () => {
       } as Size;
 
       (sizeRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
-      (sizeRepositoryMock.create as jest.Mock).mockResolvedValue(mockInput);
+      (sizeRepositoryMock.create as jest.Mock).mockReturnValue(mockInput);
       (sizeRepositoryMock.save as jest.Mock).mockResolvedValue(mockInput);
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
 
@@ -187,7 +193,7 @@ describe('SizeService', () => {
 
     it('should throw error when size relate to variant', async () => {
       const sizeSlug = 'size-slug';
-      const variant: Variant = {
+      const variant = {
         price: 0,
         size: new Size,
         product: new Product(),
@@ -195,7 +201,7 @@ describe('SizeService', () => {
         slug: "mock-variant-slug",
         createdAt: new Date(),
         updatedAt: new Date()
-      }
+      } as Variant;
       const size = {
         name: "Mock size name",
         id: "mock-size-id",
@@ -233,7 +239,7 @@ describe('SizeService', () => {
   }); 
 
   describe('isExistUpdatedName', () => {
-    it('should return true when updated name and current name are same', async () => {
+    it('should return true when updated name and current name are the same', async () => {
       const updatedName = 'Mock size name';
       const currentName = 'Mock size name';
       expect(await service.isExistUpdatedName(updatedName, currentName)).toEqual(false);

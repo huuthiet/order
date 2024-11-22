@@ -9,5 +9,12 @@
     "menuManagement": "Quản lý thực đơn",
     "dishManagement": "Quản lý món",
     "logManagement": "Quản lý log"
+  },
+  "header": {
+    "search": "Tìm kiếm",
+    "notification": "Thông báo",
+    "myProfile": "Hồ sơ của tôi",
+    "profile": "Hồ sơ",
+    "logout": "Đăng xuất"
   }
 }

@@ -15,7 +15,6 @@ import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as _ from 'lodash';
-import { ACBConnectorClient } from 'src/acb-connector/acb-connector.client';
 
 @Injectable()
 export class MenuService {
@@ -26,7 +25,6 @@ export class MenuService {
     private readonly branchRepository: Repository<Branch>,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-    private readonly acbConnectorClient: ACBConnectorClient,
   ) {}
 
   /**
@@ -134,12 +132,6 @@ export class MenuService {
    * @returns {Promise<MenuResponseDto[]>} All menus retrieved successfully
    */
   async getAllMenus(query: any): Promise<MenuResponseDto[]> {
-    this.acbConnectorClient.token({
-      client_id: '',
-      client_secret: '',
-      grant_type: 'client_credentials',
-      scope: 'soba-api',
-    });
     const menus = await this.menuRepository.find({
       order: { createdAt: 'DESC' },
       relations: ['menuItems.product.variants.size'],

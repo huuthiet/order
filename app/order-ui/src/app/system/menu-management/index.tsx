@@ -1,0 +1,5 @@
+export { default as CatalogTab } from './catalog-tab'
+export { default as MenuManagementPage } from './menu-manage-page'
+export { default as ProductTab } from './product-tab'
+export { default as ProductDetail } from './product-detail'
+export { default as SizeTab } from './size-tab'
