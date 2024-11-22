@@ -4,6 +4,7 @@ import { AutoMap } from '@automapper/classes';
 import { Menu } from 'src/menu/menu.entity';
 import { Table } from 'src/table/table.entity';
 import { User } from 'src/user/user.entity';
+import { Order } from 'src/order/order.entity';
 
 @Entity('branch_tbl')
 export class Branch extends Base {
@@ -26,4 +27,8 @@ export class Branch extends Base {
   // one to many with user
   @OneToMany(() => User, (user) => user.branch)
   users: User[];
+
+  // one to many with order
+  @OneToMany(() => Order, (order) => order.branch)
+  orders: Order[];
 }

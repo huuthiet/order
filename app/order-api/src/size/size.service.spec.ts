@@ -193,7 +193,7 @@ describe('SizeService', () => {
 
     it('should throw error when size relate to variant', async () => {
       const sizeSlug = 'size-slug';
-      const variant: Variant = {
+      const variant = {
         price: 0,
         size: new Size,
         product: new Product(),
@@ -201,7 +201,7 @@ describe('SizeService', () => {
         slug: "mock-variant-slug",
         createdAt: new Date(),
         updatedAt: new Date()
-      }
+      } as Variant;
       const size = {
         name: "Mock size name",
         id: "mock-size-id",

@@ -19,9 +19,9 @@ export function createErrorCode(
 }
 
 export const AppValidation: TErrorCode = {
-  ...AuthValidation,
   ...CatalogValidation,
   ...MenuValidation,
+  ...AuthValidation,
   ...FileValidation,
   ...ProductValidation,
 };

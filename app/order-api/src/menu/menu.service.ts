@@ -61,7 +61,11 @@ export class MenuService {
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
     const menu = await this.menuRepository.findOne({
-      where: { slug: query.slug, date: query.date },
+      where: {
+        slug: query.slug,
+        date: query.date,
+        branch: { slug: query.branch },
+      },
       relations: ['menuItems.product.variants.size'],
     });
     if (!menu) {
