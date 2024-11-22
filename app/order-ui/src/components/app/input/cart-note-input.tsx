@@ -16,7 +16,7 @@ export default function CartNoteInput({ cartItem }: CartNoteInputProps) {
 
   const handleNoteChange = (e: ChangeEvent<HTMLInputElement>) => {
     const note = e.target.value
-    addNote(cartItem.id, note)
+    addNote(cartItem.slug, note)
   }
 
   return (

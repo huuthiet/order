@@ -48,13 +48,69 @@
   },
   "product": {
     "title": "Quản lý món ăn",
-    "add": "Thêm món ăn",
+
+    "create": "Thêm món ăn",
+    "createProductDescription": "Điền thông tin để tạo món ăn",
+    "productName": "Tên món ăn",
+    "enterProductName": "Nhập tên món ăn",
+    "productDescription": "Mô tả món ăn",
+    "enterProductDescription": "Nhập mô tả món ăn",
+    "productCatalog": "Danh mục món ăn",
+    "selectProductCatalog": "Chọn danh mục món ăn",
+    "isLimited": "Có giới hạn",
+
+    "update": "Cập nhật món ăn",
+    "updateProductDescription": "Điền thông tin để cập nhật món ăn",
+
+    "uploadImage": "Tải hình ảnh",
+    "uploadImageDescription": "Chọn hình ảnh từ máy tính của bạn",
+    "addImage": "Thêm hình ảnh",
+
+    "delete": "Xóa món ăn",
+    "deleteProductWarning1": "Bạn sắp sửa xóa món ăn",
+    "deleteProductConfirmation": "Bạn có chắc muốn xóa món ăn",
+
+    "createVariant": "Thêm phân loại",
+    "createVariantDescription": "Điền thông tin để tạo phân loại",
+    "price": "Giá",
+    "enterPrice": "Nhập giá",
+    "size": "Kích thước",
+    "selectSize": "Chọn kích thước",
+
+    "updateVariant": "Cập nhật phân loại",
+    "deleteVariant": "Xóa phân loại",
 
     "image": "Hình ảnh",
     "slug": "Slug",
     "createdAt": "Thời gian tạo",
     "name": "Tên",
     "catalog": "Danh mục",
-    "description": "Mô tả"
+    "description": "Mô tả",
+    "rating": "Đánh giá",
+    "variant": "Phân loại"
+  },
+  "productVariant": {
+    "title": "Quản lý phân loại",
+    "name": "Tên phân loại",
+    "price": "Giá",
+    "size": "Kích thước",
+    "createdAt": "Thời gian tạo",
+
+    "create": "Thêm phân loại",
+    "createProductVariantDescription": "Điền thông tin để tạo phân loại",
+    "productVariantName": "Tên phân loại",
+    "enterProductVariantName": "Nhập tên phân loại",
+    "productVariantPrice": "Giá phân loại",
+    "enterProductVariantPrice": "Nhập giá phân loại",
+    "productVariantSize": "Kích thước phân loại",
+    "selectProductVariantSize": "Chọn kích thước phân loại",
+
+    "update": "Cập nhật phân loại",
+    "updateProductVariantDescription": "Điền thông tin để cập nhật phân loại",
+
+    "delete": "Xóa phân loại",
+    "deleteProductVariantWarning1": "Bạn sắp sửa xóa phân loại",
+    "deleteProductVariantWarning2": " của món ăn hiện tại.",
+    "deleteProductVariantConfirmation": "Bạn có chắc muốn xóa phân loại này không?"
   }
 }

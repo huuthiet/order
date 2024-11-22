@@ -49,7 +49,7 @@ export const sidebarRoutes: ISidebarRoute[] = [
   },
   {
     title: 'sidebar.dishManagement',
-    path: ROUTE.STAFF_DISH_MANAGEMENT,
+    path: ROUTE.STAFF_PRODUCT_MANAGEMENT,
     icon: CookingPot
   },
   {

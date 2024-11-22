@@ -16,7 +16,7 @@ export default function QuantitySelector({ cartItem }: QuantitySelectorProps) {
   const handleIncrement = () => {
     setQuantity((prev) => {
       const newQuantity = prev + 1
-      updateCartItemQuantity(cartItem.id, newQuantity)
+      updateCartItemQuantity(cartItem.slug, newQuantity)
       return newQuantity
     })
   }
@@ -24,7 +24,7 @@ export default function QuantitySelector({ cartItem }: QuantitySelectorProps) {
   const handleDecrement = () => {
     setQuantity((prev) => {
       const newQuantity = Math.max(prev - 1, 1)
-      updateCartItemQuantity(cartItem.id, newQuantity)
+      updateCartItemQuantity(cartItem.slug, newQuantity)
       return newQuantity
     })
   }

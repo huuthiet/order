@@ -2,14 +2,11 @@ import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
-import { ScrollArea, DataTable, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
-import { useProducts } from '@/hooks/use-product'
-import { useProductColumns } from './DataTable/columns/columns'
-import { CatalogTab, SizeTab } from '.'
+import { ScrollArea, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
+import { CatalogTab, SizeTab, ProductTab } from '.'
 
 export default function ProductManagementPage() {
   const { t } = useTranslation(['product'])
-  const { data: products, isLoading } = useProducts()
   return (
     <div className="flex flex-row gap-2 h-[calc(100vh-4rem)]">
       {/* Menu Section - Scrollable */}
@@ -24,7 +21,7 @@ export default function ProductManagementPage() {
                 <SquareMenu />
                 {t('product.title')}
               </span>
-              <Tabs defaultValue="catalog" className="w-full">
+              <Tabs defaultValue="product" className="w-full">
                 <TabsList className="grid grid-cols-3 w-96">
                   <TabsTrigger value="catalog">{t('tab.catalog')}</TabsTrigger>
                   <TabsTrigger value="size">{t('tab.size')}</TabsTrigger>
@@ -37,14 +34,7 @@ export default function ProductManagementPage() {
                   <SizeTab />
                 </TabsContent>
                 <TabsContent value="product">
-                  <DataTable
-                    columns={useProductColumns()}
-                    data={products?.result || []}
-                    isLoading={isLoading}
-                    pages={1}
-                    onPageChange={() => {}}
-                    onPageSizeChange={() => {}}
-                  />
+                  <ProductTab />
                 </TabsContent>
               </Tabs>
             </div>

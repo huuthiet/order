@@ -1,3 +1,5 @@
+import { ICatalog } from './catalog.type'
+
 export interface IDish {
   id: number
   image: string
@@ -13,17 +15,14 @@ export interface IDish {
 }
 
 export interface ICartItem {
-  id: number
+  id: string
+  slug: string
   image: string
   name: string
   quantity: number
   price: number
   description: string
-  type: string
-  main_ingredients: string[]
-  availability: boolean
-  preparation_time: number
-  discount: number
-  calories: number
+  isLimit: boolean
+  catalog: ICatalog
   note?: string
 }

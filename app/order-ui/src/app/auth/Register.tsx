@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { z } from 'zod'
 import { isAxiosError } from 'axios'
 import { useNavigate, NavLink } from 'react-router-dom'
-import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import _ from 'lodash'
 
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui'
 import { LoginBackground } from '@/assets/images'
 import { RegisterForm } from '@/components/app/form'
-import { useAuthStore } from '@/stores'
+// import { useAuthStore } from '@/stores'
 import { ROUTE } from '@/constants'
 import { showErrorToast, showToast } from '@/utils'
 import { cn } from '@/lib/utils'
@@ -27,7 +27,7 @@ export default function Register() {
   //   const { setToken, setRefreshToken, setExpireTime, setExpireTimeRefreshToken, setSlug } =
   //     useAuthStore()
   //   const { getTheme } = useThemeStore()
-  const { isAuthenticated } = useAuthStore()
+  // const { isAuthenticated } = useAuthStore()
 
   const navigate = useNavigate()
   const { mutate: register } = useRegister()
@@ -55,20 +55,6 @@ export default function Register() {
           }
         }
       })
-
-      // Save to auth store
-      //   const decodedToken = jwtDecode(response.result.token) as { sub: string }
-      //   setSlug(decodedToken.sub)
-      //   setToken(response.result.token)
-      //   setRefreshToken(response.result.refreshToken)
-      //   setExpireTime(response.result.expireTime)
-      //   setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
-
-      // Fetch user info and permissions
-      //   const { data: userRoles } = await refetchUserInfoPermission()
-      //   const { data: userInfo } = await refetchUserInfo()
-      //   setUserRoles(Array.isArray(userRoles) ? userRoles : []) // Handle roles being non-array safely
-      //   setUserInfo(userInfo as IUserInfo)
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.code === 'ECONNABORTED') {
@@ -86,11 +72,11 @@ export default function Register() {
   }
 
   // Redirect if the user is already authenticated
-  useEffect(() => {
-    if (isAuthenticated()) {
-      navigate(ROUTE.HOME, { replace: true })
-    }
-  }, [isAuthenticated, navigate])
+  // useEffect(() => {
+  //   if (isAuthenticated()) {
+  //     navigate(ROUTE.STAFF_MENU, { replace: true })
+  //   }
+  // }, [isAuthenticated, navigate])
 
   return (
     <div className="relative flex items-center justify-center min-h-screen">

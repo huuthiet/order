@@ -6,6 +6,7 @@
     "timestamp": "Timestamp",
     "message": "Message",
     "context": "Context",
+    "pid": "PID",
     "createdAt": "Created At"
   }
 }
