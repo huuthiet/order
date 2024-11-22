@@ -27,6 +27,7 @@ import {
 } from './menu.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
+import * as moment from 'moment';
 
 @ApiTags('Menu')
 @Controller('menu')
@@ -45,6 +46,7 @@ export class MenuController {
     isArray: true,
   })
   async getAllMenus(@Query() query: any) {
+    // console.log(moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'));
     const result = await this.menuService.getAllMenus(query);
     return {
       message: 'All menus have been retrieved successfully',
