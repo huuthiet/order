@@ -48,4 +48,14 @@ export class FileService {
     this.fileRepository.create(file);
     return await this.fileRepository.save(file);
   }
+
+  public async removeFile(filename?: string): Promise<void> {
+    const context = `${FileService.name}.${this.removeFile.name}`;
+    const file = await this.fileRepository.findOne({
+      where: { name: filename },
+    });
+    if (!file) return;
+    await this.fileRepository.remove(file);
+    this.logger.log(`File ${filename} removed successfully`, context);
+  }
 }

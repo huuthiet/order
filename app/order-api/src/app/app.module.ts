@@ -23,6 +23,8 @@ import { LoggerModule } from 'src/logger/logger.module';
 import { AppSubscriber } from './app.subscriber';
 import { TableModule } from 'src/table/table.module';
 import { MenuItemModule } from 'src/menu-item/menu-item.module';
+import { PaymentModule } from 'src/payment/payment.module';
+import { ACBConnectorModule } from 'src/acb-connector/acb-connector.module';
 import { OrderItemModule } from 'src/order-item/order-item.module';
 import { OrderModule } from 'src/order/order.module';
 
@@ -47,6 +49,8 @@ import { OrderModule } from 'src/order/order.module';
     TransactionModule,
     LoggerModule,
     TableModule,
+    PaymentModule,
+    ACBConnectorModule,
     OrderItemModule,
     OrderModule,
     AutomapperModule.forRoot({

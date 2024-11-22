@@ -70,6 +70,12 @@ export class MenuController {
     type: String,
     example: '2024-11-20',
   })
+  @ApiQuery({
+    name: 'branch',
+    required: false,
+    type: String,
+    example: 'kzA5ivhVy',
+  })
   async getMenu(
     @Query(new ValidationPipe({ transform: true })) query: GetMenuRequestDto,
   ) {

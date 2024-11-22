@@ -30,6 +30,10 @@ export class GetMenuRequestDto {
   @ApiProperty()
   @Type(() => Date)
   date?: Date;
+
+  @AutoMap()
+  @ApiProperty()
+  branch?: string;
 }
 
 export class MenuResponseDto {
