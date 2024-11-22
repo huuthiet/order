@@ -29,6 +29,9 @@
 
     "createProductVariantSuccess": "Tạo phân loại món ăn thành công",
     "updateProductVariantSuccess": "Cập nhật phân loại món ăn thành công",
-    "deleteProductVariantSuccess": "Xóa phân loại món ăn thành công"
+    "deleteProductVariantSuccess": "Xóa phân loại món ăn thành công",
+
+    "updateProfileSuccess": "Cập nhật thông tin cá nhân thành công",
+    "deleteProfileSuccess": "Xóa thông tin cá nhân thành công"
   }
 }

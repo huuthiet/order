@@ -19,3 +19,5 @@ export { default as UploadProductImageDialog } from './upload-product-image-dial
 export { default as CreateProductVariantDialog } from './create-product-variant-dialog'
 export { default as UpdateProductVariantDialog } from './update-product-variant-dialog'
 export { default as DeleteProductVariantDialog } from './delete-product-variant-dialog'
+
+export { default as UpdateProfileDialog } from './update-profile-dialog'

@@ -1,0 +1,14 @@
+{
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "enterName": "Enter name",
+    "email": "Email",
+    "enterEmail": "Enter email",
+    "phoneNumber": "Phone number",
+    "enterPhoneNumber": "Enter phone number",
+    "address": "Address",
+    "enterAddress": "Enter address",
+    "branch": "Branch"
+  }
+}

@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  Label
+  Label,
 } from '@/components/ui'
 import { ICartItem } from '@/types'
 import { useState } from 'react'
@@ -20,15 +20,17 @@ interface DialogDeleteCartItemProps {
   cartItem: ICartItem
 }
 
-export default function DeleteCartItemDialog({ cartItem }: DialogDeleteCartItemProps) {
+export default function DeleteCartItemDialog({
+  cartItem,
+}: DialogDeleteCartItemProps) {
   const { t } = useTranslation('menu')
   const { t: tCommon } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
   const { removeCartItem } = useCartItemStore()
 
-  const handleDelete = (slug: string) => {
+  const handleDelete = (id: string) => {
     setIsOpen(false)
-    removeCartItem(slug)
+    removeCartItem(id)
   }
 
   return (
@@ -44,12 +46,12 @@ export default function DeleteCartItemDialog({ cartItem }: DialogDeleteCartItemP
             <TriangleAlert />
             {t('order.deleteItem')}
           </DialogTitle>
-          <DialogDescription className="p-2 rounded-md bg-destructive/10 text-destructive">
+          <DialogDescription className="rounded-md bg-destructive/10 p-2 text-destructive">
             {t('order.deleteNote')}
           </DialogDescription>
         </DialogHeader>
         <div>
-          <div className="flex items-center gap-4 mt-4">
+          <div className="mt-4 flex items-center gap-4">
             <Label htmlFor="name" className="text-left">
               {t('order.deleteContent')} <strong>{cartItem.name}</strong>
               {t('order.deleteContent2')}
@@ -60,7 +62,10 @@ export default function DeleteCartItemDialog({ cartItem }: DialogDeleteCartItemP
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>
-          <Button variant="destructive" onClick={() => cartItem && handleDelete(cartItem.slug)}>
+          <Button
+            variant="destructive"
+            onClick={() => cartItem && handleDelete(cartItem.id)}
+          >
             {tCommon('common.confirmDelete')}
           </Button>
         </DialogFooter>

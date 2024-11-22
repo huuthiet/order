@@ -14,6 +14,20 @@ export interface IProduct {
   createdAt: string
 }
 
+// export interface ICartItem {
+//   name: string
+//   description: string
+//   isActive: boolean
+//   isLimit: boolean
+//   image: string
+//   rating: number
+//   catalog: ICatalog
+//   variants: IProductVariant[]
+//   slug: string
+//   note?: string
+//   createdAt: string
+// }
+
 export interface IProductVariant {
   price: number
   product: IProduct

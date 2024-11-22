@@ -42,11 +42,16 @@ export default function AddToCartDialog({
 
   console.log('product', product)
 
+  const generateCartItemId = () => {
+    return Date.now().toString(36)
+  }
+
   const handleAddToCart = () => {
     if (!selectedVariant) return
 
     const cartItem = {
       ...product,
+      id: generateCartItemId(),
       note,
       //   selectedVariant,
       price: selectedVariant.price,

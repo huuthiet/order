@@ -63,10 +63,10 @@ export const useCartItemStore = create<ICartItemStore>()(
           cartItems: cartItems.map((item) => ({ ...item, paymentMethod })),
         })
       },
-      removeCartItem: (slug: string) => {
+      removeCartItem: (id: string) => {
         const { cartItems } = get()
         set({
-          cartItems: cartItems.filter((item) => item.slug !== slug),
+          cartItems: cartItems.filter((item) => item.id !== id),
         })
         showToast(i18next.t('toast.removeSuccess'))
       },

@@ -25,8 +25,8 @@ export default function CartContent() {
 
   console.log(getCartItems())
 
-  const handleRemoveCartItem = (slug: string) => {
-    removeCartItem(slug)
+  const handleRemoveCartItem = (id: string) => {
+    removeCartItem(id)
   }
 
   return (
@@ -66,7 +66,7 @@ export default function CartContent() {
                           </div>
                           <Button
                             variant="ghost"
-                            onClick={() => handleRemoveCartItem(item.slug)}
+                            onClick={() => handleRemoveCartItem(item.id)}
                           >
                             <Trash2
                               size={20}

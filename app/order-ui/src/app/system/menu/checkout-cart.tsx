@@ -29,8 +29,8 @@ export default function CheckoutCart() {
 
   const navigate = useNavigate()
 
-  const handleRemoveCartItem = (slug: string) => {
-    removeCartItem(slug)
+  const handleRemoveCartItem = (id: string) => {
+    removeCartItem(id)
   }
 
   const handleConfirm = () => {
@@ -104,7 +104,7 @@ export default function CheckoutCart() {
                         </div>
                         <Button
                           variant="ghost"
-                          onClick={() => handleRemoveCartItem(item.slug)}
+                          onClick={() => handleRemoveCartItem(item.id)}
                         >
                           <Trash2 size={20} className="text-muted-foreground" />
                         </Button>

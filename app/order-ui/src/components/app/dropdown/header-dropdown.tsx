@@ -1,4 +1,6 @@
+import { NavLink } from 'react-router-dom'
 import { User } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import {
   Button,
@@ -8,13 +10,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui'
 import { ProfileAvatar } from '@/components/app/avatar'
 import { LogoutDialog } from '@/components/app/dialog'
+import { ROUTE } from '@/constants'
 
 export default function HeaderDropdown() {
+  const { t } = useTranslation(['sidebar'])
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,13 +26,24 @@ export default function HeaderDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <span>{t('header.myProfile')}</span>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User />
-            <span>Profile</span>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          <DropdownMenuItem className="h-9 px-0">
+            <NavLink
+              to={`${ROUTE.PROFILE}`}
+              className="flex h-9 w-full justify-start"
+            >
+              <Button
+                variant="ghost"
+                className="flex h-9 w-full justify-start gap-1 text-sm"
+              >
+                <User className="icon" />
+                {t('header.profile')}
+              </Button>
+            </NavLink>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
