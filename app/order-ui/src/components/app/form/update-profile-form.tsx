@@ -176,7 +176,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
           </ScrollArea>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
-              {t('profile.createVariant')}
+              {t('profile.update')}
             </Button>
           </div>
         </form>
