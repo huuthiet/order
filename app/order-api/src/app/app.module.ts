@@ -24,6 +24,7 @@ import { AppSubscriber } from './app.subscriber';
 import { TableModule } from 'src/table/table.module';
 import { MenuItemModule } from 'src/menu-item/menu-item.module';
 import { PaymentModule } from 'src/payment/payment.module';
+import { ACBConnectorModule } from 'src/acb-connector/acb-connector.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { PaymentModule } from 'src/payment/payment.module';
     LoggerModule,
     TableModule,
     PaymentModule,
+    ACBConnectorModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),

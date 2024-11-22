@@ -1,6 +1,4 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './payment.entity';
 import { Repository } from 'typeorm';
@@ -10,6 +8,7 @@ import { InternalStrategy } from './strategy/internal.strategy';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { CreatePaymentDto } from './payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -23,7 +22,23 @@ export class PaymentService {
     private readonly bankTransferStrategy: BankTransferStrategy,
     private readonly internalStrategy: InternalStrategy,
   ) {}
-  create(createPaymentDto: CreatePaymentDto) {
+  async create(createPaymentDto: CreatePaymentDto) {
+    // get order
+    let payment: Payment;
+    switch (createPaymentDto.paymentMethod) {
+      case 'cash':
+        payment = await this.cashStrategy.process({});
+        break;
+      case 'bank-transfer':
+        payment = await this.bankTransferStrategy.process({});
+        break;
+      case 'internal':
+        payment = await this.internalStrategy.process({});
+        break;
+      default:
+        this.logger.error('Invalid payment method');
+        throw new Error('Invalid payment method');
+    }
     return 'This action adds a new payment';
   }
 
@@ -33,10 +48,6 @@ export class PaymentService {
 
   findOne(id: number) {
     return `This action returns a #${id} payment`;
-  }
-
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
   }
 
   remove(id: number) {

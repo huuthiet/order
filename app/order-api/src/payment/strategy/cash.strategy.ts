@@ -4,7 +4,7 @@ import { IPaymentStrategy } from './payment.strategy';
 
 @Injectable()
 export class CashStrategy implements IPaymentStrategy {
-  process(order: any): Promise<Payment> {
+  async process(order: any): Promise<Payment> {
     throw new Error('Method not implemented.');
   }
 }
