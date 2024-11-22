@@ -4,9 +4,10 @@ import MenuList from './menu-list'
 import { CartContent } from '@/router/loadable'
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton } from '@/components/app/button'
+import { MenuCategorySelect } from '@/components/app/select'
+import { CurrentDateInput } from '@/components/app/input'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
-import { DateSelect, MenuCategorySelect } from '@/components/app/select'
 
 export default function MenuPage() {
   const [isCartOpen, setIsCartOpen] = useState(true)
@@ -14,7 +15,7 @@ export default function MenuPage() {
   const isCollapsed = state === 'collapsed'
 
   return (
-    <div className="flex flex-row gap-2 h-[calc(100vh-4rem)]">
+    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
         <div
@@ -22,13 +23,17 @@ export default function MenuPage() {
             isCartOpen ? 'w-[70%]' : 'w-full'
           } ${isCollapsed ? 'pl-2' : 'pl-4'}`}
         >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 py-3 pr-4 bg-background">
-            <div className="flex flex-row items-center justify-between w-full">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
+            <div className="flex w-full flex-row items-center justify-between">
               <BreadcrumbComponent />
-              <CartToggleButton isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
+              <CartToggleButton
+                isCartOpen={isCartOpen}
+                setIsCartOpen={setIsCartOpen}
+              />
             </div>
-            <div className="flex justify-end w-full gap-2">
-              <DateSelect />
+            <div className="flex w-full justify-end gap-2">
+              {/* <DateSelect /> */}
+              <CurrentDateInput />
               <MenuCategorySelect />
             </div>
           </div>
@@ -40,7 +45,7 @@ export default function MenuPage() {
 
       {/* Cart Section - Fixed */}
       <div
-        className={`transition-all duration-300 ease-in-out border-l bg-background ${
+        className={`border-l bg-background transition-all duration-300 ease-in-out ${
           isCartOpen ? 'w-[30%]' : 'w-0 opacity-0'
         } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
       >

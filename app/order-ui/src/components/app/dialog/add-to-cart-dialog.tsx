@@ -1,13 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart } from 'lucide-react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 
 import {
   Button,
@@ -17,7 +10,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
 } from '@/components/ui'
 
 import { IProduct, IProductVariant } from '@/types'
@@ -29,22 +28,35 @@ interface AddToCartDialogProps {
   trigger?: React.ReactNode
 }
 
-export default function AddToCartDialog({ product, trigger }: AddToCartDialogProps) {
+export default function AddToCartDialog({
+  product,
+  trigger,
+}: AddToCartDialogProps) {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedVariant, setSelectedVariant] = useState<IProductVariant | null>(
-    product.variants[0] || null
-  )
+  const [note, setNote] = useState<string>('')
+  const [selectedVariant, setSelectedVariant] =
+    useState<IProductVariant | null>(product.variants[0] || null)
   const { addCartItem } = useCartItemStore()
+
+  console.log('product', product)
+
+  const generateCartItemId = () => {
+    return Date.now().toString(36)
+  }
 
   const handleAddToCart = () => {
     if (!selectedVariant) return
 
     const cartItem = {
       ...product,
-      selectedVariant,
-      quantity: 1
+      id: generateCartItemId(),
+      note,
+      //   selectedVariant,
+      price: selectedVariant.price,
+      size: selectedVariant.size.name,
+      quantity: 1,
     }
 
     addCartItem(cartItem)
@@ -55,7 +67,7 @@ export default function AddToCartDialog({ product, trigger }: AddToCartDialogPro
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="flex flex-row items-center justify-center gap-1 px-4 text-white rounded-full">
+          <Button className="flex flex-row items-center justify-center gap-1 rounded-full px-4 text-white">
             <ShoppingCart size={12} />
             {t('menu.addToCart')}
           </Button>
@@ -65,7 +77,9 @@ export default function AddToCartDialog({ product, trigger }: AddToCartDialogPro
       <DialogContent className="sm:max-w-[64rem]">
         <DialogHeader>
           <DialogTitle>{t('menu.confirmProduct')}</DialogTitle>
-          <DialogDescription>{t('menu.confirmProductDescription')}</DialogDescription>
+          <DialogDescription>
+            {t('menu.confirmProductDescription')}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-4 gap-4">
@@ -75,18 +89,20 @@ export default function AddToCartDialog({ product, trigger }: AddToCartDialogPro
               <img
                 src={`${publicFileURL}/${product.image}`}
                 alt={product.name}
-                className="object-cover w-full rounded-md"
+                className="h-48 w-full rounded-md object-cover sm:h-64 lg:h-80"
               />
             ) : (
               <div className="w-full rounded-md bg-muted/50" />
             )}
           </div>
 
-          <div className="flex flex-col col-span-2 gap-4">
+          <div className="col-span-2 flex flex-col gap-6">
             {/* Product Details */}
             <div>
               <h3 className="text-lg font-semibold">{product.name}</h3>
-              <p className="text-sm text-muted-foreground">{product.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {product.description}
+              </p>
             </div>
 
             {/* Size Selection */}
@@ -98,7 +114,9 @@ export default function AddToCartDialog({ product, trigger }: AddToCartDialogPro
                 <Select
                   value={selectedVariant?.slug}
                   onValueChange={(value) => {
-                    const variant = product.variants.find((v) => v.slug === value)
+                    const variant = product.variants.find(
+                      (v) => v.slug === value,
+                    )
                     setSelectedVariant(variant || null)
                   }}
                 >
@@ -108,7 +126,8 @@ export default function AddToCartDialog({ product, trigger }: AddToCartDialogPro
                   <SelectContent>
                     {product.variants.map((variant) => (
                       <SelectItem key={variant.slug} value={variant.slug}>
-                        {variant.size.name.toUpperCase()} - {variant.price.toLocaleString('vi-VN')}đ
+                        {variant.size.name.toUpperCase()} -{' '}
+                        {variant.price.toLocaleString('vi-VN')}đ
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -117,9 +136,20 @@ export default function AddToCartDialog({ product, trigger }: AddToCartDialogPro
             )}
 
             {/* Price */}
-            <div className="text-lg font-bold text-primary">
+            {/* <div className="text-lg font-bold text-primary">
               {t('menu.price')}
               {selectedVariant ? `${selectedVariant.price.toLocaleString('vi-VN')}đ` : 'Liên hệ'}
+            </div> */}
+
+            {/* Note */}
+            <div className="flex flex-col items-start space-y-2">
+              <span className="text-sm">{t('menu.note')}</span>
+              {/* <NotepadText size={28} className="text-muted-foreground" /> */}
+              <Textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)} // Cập nhật state note khi người dùng nhập
+                placeholder={t('menu.enterNote')}
+              />
             </div>
           </div>
         </div>

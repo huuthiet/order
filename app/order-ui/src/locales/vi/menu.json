@@ -9,6 +9,8 @@
     "confirmProductDescription": "Vui lòng kiểm tra thông tin sản phẩm trước khi thêm vào giỏ hàng",
     "selectSize": "Chọn kích thước",
     "price": "Giá: ",
+    "note": "Ghi chú",
+    "enterNote": "Nhập ghi chú",
 
     "order": "Đơn hàng",
     "dineIn": "Tại quán",
@@ -45,7 +47,7 @@
     "subTotal": "Tạm tính",
     "total": "Tổng tiền hàng",
     "discount": "Giảm giá",
-    "vat": "Thuế VAT",
+    "vat": "(Đã bao gồm VAT)",
     "grandTotal": "Thành tiền",
     "confirmPaid": "Xác nhận đã thanh toán",
     "complete": "Hoàn tất",

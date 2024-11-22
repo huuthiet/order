@@ -70,15 +70,15 @@
     "deleteProductWarning1": "Bạn sắp sửa xóa món ăn",
     "deleteProductConfirmation": "Bạn có chắc muốn xóa món ăn",
 
-    "createVariant": "Thêm biến thể",
-    "createVariantDescription": "Điền thông tin để tạo biến thể",
+    "createVariant": "Thêm phân loại",
+    "createVariantDescription": "Điền thông tin để tạo phân loại",
     "price": "Giá",
     "enterPrice": "Nhập giá",
     "size": "Kích thước",
     "selectSize": "Chọn kích thước",
 
-    "updateVariant": "Cập nhật biến thể",
-    "deleteVariant": "Xóa biến thể",
+    "updateVariant": "Cập nhật phân loại",
+    "deleteVariant": "Xóa phân loại",
 
     "image": "Hình ảnh",
     "slug": "Slug",
@@ -87,30 +87,30 @@
     "catalog": "Danh mục",
     "description": "Mô tả",
     "rating": "Đánh giá",
-    "variant": "Biến thể"
+    "variant": "Phân loại"
   },
   "productVariant": {
-    "title": "Quản lý biến thể",
-    "name": "Tên biến thể",
+    "title": "Quản lý phân loại",
+    "name": "Tên phân loại",
     "price": "Giá",
     "size": "Kích thước",
     "createdAt": "Thời gian tạo",
 
-    "create": "Thêm biến thể",
-    "createProductVariantDescription": "Điền thông tin để tạo biến thể",
-    "productVariantName": "Tên biến thể",
-    "enterProductVariantName": "Nhập tên biến thể",
-    "productVariantPrice": "Giá biến thể",
-    "enterProductVariantPrice": "Nhập giá biến thể",
-    "productVariantSize": "Kích thước biến thể",
-    "selectProductVariantSize": "Chọn kích thước biến thể",
+    "create": "Thêm phân loại",
+    "createProductVariantDescription": "Điền thông tin để tạo phân loại",
+    "productVariantName": "Tên phân loại",
+    "enterProductVariantName": "Nhập tên phân loại",
+    "productVariantPrice": "Giá phân loại",
+    "enterProductVariantPrice": "Nhập giá phân loại",
+    "productVariantSize": "Kích thước phân loại",
+    "selectProductVariantSize": "Chọn kích thước phân loại",
 
-    "update": "Cập nhật biến thể",
-    "updateProductVariantDescription": "Điền thông tin để cập nhật biến thể",
+    "update": "Cập nhật phân loại",
+    "updateProductVariantDescription": "Điền thông tin để cập nhật phân loại",
 
-    "delete": "Xóa biến thể",
-    "deleteProductVariantWarning1": "Bạn sắp sửa xóa biến thể",
+    "delete": "Xóa phân loại",
+    "deleteProductVariantWarning1": "Bạn sắp sửa xóa phân loại",
     "deleteProductVariantWarning2": " của món ăn hiện tại.",
-    "deleteProductVariantConfirmation": "Bạn có chắc muốn xóa biến thể này không?"
+    "deleteProductVariantConfirmation": "Bạn có chắc muốn xóa phân loại này không?"
   }
 }

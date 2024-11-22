@@ -1,15 +1,9 @@
-import { IProduct, IProductVariant } from '@/types'
-
-interface CartItem extends IProduct {
-  quantity: number
-  selectedVariant?: IProductVariant // Add this line
-  note?: string
-}
+import { ICartItem } from '@/types'
 
 export interface ICartItemStore {
-  cartItems: CartItem[]
-  getCartItems: () => CartItem[]
-  addCartItem: (item: IProduct) => void
+  cartItems: ICartItem[]
+  getCartItems: () => ICartItem[]
+  addCartItem: (item: ICartItem) => void
   updateCartItemQuantity: (id: string, quantity: number) => void
   addNote: (id: string, note: string) => void
   addPaymentMethod: (paymentMethod: string) => void

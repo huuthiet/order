@@ -5,6 +5,7 @@ export const ROUTE = {
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
   ORDER_SUCCESS: '/order-success',
+  PROFILE: '/profile',
 
   // Staff Routes
   STAFF_HOME: '/staff/home',
@@ -37,5 +38,5 @@ export const ROUTE = {
   HELP: '/help',
 
   // Notification
-  NOTIFICATION: '/notification'
+  NOTIFICATION: '/notification',
 }

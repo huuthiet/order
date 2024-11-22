@@ -27,8 +27,11 @@
     "uploadImageSuccess": "Tải hình ảnh thành công",
     "uploadImageError": "Tải hình ảnh thất bại",
 
-    "createProductVariantSuccess": "Tạo biến thể món ăn thành công",
-    "updateProductVariantSuccess": "Cập nhật biến thể món ăn thành công",
-    "deleteProductVariantSuccess": "Xóa biến thể món ăn thành công"
+    "createProductVariantSuccess": "Tạo phân loại món ăn thành công",
+    "updateProductVariantSuccess": "Cập nhật phân loại món ăn thành công",
+    "deleteProductVariantSuccess": "Xóa phân loại món ăn thành công",
+
+    "updateProfileSuccess": "Cập nhật thông tin cá nhân thành công",
+    "deleteProfileSuccess": "Xóa thông tin cá nhân thành công"
   }
 }
