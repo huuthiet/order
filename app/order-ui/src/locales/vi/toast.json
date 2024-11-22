@@ -32,6 +32,10 @@
     "deleteProductVariantSuccess": "Xóa phân loại món ăn thành công",
 
     "updateProfileSuccess": "Cập nhật thông tin cá nhân thành công",
-    "deleteProfileSuccess": "Xóa thông tin cá nhân thành công"
+    "deleteProfileSuccess": "Xóa thông tin cá nhân thành công",
+
+    "createMenuSuccess": "Tạo thực đơn thành công",
+    "updateMenuSuccess": "Cập nhật thực đơn thành công",
+    "deleteMenuSuccess": "Xóa thực đơn thành công"
   }
 }
