@@ -19,7 +19,6 @@ import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 
 describe('CatalogService', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let service: CatalogService;
   let catalogRepositoryMock: MockType<Repository<Catalog>>;
   let mapperMock: MockType<Mapper>;

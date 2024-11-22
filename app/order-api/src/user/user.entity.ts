@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Base } from 'src/app/base.entity';
 import { AutoMap } from '@automapper/classes';
 import { Branch } from 'src/branch/branch.entity';
+import { Order } from 'src/order/order.entity';
 
 @Entity('user_tbl')
 export class User extends Base {
@@ -45,4 +46,12 @@ export class User extends Base {
   @ManyToOne(() => Branch, (branch) => branch.users)
   @JoinColumn({ name: 'branch_id_column' })
   branch: Branch;
+
+  // One to many with owner order
+  @OneToMany(() => Order, (order) => order.owner)
+  ownerOrders: Order[];
+
+  // One to many with approval order
+  @OneToMany(() => Order, (order) => order.approvalBy)
+  approvalOrders: Order[];
 }
