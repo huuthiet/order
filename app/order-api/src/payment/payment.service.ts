@@ -8,13 +8,19 @@ import { InternalStrategy } from './strategy/internal.strategy';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { CreatePaymentDto } from './payment.dto';
+import {
+  CreatePaymentDto,
+  InitiatePaymentQRCodeResponseDto,
+} from './payment.dto';
+import { Order } from 'src/order/order.entity';
 
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: Logger,
@@ -22,35 +28,31 @@ export class PaymentService {
     private readonly bankTransferStrategy: BankTransferStrategy,
     private readonly internalStrategy: InternalStrategy,
   ) {}
-  async create(createPaymentDto: CreatePaymentDto) {
+  async initiateQRCode(createPaymentDto: CreatePaymentDto) {
+    const context = `${PaymentService.name}.${this.initiateQRCode.name}`;
     // get order
-    let payment: Payment;
+    const order = await this.orderRepository.findOne({
+      where: { slug: createPaymentDto.orderSlug },
+      relations: ['owner'],
+    });
+    if (!order) {
+      this.logger.error('Order not found', context);
+      throw new Error('Order not found');
+    }
+
+    let result: InitiatePaymentQRCodeResponseDto;
+
     switch (createPaymentDto.paymentMethod) {
-      case 'cash':
-        payment = await this.cashStrategy.process({});
-        break;
       case 'bank-transfer':
-        payment = await this.bankTransferStrategy.process({});
+        result = await this.bankTransferStrategy.process(order);
         break;
-      case 'internal':
-        payment = await this.internalStrategy.process({});
-        break;
+      // case 'internal':
+      //   result = await this.internalStrategy.process({});
+      //   break;
       default:
         this.logger.error('Invalid payment method');
         throw new Error('Invalid payment method');
     }
-    return 'This action adds a new payment';
-  }
-
-  findAll() {
-    return `This action returns all payment`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} payment`;
+    return result;
   }
 }

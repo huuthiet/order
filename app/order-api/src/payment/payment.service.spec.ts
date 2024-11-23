@@ -12,6 +12,8 @@ import { InternalStrategy } from './strategy/internal.strategy';
 import { BankTransferStrategy } from './strategy/bank-transfer.strategy';
 import { CashStrategy } from './strategy/cash.strategy';
 import { ConfigService } from '@nestjs/config';
+import { Order } from 'src/order/order.entity';
+import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -42,6 +44,14 @@ describe('PaymentService', () => {
             get: jest.fn(),
             post: jest.fn(),
           },
+        },
+        {
+          provide: getRepositoryToken(Order),
+          useValue: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(ACBConnectorConfig),
+          useValue: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(Payment),

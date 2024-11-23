@@ -15,3 +15,13 @@ export class CreatePaymentDto {
   @ApiProperty()
   orderSlug: string;
 }
+
+export class InitiatePaymentQRCodeResponseDto {
+  @AutoMap()
+  @ApiProperty()
+  qrCode: string;
+
+  @AutoMap()
+  @ApiProperty()
+  requestTrace: string;
+}

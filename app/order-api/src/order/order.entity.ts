@@ -1,10 +1,11 @@
-import { AutoMap } from "@automapper/classes";
-import { Base } from "src/app/base.entity";
-import { Branch } from "src/branch/branch.entity";
-import { OrderItem } from "src/order-item/order-item.entity";
-import { User } from "src/user/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
-import { OrderStatus } from "./order.contants";
+import { AutoMap } from '@automapper/classes';
+import { Base } from 'src/app/base.entity';
+import { Branch } from 'src/branch/branch.entity';
+import { OrderItem } from 'src/order-item/order-item.entity';
+import { User } from 'src/user/user.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { OrderStatus } from './order.contants';
+import { Payment } from 'src/payment/payment.entity';
 
 @Entity('order_tbl')
 export class Order extends Base {
@@ -40,12 +41,13 @@ export class Order extends Base {
   approvalBy?: User;
 
   // one to many with order item
-  @OneToMany(
-    () => OrderItem, 
-    (orderItem) => orderItem.order,
-    {
-      cascade: ["insert", "update"],
-    }
-  )
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
+    cascade: ['insert', 'update'],
+  })
   orderItems: OrderItem[];
+
+  // Many to one with payment
+  @ManyToOne(() => Payment, (payment) => payment.orders)
+  @JoinColumn({ name: 'payment_column' })
+  payment: Payment;
 }

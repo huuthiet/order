@@ -15,10 +15,6 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 export class ACBConnectorClient {
   private readonly acbApiUrl: string =
     this.configService.get<string>('ACB_API_URL');
-  // private readonly clientId: string =
-  //   this.configService.get<string>('CLIENT_ID');
-  // private readonly clientSecret: string =
-  //   this.configService.get<string>('CLIENT_SECRET');
 
   constructor(
     private readonly httpService: HttpService,
