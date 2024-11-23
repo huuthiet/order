@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { Payment } from '../payment.entity';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { IPaymentStrategy } from './payment.strategy';
 import { ACBConnectorClient } from 'src/acb-connector/acb-connector.client';
 import { ConfigService } from '@nestjs/config';
@@ -16,14 +15,11 @@ import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 import { Repository } from 'typeorm';
 import * as _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  ACBConnectorConfigResponseDto,
-  ACBInitiateQRCodeRequestDto,
-  ACBInitiateQRCodeResponseDto,
-} from 'src/acb-connector/acb-connector.dto';
+import { ACBInitiateQRCodeRequestDto } from 'src/acb-connector/acb-connector.dto';
 import * as shortid from 'shortid';
 import * as moment from 'moment';
 import { InitiatePaymentQRCodeResponseDto } from '../payment.dto';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class BankTransferStrategy implements IPaymentStrategy {
@@ -37,6 +33,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
     private readonly configService: ConfigService,
     @InjectRepository(ACBConnectorConfig)
     private readonly acbConnectorConfigRepository: Repository<ACBConnectorConfig>,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
   async process(order: Order): Promise<InitiatePaymentQRCodeResponseDto> {
@@ -62,27 +59,38 @@ export class BankTransferStrategy implements IPaymentStrategy {
       [X_PROVIDER_ID]: acbConnectorConfig[0].xProviderId,
       [X_REQUEST_ID]: uuidv4(),
     };
+
+    // Convert date to with format: yyyy-MM-ddTHH:mm:ss.SSSZ
+    // example: 2024-11-09T11:03:33.033+0700
+    const requestDateTime = moment()
+      .format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+      .replace(/(\+\d{2}):(\d{2})$/, '$1$2');
+    this.logger.log(`Request date time: ${requestDateTime}`);
+
     const requestData = {
-      requestDateTime: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      requestDateTime: requestDateTime,
       requestTrace: requestTrace,
       requestParameters: {
+        traceNumber: requestTrace,
         amount: order.subtotal,
         beneficiaryName: acbConnectorConfig[0].beneficiaryName,
         merchantId: shortid(),
-        orderId: order.id,
+        orderId: order.slug,
         terminalId: shortid(),
-        traceNumber: requestTrace,
-        userId: order.owner.id,
+        userId: order.owner.slug,
         loyaltyCode: shortid(),
         virtualAccountPrefix: acbConnectorConfig[0].virtualAccountPrefix,
         voucherCode: shortid(),
+        description: 'hoa don thanh toan',
       },
     } as ACBInitiateQRCodeRequestDto;
+
     const response = await this.acbConnectorClient.initiateQRCode(
       headers,
       requestData,
       access_token,
     );
+    this.logger.log(`Initiate QR Code success`);
     return {
       requestTrace: response.requestTrace,
       qrCode: response.responseBody.qrDataUrl,
