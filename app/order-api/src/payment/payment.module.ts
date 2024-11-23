@@ -8,9 +8,14 @@ import { PaymentProfile } from './payment.mapper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Payment } from './payment.entity';
 import { ACBConnectorModule } from 'src/acb-connector/acb-connector.module';
+import { Order } from 'src/order/order.entity';
+import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Payment]), ACBConnectorModule],
+  imports: [
+    TypeOrmModule.forFeature([Payment, Order, ACBConnectorConfig]),
+    ACBConnectorModule,
+  ],
   controllers: [PaymentController],
   providers: [
     PaymentService,

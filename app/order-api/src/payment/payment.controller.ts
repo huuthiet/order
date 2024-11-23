@@ -1,7 +1,19 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreatePaymentDto } from './payment.dto';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  CreatePaymentDto,
+  InitiatePaymentQRCodeResponseDto,
+} from './payment.dto';
+import { ApiResponseWithType } from 'src/app/app.decorator';
+import { AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Payment')
 @ApiBearerAuth()
@@ -9,11 +21,25 @@ import { CreatePaymentDto } from './payment.dto';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post()
-  create(
+  @Post('initiate-qrcode')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Initiate QR code' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'QR code has been initiated successfully',
+    type: InitiatePaymentQRCodeResponseDto,
+    isArray: true,
+  })
+  async initiateQRCode(
     @Body(new ValidationPipe({ transform: true }))
     createPaymentDto: CreatePaymentDto,
   ) {
-    return this.paymentService.create(createPaymentDto);
+    const result = await this.paymentService.initiateQRCode(createPaymentDto);
+    return {
+      message: 'QR code has been initiated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<InitiatePaymentQRCodeResponseDto>;
   }
 }
