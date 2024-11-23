@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { IPaymentStrategy } from './payment.strategy';
-import { InitiatePaymentQRCodeResponseDto } from '../payment.dto';
+import { Payment } from '../payment.entity';
 
 @Injectable()
 export class CashStrategy implements IPaymentStrategy {
-  async process(order: any): Promise<InitiatePaymentQRCodeResponseDto> {
+  async process(order: any): Promise<Payment> {
     throw new Error('Method not implemented.');
   }
 }

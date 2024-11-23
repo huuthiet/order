@@ -18,8 +18,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { ACBInitiateQRCodeRequestDto } from 'src/acb-connector/acb-connector.dto';
 import * as shortid from 'shortid';
 import * as moment from 'moment';
-import { InitiatePaymentQRCodeResponseDto } from '../payment.dto';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Payment } from '../payment.entity';
+import { PaymentMethod } from '../payment.constants';
 
 @Injectable()
 export class BankTransferStrategy implements IPaymentStrategy {
@@ -33,10 +34,12 @@ export class BankTransferStrategy implements IPaymentStrategy {
     private readonly configService: ConfigService,
     @InjectRepository(ACBConnectorConfig)
     private readonly acbConnectorConfigRepository: Repository<ACBConnectorConfig>,
+    @InjectRepository(Payment)
+    private readonly paymentRepository: Repository<Payment>,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
-  async process(order: Order): Promise<InitiatePaymentQRCodeResponseDto> {
+  async process(order: Order): Promise<Payment> {
     const acbConnectorConfig = await this.acbConnectorConfigRepository.find({
       take: 1,
     });
@@ -77,7 +80,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
         merchantId: shortid(),
         orderId: order.slug,
         terminalId: shortid(),
-        userId: order.owner.slug,
+        userId: order.owner.id,
         loyaltyCode: shortid(),
         virtualAccountPrefix: acbConnectorConfig[0].virtualAccountPrefix,
         voucherCode: shortid(),
@@ -91,9 +94,18 @@ export class BankTransferStrategy implements IPaymentStrategy {
       access_token,
     );
     this.logger.log(`Initiate QR Code success`);
-    return {
-      requestTrace: response.requestTrace,
+
+    // Create payment
+    const payment = {
+      paymentMethod: PaymentMethod.BANK_TRANSFER,
+      amount: order.subtotal,
+      message: requestData.requestParameters.description,
+      transactionId: response.requestTrace,
       qrCode: response.responseBody.qrDataUrl,
-    } as InitiatePaymentQRCodeResponseDto;
+      userId: order.owner.id,
+    } as Payment;
+
+    this.paymentRepository.create(payment);
+    return await this.paymentRepository.save(payment);
   }
 }

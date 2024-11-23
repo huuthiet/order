@@ -9,8 +9,9 @@ import {
 import { PaymentService } from './payment.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
+  CallbackUpdatePaymentStatusRequestDto,
   CreatePaymentDto,
-  InitiatePaymentQRCodeResponseDto,
+  PaymentResponseDto,
 } from './payment.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
@@ -21,25 +22,46 @@ import { AppResponseDto } from 'src/app/app.dto';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post('initiate-qrcode')
+  @Post('initiate')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Initiate QR code' })
+  @ApiOperation({ summary: 'Initiate payment' })
   @ApiResponseWithType({
     status: HttpStatus.OK,
-    description: 'QR code has been initiated successfully',
-    type: InitiatePaymentQRCodeResponseDto,
+    description: 'Payment has been initiated successfully',
+    type: PaymentResponseDto,
     isArray: true,
   })
-  async initiateQRCode(
+  async initiate(
     @Body(new ValidationPipe({ transform: true }))
     createPaymentDto: CreatePaymentDto,
   ) {
-    const result = await this.paymentService.initiateQRCode(createPaymentDto);
+    const result = await this.paymentService.initiate(createPaymentDto);
     return {
       message: 'QR code has been initiated successfully',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<InitiatePaymentQRCodeResponseDto>;
+    } as AppResponseDto<PaymentResponseDto>;
+  }
+
+  @Post('callback/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Callback' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Callback has been processed successfully',
+    type: null,
+  })
+  async callback(
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: CallbackUpdatePaymentStatusRequestDto,
+  ) {
+    const result = await this.paymentService.callback(requestData);
+    return {
+      message: 'Callback has been processed successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<PaymentResponseDto>;
   }
 }

@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
+import { BaseResponseDto } from 'src/app/base.dto';
 
 export class CreatePaymentDto {
   @AutoMap()
@@ -16,12 +17,48 @@ export class CreatePaymentDto {
   orderSlug: string;
 }
 
-export class InitiatePaymentQRCodeResponseDto {
+export class CallbackUpdatePaymentStatusRequestDto {
+  @ApiProperty()
+  requestTrace: string;
+
+  @ApiProperty()
+  responseDateTime: string;
+
+  @ApiProperty()
+  responseStatus: {
+    responseCode: string;
+    responseMessage: string;
+  };
+
+  @ApiProperty()
+  responseBody: {
+    index: string;
+    referenceCode: string;
+  };
+}
+
+export class PaymentResponseDto extends BaseResponseDto {
+  @AutoMap()
+  @ApiProperty()
+  paymentMethod: string;
+
+  @AutoMap()
+  @ApiProperty()
+  amount: number;
+
+  @AutoMap()
+  @ApiProperty()
+  message: string;
+
+  @AutoMap()
+  @ApiProperty()
+  transactionId: string;
+
   @AutoMap()
   @ApiProperty()
   qrCode: string;
 
   @AutoMap()
   @ApiProperty()
-  requestTrace: string;
+  userId: string;
 }

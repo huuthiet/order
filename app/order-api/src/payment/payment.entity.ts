@@ -14,12 +14,12 @@ export class Payment extends Base {
   message: string;
 
   @AutoMap()
-  @Column({ name: 'status_code_column' })
-  statusCode: string;
+  @Column({ name: 'status_code_column', nullable: true })
+  statusCode?: string;
 
   @AutoMap()
-  @Column({ name: 'status_message_column' })
-  statusMessage: string;
+  @Column({ name: 'status_message_column', nullable: true })
+  statusMessage?: string;
 
   @AutoMap()
   @Column({ name: 'user_id_column' })
@@ -36,4 +36,8 @@ export class Payment extends Base {
   // One to many with order
   @OneToMany(() => Order, (order) => order.payment)
   orders: Order[];
+
+  @AutoMap()
+  @Column({ name: 'qrcode_column', nullable: true, type: 'text' })
+  qrCode?: string;
 }

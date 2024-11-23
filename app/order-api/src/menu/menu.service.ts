@@ -97,7 +97,29 @@ export class MenuService {
     slug: string,
     requestData: UpdateMenuDto,
   ): Promise<MenuResponseDto> {
-    throw new Error('Method not implemented.');
+    const context = `${MenuService.name}.${this.updateMenu.name}`;
+    const menu = await this.menuRepository.findOne({
+      where: { slug },
+      relations: ['branch'],
+    });
+    if (!menu) {
+      this.logger.error(`Menu ${slug} not found`, context);
+      throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    }
+
+    const branch = await this.branchRepository.findOne({
+      where: { slug: requestData.branchSlug },
+    });
+    if (!branch) {
+      this.logger.error(`Branch ${requestData.branchSlug} not found`, context);
+      throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
+    }
+
+    Object.assign(menu, { ...requestData, branch });
+    const updatedMenu = await this.menuRepository.save(menu);
+    this.logger.log(`Menu ${slug} updated`, context);
+
+    return this.mapper.map(updatedMenu, Menu, MenuResponseDto);
   }
 
   /**

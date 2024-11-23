@@ -1,6 +1,8 @@
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { Mapper } from '@automapper/core';
+import { createMap, Mapper } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
+import { PaymentResponseDto } from './payment.dto';
+import { Payment } from './payment.entity';
 
 @Injectable()
 export class PaymentProfile extends AutomapperProfile {
@@ -9,6 +11,8 @@ export class PaymentProfile extends AutomapperProfile {
   }
 
   override get profile() {
-    return (mapper: Mapper) => {};
+    return (mapper: Mapper) => {
+      createMap(mapper, Payment, PaymentResponseDto);
+    };
   }
 }
