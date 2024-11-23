@@ -41,6 +41,7 @@ export class ACBInitiateQRCodeRequestParametersDto {
   amount: number;
   voucherCode: string;
   loyaltyCode: string;
+  description: string;
 }
 
 export class CreateACBConnectorConfigRequestDto {

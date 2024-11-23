@@ -33,6 +33,7 @@ export class PaymentService {
     // get order
     const order = await this.orderRepository.findOne({
       where: { slug: createPaymentDto.orderSlug },
+      relations: ['owner'],
     });
     if (!order) {
       this.logger.error('Order not found', context);
