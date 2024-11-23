@@ -41,6 +41,12 @@
     "createTableSuccess": "Tạo bàn thành công",
     "updateTableSuccess": "Cập nhật bàn thành công",
     "updateTableStatusSuccess": "Cập nhật trạng thái bàn thành công",
-    "deleteTableSuccess": "Xóa bàn thành công"
+    "deleteTableSuccess": "Xóa bàn thành công",
+
+    "createBranchSuccess": "Tạo chi nhánh thành công",
+    "updateBranchSuccess": "Cập nhật chi nhánh thành công",
+    "deleteBranchSuccess": "Xóa chi nhánh thành công",
+
+    "createOrderSuccess": "Tạo đơn hàng thành công"
   }
 }

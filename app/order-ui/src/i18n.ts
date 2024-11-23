@@ -11,6 +11,7 @@ import enSetting from '@/locales/en/setting.json'
 import enProduct from '@/locales/en/product.json'
 import enLog from '@/locales/en/log.json'
 import enProfile from '@/locales/en/profile.json'
+import enTable from '@/locales/en/table.json'
 
 import viToast from '@/locales/vi/toast.json'
 import viAuth from '@/locales/vi/auth.json'
@@ -21,6 +22,7 @@ import viSetting from '@/locales/vi/setting.json'
 import viProduct from '@/locales/vi/product.json'
 import viLog from '@/locales/vi/log.json'
 import viProfile from '@/locales/vi/profile.json'
+import viTable from '@/locales/vi/table.json'
 
 i18n
   .use(LanguageDetector) // Tự động phát hiện ngôn ngữ
@@ -37,6 +39,7 @@ i18n
         product: enProduct,
         log: enLog,
         profile: enProfile,
+        table: enTable,
       },
       vi: {
         toast: viToast,
@@ -48,6 +51,7 @@ i18n
         product: viProduct,
         log: viLog,
         profile: viProfile,
+        table: viTable,
       },
     },
     lng: window.localStorage.getItem('i18nextLng') || 'vi',
@@ -66,6 +70,7 @@ i18n
       'product',
       'log',
       'profile',
+      'table',
     ], //Dùng để phân biệt các phần khác nhau của app
     defaultNS: 'auth', //Ngôn ngữ mặc định
   })

@@ -26,3 +26,5 @@ export * from './update-profile-form'
 export * from './create-menu-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './update-menu-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './create-table-form'

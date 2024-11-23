@@ -1,0 +1,15 @@
+{
+  "table": {
+    "title": "Quản lý bàn",
+    "create": "Tạo bàn",
+    "createTableDescription": "Thay đổi thông tin bên dưới để tạo bàn mới",
+    "tableName": "Tên bàn",
+    "enterTableName": "Nhập tên bàn",
+    "branch": "Chi nhánh",
+    "location": "Vị trí",
+    "enterLocation": "Nhập vị trí",
+
+    "update": "Cập nhật bàn",
+    "delete": "Xóa bàn"
+  }
+}

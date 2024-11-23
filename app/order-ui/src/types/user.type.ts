@@ -8,6 +8,7 @@ export interface IUserInfo {
   email: string
   address: string
   branch: {
+    slug: string
     name: string
     address: string
   }

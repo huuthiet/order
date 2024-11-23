@@ -73,7 +73,9 @@
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
     "deleteContent2": " khỏi giỏ hàng không?",
 
-    "orderSuccess": "Đặt hàng thành công!",
+    "create": "Tạo đơn hàng",
+    "confirmOrder": "Bạn có chắc muốn tạo đơn hàng này không?",
+
     "viewDetail": "Xem đơn hàng",
     "backToMenu": "Quay lại menu"
   },

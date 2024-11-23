@@ -1,0 +1,10 @@
+{
+  "table": {
+    "title": "Table management",
+    "create": "Create table",
+    "tableName": "Table name",
+    "branch": "Branch",
+    "update": "Update table",
+    "delete": "Delete table"
+  }
+}

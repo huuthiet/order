@@ -24,3 +24,7 @@ export { default as UpdateProfileDialog } from './update-profile-dialog'
 
 export { default as CreateMenuDialog } from './create-menu-dialog'
 export { default as UpdateMenuDialog } from './update-menu-dialog'
+
+export { default as CreateTableDialog } from './create-table-dialog'
+
+export { default as CreateOrderDialog } from './create-order-dialog'

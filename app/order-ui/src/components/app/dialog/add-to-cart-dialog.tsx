@@ -20,8 +20,8 @@ import {
   Textarea,
 } from '@/components/ui'
 
-import { IProduct, IProductVariant } from '@/types'
-import { useCartItemStore } from '@/stores'
+import { ICartItem, IProduct, IProductVariant } from '@/types'
+import { useCartItemStore, useUserStore } from '@/stores'
 import { publicFileURL } from '@/constants'
 
 interface AddToCartDialogProps {
@@ -40,6 +40,7 @@ export default function AddToCartDialog({
   const [selectedVariant, setSelectedVariant] =
     useState<IProductVariant | null>(product.variants[0] || null)
   const { addCartItem } = useCartItemStore()
+  const { getUserInfo } = useUserStore()
 
   const generateCartItemId = () => {
     return Date.now().toString(36)
@@ -48,14 +49,27 @@ export default function AddToCartDialog({
   const handleAddToCart = () => {
     if (!selectedVariant) return
 
-    const cartItem = {
-      ...product,
+    const cartItem: ICartItem = {
       id: generateCartItemId(),
-      note,
-      //   selectedVariant,
-      price: selectedVariant.price,
-      size: selectedVariant.size.name,
-      quantity: 1,
+      slug: product.slug,
+      owner: getUserInfo()?.slug,
+      type: 'at-table', // default value, can be modified based on requirements
+      branch: getUserInfo()?.branch.slug, // get branch from user info
+      orderItems: [
+        {
+          id: generateCartItemId(),
+          slug: product.slug,
+          image: product.image,
+          name: product.name,
+          quantity: 1,
+          variant: selectedVariant.slug,
+          price: selectedVariant.price,
+          description: product.description,
+          isLimit: product.isLimit,
+          catalog: product.catalog,
+        },
+      ],
+      table: '', // will be set later via addTable
     }
 
     addCartItem(cartItem)

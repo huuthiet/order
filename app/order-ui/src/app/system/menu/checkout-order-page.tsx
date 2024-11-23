@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-// import { CartContent } from '@/router/loadable'
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton, QuantitySelector } from '@/components/app/button'
 import { useSidebar } from '@/components/ui/sidebar'
@@ -24,11 +23,21 @@ export default function ConfirmOrderPage() {
   const { state } = useSidebar()
   const isCollapsed = state === 'collapsed'
 
-  const subtotal = getCartItems().reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
-  )
-  console.log(subtotal)
+  const cartItems = getCartItems()
+
+  // Update total calculation to handle orderItems
+  // const subtotal = cartItems.reduce((acc, item) => {
+  //   return (
+  //     acc +
+  //     item.orderItems.reduce(
+  //       (itemAcc, orderItem) =>
+  //         itemAcc + (orderItem.price || 0) * orderItem.quantity,
+  //       0,
+  //     )
+  //   )
+  // }, 0)
+  // const discount = 0 // Hiện tại không có giảm giá
+  // const total = subtotal - discount
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
@@ -56,13 +65,18 @@ export default function ConfirmOrderPage() {
                 <Trash2 size={18} />
               </span>
             </div>
+
+            {/* Danh sách sản phẩm */}
             <div className="flex w-full flex-col rounded-md border">
-              {getCartItems().map((item) => (
+              {cartItems?.orderItems.map((item) => (
                 <div
                   key={item.slug}
                   className="grid w-full items-center gap-4 rounded-md p-4 pb-4"
                 >
-                  <div className="grid w-full grid-cols-5 flex-row items-center">
+                  <div
+                    key={`${item.slug}`}
+                    className="grid w-full grid-cols-5 flex-row items-center"
+                  >
                     <div className="col-span-2 flex w-full gap-2">
                       <div className="flex flex-row items-center justify-center gap-2">
                         <img
@@ -75,7 +89,7 @@ export default function ConfirmOrderPage() {
                             {item.name}
                           </span>
                           <span className="text-sm text-muted-foreground">
-                            {`${item.price.toLocaleString('vi-VN')}đ`}
+                            {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
                           </span>
                         </div>
                       </div>
@@ -85,7 +99,7 @@ export default function ConfirmOrderPage() {
                     </div>
                     <div className="text-center">
                       <span className="text-sm font-semibold text-primary">
-                        {`${subtotal.toLocaleString('vi-VN')}đ`}
+                        {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
                       </span>
                     </div>
                     <div className="flex justify-center">

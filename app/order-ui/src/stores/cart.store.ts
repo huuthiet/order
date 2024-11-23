@@ -8,70 +8,102 @@ import { ICartItemStore, ICartItem } from '@/types'
 export const useCartItemStore = create<ICartItemStore>()(
   persist(
     (set, get) => ({
-      cartItems: [],
-      getCartItems: () => get().cartItems,
-      addCartItem: (item: ICartItem) => {
-        const { cartItems } = get()
-        // const existingItem = cartItems.find((cartItem) => cartItem.slug === item.slug)
-        // const existingItem = cartItems.find((cartItem) =>
-        //   cartItem.slug === item.slug &&
-        //   cartItem.selectedVariant?.slug === item.selectedVariant?.slug
-        // )
+      cartItems: null, // Chỉ lưu một cart item hoặc null nếu không có item nào
 
-        // if (existingItem) {
-        //   showErrorToast(1000)
-        //   return
-        // }
+      getCartItems: () => get().cartItems,
+
+      addCustomerInfo: (owner: string) => {
+        const { cartItems } = get()
+        if (cartItems) {
+          set({
+            cartItems: { ...cartItems, owner }, // Cập nhật owner cho cartItems
+          })
+        }
+      },
+
+      addCartItem: (item: ICartItem) => {
+        // Lưu duy nhất một cart item vào cartItems
         set({
-          cartItems: [...cartItems, { ...item, quantity: 1 }],
+          cartItems: item, // Lưu trực tiếp item vào cartItems
         })
         showToast(i18next.t('toast.addSuccess'))
       },
 
-      //   if (existingItem) {
-      //     set({
-      //       cartItems: cartItems.map((cartItem) =>
-      //         cartItem.slug === item.slug &&
-      //         cartItem.selectedVariant?.slug === item.selectedVariant?.slug
-      //           ? { ...cartItem, quantity: cartItem.quantity + 1 }
-      //           : cartItem
-      //       ),
-      //     })
-      //   } else {
-      //     set({ cartItems: [...cartItems, item] })
-      //   }
-      // },
-      updateCartItemQuantity: (slug: string, quantity: number) => {
+      updateCartItemQuantity: (id: string, quantity: number) => {
+        console.log('id', id, 'quantity', quantity)
         const { cartItems } = get()
-        set({
-          cartItems: cartItems.map((item) =>
-            item.slug === slug ? { ...item, quantity } : item,
-          ),
-        })
+        console.log('cartItems', cartItems?.orderItems)
+        if (cartItems) {
+          const updatedOrderItems = cartItems.orderItems.map((orderItem) =>
+            orderItem.id === id ? { ...orderItem, quantity } : orderItem,
+          )
+          console.log('updatedOrderItems', updatedOrderItems)
+
+          set({
+            cartItems: {
+              ...cartItems,
+              orderItems: updatedOrderItems,
+            },
+          })
+        }
       },
-      addNote: (slug: string, note: string) => {
+
+      addNote: (id: string, note: string) => {
         const { cartItems } = get()
-        set({
-          cartItems: cartItems.map((item) =>
-            item.slug === slug ? { ...item, note } : item,
-          ),
-        })
+        if (cartItems) {
+          const updatedOrderItems = cartItems.orderItems.map((orderItem) =>
+            orderItem.id === id ? { ...orderItem, note } : orderItem,
+          )
+
+          set({
+            cartItems: {
+              ...cartItems,
+              orderItems: updatedOrderItems,
+            },
+          })
+        }
       },
-      addPaymentMethod: (paymentMethod: string) => {
+
+      addTable: (table: string) => {
         const { cartItems } = get()
-        set({
-          cartItems: cartItems.map((item) => ({ ...item, paymentMethod })),
-        })
+        if (cartItems) {
+          set({
+            cartItems: { ...cartItems, table },
+          })
+        }
       },
-      removeCartItem: (id: string) => {
+
+      addPaymentMethod: () => {
         const { cartItems } = get()
-        set({
-          cartItems: cartItems.filter((item) => item.id !== id),
-        })
-        showToast(i18next.t('toast.removeSuccess'))
+        if (cartItems) {
+          set({
+            cartItems: { ...cartItems },
+          })
+        }
       },
+
+      removeCartItem: (cartItemId: string) => {
+        const { cartItems } = get()
+
+        if (cartItems) {
+          // Lọc bỏ orderItem có id trùng với orderItemId
+          const updatedOrderItems = cartItems.orderItems.filter(
+            (orderItem) => orderItem.id !== cartItemId,
+          )
+
+          // Cập nhật lại cartItems với orderItems đã thay đổi
+          set({
+            cartItems: {
+              ...cartItems,
+              orderItems: updatedOrderItems,
+            },
+          })
+          showToast(i18next.t('toast.removeSuccess'))
+        }
+      },
+
       clearCart: () => {
-        set({ cartItems: [] })
+        set({ cartItems: null }) // Xóa cartItems
         showToast(i18next.t('toast.clearSuccess'))
       },
     }),

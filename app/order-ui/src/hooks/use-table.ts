@@ -1,4 +1,4 @@
-import { createTable, getAllTables, updateTable, deleteTable } from '@/api'
+import { getAllTables, createTable, updateTable, deleteTable } from '@/api'
 import { ICreateTableRequest, IUpdateTableRequest } from '@/types'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
@@ -23,8 +23,6 @@ export const useUpdateTable = () => {
 
 export const useDeleteTable = () => {
   return useMutation({
-    mutationFn: async (slug: string) => {
-      return deleteTable(slug)
-    },
+    mutationFn: async (slug: string) => deleteTable(slug),
   })
 }
