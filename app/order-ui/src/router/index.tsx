@@ -18,6 +18,7 @@ import {
   LoggerPage,
   ProductDetailPage,
   ProfilePage,
+  MenuManagementPage,
 } from './loadable'
 
 export const router = createBrowserRouter([
@@ -121,6 +122,20 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <ProductDetailPage />,
+      },
+    ],
+  },
+  {
+    path: ROUTE.STAFF_MENU_MANAGEMENT,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: <MenuManagementPage />,
       },
     ],
   },

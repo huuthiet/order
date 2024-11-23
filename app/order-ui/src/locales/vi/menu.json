@@ -1,7 +1,6 @@
 {
   "menu": {
     "noData": "Không có dữ liệu",
-    "chooseDate": "Chọn thứ",
     "chooseDishCategory": "Chọn loại món",
 
     "addToCart": "Thêm vào giỏ",
@@ -22,7 +21,20 @@
     "discount": "Giảm giá",
     "subTotal": "Tạm tính",
     "continue": "Tiếp tục",
-    "confirm": "Xác nhận đơn hàng"
+    "confirm": "Xác nhận đơn hàng",
+
+    "date": "Ngày",
+    "title": "Quản lý thực đơn",
+    "createdAt": "Ngày tạo",
+    "totalItems": "Tổng số món",
+
+    "create": "Tạo thực đơn",
+    "createMenuDescription": "Vui lòng điền thông tin thực đơn",
+    "chooseDate": "Chọn ngày",
+    "branchSlug": "Chi nhánh",
+
+    "edit": "Chỉnh sửa thực đơn",
+    "delete": "Xóa thực đơn"
   },
 
   "order": {

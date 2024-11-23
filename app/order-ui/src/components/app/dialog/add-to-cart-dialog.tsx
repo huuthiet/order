@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  ScrollArea,
   Select,
   SelectContent,
   SelectItem,
@@ -39,8 +40,6 @@ export default function AddToCartDialog({
   const [selectedVariant, setSelectedVariant] =
     useState<IProductVariant | null>(product.variants[0] || null)
   const { addCartItem } = useCartItemStore()
-
-  console.log('product', product)
 
   const generateCartItemId = () => {
     return Date.now().toString(36)
@@ -74,87 +73,89 @@ export default function AddToCartDialog({
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[64rem]">
-        <DialogHeader>
+      <DialogContent className="px-0 sm:max-w-[64rem]">
+        <DialogHeader className="px-6">
           <DialogTitle>{t('menu.confirmProduct')}</DialogTitle>
           <DialogDescription>
             {t('menu.confirmProductDescription')}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-4 gap-4">
-          {/* Product Image */}
-          <div className="relative col-span-2">
-            {product.image ? (
-              <img
-                src={`${publicFileURL}/${product.image}`}
-                alt={product.name}
-                className="h-48 w-full rounded-md object-cover sm:h-64 lg:h-80"
-              />
-            ) : (
-              <div className="w-full rounded-md bg-muted/50" />
-            )}
-          </div>
-
-          <div className="col-span-2 flex flex-col gap-6">
-            {/* Product Details */}
-            <div>
-              <h3 className="text-lg font-semibold">{product.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                {product.description}
-              </p>
+        <ScrollArea className="max-h-[24rem] px-6">
+          <div className="grid grid-cols-4 gap-4">
+            {/* Product Image */}
+            <div className="relative col-span-2">
+              {product.image ? (
+                <img
+                  src={`${publicFileURL}/${product.image}`}
+                  alt={product.name}
+                  className="h-48 w-full rounded-md object-cover sm:h-64 lg:h-80"
+                />
+              ) : (
+                <div className="w-full rounded-md bg-muted/50" />
+              )}
             </div>
 
-            {/* Size Selection */}
-            {product.variants.length > 0 && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  {t('menu.selectSize')}
-                </label>
-                <Select
-                  value={selectedVariant?.slug}
-                  onValueChange={(value) => {
-                    const variant = product.variants.find(
-                      (v) => v.slug === value,
-                    )
-                    setSelectedVariant(variant || null)
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('menu.selectSize')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {product.variants.map((variant) => (
-                      <SelectItem key={variant.slug} value={variant.slug}>
-                        {variant.size.name.toUpperCase()} -{' '}
-                        {variant.price.toLocaleString('vi-VN')}đ
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <div className="col-span-2 flex flex-col gap-6">
+              {/* Product Details */}
+              <div>
+                <h3 className="text-lg font-semibold">{product.name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {product.description}
+                </p>
               </div>
-            )}
 
-            {/* Price */}
-            {/* <div className="text-lg font-bold text-primary">
+              {/* Size Selection */}
+              {product.variants.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    {t('menu.selectSize')}
+                  </label>
+                  <Select
+                    value={selectedVariant?.slug}
+                    onValueChange={(value) => {
+                      const variant = product.variants.find(
+                        (v) => v.slug === value,
+                      )
+                      setSelectedVariant(variant || null)
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('menu.selectSize')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {product.variants.map((variant) => (
+                        <SelectItem key={variant.slug} value={variant.slug}>
+                          {variant.size.name.toUpperCase()} -{' '}
+                          {variant.price.toLocaleString('vi-VN')}đ
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Price */}
+              {/* <div className="text-lg font-bold text-primary">
               {t('menu.price')}
               {selectedVariant ? `${selectedVariant.price.toLocaleString('vi-VN')}đ` : 'Liên hệ'}
             </div> */}
 
-            {/* Note */}
-            <div className="flex flex-col items-start space-y-2">
-              <span className="text-sm">{t('menu.note')}</span>
-              {/* <NotepadText size={28} className="text-muted-foreground" /> */}
-              <Textarea
-                value={note}
-                onChange={(e) => setNote(e.target.value)} // Cập nhật state note khi người dùng nhập
-                placeholder={t('menu.enterNote')}
-              />
+              {/* Note */}
+              <div className="flex flex-col items-start space-y-2">
+                <span className="text-sm">{t('menu.note')}</span>
+                {/* <NotepadText size={28} className="text-muted-foreground" /> */}
+                <Textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)} // Cập nhật state note khi người dùng nhập
+                  placeholder={t('menu.enterNote')}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </ScrollArea>
 
-        <DialogFooter className="flex justify-end gap-3">
+        <DialogFooter className="flex justify-end gap-3 px-6">
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>
