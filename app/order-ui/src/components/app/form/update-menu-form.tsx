@@ -4,7 +4,6 @@ import moment from 'moment'
 import { CalendarIcon } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { useAllMenus } from '@/hooks'
 
 import {
   FormField,
@@ -18,60 +17,50 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
+  Input,
 } from '@/components/ui'
-import { createMenuSchema, TCreateMenuSchema } from '@/schemas'
+import { updateMenuSchema, TUpdateMenuSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ICreateMenuRequest } from '@/types'
-import { useCreateMenu } from '@/hooks'
+import { IUpdateMenuRequest, IMenu } from '@/types'
+import { useAllMenus, useUpdateMenu } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { cn } from '@/lib'
 
-interface IFormCreateMenuProps {
+interface IFormUpdateMenuProps {
+  menu: IMenu
   onSubmit: (isOpen: boolean) => void
 }
 
-export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
+export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
+  menu,
   onSubmit,
 }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['menu'])
-  const { mutate: createMenu } = useCreateMenu()
-  const [date, setDate] = useState<Date | undefined>(undefined)
-  const form = useForm<TCreateMenuSchema>({
-    resolver: zodResolver(createMenuSchema),
+  const { mutate: updateMenu } = useUpdateMenu()
+  // const { data } = useAllMenus()
+  const form = useForm<TUpdateMenuSchema>({
+    resolver: zodResolver(updateMenuSchema),
     defaultValues: {
-      date: '',
-      branchSlug: '',
+      slug: menu.slug,
+      date: menu.date,
+      branchSlug: menu.branchSlug,
     },
   })
-  const { data: menuData } = useAllMenus()
 
-  // Get existing menu dates
-  const existingMenuDates =
-    menuData?.result.map((menu) => moment(menu.date).format('YYYY-MM-DD')) || []
+  // console.log('menu', data)
 
-  // Function to disable dates
-  const disabledDays = [
-    { before: new Date() }, // Disable past dates
-    ...existingMenuDates.map((date) => new Date(date)), // Disable dates with menus
-  ]
-
-  // Custom modifier for dates with menus
-  const modifiers = {
-    booked: existingMenuDates.map((date) => new Date(date)),
-  }
-
-  const handleSubmit = (data: ICreateMenuRequest) => {
-    createMenu(data, {
+  const handleSubmit = (data: IUpdateMenuRequest) => {
+    updateMenu(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ['menus'],
         })
         onSubmit(false)
         form.reset()
-        showToast(t('toast.createMenuSuccess'))
+        showToast(t('toast.updateMenuSuccess'))
       },
     })
   }
@@ -85,7 +74,15 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
           <FormItem>
             <FormLabel>{t('menu.date')}</FormLabel>
             <FormControl>
-              <Popover>
+              <Input
+                {...field}
+                value={field.value || ''}
+                className={cn(
+                  'w-full justify-start text-left font-normal',
+                  !field.value && 'text-muted-foreground',
+                )}
+              />
+              {/* <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -95,7 +92,7 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
                         !field.value && 'text-muted-foreground',
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="w-4 h-4 mr-2" />
                       {field.value ? (
                         field.value
                       ) : (
@@ -117,15 +114,14 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
                         field.onChange(formattedDate)
                       }
                     }}
-                    disabled={disabledDays}
-                    modifiers={modifiers}
+                    disabled
                     modifiersClassNames={{
                       booked:
                         'relative before:absolute before:bottom-0.5 before:left-1/2 before:-translate-x-1/2 before:w-1.5 before:h-1.5 before:bg-primary before:rounded-full',
                     }}
                   />
                 </PopoverContent>
-              </Popover>
+              </Popover> */}
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -140,7 +136,10 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
           <FormItem>
             <FormLabel>{t('menu.branchSlug')}</FormLabel>
             <FormControl>
-              <BranchSelect {...field} />
+              <BranchSelect
+                defaultValue={menu.branchSlug} // Giá trị mặc định
+                onChange={field.onChange} // Cập nhật giá trị
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -162,7 +161,7 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
           </div>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
-              {t('menu.create')}
+              {t('menu.update')}
             </Button>
           </div>
         </form>

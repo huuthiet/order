@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PlusCircledIcon } from '@radix-ui/react-icons'
+import { SquarePen } from 'lucide-react'
 
 import {
   Button,
@@ -12,39 +12,40 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { CreateMenuForm } from '@/components/app/form'
-import { useAllMenus } from '@/hooks'
+interface IUpdateMenuDialogProps {
+  menu: IMenu
+}
 
-export default function CreateMenuDialog() {
+import { UpdateMenuForm } from '@/components/app/form'
+import { IMenu } from '@/types'
+
+export default function UpdateMenuDialog({ menu }: IUpdateMenuDialogProps) {
   const { t } = useTranslation(['menu'])
   const [isOpen, setIsOpen] = useState(false)
-  const { data } = useAllMenus()
   const handleSubmit = (isOpen: boolean) => {
     setIsOpen(isOpen)
   }
 
-  console.log(data)
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild className="flex justify-start">
         <Button
-          variant="outline"
-          className="h-10 gap-1 text-sm"
+          variant="ghost"
+          className="h-10 gap-1 px-2 text-sm"
           onClick={() => setIsOpen(true)}
         >
-          <PlusCircledIcon className="icon" />
-          {t('menu.create')}
+          <SquarePen className="icon" />
+          {t('menu.update')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] rounded-md sm:max-w-[36rem]">
         <DialogHeader>
-          <DialogTitle>{t('menu.create')}</DialogTitle>
+          <DialogTitle>{t('menu.update')}</DialogTitle>
           <DialogDescription>
-            {t('menu.createMenuDescription')}
+            {t('menu.updateMenuDescription')}
           </DialogDescription>
         </DialogHeader>
-        <CreateMenuForm onSubmit={handleSubmit} />
+        <UpdateMenuForm menu={menu} onSubmit={handleSubmit} />
       </DialogContent>
     </Dialog>
   )

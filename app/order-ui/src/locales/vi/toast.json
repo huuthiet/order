@@ -36,6 +36,11 @@
 
     "createMenuSuccess": "Tạo thực đơn thành công",
     "updateMenuSuccess": "Cập nhật thực đơn thành công",
-    "deleteMenuSuccess": "Xóa thực đơn thành công"
+    "deleteMenuSuccess": "Xóa thực đơn thành công",
+
+    "createTableSuccess": "Tạo bàn thành công",
+    "updateTableSuccess": "Cập nhật bàn thành công",
+    "updateTableStatusSuccess": "Cập nhật trạng thái bàn thành công",
+    "deleteTableSuccess": "Xóa bàn thành công"
   }
 }

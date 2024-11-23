@@ -17,6 +17,12 @@ export interface ISpecificMenuRequest {
   date?: string
 }
 
+export interface IUpdateMenuRequest {
+  slug: string // This is the slug of the menu
+  date: string
+  branchSlug: string
+}
+
 export interface ISpecificMenu extends IBase {
   date: string
   menuItems: IMenuItem[]

@@ -1,5 +1,15 @@
-import { createMenu, getAllMenus, getSpecificMenu } from '@/api'
-import { ICreateMenuRequest, ISpecificMenuRequest } from '@/types'
+import {
+  createMenu,
+  updateMenu,
+  deleteMenu,
+  getAllMenus,
+  getSpecificMenu,
+} from '@/api'
+import {
+  ICreateMenuRequest,
+  ISpecificMenuRequest,
+  IUpdateMenuRequest,
+} from '@/types'
 import { useQuery, useMutation } from '@tanstack/react-query'
 
 export const useAllMenus = () => {
@@ -20,6 +30,22 @@ export const useCreateMenu = () => {
   return useMutation({
     mutationFn: async (data: ICreateMenuRequest) => {
       return createMenu(data)
+    },
+  })
+}
+
+export const useUpdateMenu = () => {
+  return useMutation({
+    mutationFn: async (data: IUpdateMenuRequest) => {
+      return updateMenu(data)
+    },
+  })
+}
+
+export const useDeleteMenu = () => {
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      return deleteMenu(slug)
     },
   })
 }

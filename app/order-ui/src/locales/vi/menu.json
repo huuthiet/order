@@ -29,12 +29,16 @@
     "totalItems": "Tổng số món",
 
     "create": "Tạo thực đơn",
-    "createMenuDescription": "Vui lòng điền thông tin thực đơn",
+    "createMenuDescription": "Điền đầy đủ thông tin để tạo thực đơn mới",
     "chooseDate": "Chọn ngày",
     "branchSlug": "Chi nhánh",
 
-    "edit": "Chỉnh sửa thực đơn",
-    "delete": "Xóa thực đơn"
+    "update": "Chỉnh sửa thực đơn",
+    "updateMenuDescription": "Thay đổi thông tin để cập nhật thực đơn",
+    "delete": "Xóa thực đơn",
+    "deleteContent": "Bạn có chắc muốn xóa thực đơn ngày ",
+    "deleteContent2": " thuộc chi nhánh ",
+    "deleteContent3": " không?"
   },
 
   "order": {

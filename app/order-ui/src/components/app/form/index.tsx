@@ -24,3 +24,5 @@ export { default as ProfileForm } from './profile-form'
 export * from './update-profile-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './create-menu-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './update-menu-form'

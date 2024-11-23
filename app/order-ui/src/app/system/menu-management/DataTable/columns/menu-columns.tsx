@@ -14,6 +14,7 @@ import {
 } from '@/components/ui'
 import { IMenu } from '@/types'
 import { ROUTE } from '@/constants'
+import { UpdateMenuDialog } from '@/components/app/dialog'
 
 export const useMenusColumns = (): ColumnDef<IMenu>[] => {
   const { t } = useTranslation(['menu'])
@@ -26,9 +27,7 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
       ),
       cell: ({ row }) => {
         const createdAt = row.getValue('createdAt')
-        return createdAt
-          ? moment(new Date(createdAt as string)).format('HH:mm DD/MM/YYYY')
-          : ''
+        return createdAt ? moment(createdAt).format('DD/MM/YYYY HH:mm') : ''
       },
     },
     {
@@ -37,10 +36,8 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
         <DataTableColumnHeader column={column} title={t('menu.date')} />
       ),
       cell: ({ row }) => {
-        const createdAt = row.getValue('date')
-        return createdAt
-          ? moment(new Date(createdAt as string)).format('DD/MM/YYYY')
-          : ''
+        const date = row.getValue('date')
+        return date ? moment(date).format('DD/MM/YYYY') : ''
       },
     },
     {
@@ -83,8 +80,7 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
                     {tCommon('common.viewDetail')}
                   </Button>
                 </NavLink>
-                {/* <UpdateProductDialog product={product} /> */}
-                {/* <DeleteProductDialog product={product} /> */}
+                <UpdateMenuDialog menu={menu} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

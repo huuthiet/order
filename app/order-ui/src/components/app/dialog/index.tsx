@@ -23,3 +23,4 @@ export { default as DeleteProductVariantDialog } from './delete-product-variant-
 export { default as UpdateProfileDialog } from './update-profile-dialog'
 
 export { default as CreateMenuDialog } from './create-menu-dialog'
+export { default as UpdateMenuDialog } from './update-menu-dialog'
