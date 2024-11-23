@@ -21,7 +21,7 @@ import { AppResponseDto } from 'src/app/app.dto';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post('initiate-qr-code')
+  @Post('initiate-qrcode')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Initiate QR code' })
   @ApiResponseWithType({

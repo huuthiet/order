@@ -13,6 +13,8 @@ import { InternalStrategy } from './strategy/internal.strategy';
 import { ACBConnectorClient } from 'src/acb-connector/acb-connector.client';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
+import { Order } from 'src/order/order.entity';
+import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 
 describe('PaymentController', () => {
   let controller: PaymentController;
@@ -47,6 +49,14 @@ describe('PaymentController', () => {
         },
         {
           provide: getRepositoryToken(Payment),
+          useValue: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Order),
+          useValue: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(ACBConnectorConfig),
           useValue: repositoryMockFactory,
         },
         {
