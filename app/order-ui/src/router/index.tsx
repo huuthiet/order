@@ -19,6 +19,8 @@ import {
   ProductDetailPage,
   ProfilePage,
   MenuManagementPage,
+  OrderPaymentPage,
+  BankConfigPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 
@@ -80,6 +82,25 @@ export const router = createBrowserRouter([
           <ProtectedElement
             // allowedAuthorities={[Authority.READ_USER]}
             element={<SuspenseElement component={ConfirmOrderPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.STAFF_ORDER_PAYMENT}/:slug`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={OrderPaymentPage} />}
           />
         ),
       },
@@ -213,6 +234,25 @@ export const router = createBrowserRouter([
           <ProtectedElement
             // allowedAuthorities={[Authority.READ_USER]}
             element={<SuspenseElement component={ProfilePage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.STAFF_BANK_CONFIG}`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={BankConfigPage} />}
           />
         ),
       },

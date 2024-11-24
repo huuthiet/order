@@ -14,7 +14,6 @@ export default function CartContent() {
   const { getCartItems, removeCartItem } = useCartItemStore()
 
   const cartItems = getCartItems()
-  console.log('cartItems', cartItems)
 
   // Tính tổng tiền
   const subtotal = cartItems?.orderItems?.reduce((acc, orderItem) => {
@@ -96,7 +95,7 @@ export default function CartContent() {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('menu.total')}</span>
-            <span>{`${subtotal?.toLocaleString('vi-VN')}đ`}</span>
+            <span>{`${subtotal?.toLocaleString('vi-VN') || 0}đ`}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('menu.discount')}</span>

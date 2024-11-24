@@ -1,5 +1,12 @@
 import { http } from '@/utils'
-import { IApiResponse, IOrder, ICreateOrderRequest } from '@/types'
+import {
+  IApiResponse,
+  IOrder,
+  ICreateOrderRequest,
+  IInitateQrCodeRequest,
+  ICreateOrderResponse,
+  IInitiateQrCodeResponse,
+} from '@/types'
 
 export async function getAllOrders(): Promise<IApiResponse<IOrder[]>> {
   const response = await http.get<IApiResponse<IOrder[]>>('/orders')
@@ -8,8 +15,8 @@ export async function getAllOrders(): Promise<IApiResponse<IOrder[]>> {
 
 export async function createOrder(
   params: ICreateOrderRequest,
-): Promise<IApiResponse<ICreateOrderRequest>> {
-  const response = await http.post<IApiResponse<ICreateOrderRequest>>(
+): Promise<IApiResponse<ICreateOrderResponse>> {
+  const response = await http.post<IApiResponse<ICreateOrderResponse>>(
     '/orders',
     params,
   )
@@ -18,7 +25,19 @@ export async function createOrder(
 
 export async function getOrderBySlug(
   slug: string,
-): Promise<IApiResponse<IOrder>> {
-  const response = await http.get<IApiResponse<IOrder>>(`/orders/${slug}`)
+): Promise<IApiResponse<ICreateOrderResponse>> {
+  const response = await http.get<IApiResponse<ICreateOrderResponse>>(
+    `/orders/${slug}`,
+  )
+  return response.data
+}
+
+export async function initializeQrCode(
+  params: IInitateQrCodeRequest,
+): Promise<IApiResponse<IInitiateQrCodeResponse>> {
+  const response = await http.post<IApiResponse<IInitiateQrCodeResponse>>(
+    `/payment/initiate-qrcode`,
+    params,
+  )
   return response.data
 }

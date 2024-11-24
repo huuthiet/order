@@ -1,4 +1,5 @@
 export * from './auth.schema'
+export * from './bank.schema'
 export * from './catalog.schema'
 export * from './menu.schema'
 export * from './product.schema'

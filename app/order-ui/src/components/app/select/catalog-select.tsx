@@ -1,20 +1,26 @@
 import { useEffect, useState } from 'react'
 import ReactSelect, { SingleValue } from 'react-select'
 
-import { useCatalog } from '@/hooks'
+import { useCatalogs } from '@/hooks'
 
 interface SelectCatalogProps {
   defaultValue?: string
   onChange: (value: string) => void
 }
 
-export default function CatalogSelect({ defaultValue, onChange }: SelectCatalogProps) {
-  const [allCatalogs, setAllCatalogs] = useState<{ value: string; label: string }[]>([])
-  const [selectedCatalog, setSelectedCatalog] = useState<{ value: string; label: string } | null>(
-    null
-  )
+export default function CatalogSelect({
+  defaultValue,
+  onChange,
+}: SelectCatalogProps) {
+  const [allCatalogs, setAllCatalogs] = useState<
+    { value: string; label: string }[]
+  >([])
+  const [selectedCatalog, setSelectedCatalog] = useState<{
+    value: string
+    label: string
+  } | null>(null)
   //   const { pagination, handlePageChange } = usePagination({ isSearchParams: false })
-  const { data } = useCatalog()
+  const { data } = useCatalogs()
 
   //   const handleScrollToBottom = () => {
   //     if (data?.result?.page && data.result.totalPages) {
@@ -27,7 +33,7 @@ export default function CatalogSelect({ defaultValue, onChange }: SelectCatalogP
     if (data?.result) {
       const newCatalogs = data.result.map((item) => ({
         value: item.slug || '',
-        label: item.name || ''
+        label: item.name || '',
       }))
       // Append new users to the previous users
       setAllCatalogs((prevCatalogs) => [...prevCatalogs, ...newCatalogs])
@@ -37,14 +43,18 @@ export default function CatalogSelect({ defaultValue, onChange }: SelectCatalogP
   // Set default value when it's available
   useEffect(() => {
     if (defaultValue && allCatalogs.length > 0) {
-      const defaultOption = allCatalogs.find((catalog) => catalog.value === defaultValue)
+      const defaultOption = allCatalogs.find(
+        (catalog) => catalog.value === defaultValue,
+      )
       if (defaultOption) {
         setSelectedCatalog(defaultOption)
       }
     }
   }, [defaultValue, allCatalogs])
 
-  const handleChange = (selectedOption: SingleValue<{ value: string; label: string }>) => {
+  const handleChange = (
+    selectedOption: SingleValue<{ value: string; label: string }>,
+  ) => {
     if (selectedOption) {
       setSelectedCatalog(selectedOption)
       onChange(selectedOption.value) // Only pass the value (slug)

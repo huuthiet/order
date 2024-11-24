@@ -87,6 +87,7 @@
     "cash": "Tiền mặt",
     "bankTransfer": "Chuyển khoản",
     "internalWallet": "Ví nội bộ",
-    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý."
+    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý.",
+    "confirmPayment": "Xác nhận thanh toán"
   }
 }

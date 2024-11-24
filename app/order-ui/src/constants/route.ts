@@ -11,6 +11,7 @@ export const ROUTE = {
   STAFF_HOME: '/staff/home',
   STAFF_MENU: '/staff/menu',
   STAFF_CHECKOUT_ORDER: '/staff/checkout-order',
+  STAFF_ORDER_PAYMENT: '/staff/order-payment',
   STAFF_ORDER_MANAGEMENT: '/staff/order-management',
   STAFF_ORDER_HISTORY: '/staff/order-history',
   STAFF_ORDER_PREPARATION: '/staff/order-preparation',
@@ -22,6 +23,7 @@ export const ROUTE = {
   STAFF_DELIVERY_MANAGEMENT: '/staff/delivery-management',
   STAFF_WALLET_MANAGEMENT: '/staff/wallet-management',
   STAFF_LOG_MANAGEMENT: '/staff/log-management',
+  STAFF_BANK_CONFIG: '/staff/bank-config',
 
   // Admin Routes
   ADMIN_DASHBOARD: '/admin/dashboard',

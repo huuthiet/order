@@ -1,8 +1,9 @@
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Label } from '@/components/ui'
+
 import { useTables } from '@/hooks'
 import { useCartItemStore } from '@/stores'
-import { useState, useEffect } from 'react'
+import { Label } from '@/components/ui'
 
 export default function TableSelect() {
   const { t } = useTranslation(['table'])
@@ -13,7 +14,7 @@ export default function TableSelect() {
   // Lấy danh sách cart items
   const cartItems = getCartItems()
 
-  console.log('cartItems', cartItems)
+  // console.log('tables', tables?.result)
 
   useEffect(() => {
     // Tìm orderItem nào có table được thiết lập

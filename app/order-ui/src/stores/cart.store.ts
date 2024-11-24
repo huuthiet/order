@@ -30,14 +30,11 @@ export const useCartItemStore = create<ICartItemStore>()(
       },
 
       updateCartItemQuantity: (id: string, quantity: number) => {
-        console.log('id', id, 'quantity', quantity)
         const { cartItems } = get()
-        console.log('cartItems', cartItems?.orderItems)
         if (cartItems) {
           const updatedOrderItems = cartItems.orderItems.map((orderItem) =>
             orderItem.id === id ? { ...orderItem, quantity } : orderItem,
           )
-          console.log('updatedOrderItems', updatedOrderItems)
 
           set({
             cartItems: {
@@ -104,7 +101,7 @@ export const useCartItemStore = create<ICartItemStore>()(
 
       clearCart: () => {
         set({ cartItems: null }) // Xóa cartItems
-        showToast(i18next.t('toast.clearSuccess'))
+        // showToast(i18next.t('toast.clearSuccess'))
       },
     }),
     {

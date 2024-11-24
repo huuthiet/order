@@ -8,7 +8,7 @@ import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
 import {
   CheckoutCart,
-  PaymentMethodSelect,
+  // PaymentMethodSelect,
   TableSelect,
 } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
@@ -111,7 +111,7 @@ export default function ConfirmOrderPage() {
               ))}
             </div>
             <TableSelect />
-            <PaymentMethodSelect />
+            {/* <PaymentMethodSelect /> */}
           </div>
         </div>
       </ScrollArea>

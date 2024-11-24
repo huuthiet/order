@@ -67,6 +67,7 @@ export default function AddToCartDialog({
           description: product.description,
           isLimit: product.isLimit,
           catalog: product.catalog,
+          note: note,
         },
       ],
       table: '', // will be set later via addTable

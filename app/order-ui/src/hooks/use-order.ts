@@ -1,7 +1,12 @@
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 
-import { createOrder, getAllOrders, getOrderBySlug } from '@/api'
-import { ICreateOrderRequest } from '@/types'
+import {
+  createOrder,
+  getAllOrders,
+  getOrderBySlug,
+  initializeQrCode,
+} from '@/api'
+import { ICreateOrderRequest, IInitateQrCodeRequest } from '@/types'
 
 export const useOrders = () => {
   return useQuery({
@@ -24,5 +29,13 @@ export const useOrderBySlug = (slug: string) => {
     queryKey: ['order', slug],
     queryFn: () => getOrderBySlug(slug),
     placeholderData: keepPreviousData,
+  })
+}
+
+export const useInititateQrCode = () => {
+  return useMutation({
+    mutationFn: async (data: IInitateQrCodeRequest) => {
+      return initializeQrCode(data)
+    },
   })
 }

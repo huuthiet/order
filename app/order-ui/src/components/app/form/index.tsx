@@ -28,3 +28,5 @@ export * from './create-menu-form'
 export * from './update-menu-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './create-table-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './create-bank-connector-form'

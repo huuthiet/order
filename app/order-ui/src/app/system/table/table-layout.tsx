@@ -92,8 +92,6 @@ export default function TableLayout() {
     })
   }
 
-  console.log(tables)
-
   const handleStatusChange = (tableId: string, status: Table['status']) => {
     setTables((prev) =>
       prev.map((table) => {

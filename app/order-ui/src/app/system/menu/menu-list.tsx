@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 
 import { SkeletonMenuList } from '@/components/app/skeleton'
-import { useProducts, useSpecificMenu } from '@/hooks'
+import { useSpecificMenu } from '@/hooks'
 import { IProduct } from '@/types'
 import { publicFileURL } from '@/constants'
 import { AddToCartDialog } from '@/components/app/dialog'
@@ -13,18 +13,14 @@ interface IMenuProps {
 
 export default function MenuList({ isCartOpen }: IMenuProps) {
   const { t } = useTranslation('menu')
-  const { data, isLoading } = useProducts()
   function getCurrentDate() {
     return moment().format('YYYY-MM-DD')
   }
-  const { data: specificMenu } = useSpecificMenu({ date: getCurrentDate() })
-
-  console.log('specificMenu', specificMenu?.result.menuItems)
+  const { data: specificMenu, isLoading } = useSpecificMenu({
+    date: getCurrentDate(),
+  })
 
   const menuItems = specificMenu?.result.menuItems
-
-  const products = data?.result
-  console.log('products', products)
 
   const getPriceRange = (variants: IProduct['variants']) => {
     if (!variants || variants.length === 0) return null

@@ -32,13 +32,12 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation('common')
   const { t: tToast } = useTranslation('toast')
-  const { getCartItems } = useCartItemStore()
+  const { getCartItems, clearCart } = useCartItemStore()
   const { mutate: createOrder } = useCreateOrder()
   const [isOpen, setIsOpen] = useState(false)
   const { getUserInfo } = useUserStore()
 
   const order = getCartItems()
-  console.log('check order', order)
 
   const handleSubmit = (order: ICartItem) => {
     if (!order) return // Nếu giỏ hàng trống, thoát sớm.
@@ -59,9 +58,10 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
 
     // Gọi API để tạo đơn hàng.
     createOrder(createOrderRequest, {
-      onSuccess: () => {
-        navigate(ROUTE.ORDER_SUCCESS) // Điều hướng đến trang thành công.
+      onSuccess: (data) => {
+        navigate(`${ROUTE.STAFF_ORDER_PAYMENT}/${data.result.slug}`) // Điều hướng đến trang thành công.
         setIsOpen(false) // Đóng dialog.
+        clearCart() // Xóa giỏ hàng.
         showToast(tToast('toast.createOrderSuccess')) // Thông báo thành công.
       },
       onError: (error) => {

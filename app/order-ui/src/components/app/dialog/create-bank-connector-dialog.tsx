@@ -10,13 +10,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  ScrollArea,
 } from '@/components/ui'
 
-import { CreateMenuForm } from '@/components/app/form'
+import { CreateBankConnectorForm } from '@/components/app/form'
 // import { useAllMenus } from '@/hooks'
 
-export default function CreateMenuDialog() {
-  const { t } = useTranslation(['menu'])
+export default function CreateBankConnectorDialog() {
+  const { t } = useTranslation(['bank'])
   const [isOpen, setIsOpen] = useState(false)
   // const { data } = useAllMenus()
   const handleSubmit = (isOpen: boolean) => {
@@ -32,17 +33,19 @@ export default function CreateMenuDialog() {
           onClick={() => setIsOpen(true)}
         >
           <PlusCircledIcon className="icon" />
-          {t('menu.create')}
+          {t('bank.create')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[20rem] rounded-md sm:max-w-[36rem]">
-        <DialogHeader>
-          <DialogTitle>{t('menu.create')}</DialogTitle>
+      <DialogContent className="max-w-[20rem] rounded-md px-0 sm:max-w-[44rem]">
+        <DialogHeader className="px-6">
+          <DialogTitle>{t('bank.create')}</DialogTitle>
           <DialogDescription>
-            {t('menu.createMenuDescription')}
+            {t('bank.createBankConnectorDescription')}
           </DialogDescription>
         </DialogHeader>
-        <CreateMenuForm onSubmit={handleSubmit} />
+        <ScrollArea className="max-h-[24rem] px-6">
+          <CreateBankConnectorForm onSubmit={handleSubmit} />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   )

@@ -93,3 +93,17 @@ export const ProfilePage = React.lazy(() =>
     default: module.ProfilePage,
   })),
 )
+
+//Order payment page
+export const OrderPaymentPage = React.lazy(() =>
+  import('@/app/system/payment').then((module) => ({
+    default: module.PaymentPage,
+  })),
+)
+
+//Bank config page
+export const BankConfigPage = React.lazy(() =>
+  import('@/app/system/payment').then((module) => ({
+    default: module.BankConfigPage,
+  })),
+)

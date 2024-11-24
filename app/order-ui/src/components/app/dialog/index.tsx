@@ -28,3 +28,5 @@ export { default as UpdateMenuDialog } from './update-menu-dialog'
 export { default as CreateTableDialog } from './create-table-dialog'
 
 export { default as CreateOrderDialog } from './create-order-dialog'
+
+export { default as CreateBankConnectorDialog } from './create-bank-connector-dialog'
