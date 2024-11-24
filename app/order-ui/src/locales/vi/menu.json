@@ -51,11 +51,13 @@
     "enterCustomerName": "Nhập tên khách hàng",
     "phoneNumber": "Số điện thoại",
     "enterPhoneNumber": "Nhập số điện thoại",
+    "orderDate": "Ngày đặt hàng",
     "note": "Ghi chú",
     "enterNote": "Nhập ghi chú",
     "deliveryMethod": "Phương thức giao hàng",
     "dineIn": "Tại quán",
     "takeAway": "Mang đi",
+    "location": "Vị trí",
     "tableNumber": "Số bàn",
     "promotion": "Mã giảm giá",
     "enterPromotion": "Nhập mã giảm giá",
@@ -88,6 +90,11 @@
     "bankTransfer": "Chuyển khoản",
     "internalWallet": "Ví nội bộ",
     "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý.",
-    "confirmPayment": "Xác nhận thanh toán"
+    "confirmPayment": "Lấy mã QR để thanh toán",
+
+    "cusomterInformation": "Thông tin khách hàng",
+    "customerName": "Tên khách hàng",
+    "orderDate": "Ngày đặt hàng",
+    "phoneNumber": "Số điện thoại"
   }
 }

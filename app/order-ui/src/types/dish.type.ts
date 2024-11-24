@@ -123,11 +123,7 @@ export interface IInitateQrCodeRequest {
   orderSlug: string
 }
 
-export interface IInitiateQrCodeResponse extends IBase {
-  paymentMethod: string
-  amount: number
-  message: string
-  transactionId: string
+export interface IInitiateQrCodeResponse {
+  requestTrace: string
   qrCode: string
-  userId: string
 }

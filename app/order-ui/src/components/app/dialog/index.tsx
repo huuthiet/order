@@ -30,3 +30,6 @@ export { default as CreateTableDialog } from './create-table-dialog'
 export { default as CreateOrderDialog } from './create-order-dialog'
 
 export { default as CreateBankConnectorDialog } from './create-bank-connector-dialog'
+export { default as UpdateBankConnectorDialog } from './update-bank-connector-dialog'
+
+export { default as QrCodeDialog } from './qr-code-dialog'

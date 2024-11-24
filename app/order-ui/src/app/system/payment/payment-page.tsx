@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
@@ -7,25 +8,38 @@ import { Button, ScrollArea } from '@/components/ui'
 import { useInititateQrCode, useOrderBySlug } from '@/hooks'
 import { PaymentMethodSelect } from '@/app/system/payment'
 import { publicFileURL } from '@/constants'
-import { useState } from 'react'
+import { QrCodeDialog } from '@/components/app/dialog'
 
 export default function PaymentPage() {
   const { t } = useTranslation(['menu'])
-
   const { slug } = useParams()
-  const [paymentMethod, setPaymentMethod] = useState<string>('internalWallet')
+  const [paymentMethod, setPaymentMethod] = useState<string>('')
   const { data: order } = useOrderBySlug(slug as string)
   const { mutate: inititateQrCode } = useInititateQrCode()
+  const [qrCode, setQrCode] = useState<string>('')
 
-  const handleSelectPaymentMethod = (paymentMethod: string) => {
-    setPaymentMethod(paymentMethod)
+  // Tạo biến để kiểm tra trạng thái nút xác nhận
+  const isDisabled = !paymentMethod || !slug
+
+  // Xử lý chọn phương thức thanh toán
+  const handleSelectPaymentMethod = (selectedPaymentMethod: string) => {
+    setPaymentMethod(selectedPaymentMethod)
   }
 
+  // Xử lý xác nhận thanh toán
   const handleConfirmPayment = () => {
-    inititateQrCode({
-      orderSlug: slug as string,
-      paymentMethod,
-    })
+    if (!slug || !paymentMethod) return
+
+    setQrCode('')
+
+    inititateQrCode(
+      { orderSlug: slug, paymentMethod },
+      {
+        onSuccess: (data) => {
+          setQrCode(data.result.qrCode)
+        },
+      },
+    )
   }
 
   return (
@@ -39,18 +53,18 @@ export default function PaymentPage() {
             <div className="flex w-full flex-col gap-3">
               {order && (
                 <div className="w-full space-y-2">
+                  {/* Thông tin khách hàng */}
                   <div className="grid grid-cols-2 items-center justify-between rounded-sm border p-4">
-                    {/* Thông tin khách hàng */}
                     <div className="col-span-1 flex flex-col gap-1 border-r px-4">
                       <div className="grid grid-cols-2">
                         <h3 className="col-span-1 text-sm font-medium">
-                          Khách hàng
+                          {t('order.customerName')}
                         </h3>
                         <p className="text-sm font-semibold">{`${order.result.owner.lastName} ${order.result.owner.firstName}`}</p>
                       </div>
                       <div className="grid grid-cols-2">
                         <h3 className="col-span-1 text-sm font-medium">
-                          Ngày đặt
+                          {t('order.orderDate')}
                         </h3>
                         <span className="text-sm font-semibold">
                           {moment(order.result.createdAt).format(
@@ -60,30 +74,28 @@ export default function PaymentPage() {
                       </div>
                       <div className="grid grid-cols-2">
                         <h3 className="col-span-1 text-sm font-medium">
-                          Số điện thoại
+                          {t('order.phoneNumber')}
                         </h3>
-                        <p className="text-sm font-semibold">{`${order.result.owner.phonenumber}`}</p>
+                        <p className="text-sm font-semibold">
+                          {order.result.owner.phonenumber}
+                        </p>
                       </div>
                     </div>
                     {/* Thông tin vận chuyển */}
                     <div className="col-span-1 flex flex-col gap-1 border-r px-4">
                       <div className="grid grid-cols-2">
                         <h3 className="col-span-1 text-sm font-medium">
-                          Phương thức vận chuyển
+                          {t('order.deliveryMethod')}
                         </h3>
-                        {order.result.type === 'at-table' ? (
-                          <p className="col-span-1 text-sm font-semibold">
-                            Tại quán
-                          </p>
-                        ) : (
-                          <p className="col-span-1 text-sm font-semibold">
-                            Giao hàng
-                          </p>
-                        )}
+                        <p className="col-span-1 text-sm font-semibold">
+                          {order.result.type === 'at-table'
+                            ? 'Tại quán'
+                            : 'Giao hàng'}
+                        </p>
                       </div>
                       <div className="grid grid-cols-2">
                         <h3 className="col-span-1 text-sm font-medium">
-                          Vị trí
+                          {t('order.location')}
                         </h3>
                         <p className="col-span-1 text-sm font-semibold">
                           {order.result.tableName}
@@ -110,10 +122,7 @@ export default function PaymentPage() {
                         key={item.slug}
                         className="grid w-full items-center gap-4 rounded-t-md border-b p-4 pb-4"
                       >
-                        <div
-                          key={`${item.slug}`}
-                          className="grid w-full grid-cols-5 flex-row items-center"
-                        >
+                        <div className="grid w-full grid-cols-5 flex-row items-center">
                           <div className="col-span-2 flex w-full gap-2">
                             <div className="flex flex-row items-center justify-center gap-2">
                               <img
@@ -135,7 +144,7 @@ export default function PaymentPage() {
                           </div>
                           <div className="col-span-1 flex justify-center">
                             <span className="text-sm font-semibold">
-                              {`${item.quantity || 0}`}
+                              {item.quantity || 0}
                             </span>
                           </div>
                           <div className="col-span-1 text-center">
@@ -150,25 +159,33 @@ export default function PaymentPage() {
                       <div className="flex w-[12rem] flex-col justify-start gap-2">
                         <div className="flex w-full justify-between">
                           <h3 className="text-sm font-medium">Tổng tiền</h3>
-                          <p className="text-sm font-semibold">{`${order.result.subtotal.toLocaleString('vi-VN')}đ`}</p>
+                          <p className="text-sm font-semibold">
+                            {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
+                          </p>
                         </div>
                         <div className="flex w-full justify-between">
                           <h3 className="text-sm font-medium">Tổng cộng</h3>
-                          <p className="text-md font-semibold text-primary">{`${order.result.subtotal.toLocaleString('vi-VN')}đ`}</p>
+                          <p className="text-md font-semibold text-primary">
+                            {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-
                   {/* Lựa chọn phương thức thanh toán */}
                   <PaymentMethodSelect onSubmit={handleSelectPaymentMethod} />
                 </div>
               )}
               <div className="flex justify-end">
-                <Button className="w-fit" onClick={handleConfirmPayment}>
+                <Button
+                  disabled={isDisabled}
+                  className="w-fit"
+                  onClick={handleConfirmPayment}
+                >
                   {t('paymentMethod.confirmPayment')}
                 </Button>
               </div>
+              {qrCode && <QrCodeDialog qrCode={qrCode} />}
             </div>
           </div>
         </div>

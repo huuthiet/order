@@ -26,22 +26,20 @@ export default function BankCard({ bankCardData }: BankCardProps) {
       </div>
 
       {/* Card Number */}
-      <div className="relative z-10 mb-6 font-mono text-2xl tracking-widest">
-        <span>
-          **** **** **** {bankCardData?.virtualAccountPrefix.slice(-4)}
-        </span>
+      <div className="z-10 mb-6 flex items-center font-mono text-2xl tracking-widest">
+        <span>{bankCardData?.virtualAccountPrefix.slice(-4)} **** ****</span>
       </div>
 
       {/* Card Holder and Expiry */}
       <div className="relative z-10 flex justify-between text-sm">
         <div>
-          <span className="block uppercase text-gray-300">Card Holder</span>
+          <span className="block uppercase">Card Holder</span>
           <span className="font-semibold">
-            {bankCardData?.beneficiaryName || 'John Doe'}
+            {bankCardData?.beneficiaryName || 'Card Holder'}
           </span>
         </div>
         <div className="text-right">
-          <span className="block uppercase text-gray-300">Expires</span>
+          <span className="block uppercase">Card number</span>
           <span className="font-semibold">
             {bankCardData?.xOwnerNumber || 'MM/YY'}
           </span>
