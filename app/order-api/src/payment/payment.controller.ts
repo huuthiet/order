@@ -50,7 +50,7 @@ export class PaymentController {
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Callback has been processed successfully',
-    type: null,
+    type: PaymentResponseDto,
   })
   async callback(
     @Body(new ValidationPipe({ transform: true }))

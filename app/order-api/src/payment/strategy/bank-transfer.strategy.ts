@@ -25,9 +25,9 @@ import { PaymentMethod } from '../payment.constants';
 @Injectable()
 export class BankTransferStrategy implements IPaymentStrategy {
   private readonly clientId: string =
-    this.configService.get<string>('CLIENT_ID');
+    this.configService.get<string>('ACB_CLIENT_ID');
   private readonly clientSecret: string =
-    this.configService.get<string>('CLIENT_SECRET');
+    this.configService.get<string>('ACB_CLIENT_SECRET');
 
   constructor(
     private readonly acbConnectorClient: ACBConnectorClient,
