@@ -4,6 +4,7 @@ import moment from 'moment'
 import { CalendarIcon } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
+import { useAllMenus } from '@/hooks'
 
 import {
   FormField,
@@ -45,6 +46,22 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
       branchSlug: '',
     },
   })
+  const { data: menuData } = useAllMenus()
+
+  // Get existing menu dates
+  const existingMenuDates =
+    menuData?.result.map((menu) => moment(menu.date).format('YYYY-MM-DD')) || []
+
+  // Function to disable dates
+  const disabledDays = [
+    { before: new Date() }, // Disable past dates
+    ...existingMenuDates.map((date) => new Date(date)), // Disable dates with menus
+  ]
+
+  // Custom modifier for dates with menus
+  const modifiers = {
+    booked: existingMenuDates.map((date) => new Date(date)),
+  }
 
   const handleSubmit = (data: ICreateMenuRequest) => {
     createMenu(data, {
@@ -80,7 +97,7 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value ? (
-                        field.value // Hiển thị trực tiếp chuỗi ngày đã định dạng
+                        field.value
                       ) : (
                         <span>{t('menu.chooseDate')}</span>
                       )}
@@ -95,10 +112,16 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
                     onSelect={(newDate) => {
                       if (newDate) {
                         const formattedDate =
-                          moment(newDate).format('YYYY-MM-DD') // Chuyển thành chuỗi định dạng
-                        setDate(newDate) // Lưu Date trong state
-                        field.onChange(formattedDate) // Truyền chuỗi vào field.onChange
+                          moment(newDate).format('YYYY-MM-DD')
+                        setDate(newDate)
+                        field.onChange(formattedDate)
                       }
+                    }}
+                    disabled={disabledDays}
+                    modifiers={modifiers}
+                    modifiersClassNames={{
+                      booked:
+                        'relative before:absolute before:bottom-0.5 before:left-1/2 before:-translate-x-1/2 before:w-1.5 before:h-1.5 before:bg-primary before:rounded-full',
                     }}
                   />
                 </PopoverContent>

@@ -1,3 +1,4 @@
+import { IBase } from './base.type'
 import { ICatalog } from './catalog.type'
 
 export interface IProduct {
@@ -59,6 +60,15 @@ export interface ICreateProductVariantRequest {
   price: number
   size: string //Slug of size of the product
   product: string //Slug of the product
+}
+
+export interface IProductVariant extends IBase {
+  price: number
+  size: {
+    name: string
+    description: string
+    slug: string
+  }
 }
 
 export interface IUpdateProductVariantRequest {

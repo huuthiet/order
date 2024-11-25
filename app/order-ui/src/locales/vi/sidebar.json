@@ -8,7 +8,8 @@
     "internalWallet": "Ví nội bộ",
     "menuManagement": "Quản lý thực đơn",
     "dishManagement": "Quản lý món",
-    "logManagement": "Quản lý log"
+    "logManagement": "Quản lý log",
+    "bankConfig": "Cấu hình ngân hàng"
   },
   "header": {
     "search": "Tìm kiếm",

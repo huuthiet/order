@@ -34,6 +34,7 @@ export default function MenuPage() {
             <div className="flex w-full justify-end gap-2">
               {/* <DateSelect /> */}
               <CurrentDateInput />
+              {/* <CatalogSelect /> */}
               <MenuCategorySelect />
             </div>
           </div>

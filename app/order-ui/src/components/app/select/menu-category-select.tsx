@@ -1,19 +1,23 @@
+import { CookingPot } from 'lucide-react'
+
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui'
-import { CookingPot } from 'lucide-react'
 
 export default function MenuCategorySelect() {
   return (
     <Select>
       <SelectTrigger className="w-[200px]">
-        <CookingPot className="w-4 h-4 text-muted-foreground" />
-        <SelectValue className="text-muted-foreground" placeholder="Chọn loại món" />
+        <CookingPot className="h-4 w-4 text-muted-foreground" />
+        <SelectValue
+          className="text-muted-foreground"
+          placeholder="Chọn loại món"
+        />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

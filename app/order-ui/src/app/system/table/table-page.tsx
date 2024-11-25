@@ -1,17 +1,55 @@
+// import React from 'react'
+// import { useTranslation } from 'react-i18next'
+
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
-import TableLayout from './table-layout'
+import { CreateTableDialog } from '@/components/app/dialog'
+import { useTables } from '@/hooks'
 
 export default function TablePage() {
+  // const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  // const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  // const [open, setOpen] = useState(false)
+  // const [tableName, setTableName] = useState('')
+  // const { t } = useTranslation(['table'])
+  // const { t: tToast } = useTranslation('toast')
+  const { data: tables } = useTables()
+  // const createTable = useCreateTable()
+
+  // const onConnect = useCallback(
+  //   (params) => setEdges((eds) => addEdge(params, eds)),
+  //   [setEdges],
+  // )
+
+  // const handleCreateTable = () => {
+  //   createTable.mutate(
+  //     { name: tableName },
+  //     {
+  //       onSuccess: () => {
+  //         setOpen(false)
+  //         setTableName('')
+  //         showToast(t('createTableSuccess'))
+  //       },
+  //     },
+  //   )
+  // }
+
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
-      <div className="flex justify-between items-center p-4">
+    <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4">
+      <div className="flex items-center justify-between">
         <BreadcrumbComponent />
       </div>
-
-      <div className="overflow-hidden flex-1">
-        <div className="relative w-full h-full">
-          <TableLayout />
-        </div>
+      <div className="flex items-center justify-between">
+        <CreateTableDialog />
+      </div>
+      <div className="flex h-full items-start justify-start gap-2 rounded-md border p-4">
+        {tables?.result.map((table) => (
+          <div
+            key={table.slug}
+            className="flex h-[8rem] w-[8rem] items-center justify-center rounded-md border p-4"
+          >
+            <div>{table.name}</div>
+          </div>
+        ))}
       </div>
     </div>
   )

@@ -19,7 +19,10 @@ import {
   ProductDetailPage,
   ProfilePage,
   MenuManagementPage,
+  OrderPaymentPage,
+  BankConfigPage,
 } from './loadable'
+import ProtectedElement from '@/components/app/elements/protected-element'
 
 export const router = createBrowserRouter([
   { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
@@ -37,7 +40,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={HomePage} />}
+          />
+        ),
       },
     ],
   },
@@ -51,7 +59,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <MenuPage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={MenuPage} />}
+          />
+        ),
       },
     ],
   },
@@ -65,7 +78,31 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ConfirmOrderPage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={ConfirmOrderPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.STAFF_ORDER_PAYMENT}/:slug`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={OrderPaymentPage} />}
+          />
+        ),
       },
     ],
   },
@@ -79,7 +116,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <OrderSuccessPage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={OrderSuccessPage} />}
+          />
+        ),
       },
     ],
   },
@@ -93,7 +135,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <TablePage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={TablePage} />}
+          />
+        ),
       },
     ],
   },
@@ -107,7 +154,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ProductManagementPage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={ProductManagementPage} />}
+          />
+        ),
       },
     ],
   },
@@ -121,7 +173,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ProductDetailPage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={ProductDetailPage} />}
+          />
+        ),
       },
     ],
   },
@@ -135,7 +192,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <MenuManagementPage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={MenuManagementPage} />}
+          />
+        ),
       },
     ],
   },
@@ -149,7 +211,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <LoggerPage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={LoggerPage} />}
+          />
+        ),
       },
     ],
   },
@@ -163,7 +230,31 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ProfilePage />,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={ProfilePage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.STAFF_BANK_CONFIG}`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={BankConfigPage} />}
+          />
+        ),
       },
     ],
   },

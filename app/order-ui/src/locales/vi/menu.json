@@ -29,12 +29,16 @@
     "totalItems": "Tổng số món",
 
     "create": "Tạo thực đơn",
-    "createMenuDescription": "Vui lòng điền thông tin thực đơn",
+    "createMenuDescription": "Điền đầy đủ thông tin để tạo thực đơn mới",
     "chooseDate": "Chọn ngày",
     "branchSlug": "Chi nhánh",
 
-    "edit": "Chỉnh sửa thực đơn",
-    "delete": "Xóa thực đơn"
+    "update": "Chỉnh sửa thực đơn",
+    "updateMenuDescription": "Thay đổi thông tin để cập nhật thực đơn",
+    "delete": "Xóa thực đơn",
+    "deleteContent": "Bạn có chắc muốn xóa thực đơn ngày ",
+    "deleteContent2": " thuộc chi nhánh ",
+    "deleteContent3": " không?"
   },
 
   "order": {
@@ -47,11 +51,13 @@
     "enterCustomerName": "Nhập tên khách hàng",
     "phoneNumber": "Số điện thoại",
     "enterPhoneNumber": "Nhập số điện thoại",
+    "orderDate": "Ngày đặt hàng",
     "note": "Ghi chú",
     "enterNote": "Nhập ghi chú",
     "deliveryMethod": "Phương thức giao hàng",
     "dineIn": "Tại quán",
     "takeAway": "Mang đi",
+    "location": "Vị trí",
     "tableNumber": "Số bàn",
     "promotion": "Mã giảm giá",
     "enterPromotion": "Nhập mã giảm giá",
@@ -69,7 +75,9 @@
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
     "deleteContent2": " khỏi giỏ hàng không?",
 
-    "orderSuccess": "Đặt hàng thành công!",
+    "create": "Tạo đơn hàng",
+    "confirmOrder": "Bạn có chắc muốn tạo đơn hàng này không?",
+
     "viewDetail": "Xem đơn hàng",
     "backToMenu": "Quay lại menu"
   },
@@ -81,6 +89,12 @@
     "cash": "Tiền mặt",
     "bankTransfer": "Chuyển khoản",
     "internalWallet": "Ví nội bộ",
-    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý."
+    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý.",
+    "confirmPayment": "Lấy mã QR để thanh toán",
+
+    "cusomterInformation": "Thông tin khách hàng",
+    "customerName": "Tên khách hàng",
+    "orderDate": "Ngày đặt hàng",
+    "phoneNumber": "Số điện thoại"
   }
 }

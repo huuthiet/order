@@ -6,7 +6,10 @@ interface TableContextMenuProps {
   y: number
   tableId: string
   onClose: () => void
-  onStatusChange: (tableId: string, status: 'available' | 'occupied' | 'reserved') => void
+  onStatusChange: (
+    tableId: string,
+    status: 'available' | 'occupied' | 'reserved',
+  ) => void
   onDelete: (tableId: string) => void
 }
 
@@ -16,7 +19,7 @@ export default function TableContextMenu({
   tableId,
   onClose,
   onStatusChange,
-  onDelete
+  onDelete,
 }: TableContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(true)
@@ -38,27 +41,27 @@ export default function TableContextMenu({
   return (
     <div
       ref={menuRef}
-      className="absolute z-50 bg-white rounded-lg border shadow-lg"
+      className="fixed z-50 flex w-fit rounded-lg border bg-white shadow-lg"
       style={{ left: x, top: y }}
     >
-      <div className="p-2 space-y-1">
+      <div className="space-y-1 p-2">
         <Button
           variant="ghost"
-          className="justify-start w-full"
+          className="w-full justify-start"
           onClick={() => onStatusChange(tableId, 'available')}
         >
           Đánh dấu trống
         </Button>
         <Button
           variant="ghost"
-          className="justify-start w-full"
+          className="w-full justify-start"
           onClick={() => onStatusChange(tableId, 'reserved')}
         >
-          Đánh dấu đã đặt
+          Đánh dấu đã đ��t
         </Button>
         <Button
           variant="ghost"
-          className="justify-start w-full"
+          className="w-full justify-start"
           onClick={() => onStatusChange(tableId, 'occupied')}
         >
           Đánh dấu đang sử dụng
@@ -66,7 +69,7 @@ export default function TableContextMenu({
         <hr />
         <Button
           variant="ghost"
-          className="justify-start w-full text-red-500 hover:text-red-600"
+          className="w-full justify-start text-red-500 hover:text-red-600"
           onClick={() => onDelete(tableId)}
         >
           Xóa bàn
