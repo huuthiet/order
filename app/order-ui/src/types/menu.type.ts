@@ -15,6 +15,7 @@ export interface ICreateMenuRequest {
 export interface ISpecificMenuRequest {
   slug?: string // This is the slug of the menu
   date?: string
+  branch?: string
 }
 
 export interface IUpdateMenuRequest {
@@ -43,4 +44,18 @@ export interface IUpdateMenuRequest {
   slug: string // This is the slug of the menu
   date: string
   branchSlug: string
+}
+
+export interface IAddMenuItemRequest {
+  menuSlug: string
+  productSlug: string
+  defaultStock: number
+}
+
+export interface IMenuItemStore {
+  menuItems: string[] // Danh sách productSlug
+  getMenuItems: () => string[] // Lấy danh sách productSlug
+  addMenuItem: (item: string) => void // Thêm productSlug vào danh sách
+  removeMenuItem: (menuItemId: string) => void // Xoá productSlug khỏi danh sách
+  clearMenuItems: () => void // Xoá toàn bộ danh sách productSlug
 }

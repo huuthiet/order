@@ -47,7 +47,7 @@ export default function PaymentPage() {
       <ScrollArea className="flex-1">
         <div className={`px-4 transition-all duration-300 ease-in-out`}>
           <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-between">
+            <div className="flex w-full flex-row items-center justify-between py-2">
               <BreadcrumbComponent />
             </div>
             <div className="flex w-full flex-col gap-3">
@@ -138,12 +138,12 @@ export default function PaymentPage() {
                             </div>
                           </div>
                           <div className="col-span-1 flex">
-                            <span className="text-sm font-semibold text-primary">
+                            <span className="text-sm">
                               {`${(item.variant.price || 0).toLocaleString('vi-VN')}đ`}
                             </span>
                           </div>
                           <div className="col-span-1 flex justify-center">
-                            <span className="text-sm font-semibold">
+                            <span className="text-sm">
                               {item.quantity || 0}
                             </span>
                           </div>
@@ -156,18 +156,27 @@ export default function PaymentPage() {
                       </div>
                     ))}
                     <div className="flex w-full flex-col items-end justify-end gap-2 p-4">
-                      <div className="flex w-[12rem] flex-col justify-start gap-2">
-                        <div className="flex w-full justify-between">
-                          <h3 className="text-sm font-medium">Tổng tiền</h3>
+                      <div className="flex w-[20rem] flex-col justify-start gap-2">
+                        <div className="flex w-full justify-between border-b pb-4">
+                          <h3 className="text-sm font-medium">
+                            {t('order.total')}
+                          </h3>
                           <p className="text-sm font-semibold">
                             {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
                           </p>
                         </div>
-                        <div className="flex w-full justify-between">
-                          <h3 className="text-sm font-medium">Tổng cộng</h3>
-                          <p className="text-md font-semibold text-primary">
-                            {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
-                          </p>
+                        <div className="flex flex-col justify-start">
+                          <div className="flex w-full justify-between">
+                            <h3 className="text-md font-semibold">
+                              {t('order.totalPayment')}
+                            </h3>
+                            <p className="text-lg font-semibold text-primary">
+                              {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
+                            </p>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {t('order.vat')}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -177,13 +186,15 @@ export default function PaymentPage() {
                 </div>
               )}
               <div className="flex justify-end">
-                <Button
-                  disabled={isDisabled}
-                  className="w-fit"
-                  onClick={handleConfirmPayment}
-                >
-                  {t('paymentMethod.confirmPayment')}
-                </Button>
+                {paymentMethod === 'bank-transfer' && (
+                  <Button
+                    disabled={isDisabled}
+                    className="w-fit"
+                    onClick={handleConfirmPayment}
+                  >
+                    {t('paymentMethod.confirmPayment')}
+                  </Button>
+                )}
               </div>
               {qrCode && <QrCodeDialog qrCode={qrCode} />}
             </div>

@@ -69,7 +69,7 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
                   {tCommon('common.action')}
                 </DropdownMenuLabel>
                 <NavLink
-                  to={`${ROUTE.STAFF_PRODUCT_DETAIL}/${menu.slug}`}
+                  to={`${ROUTE.STAFF_MENU_DETAIL}/${menu.slug}`}
                   className="flex w-full items-center justify-start"
                 >
                   <Button

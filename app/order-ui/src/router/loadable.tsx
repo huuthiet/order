@@ -74,6 +74,12 @@ export const MenuManagementPage = React.lazy(() =>
   })),
 )
 
+export const MenuDetailPage = React.lazy(() =>
+  import('@/app/system/menu-management').then((module) => ({
+    default: module.MenuDetailPage,
+  })),
+)
+
 export const ProductDetailPage = React.lazy(() =>
   import('@/app/system/dishes').then((module) => ({
     default: module.ProductDetail,

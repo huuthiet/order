@@ -38,7 +38,10 @@
     "delete": "Xóa thực đơn",
     "deleteContent": "Bạn có chắc muốn xóa thực đơn ngày ",
     "deleteContent2": " thuộc chi nhánh ",
-    "deleteContent3": " không?"
+    "deleteContent3": " không?",
+
+    "addMenuItem": "Thêm món",
+    "addMenuItemDescription": "Vui lòng xác nhận thông tin trước khi thêm vào thực đơn"
   },
 
   "order": {
@@ -67,6 +70,7 @@
     "discount": "Giảm giá",
     "vat": "(Đã bao gồm VAT)",
     "grandTotal": "Thành tiền",
+    "totalPayment": "Tổng tiền thanh toán",
     "confirmPaid": "Xác nhận đã thanh toán",
     "complete": "Hoàn tất",
 
