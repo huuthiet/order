@@ -18,6 +18,7 @@ import { Order } from 'src/order/order.entity';
 import * as _ from 'lodash';
 import { PaymentException } from './payment.exception';
 import { PaymentValidation } from './payment.validation';
+import { PaymentMethod } from './payment.constants';
 
 @Injectable()
 export class PaymentService {
@@ -73,12 +74,12 @@ export class PaymentService {
     let payment: Payment;
 
     switch (createPaymentDto.paymentMethod) {
-      case 'bank-transfer':
+      case PaymentMethod.BANK_TRANSFER:
         payment = await this.bankTransferStrategy.process(order);
         break;
-      // case 'internal':
-      //   result = await this.internalStrategy.process({});
-      //   break;
+      case PaymentMethod.CASH:
+        payment = await this.cashStrategy.process(order);
+        break;
       default:
         this.logger.error('Invalid payment method');
         throw new PaymentException(PaymentValidation.PAYMENT_METHOD_INVALID);

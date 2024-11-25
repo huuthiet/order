@@ -40,6 +40,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
   ) {}
 
   async process(order: Order): Promise<Payment> {
+    const context = `${BankTransferStrategy.name}.${this.process.name}`;
     const acbConnectorConfig = await this.acbConnectorConfigRepository.find({
       take: 1,
     });
@@ -68,7 +69,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
     const requestDateTime = moment()
       .format('YYYY-MM-DDTHH:mm:ss.SSSZ')
       .replace(/(\+\d{2}):(\d{2})$/, '$1$2');
-    this.logger.log(`Request date time: ${requestDateTime}`);
+    this.logger.log(`Request date time: ${requestDateTime}`, context);
 
     const requestData = {
       requestDateTime: requestDateTime,
@@ -88,12 +89,18 @@ export class BankTransferStrategy implements IPaymentStrategy {
       },
     } as ACBInitiateQRCodeRequestDto;
 
+    console.log({
+      context,
+      headers,
+      requestData,
+    });
+
     const response = await this.acbConnectorClient.initiateQRCode(
       headers,
       requestData,
       access_token,
     );
-    this.logger.log(`Initiate QR Code success`);
+    this.logger.log(`Initiate QR Code success`, context);
 
     // Create payment
     const payment = {

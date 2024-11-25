@@ -39,7 +39,7 @@ export class GetLoggerRequestDto {
   @IsOptional()
   @Type(() => Number)
   @Min(1)
-  page: number;
+  page: number = 1;
 
   @AutoMap()
   @ApiProperty({
@@ -49,5 +49,5 @@ export class GetLoggerRequestDto {
   @IsOptional()
   @Type(() => Number)
   @Min(1)
-  size: number;
+  size: number = 10;
 }
