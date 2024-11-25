@@ -14,7 +14,6 @@ export default function BankConfigPage() {
   const { data: bankConfig } = useGetBankConnector()
 
   const bankConfigData = bankConfig?.result
-  console.log('bankConfigData', bankConfigData)
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
       {/* Menu Section - Scrollable */}

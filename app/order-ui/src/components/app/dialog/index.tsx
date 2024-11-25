@@ -36,3 +36,5 @@ export { default as QrCodeDialog } from './qr-code-dialog'
 
 export { default as AddMenuItemDialog } from './add-product-to-menu-dialog'
 export { default as AddMultipleItemsDialog } from './add-multiple-products-to-menu-dialog'
+export { default as UpdateMenuItemDialog } from './update-menu-item-dialog'
+export { default as DeleteMenuItemDialog } from './delete-menu-item-dialog'

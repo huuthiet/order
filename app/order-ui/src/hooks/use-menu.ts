@@ -6,12 +6,15 @@ import {
   getSpecificMenu,
   addMenuItem,
   addMenuItems,
+  updateMenuItem,
+  deleteMenuItem,
 } from '@/api'
 import {
   IAddMenuItemRequest,
   ICreateMenuRequest,
   ISpecificMenuRequest,
   IUpdateMenuRequest,
+  IUpdateMenuItemRequest,
 } from '@/types'
 import { useQuery, useMutation } from '@tanstack/react-query'
 
@@ -65,6 +68,22 @@ export const useAddMenuItems = () => {
   return useMutation({
     mutationFn: async (data: IAddMenuItemRequest[]) => {
       return addMenuItems(data)
+    },
+  })
+}
+
+export const useUpdateMenuItem = () => {
+  return useMutation({
+    mutationFn: async (data: IUpdateMenuItemRequest) => {
+      return updateMenuItem(data)
+    },
+  })
+}
+
+export const useDeleteMenuItem = () => {
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      return deleteMenuItem(slug)
     },
   })
 }

@@ -53,6 +53,14 @@ export interface IAddMenuItemRequest {
   defaultStock: number
 }
 
+export interface IUpdateMenuItemRequest {
+  slug: string
+  menuSlug: string
+  productName?: string
+  productSlug: string
+  defaultStock: number
+}
+
 export interface IMenuItemStore {
   menuItems: IAddMenuItemRequest[] // Thay đổi từ string[] sang IAddMenuItemRequest[]
   getMenuItems: () => IAddMenuItemRequest[]

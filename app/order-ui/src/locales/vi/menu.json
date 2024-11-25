@@ -23,10 +23,12 @@
     "continue": "Tiếp tục",
     "confirm": "Xác nhận đơn hàng",
 
-    "date": "Ngày",
+    "date": "Ngày: ",
     "title": "Quản lý thực đơn",
     "createdAt": "Ngày tạo",
     "totalItems": "Tổng số món",
+    "stock": "Tồn kho",
+    "noDescription": "Không có mô tả",
 
     "create": "Tạo thực đơn",
     "createMenuDescription": "Điền đầy đủ thông tin để tạo thực đơn mới",
@@ -46,7 +48,14 @@
     "productName": "Tên món",
     "selectedProducts": "Món đã chọn",
     "defaultStock": "Số lượng tồn kho",
-    "defaultStockDescription": "Số lượng tồn kho mặc định"
+    "defaultStockDescription": "Số lượng tồn kho mặc định",
+
+    "updateMenuItem": "Cập nhật món",
+    "updateMenuItemDescription": "Thay đổi thông tin để cập nhật món",
+
+    "deleteMenuItem": "Xóa món",
+    "deleteMenuItemWarning1": "Bạn có chắc muốn xóa món ",
+    "deleteMenuItemConfirmation": " khỏi thực đơn không?"
   },
 
   "order": {

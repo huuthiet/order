@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
+import moment from 'moment'
 
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { ScrollArea } from '@/components/ui'
@@ -13,7 +14,7 @@ import AddMenuItem from './add-menu-item'
 
 export default function MenuDetailPage() {
   const [isCartOpen, setIsCartOpen] = useState(true)
-  const { t } = useTranslation(['product'])
+  const { t } = useTranslation(['menu'])
   const { slug } = useParams()
   const { data: menuDetail, isLoading } = useSpecificMenu({
     slug: slug as string,
@@ -43,24 +44,21 @@ export default function MenuDetailPage() {
               />
             </div>
           </div>
-          <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center">
             <span className="flex items-center gap-1 text-lg">
               <SquareMenu />
-              {t('product.title')}
+              {t('menu.title')}
+              {' - '}
+              {moment(menuDetailData?.date).format('DD/MM/YYYY')}
             </span>
+            <span className="text-md py-4"></span>
           </div>
+
           <div
-            className={`mt-4 grid grid-cols-1 gap-4 ${isCartOpen ? 'md:grid-cols-2' : 'md:grid-cols-3'} `}
+            className={`mt-4 grid grid-cols-1 gap-4 ${isCartOpen ? 'md:grid-cols-2' : 'md:grid-cols-5'} `}
           >
             {menuDetailData?.menuItems.map((item) => (
-              <MenuItemCard
-                key={item.slug}
-                image={item.product.image}
-                name={item.product.name}
-                description={item.product.description}
-                stock={item.currentStock}
-                price={item.product.variants[0]?.price}
-              />
+              <MenuItemCard menuItem={item} />
             ))}
           </div>
         </div>

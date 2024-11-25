@@ -44,8 +44,6 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
     },
   })
 
-  // console.log('menu', data)
-
   const handleSubmit = (data: IUpdateMenuRequest) => {
     updateMenu(data, {
       onSuccess: () => {
