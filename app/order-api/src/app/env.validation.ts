@@ -52,6 +52,15 @@ class EnvironmentVariables {
 
   @IsNumber()
   REFRESHABLE_DURATION: number;
+
+  @IsNotEmpty()
+  ACB_API_URL: string;
+
+  @IsNotEmpty()
+  ACB_CLIENT_ID: string;
+
+  @IsNotEmpty()
+  ACB_CLIENT_SECRET: string;
 }
 
 export function validate(config: Record<string, unknown>) {

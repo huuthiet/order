@@ -9,8 +9,9 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
+  CallbackUpdatePaymentStatusRequestDto,
   CreatePaymentDto,
-  InitiatePaymentQRCodeResponseDto,
+  PaymentResponseDto,
 } from './payment.dto';
 import { Order } from 'src/order/order.entity';
 
@@ -28,8 +29,8 @@ export class PaymentService {
     private readonly bankTransferStrategy: BankTransferStrategy,
     private readonly internalStrategy: InternalStrategy,
   ) {}
-  async initiateQRCode(createPaymentDto: CreatePaymentDto) {
-    const context = `${PaymentService.name}.${this.initiateQRCode.name}`;
+  async initiate(createPaymentDto: CreatePaymentDto) {
+    const context = `${PaymentService.name}.${this.initiate.name}`;
     // get order
     const order = await this.orderRepository.findOne({
       where: { slug: createPaymentDto.orderSlug },
@@ -40,11 +41,11 @@ export class PaymentService {
       throw new Error('Order not found');
     }
 
-    let result: InitiatePaymentQRCodeResponseDto;
+    let payment: Payment;
 
     switch (createPaymentDto.paymentMethod) {
       case 'bank-transfer':
-        result = await this.bankTransferStrategy.process(order);
+        payment = await this.bankTransferStrategy.process(order);
         break;
       // case 'internal':
       //   result = await this.internalStrategy.process({});
@@ -53,6 +54,35 @@ export class PaymentService {
         this.logger.error('Invalid payment method');
         throw new Error('Invalid payment method');
     }
-    return result;
+
+    // Update order
+    Object.assign(order, {
+      payment,
+    });
+    await this.orderRepository.save(order);
+
+    return this.mapper.map(payment, Payment, PaymentResponseDto);
+  }
+
+  async callback(requestData: CallbackUpdatePaymentStatusRequestDto) {
+    const context = `${PaymentService.name}.${this.callback.name}`;
+    const payment = await this.paymentRepository.findOne({
+      where: { transactionId: requestData.requestTrace },
+    });
+
+    if (!payment) {
+      this.logger.error('Payment not found', context);
+      throw new Error('Payment not found');
+    }
+
+    // update payment status
+    Object.assign(payment, {
+      statusCode: requestData.responseStatus.responseCode,
+      statusMessage: requestData.responseStatus.responseMessage,
+    });
+
+    const updatedPayment = await this.paymentRepository.save(payment);
+    this.logger.log(`Payment ${updatedPayment.id}`, context);
+    return this.mapper.map(updatedPayment, Payment, PaymentResponseDto);
   }
 }
