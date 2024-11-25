@@ -5,6 +5,7 @@ import {
   getAllMenus,
   getSpecificMenu,
   addMenuItem,
+  addMenuItems,
 } from '@/api'
 import {
   IAddMenuItemRequest,
@@ -56,6 +57,14 @@ export const useAddMenuItem = () => {
   return useMutation({
     mutationFn: async (data: IAddMenuItemRequest) => {
       return addMenuItem(data)
+    },
+  })
+}
+
+export const useAddMenuItems = () => {
+  return useMutation({
+    mutationFn: async (data: IAddMenuItemRequest[]) => {
+      return addMenuItems(data)
     },
   })
 }

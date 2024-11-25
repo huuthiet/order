@@ -34,3 +34,5 @@ export * from './create-bank-connector-form'
 export * from './update-bank-connector-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './add-menu-item-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './add-menu-multiple-items-form'

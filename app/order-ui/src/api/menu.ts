@@ -55,3 +55,13 @@ export async function addMenuItem(
   )
   return response.data
 }
+
+export async function addMenuItems(
+  params: IAddMenuItemRequest[],
+): Promise<IApiResponse<IMenuItem>> {
+  const response = await http.post<IApiResponse<IMenuItem>>(
+    `/menu-item/bulk`,
+    params,
+  )
+  return response.data
+}

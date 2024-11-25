@@ -48,6 +48,7 @@ export interface IUpdateMenuRequest {
 
 export interface IAddMenuItemRequest {
   menuSlug: string
+  productName?: string
   productSlug: string
   defaultStock: number
 }

@@ -44,6 +44,7 @@
     "addMenuItemDescription": "Vui lòng xác nhận thông tin trước khi thêm vào thực đơn",
     "menuSlug": "Slug thực đơn",
     "productName": "Tên món",
+    "selectedProducts": "Món đã chọn",
     "defaultStock": "Số lượng tồn kho",
     "defaultStockDescription": "Số lượng tồn kho mặc định"
   },
