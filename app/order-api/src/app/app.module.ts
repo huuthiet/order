@@ -27,6 +27,9 @@ import { PaymentModule } from 'src/payment/payment.module';
 import { ACBConnectorModule } from 'src/acb-connector/acb-connector.module';
 import { OrderItemModule } from 'src/order-item/order-item.module';
 import { OrderModule } from 'src/order/order.module';
+import { TrackingModule } from 'src/tracking/tracking.module';
+import { TrackingOrderItemModule } from 'src/tracking-order-item/tracking-order-item.module';
+import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module';
 
 @Module({
   imports: [
@@ -53,6 +56,9 @@ import { OrderModule } from 'src/order/order.module';
     ACBConnectorModule,
     OrderItemModule,
     OrderModule,
+    TrackingModule,
+    TrackingOrderItemModule,
+    RobotConnectorModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),

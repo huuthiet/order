@@ -6,6 +6,9 @@ import { BaseResponseDto } from "src/app/base.dto";
 import { BranchResponseDto } from "src/branch/branch.dto";
 import { CreateOrderItemRequestDto, OrderItemResponseDto } from "src/order-item/order-item.dto";
 import { Type } from "class-transformer";
+import { Order } from "./order.entity";
+import { Table } from "typeorm";
+import { OrderItem } from "src/order-item/order-item.entity";
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -113,12 +116,16 @@ export class GetOrderRequestDto {
   @IsOptional()
   owner?: string;
 }
-export class GetSpecificOrderRequestDto {
-  @AutoMap()
-  @ApiProperty({
-    description: 'The slug of order', 
-    example: 'order-slug-123',
-    required: true 
-  })
-  slug: string;
+
+export class CheckDataCreateOrderResponseDto {
+  isValid: Boolean;
+  message?: string; 
+  mappedOrder?: Order;
+}
+
+
+export class CheckDataCreateOrderItemResponseDto {
+  isValid: Boolean; 
+  mappedOrderItems?: OrderItem[]; 
+  subtotal?: number
 }

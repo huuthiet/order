@@ -3,7 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, Min } from "class-validator";
 import { BaseResponseDto } from "src/app/base.dto";
 import { ProductResponseDto } from "src/product/product.dto";
+import { TrackingOrderItemResponseDto } from "src/tracking-order-item/tracking-order-item.dto";
 import { VariantResponseDto } from "src/variant/variant.dto";
+import { WorkFlowStatus } from 'src/tracking/tracking.constants';
 
 export class CreateOrderItemRequestDto {
   @AutoMap()
@@ -41,6 +43,20 @@ export class UpdateOrderItemRequestDto {
   variant: string;
 }
 
+export class StatusOrderItemResponseDto {
+  @AutoMap()
+  [WorkFlowStatus.PENDING]: number;
+
+  @AutoMap()
+  [WorkFlowStatus.RUNNING]: number;
+
+  @AutoMap()
+  [WorkFlowStatus.COMPLETED]: number;
+
+  @AutoMap()
+  [WorkFlowStatus.FAILED]: number;
+}
+
 export class OrderItemResponseDto extends BaseResponseDto {
   @AutoMap()
   quantity: number;
@@ -53,4 +69,11 @@ export class OrderItemResponseDto extends BaseResponseDto {
 
   @AutoMap(() => VariantResponseDto)
   variant: VariantResponseDto;
+
+  @AutoMap(() => [TrackingOrderItemResponseDto])
+  trackingOrderItems: TrackingOrderItemResponseDto[];
+
+  @AutoMap(() => StatusOrderItemResponseDto)
+  status: StatusOrderItemResponseDto;
 }
+

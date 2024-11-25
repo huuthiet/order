@@ -6,6 +6,8 @@ import { CreateOrderItemRequestDto, OrderItemResponseDto, UpdateOrderItemRequest
 import { baseMapper } from "src/app/base.mapper";
 import { VariantResponseDto } from "src/variant/variant.dto";
 import { Variant } from "src/variant/variant.entity";
+import { TrackingOrderItemResponseDto } from "src/tracking-order-item/tracking-order-item.dto";
+import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
 
 @Injectable()
 export class OrderItemProfile extends AutomapperProfile {
@@ -22,6 +24,13 @@ export class OrderItemProfile extends AutomapperProfile {
         forMember(
           (destination) => destination.variant,
           mapWith(VariantResponseDto, Variant, (source) => source.variant)
+        ),
+        forMember(
+          (destination) => destination.trackingOrderItems,
+          mapWith(
+            TrackingOrderItemResponseDto, 
+            TrackingOrderItem, 
+            (source) => source.trackingOrderItems)
         ),
         extend(baseMapper(mapper)),
       );
