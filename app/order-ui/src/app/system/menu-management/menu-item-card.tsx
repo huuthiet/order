@@ -16,7 +16,7 @@ export default function MenuItemCard({
   price,
 }: MenuItemCardProps) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-md border p-4 shadow-sm hover:shadow-md">
+    <div className="flex flex-col items-center gap-2 rounded-md border p-4">
       <img
         src={`${publicFileURL}/${image}`}
         alt={name}

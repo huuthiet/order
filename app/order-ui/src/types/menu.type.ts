@@ -53,9 +53,9 @@ export interface IAddMenuItemRequest {
 }
 
 export interface IMenuItemStore {
-  menuItems: string[] // Danh sách productSlug
-  getMenuItems: () => string[] // Lấy danh sách productSlug
-  addMenuItem: (item: string) => void // Thêm productSlug vào danh sách
-  removeMenuItem: (menuItemId: string) => void // Xoá productSlug khỏi danh sách
-  clearMenuItems: () => void // Xoá toàn bộ danh sách productSlug
+  menuItems: IAddMenuItemRequest[] // Thay đổi từ string[] sang IAddMenuItemRequest[]
+  getMenuItems: () => IAddMenuItemRequest[]
+  addMenuItem: (item: IAddMenuItemRequest) => void
+  removeMenuItem: (productSlug: string) => void
+  clearMenuItems: () => void
 }

@@ -47,10 +47,10 @@ export async function deleteMenu(slug: string): Promise<IApiResponse<IMenu>> {
 }
 
 export async function addMenuItem(
-  params: IAddMenuItemRequest[],
+  params: IAddMenuItemRequest,
 ): Promise<IApiResponse<IMenuItem>> {
   const response = await http.post<IApiResponse<IMenuItem>>(
-    `/menu-item/bulk/`,
+    `/menu-item`,
     params,
   )
   return response.data

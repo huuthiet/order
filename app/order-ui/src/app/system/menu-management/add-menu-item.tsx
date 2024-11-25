@@ -1,18 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
 
 import { DataTable, ScrollArea } from '@/components/ui'
 import { useProducts } from '@/hooks'
 import { useProductColumns } from './DataTable/columns'
-import { AddMenuItemDialog } from '@/components/app/dialog'
-import { menuItemStore } from '@/stores'
 
 export default function AddMenuItem() {
   const { t } = useTranslation(['menu'])
-  const { t: tCommon } = useTranslation(['common'])
-  const { slug } = useParams()
   const { data: products, isLoading } = useProducts()
-  const { addMenuItem } = menuItemStore()
 
   const productsData = products?.result
 
@@ -38,7 +32,6 @@ export default function AddMenuItem() {
               onPageSizeChange={() => {}}
             />
           </div>
-          <AddMenuItemDialog addMenuItemParams={productsData} />
         </div>
       </ScrollArea>
     </div>

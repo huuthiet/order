@@ -1,7 +1,8 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 import {
   FormField,
@@ -9,64 +10,45 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  Input,
   Form,
   Button,
-  Input,
 } from '@/components/ui'
 import { addMenuItemSchema, TAddMenuItemSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IAddMenuItemRequest } from '@/types'
+import { IAddMenuItemRequest, IProduct } from '@/types'
 import { useAddMenuItem } from '@/hooks'
 import { showToast } from '@/utils'
-import { menuItemStore } from '@/stores'
 
 interface IFormAddMenuItemProps {
-  addMenuItemParams: IAddMenuItemRequest
+  product: IProduct
   onSubmit: (isOpen: boolean) => void
 }
 
 export const AddMenuItemForm: React.FC<IFormAddMenuItemProps> = ({
-  addMenuItemParams,
+  product,
   onSubmit,
 }) => {
   const queryClient = useQueryClient()
-  const { t } = useTranslation(['bank'])
-  const { mutate: addNewMenuItem } = useAddMenuItem()
-  const { getMenuItems } = menuItemStore()
-  console.log(getMenuItems())
+  const { t } = useTranslation(['menu'])
+  const { slug } = useParams()
+  const { mutate: addMenuItem } = useAddMenuItem()
   const form = useForm<TAddMenuItemSchema>({
     resolver: zodResolver(addMenuItemSchema),
-    defaultValues: [
-      {
-        menuSlug: addMenuItemParams.menuSlug,
-        productSlug: addMenuItemParams.productSlug,
-        defaultStock: addMenuItemParams.defaultStock,
-      },
-    ],
+    defaultValues: {
+      menuSlug: slug,
+      productSlug: product.slug,
+      productName: product.name,
+      defaultStock: 0,
+    },
   })
 
-  const handleSubmit = (data: TAddMenuItemSchema) => {
-    // Lấy danh sách productSlug từ store
-    const productSlugs = getMenuItems()
-
-    if (!productSlugs.length) {
-      showToast(t('toast.noProductSelected'))
-      return
-    }
-
-    // Chuẩn bị mảng các yêu cầu
-    const requestData: IAddMenuItemRequest[] = productSlugs.map((slug) => ({
-      menuSlug: data.menuSlug, // Sử dụng menuSlug từ form
-      productSlug: slug, // Gán từng slug từ danh sách
-      defaultStock: data.defaultStock, // Sử dụng defaultStock từ form
-    }))
-
-    // Gửi dữ liệu qua API
-    addNewMenuItem(requestData, {
+  const handleSubmit = (data: IAddMenuItemRequest) => {
+    addMenuItem(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['menu'],
+          queryKey: ['specific-menu'],
         })
         onSubmit(false)
         form.reset()
@@ -84,22 +66,30 @@ export const AddMenuItemForm: React.FC<IFormAddMenuItemProps> = ({
           <FormItem>
             <FormLabel>{t('menu.menuSlug')}</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input
+                readOnly
+                {...field}
+                placeholder={t('menu.enterMenuSlug')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
     ),
-    productSlug: (
+    productName: (
       <FormField
         control={form.control}
-        name="productSlug"
+        name="productName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('menu.productSlug')}</FormLabel>
+            <FormLabel>{t('menu.productName')}</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input
+                readOnly
+                {...field}
+                placeholder={t('menu.enterProductName')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -114,7 +104,11 @@ export const AddMenuItemForm: React.FC<IFormAddMenuItemProps> = ({
           <FormItem>
             <FormLabel>{t('menu.defaultStock')}</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input
+                type="number"
+                placeholder={t('menu.defaultStockDescription')}
+                onChange={field.onChange}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -136,7 +130,7 @@ export const AddMenuItemForm: React.FC<IFormAddMenuItemProps> = ({
           </div>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
-              {t('bank.create')}
+              {t('menu.addMenuItem')}
             </Button>
           </div>
         </form>

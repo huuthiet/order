@@ -54,7 +54,7 @@ export const useDeleteMenu = () => {
 
 export const useAddMenuItem = () => {
   return useMutation({
-    mutationFn: async (data: IAddMenuItemRequest[]) => {
+    mutationFn: async (data: IAddMenuItemRequest) => {
       return addMenuItem(data)
     },
   })

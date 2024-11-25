@@ -41,7 +41,11 @@
     "deleteContent3": " không?",
 
     "addMenuItem": "Thêm món",
-    "addMenuItemDescription": "Vui lòng xác nhận thông tin trước khi thêm vào thực đơn"
+    "addMenuItemDescription": "Vui lòng xác nhận thông tin trước khi thêm vào thực đơn",
+    "menuSlug": "Slug thực đơn",
+    "productName": "Tên món",
+    "defaultStock": "Số lượng tồn kho",
+    "defaultStockDescription": "Số lượng tồn kho mặc định"
   },
 
   "order": {

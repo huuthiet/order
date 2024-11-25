@@ -34,4 +34,4 @@ export { default as UpdateBankConnectorDialog } from './update-bank-connector-di
 
 export { default as QrCodeDialog } from './qr-code-dialog'
 
-export { default as AddMenuItemDialog } from './add-menu-item-dialog'
+export { default as AddMenuItemDialog } from './add-product-to-menu-dialog'
