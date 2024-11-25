@@ -4,8 +4,10 @@ import {
   deleteMenu,
   getAllMenus,
   getSpecificMenu,
+  addMenuItem,
 } from '@/api'
 import {
+  IAddMenuItemRequest,
   ICreateMenuRequest,
   ISpecificMenuRequest,
   IUpdateMenuRequest,
@@ -46,6 +48,14 @@ export const useDeleteMenu = () => {
   return useMutation({
     mutationFn: async (slug: string) => {
       return deleteMenu(slug)
+    },
+  })
+}
+
+export const useAddMenuItem = () => {
+  return useMutation({
+    mutationFn: async (data: IAddMenuItemRequest) => {
+      return addMenuItem(data)
     },
   })
 }

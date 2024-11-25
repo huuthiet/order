@@ -36,7 +36,7 @@ export async function initializeQrCode(
   params: IInitateQrCodeRequest,
 ): Promise<IApiResponse<IInitiateQrCodeResponse>> {
   const response = await http.post<IApiResponse<IInitiateQrCodeResponse>>(
-    `/payment/initiate-qrcode`,
+    `/payment/initiate`,
     params,
   )
   return response.data

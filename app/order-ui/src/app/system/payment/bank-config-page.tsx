@@ -25,7 +25,7 @@ export default function BankConfigPage() {
               <BreadcrumbComponent />
             </div>
             <div className="flex w-full justify-end gap-2">
-              <CreateBankConnectorDialog />
+              {!bankConfigData && <CreateBankConnectorDialog />}
               <UpdateBankConnectorDialog bankConnector={bankConfigData} />
             </div>
             <div className="mt-6 grid w-full grid-cols-5 justify-start gap-4">
@@ -34,7 +34,7 @@ export default function BankConfigPage() {
               </div>
               {bankConfigData && (
                 <div className="col-span-3 grid w-full grid-cols-1 items-center justify-between rounded-sm border p-4">
-                  <div className="col-span-1 flex flex-col gap-1 px-4">
+                  <div className="col-span-1 flex h-full flex-col justify-between gap-1 px-4">
                     <div className="grid grid-cols-2">
                       <h3 className="col-span-1 text-sm font-medium">
                         {t('bank.xProviderId')}
