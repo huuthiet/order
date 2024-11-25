@@ -27,6 +27,7 @@ import { PaymentModule } from 'src/payment/payment.module';
 import { ACBConnectorModule } from 'src/acb-connector/acb-connector.module';
 import { OrderItemModule } from 'src/order-item/order-item.module';
 import { OrderModule } from 'src/order/order.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { OrderModule } from 'src/order/order.module';
     ACBConnectorModule,
     OrderItemModule,
     OrderModule,
+    UserModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),

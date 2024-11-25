@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { INVALID_BRANCH_SLUG, INVALID_DAY } from './menu.validation';
 import { Type } from 'class-transformer';
-import { Menu } from './menu.entity';
 import { MenuItemResponseDto } from 'src/menu-item/menu-item.dto';
 
 export class CreateMenuDto {

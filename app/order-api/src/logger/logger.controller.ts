@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Query,
@@ -14,7 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { Public } from 'src/auth/public.decorator';
 import { GetLoggerRequestDto, LoggerResponseDto } from './logger.dto';
-import { AppResponseDto } from 'src/app/app.dto';
+import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 
 @Controller('logger')
@@ -26,6 +27,8 @@ export class LoggerController {
   @Get()
   @Public()
   @ApiQuery({ name: 'level', required: false, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'size', required: false, type: Number })
   @ApiOperation({ summary: 'Retrieve all logs' })
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -36,13 +39,13 @@ export class LoggerController {
   async getAllLogs(
     @Query(new ValidationPipe({ transform: true }))
     query: GetLoggerRequestDto,
-  ): Promise<AppResponseDto<LoggerResponseDto[]>> {
+  ): Promise<AppResponseDto<AppPaginatedResponseDto<LoggerResponseDto>>> {
     const result = await this.loggerService.getAllLogs(query);
     return {
       message: 'All logs have been retrieved successfully',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<LoggerResponseDto[]>;
+    } as AppResponseDto<AppPaginatedResponseDto<LoggerResponseDto>>;
   }
 }

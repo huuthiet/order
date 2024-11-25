@@ -1,11 +1,21 @@
-import { AutoMap } from "@automapper/classes";
-import { ApiProperty } from "@nestjs/swagger";
-import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsOptional, ValidateNested } from "class-validator";
-import { OrderType } from "./order.contants";
-import { BaseResponseDto } from "src/app/base.dto";
-import { BranchResponseDto } from "src/branch/branch.dto";
-import { CreateOrderItemRequestDto, OrderItemResponseDto } from "src/order-item/order-item.dto";
-import { Type } from "class-transformer";
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
+import { OrderType } from './order.contants';
+import { BaseResponseDto } from 'src/app/base.dto';
+import { BranchResponseDto } from 'src/branch/branch.dto';
+import {
+  CreateOrderItemRequestDto,
+  OrderItemResponseDto,
+} from 'src/order-item/order-item.dto';
+import { Type } from 'class-transformer';
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -20,24 +30,30 @@ export class CreateOrderRequestDto {
   table: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of branch', example: 'branch-slug-123' })
+  @ApiProperty({
+    description: 'The slug of branch',
+    example: 'branch-slug-123',
+  })
   @IsNotEmpty({ message: 'Invalid slug of branch' })
   branch: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of user that creating order', example: 'user-slug-123' })
+  @ApiProperty({
+    description: 'The slug of user that creating order',
+    example: 'user-slug-123',
+  })
   @IsNotEmpty({ message: 'Invalid slug of user that creating order' })
   owner: string;
 
-  @ApiProperty({ 
-    description: 'The array of order items', 
+  @ApiProperty({
+    description: 'The array of order items',
     example: [
       {
         quantity: 2,
         variant: 'variant-slug-123',
-        note: 'Ghi chú'
-      }
-    ] 
+        note: 'Ghi chú',
+      },
+    ],
   })
   @IsArray({ message: 'Invalid order item list' })
   @ArrayNotEmpty({ message: 'Invalid order item list' })
@@ -49,7 +65,7 @@ export class CreateOrderRequestDto {
 export class OwnerResponseDto extends BaseResponseDto {
   @AutoMap()
   phonenumber: string;
-  
+
   @AutoMap()
   firstName: string;
 
@@ -60,7 +76,7 @@ export class OwnerResponseDto extends BaseResponseDto {
 export class ApprovalUserResponseDto extends BaseResponseDto {
   @AutoMap()
   phonenumber: string;
-  
+
   @AutoMap()
   firstName: string;
 
@@ -69,6 +85,26 @@ export class ApprovalUserResponseDto extends BaseResponseDto {
 
   @AutoMap(() => BranchResponseDto)
   branch: BranchResponseDto;
+}
+
+export class OrderPaymentResponseDto extends BaseResponseDto {
+  @AutoMap()
+  @ApiProperty()
+  paymentMethod: string;
+
+  @AutoMap()
+  @ApiProperty()
+  message: string;
+
+  @AutoMap()
+  @ApiProperty()
+  transactionId: string;
+
+  @AutoMap()
+  statusCode: string;
+
+  @AutoMap()
+  statusMessage: string;
 }
 
 export class OrderResponseDto extends BaseResponseDto {
@@ -92,33 +128,36 @@ export class OrderResponseDto extends BaseResponseDto {
 
   @AutoMap(() => [OrderItemResponseDto])
   orderItems: OrderItemResponseDto[];
+
+  @AutoMap(() => OrderPaymentResponseDto)
+  payment: OrderPaymentResponseDto;
 }
 
 export class GetOrderRequestDto {
   @AutoMap()
   @ApiProperty({
-    description: 'The slug of branch', 
+    description: 'The slug of branch',
     example: 'branch-slug-123',
-    required: false 
+    required: false,
   })
   @IsOptional()
   branch?: string;
 
   @AutoMap()
   @ApiProperty({
-    description: 'The slug of owner', 
+    description: 'The slug of owner',
     example: 'user-slug-123',
-    required: false
-   })
+    required: false,
+  })
   @IsOptional()
   owner?: string;
 }
 export class GetSpecificOrderRequestDto {
   @AutoMap()
   @ApiProperty({
-    description: 'The slug of order', 
-    example: 'order-slug-123',
-    required: true 
+    description: 'The slug of order',
+    example: 'vKwq07TZM',
+    required: true,
   })
   slug: string;
 }

@@ -8,7 +8,8 @@ export class TransactionController {
 
   @Post('callback')
   async statusCallback(
-    @Body(ValidationPipe) requestData: UpdateTransactionStatusRequestDto,
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: UpdateTransactionStatusRequestDto,
   ) {
     return this.transactionService.callback(requestData);
   }

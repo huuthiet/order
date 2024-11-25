@@ -73,16 +73,16 @@ export class AuthController {
     description: 'Register successful',
   })
   async register(
-    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    @Body(new ValidationPipe({ transform: true }))
     requestData: RegisterAuthRequestDto,
   ) {
     const result = await this.authService.register(requestData);
     const response = {
       message: 'Registration successful',
-      status: HttpStatus.CREATED,
+      statusCode: HttpStatus.CREATED,
       timestamp: new Date().toISOString(),
       result,
-    } as unknown as AppResponseDto<RegisterAuthResponseDto>;
+    } as AppResponseDto<RegisterAuthResponseDto>;
     return response;
   }
 

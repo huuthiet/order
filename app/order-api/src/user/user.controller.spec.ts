@@ -1,17 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
-import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
-import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import { User } from './user.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
-describe('UserService', () => {
-  let service: UserService;
+describe('UserController', () => {
+  let controller: UserController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      controllers: [UserController],
       providers: [
         UserService,
         {
@@ -29,10 +31,10 @@ describe('UserService', () => {
       ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    controller = module.get<UserController>(UserController);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(controller).toBeDefined();
   });
 });
