@@ -10,7 +10,7 @@ import { AppResponseDto } from "src/app/app.dto";
 @Controller('orders')
 @ApiBearerAuth()
 export class OrderController {
-  constructor(private orderService: OrderService){}
+  constructor(private orderService: OrderService) {}
 
   @Post()
   @Public()
@@ -24,15 +24,15 @@ export class OrderController {
   @ApiResponse({ status: 200, description: 'Create new order successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createProduct(
-    @Body(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    }))
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     requestData: CreateOrderRequestDto,
   ) {
-    const result = await this.orderService.createOrder(
-      requestData
-    );
+    const result = await this.orderService.createOrder(requestData);
     return {
       message: 'Order have been created successfully',
       statusCode: HttpStatus.CREATED,
@@ -55,7 +55,7 @@ export class OrderController {
   })
   async getAllOrders(
     @Query(new ValidationPipe({ transform: true, whitelist: true }))
-    query: GetOrderRequestDto
+    query: GetOrderRequestDto,
   ) {
     const result = await this.orderService.getAllOrders(query);
     return {
@@ -81,11 +81,9 @@ export class OrderController {
     name: 'slug',
     description: 'The slug of the order to be retrieved',
     required: true,
-    example: 'order-slug-123',
+    example: 'vKwq07TZM',
   })
-  async getOrder(
-    @Param('slug') slug: string,
-  ) {
+  async getOrder(@Param('slug') slug: string) {
     const result = await this.orderService.getOrderBySlug(slug);
     return {
       message: 'Get specific order successfully',

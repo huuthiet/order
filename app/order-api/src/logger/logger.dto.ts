@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsOptional, Min } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 
 export class LoggerResponseDto extends BaseResponseDto {
@@ -29,4 +30,24 @@ export class GetLoggerRequestDto {
   })
   @IsOptional()
   level: string;
+
+  @AutoMap()
+  @ApiProperty({
+    example: 1,
+    description: 'Page number',
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @Min(1)
+  page: number = 1;
+
+  @AutoMap()
+  @ApiProperty({
+    example: 10,
+    description: 'Number of items per page',
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @Min(1)
+  size: number = 10;
 }

@@ -22,8 +22,8 @@ export type TAuthErrorCode = Record<TAuthErrorCodeKey, TErrorCodeValue>;
 const AuthValidation: TAuthErrorCode = {
   INVALID_PHONENUMBER: createErrorCode(1004, 'Phone number is required'),
   INVALID_PASSWORD: createErrorCode(1005, 'Password is required'),
-  INVALID_FIRSTNAME: createErrorCode(1007, 'Full name is required'),
-  INVALID_LASTNAME: createErrorCode(1008, 'Full name is required'),
+  INVALID_FIRSTNAME: createErrorCode(1007, 'First name is required'),
+  INVALID_LASTNAME: createErrorCode(1008, 'Last name is required'),
   INVALID_USERID: createErrorCode(1009, 'User ID is required'),
   USER_EXISTS: createErrorCode(1010, 'User exist'),
   USER_NOT_FOUND: createErrorCode(1011, 'User not found'),

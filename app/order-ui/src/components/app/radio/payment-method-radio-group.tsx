@@ -3,14 +3,20 @@ import { useTranslation } from 'react-i18next'
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useCartItemStore } from '@/stores'
 
-export default function PaymentMethodRadioGroup() {
+interface PaymentMethodRadioGroupProps {
+  onSubmit?: (paymentMethod: string) => void
+}
+
+export default function PaymentMethodRadioGroup({
+  onSubmit,
+}: PaymentMethodRadioGroupProps) {
   const { t } = useTranslation('menu')
-  const { addPaymentMethod } = useCartItemStore()
 
   const handlePaymentMethodChange = (paymentMethod: string) => {
-    addPaymentMethod(paymentMethod)
+    if (onSubmit) {
+      onSubmit(paymentMethod)
+    }
   }
   return (
     <RadioGroup
@@ -26,7 +32,7 @@ export default function PaymentMethodRadioGroup() {
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <RadioGroupItem value="bankTransfer" id="r2" />
+        <RadioGroupItem value="bank-transfer" id="r2" />
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">
           <CreditCard size={20} />
           <Label htmlFor="r1">{t('paymentMethod.bankTransfer')}</Label>

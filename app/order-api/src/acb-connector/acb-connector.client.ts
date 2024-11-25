@@ -15,10 +15,6 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 export class ACBConnectorClient {
   private readonly acbApiUrl: string =
     this.configService.get<string>('ACB_API_URL');
-  // private readonly clientId: string =
-  //   this.configService.get<string>('CLIENT_ID');
-  // private readonly clientSecret: string =
-  //   this.configService.get<string>('CLIENT_SECRET');
 
   constructor(
     private readonly httpService: HttpService,
@@ -33,6 +29,7 @@ export class ACBConnectorClient {
    * @returns {Promise<ACBTokenResponseDto>}
    */
   async token(requestData: ACBTokenRequestDto): Promise<ACBTokenResponseDto> {
+    const context = `${ACBConnectorClient.name}.${this.token.name}`;
     const requestUrl = `${this.acbApiUrl}/iam/id/v1/auth/realms/soba/protocol/openid-connect/token`;
     const { data } = await firstValueFrom(
       this.httpService
@@ -45,12 +42,13 @@ export class ACBConnectorClient {
           catchError((error: AxiosError) => {
             this.logger.error(
               `Get token from ACB API failed: ${error.message}`,
+              context,
             );
             throw error;
           }),
         ),
     );
-    this.logger.log(`Get token from ACB API success`);
+    this.logger.log(`Get token from ACB API success`, context);
     return data;
   }
 
@@ -66,6 +64,7 @@ export class ACBConnectorClient {
     requestData: ACBInitiateQRCodeRequestDto,
     accessToken: string,
   ): Promise<ACBInitiateQRCodeResponseDto> {
+    const context = `${ACBConnectorClient.name}.${this.initiateQRCode.name}`;
     const requestUrl = `${this.acbApiUrl}/payments/qr-payment/v1/initiate`;
     const { data } = await firstValueFrom(
       this.httpService
@@ -79,6 +78,7 @@ export class ACBConnectorClient {
           catchError((error: AxiosError) => {
             this.logger.error(
               `Init QR Code from ACB API failed: ${error.message}`,
+              context,
             );
             throw error;
           }),

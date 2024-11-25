@@ -49,5 +49,6 @@ export class Order extends Base {
   // Many to one with payment
   @ManyToOne(() => Payment, (payment) => payment.orders)
   @JoinColumn({ name: 'payment_column' })
+  @AutoMap(() => Payment)
   payment: Payment;
 }

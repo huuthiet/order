@@ -30,6 +30,7 @@ import { OrderModule } from 'src/order/order.module';
 import { TrackingModule } from 'src/tracking/tracking.module';
 import { TrackingOrderItemModule } from 'src/tracking-order-item/tracking-order-item.module';
 import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module
     TrackingModule,
     TrackingOrderItemModule,
     RobotConnectorModule,
+    UserModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),

@@ -25,22 +25,21 @@ export default function BranchSelect({
     if (data?.result) {
       const newBranches = data.result.map((item) => ({
         value: item.slug || '',
-        label: `${item.name} - ${item.address}`, // Kết hợp name và address
+        label: `${item.name} - ${item.address}`,
       }))
-      setAllBranches((prevBranches) => [...prevBranches, ...newBranches])
-    }
-  }, [data])
+      setAllBranches(newBranches)
 
-  useEffect(() => {
-    if (defaultValue && allBranches.length > 0) {
-      const defaultOption = allBranches.find(
-        (branch) => branch.value === defaultValue,
-      )
-      if (defaultOption) {
-        setSelectedBranch(defaultOption)
+      // Set default value khi branches được load
+      if (defaultValue) {
+        const defaultOption = newBranches.find(
+          (branch) => branch.value === defaultValue,
+        )
+        if (defaultOption) {
+          setSelectedBranch(defaultOption)
+        }
       }
     }
-  }, [defaultValue, allBranches])
+  }, [data, defaultValue])
 
   const handleChange = (
     selectedOption: SingleValue<{ value: string; label: string }>,
@@ -53,10 +52,9 @@ export default function BranchSelect({
 
   return (
     <ReactSelect
-      value={selectedBranch}
-      options={allBranches}
+      value={selectedBranch} // Hiển thị giá trị mặc định đã chọn
+      options={allBranches} // Danh sách options
       onChange={handleChange}
-      defaultValue={selectedBranch}
     />
   )
 }

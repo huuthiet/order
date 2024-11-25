@@ -52,7 +52,7 @@ export class OrderService {
    * @throws {BadRequestException} If invalid data to create order item
    */
   async createOrder(
-    requestData: CreateOrderRequestDto
+    requestData: CreateOrderRequestDto,
   ): Promise<OrderResponseDto> {
     const context = `${OrderService.name}.${this.createOrder.name}`;
     const checkValidOrderData = await this.checkCreatedOrderData(requestData);
@@ -77,7 +77,10 @@ export class OrderService {
     
     const newOrder = this.orderRepository.create(mappedOrder);
     const createdOrder = await this.orderRepository.save(newOrder);
-    this.logger.log(`Create new order ${createdOrder.slug} successfully`, context);
+    this.logger.log(
+      `Create new order ${createdOrder.slug} successfully`,
+      context,
+    );
     const orderDto = this.mapper.map(createdOrder, Order, OrderResponseDto);
     return orderDto;
   }
@@ -91,15 +94,18 @@ export class OrderService {
     data: CreateOrderRequestDto
   ): Promise<CheckDataCreateOrderResponseDto> {
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
-    if(!branch) return {
-      isValid: false,
-      message: 'Branch is not found'
-    };
+    if (!branch)
+      return {
+        isValid: false,
+        message: 'Branch is not found',
+      };
 
     const checkTable = await this.checkOrderType(
       data.table,
       data.branch,
-      data.type === OrderType.AT_TABLE ? OrderType.AT_TABLE: OrderType.TAKE_OUT
+      data.type === OrderType.AT_TABLE
+        ? OrderType.AT_TABLE
+        : OrderType.TAKE_OUT,
     );
     if(!checkTable) return {
       isValid: false,
@@ -107,10 +113,11 @@ export class OrderService {
     };
 
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
-    if(!owner) return {
-      isValid: false,
-      message: 'The owner is not found'
-    }
+    if (!owner)
+      return {
+        isValid: false,
+        message: 'The owner is not found',
+      };
 
     const order = this.mapper.map(data, CreateOrderRequestDto, Order);
     Object.assign(order, {
@@ -139,9 +146,9 @@ export class OrderService {
       where: {
         slug: tableSlug,
         branch: {
-          slug: branchSlug
-        }
-      }
+          slug: branchSlug,
+        },
+      },
     });
     if(!table) return null;
 
@@ -160,14 +167,20 @@ export class OrderService {
 
     let subtotal: number = 0;
     const mappedOrderItems: OrderItem[] = [];
-    for( let i = 0; i < data.length; i++ ) {
-      let variant = await this.variantRepository.findOneBy({ slug: data[i].variant });
-      if(!variant) return { isValid: false };
-      subtotal += (variant.price * data[i].quantity);
-      const mappedOrderItem = this.mapper.map(data[i], CreateOrderItemRequestDto, OrderItem);
+    for (let i = 0; i < data.length; i++) {
+      let variant = await this.variantRepository.findOneBy({
+        slug: data[i].variant,
+      });
+      if (!variant) return { isValid: false };
+      subtotal += variant.price * data[i].quantity;
+      const mappedOrderItem = this.mapper.map(
+        data[i],
+        CreateOrderItemRequestDto,
+        OrderItem,
+      );
       Object.assign(mappedOrderItem, {
         variant,
-        subtotal: (variant.price * data[i].quantity)
+        subtotal: variant.price * data[i].quantity,
       });
       mappedOrderItems.push(mappedOrderItem);
     }
@@ -185,17 +198,18 @@ export class OrderService {
     const orders = await this.orderRepository.find({
       where: {
         branch: {
-          slug: options.branch
+          slug: options.branch,
         },
         owner: {
-          slug: options.owner
-        }
+          slug: options.owner,
+        },
       },
       relations: [
         'owner',
         'orderItems.variant.size',
         'orderItems.variant.product',
-      ]
+        'payment',
+      ],
     });
 
     const ordersDto = this.mapper.mapArray(orders, Order, OrderResponseDto);
@@ -223,7 +237,7 @@ export class OrderService {
       ]
     });
 
-    if(!order) {
+    if (!order) {
       this.logger.warn(`Order ${slug} not found`, context);
       throw new BadRequestException('Order is not found');
     }

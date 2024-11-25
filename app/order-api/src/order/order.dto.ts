@@ -23,24 +23,30 @@ export class CreateOrderRequestDto {
   table: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of branch', example: 'branch-slug-123' })
+  @ApiProperty({
+    description: 'The slug of branch',
+    example: '',
+  })
   @IsNotEmpty({ message: 'Invalid slug of branch' })
   branch: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of user that creating order', example: 'user-slug-123' })
+  @ApiProperty({
+    description: 'The slug of user that creating order',
+    example: '',
+  })
   @IsNotEmpty({ message: 'Invalid slug of user that creating order' })
   owner: string;
 
-  @ApiProperty({ 
-    description: 'The array of order items', 
+  @ApiProperty({
+    description: 'The array of order items',
     example: [
       {
         quantity: 2,
         variant: 'variant-slug-123',
-        note: 'Ghi chú'
-      }
-    ] 
+        note: 'Ghi chú',
+      },
+    ],
   })
   @IsArray({ message: 'Invalid order item list' })
   @ArrayNotEmpty({ message: 'Invalid order item list' })
@@ -52,7 +58,7 @@ export class CreateOrderRequestDto {
 export class OwnerResponseDto extends BaseResponseDto {
   @AutoMap()
   phonenumber: string;
-  
+
   @AutoMap()
   firstName: string;
 
@@ -63,7 +69,7 @@ export class OwnerResponseDto extends BaseResponseDto {
 export class ApprovalUserResponseDto extends BaseResponseDto {
   @AutoMap()
   phonenumber: string;
-  
+
   @AutoMap()
   firstName: string;
 
@@ -72,6 +78,26 @@ export class ApprovalUserResponseDto extends BaseResponseDto {
 
   @AutoMap(() => BranchResponseDto)
   branch: BranchResponseDto;
+}
+
+export class OrderPaymentResponseDto extends BaseResponseDto {
+  @AutoMap()
+  @ApiProperty()
+  paymentMethod: string;
+
+  @AutoMap()
+  @ApiProperty()
+  message: string;
+
+  @AutoMap()
+  @ApiProperty()
+  transactionId: string;
+
+  @AutoMap()
+  statusCode: string;
+
+  @AutoMap()
+  statusMessage: string;
 }
 
 export class OrderResponseDto extends BaseResponseDto {
@@ -95,24 +121,27 @@ export class OrderResponseDto extends BaseResponseDto {
 
   @AutoMap(() => [OrderItemResponseDto])
   orderItems: OrderItemResponseDto[];
+
+  @AutoMap(() => OrderPaymentResponseDto)
+  payment: OrderPaymentResponseDto;
 }
 
 export class GetOrderRequestDto {
   @AutoMap()
   @ApiProperty({
-    description: 'The slug of branch', 
-    example: 'branch-slug-123',
-    required: false 
+    description: 'The slug of branch',
+    example: '',
+    required: false,
   })
   @IsOptional()
   branch?: string;
 
   @AutoMap()
   @ApiProperty({
-    description: 'The slug of owner', 
-    example: 'user-slug-123',
-    required: false
-   })
+    description: 'The slug of owner',
+    example: '',
+    required: false,
+  })
   @IsOptional()
   owner?: string;
 }

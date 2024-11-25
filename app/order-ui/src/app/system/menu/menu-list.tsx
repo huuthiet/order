@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
 
 import { SkeletonMenuList } from '@/components/app/skeleton'
-import { useProducts } from '@/hooks'
+import { useSpecificMenu } from '@/hooks'
 import { IProduct } from '@/types'
 import { publicFileURL } from '@/constants'
-import AddToCartDialog from '@/components/app/dialog/add-to-cart-dialog'
+import { AddToCartDialog } from '@/components/app/dialog'
 
 interface IMenuProps {
   isCartOpen: boolean
@@ -12,9 +13,14 @@ interface IMenuProps {
 
 export default function MenuList({ isCartOpen }: IMenuProps) {
   const { t } = useTranslation('menu')
-  const { data, isLoading } = useProducts()
+  function getCurrentDate() {
+    return moment().format('YYYY-MM-DD')
+  }
+  const { data: specificMenu, isLoading } = useSpecificMenu({
+    date: getCurrentDate(),
+  })
 
-  const products = data?.result
+  const menuItems = specificMenu?.result.menuItems
 
   const getPriceRange = (variants: IProduct['variants']) => {
     if (!variants || variants.length === 0) return null
@@ -26,13 +32,15 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
     return {
       min: minPrice,
       max: maxPrice,
-      isSinglePrice: minPrice === maxPrice
+      isSinglePrice: minPrice === maxPrice,
     }
   }
 
   if (isLoading) {
     return (
-      <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3`}>
+      <div
+        className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3`}
+      >
         {[...Array(8)].map((_, index) => (
           <SkeletonMenuList key={index} />
         ))}
@@ -40,24 +48,29 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
     )
   }
 
-  if (!products || products.length === 0) {
+  if (!menuItems || menuItems.length === 0) {
     return <p className="text-center">{t('menu.noData')}</p>
   }
 
   return (
-    <div className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6`}>
-      {products.map((item) => (
-        <div key={item.slug} className="flex flex-col border rounded-xl backdrop-blur-md">
+    <div
+      className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6`}
+    >
+      {menuItems.map((item) => (
+        <div
+          key={item.slug}
+          className="flex flex-col rounded-xl border backdrop-blur-md"
+        >
           {/* Image Section with Discount Tag */}
           <div className="relative">
-            {item.image ? (
+            {item.product.image ? (
               <img
-                src={`${publicFileURL}/${item.image}`}
-                alt={item.name}
-                className="object-cover w-full h-40 rounded-t-md"
+                src={`${publicFileURL}/${item.product.image}`}
+                alt={item.product.name}
+                className="h-40 w-full rounded-t-md object-cover"
               />
             ) : (
-              <div className="w-full h-40 rounded-t-md bg-muted/60" />
+              <div className="h-40 w-full rounded-t-md bg-muted/60" />
             )}
 
             {/* Discount Tag */}
@@ -71,16 +84,20 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
           </div>
 
           {/* Content Section - More compact */}
-          <div className="flex flex-col flex-1 p-4 space-y-1.5">
-            <h3 className="font-bold text-md line-clamp-1">{item.name}</h3>
-            <p className="text-xs text-gray-500 line-clamp-2">{item.description}</p>
+          <div className="flex flex-1 flex-col space-y-1.5 p-4">
+            <h3 className="text-md line-clamp-1 font-bold">
+              {item.product.name}
+            </h3>
+            <p className="line-clamp-2 text-xs text-gray-500">
+              {item.product.description}
+            </p>
 
             <div className="flex items-center justify-between gap-1">
               <div className="flex flex-col">
-                {item.variants.length > 0 ? (
+                {item.product.variants.length > 0 ? (
                   <span className="text-lg font-bold text-primary">
                     {(() => {
-                      const range = getPriceRange(item.variants)
+                      const range = getPriceRange(item.product.variants)
                       if (!range) return '0đ'
                       return range.isSinglePrice
                         ? `${range.min.toLocaleString('vi-VN')}đ`
@@ -88,11 +105,13 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
                     })()}
                   </span>
                 ) : (
-                  <span className="text-lg font-bold text-primary">Liên hệ</span>
+                  <span className="text-lg font-bold text-primary">
+                    Liên hệ
+                  </span>
                 )}
               </div>
             </div>
-            <AddToCartDialog product={item} />
+            <AddToCartDialog product={item.product} />
           </div>
         </div>
       ))}

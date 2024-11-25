@@ -20,7 +20,10 @@ export class CreateOrderItemRequestDto {
   note: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of variant', example: 'variant-slug-123' })
+  @ApiProperty({
+    description: 'The slug of variant',
+    example: 'variant-slug-123',
+  })
   @IsNotEmpty({ message: 'Invalid slug of variant' })
   variant: string;
 }
@@ -38,7 +41,10 @@ export class UpdateOrderItemRequestDto {
   note: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of variant', example: 'variant-slug-123' })
+  @ApiProperty({
+    description: 'The slug of variant',
+    example: 'variant-slug-123',
+  })
   @IsNotEmpty({ message: 'Invalid slug of variant' })
   variant: string;
 }

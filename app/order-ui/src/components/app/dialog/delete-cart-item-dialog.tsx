@@ -12,12 +12,12 @@ import {
   DialogTrigger,
   Label,
 } from '@/components/ui'
-import { ICartItem } from '@/types'
+import { IOrderItem } from '@/types'
 import { useState } from 'react'
 import { useCartItemStore } from '@/stores'
 
 interface DialogDeleteCartItemProps {
-  cartItem: ICartItem
+  cartItem: IOrderItem
 }
 
 export default function DeleteCartItemDialog({
@@ -28,9 +28,9 @@ export default function DeleteCartItemDialog({
   const [isOpen, setIsOpen] = useState(false)
   const { removeCartItem } = useCartItemStore()
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (cartItemId: string) => {
     setIsOpen(false)
-    removeCartItem(id)
+    removeCartItem(cartItemId)
   }
 
   return (
@@ -64,7 +64,7 @@ export default function DeleteCartItemDialog({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => cartItem && handleDelete(cartItem.id)}
+            onClick={() => handleDelete(cartItem.id)} // Truyền vào đúng id của orderItem
           >
             {tCommon('common.confirmDelete')}
           </Button>

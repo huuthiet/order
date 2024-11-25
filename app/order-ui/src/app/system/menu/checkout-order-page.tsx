@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-// import { CartContent } from '@/router/loadable'
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton, QuantitySelector } from '@/components/app/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
-import { CheckoutCart, PaymentMethodSelect, TableSelect } from '@/app/system/menu'
+import {
+  CheckoutCart,
+  // PaymentMethodSelect,
+  TableSelect,
+} from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
 import { DeleteCartItemDialog } from '@/components/app/dialog'
@@ -20,22 +23,41 @@ export default function ConfirmOrderPage() {
   const { state } = useSidebar()
   const isCollapsed = state === 'collapsed'
 
+  const cartItems = getCartItems()
+
+  // Update total calculation to handle orderItems
+  // const subtotal = cartItems.reduce((acc, item) => {
+  //   return (
+  //     acc +
+  //     item.orderItems.reduce(
+  //       (itemAcc, orderItem) =>
+  //         itemAcc + (orderItem.price || 0) * orderItem.quantity,
+  //       0,
+  //     )
+  //   )
+  // }, 0)
+  // const discount = 0 // Hiện tại không có giảm giá
+  // const total = subtotal - discount
+
   return (
-    <div className="flex flex-row gap-2 h-[calc(100vh-4rem)]">
+    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
         <div
-          className={`  transition-all duration-300 ease-in-out${
+          className={`transition-all duration-300 ease-in-out${
             isCartOpen ? 'w-[70%]' : 'w-full'
           } ${isCollapsed ? 'pl-2' : 'pl-4'}`}
         >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 py-3 pr-4 bg-background">
-            <div className="flex flex-row items-center justify-between w-full">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
+            <div className="flex w-full flex-row items-center justify-between">
               <BreadcrumbComponent />
-              <CartToggleButton isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
+              <CartToggleButton
+                isCartOpen={isCartOpen}
+                setIsCartOpen={setIsCartOpen}
+              />
             </div>
 
-            <div className="grid w-full grid-cols-5 px-4 py-3 text-sm font-thin rounded-md bg-muted/60">
+            <div className="grid w-full grid-cols-5 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
               <span className="col-span-2">{t('order.product')}</span>
               <span className="text-center">{t('order.quantity')}</span>
               <span className="text-center">{t('order.grandTotal')}</span>
@@ -43,21 +65,31 @@ export default function ConfirmOrderPage() {
                 <Trash2 size={18} />
               </span>
             </div>
-            <div className="flex flex-col w-full border rounded-md">
-              {getCartItems().map((item) => (
-                <div key={item.slug} className="grid items-center w-full gap-4 p-4 pb-4 rounded-md">
-                  <div className="grid flex-row items-center w-full grid-cols-5">
-                    <div className="flex w-full col-span-2 gap-2">
+
+            {/* Danh sách sản phẩm */}
+            <div className="flex w-full flex-col rounded-md border">
+              {cartItems?.orderItems.map((item) => (
+                <div
+                  key={item.slug}
+                  className="grid w-full items-center gap-4 rounded-md p-4 pb-4"
+                >
+                  <div
+                    key={`${item.slug}`}
+                    className="grid w-full grid-cols-5 flex-row items-center"
+                  >
+                    <div className="col-span-2 flex w-full gap-2">
                       <div className="flex flex-row items-center justify-center gap-2">
                         <img
                           src={`${publicFileURL}/${item.image}`}
                           alt={item.name}
-                          className="object-cover w-24 h-16 rounded-lg"
+                          className="h-16 w-24 rounded-lg object-cover"
                         />
                         <div className="flex flex-col">
-                          <span className="font-bold truncate">{item.name}</span>
+                          <span className="truncate font-bold">
+                            {item.name}
+                          </span>
                           <span className="text-sm text-muted-foreground">
-                            {`${item.price.toLocaleString('vi-VN')}đ`}
+                            {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
                           </span>
                         </div>
                       </div>
@@ -67,7 +99,7 @@ export default function ConfirmOrderPage() {
                     </div>
                     <div className="text-center">
                       <span className="text-sm font-semibold text-primary">
-                        {`${item.price.toLocaleString('vi-VN')}đ`}
+                        {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
                       </span>
                     </div>
                     <div className="flex justify-center">
@@ -79,14 +111,14 @@ export default function ConfirmOrderPage() {
               ))}
             </div>
             <TableSelect />
-            <PaymentMethodSelect />
+            {/* <PaymentMethodSelect /> */}
           </div>
         </div>
       </ScrollArea>
 
       {/* Cart Section - Fixed */}
       <div
-        className={`transition-all duration-300 ease-in-out border-l bg-background ${
+        className={`border-l bg-background transition-all duration-300 ease-in-out ${
           isCartOpen ? 'w-[30%]' : 'w-0 opacity-0'
         } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
       >

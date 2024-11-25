@@ -1,22 +1,8 @@
 import { AutoMap } from '@automapper/classes';
-import {
-  ApiProperty,
-  IntersectionType,
-  PartialType,
-  PickType,
-} from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { BaseResponseDto } from 'src/app/base.dto';
 
-export class ACBTokenResponseDto {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-  refresh_token: string;
-  refresh_expires_in: string;
-  session_state: string;
-  scope: string;
-}
-
+// Request
 export class ACBTokenRequestDto {
   client_id: string;
   client_secret: string;
@@ -41,6 +27,7 @@ export class ACBInitiateQRCodeRequestParametersDto {
   amount: number;
   voucherCode: string;
   loyaltyCode: string;
+  description: string;
 }
 
 export class CreateACBConnectorConfigRequestDto {
@@ -73,10 +60,37 @@ export class UpdateACBConnectorConfigRequestDto extends PartialType(
   CreateACBConnectorConfigRequestDto,
 ) {}
 
+// Response
+export class ACBResponseStatusDto {
+  @ApiProperty()
+  responseCode: string;
+
+  @ApiProperty()
+  responseMessage: string;
+}
+
+export class ACBResponseBodyDto {
+  @ApiProperty()
+  index: number;
+
+  @ApiProperty()
+  referenceCode: string;
+}
+
+export class ACBTokenResponseDto {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+  refresh_expires_in: string;
+  session_state: string;
+  scope: string;
+}
+
 export class ACBInitiateQRCodeResponseDto {
   requestTrace: string;
   responseDateTime: string;
-  responseStatus: ACBInitiateQRCodeResponseStatusDto;
+  responseStatus: ACBResponseStatusDto;
   responseBody: ACBInitiateQRCodeResponseBodyDto;
 }
 
@@ -84,11 +98,6 @@ export class ACBInitiateQRCodeResponseBodyDto {
   virtualAccount: string;
   traceNumber: string;
   qrDataUrl: string;
-}
-
-export class ACBInitiateQRCodeResponseStatusDto {
-  responseCode: string;
-  responseMessage: string;
 }
 
 export class ACBConnectorConfigResponseDto extends BaseResponseDto {

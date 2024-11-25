@@ -4,7 +4,6 @@ import { Catalog } from 'src/catalog/catalog.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { AutoMap } from '@automapper/classes';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
-import { OrderItem } from 'src/order-item/order-item.entity';
 
 @Entity('product_tbl')
 export class Product extends Base {
@@ -13,7 +12,7 @@ export class Product extends Base {
   name: string;
 
   @AutoMap()
-  @Column({ name: 'description_column', nullable: true })
+  @Column({ name: 'description_column', nullable: true, type: 'text' })
   description?: string;
 
   @AutoMap()
@@ -24,6 +23,7 @@ export class Product extends Base {
   @Column({ name: 'is_limit_column', default: true })
   isLimit: boolean;
 
+  // Thumbnail image
   @AutoMap()
   @Column({ name: 'image_column', nullable: true })
   image?: string;
