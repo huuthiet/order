@@ -32,7 +32,7 @@ export class CreateOrderRequestDto {
   @AutoMap()
   @ApiProperty({
     description: 'The slug of branch',
-    example: 'branch-slug-123',
+    example: '',
   })
   @IsNotEmpty({ message: 'Invalid slug of branch' })
   branch: string;
@@ -40,7 +40,7 @@ export class CreateOrderRequestDto {
   @AutoMap()
   @ApiProperty({
     description: 'The slug of user that creating order',
-    example: 'user-slug-123',
+    example: '',
   })
   @IsNotEmpty({ message: 'Invalid slug of user that creating order' })
   owner: string;
@@ -137,7 +137,7 @@ export class GetOrderRequestDto {
   @AutoMap()
   @ApiProperty({
     description: 'The slug of branch',
-    example: 'branch-slug-123',
+    example: '',
     required: false,
   })
   @IsOptional()
@@ -146,7 +146,7 @@ export class GetOrderRequestDto {
   @AutoMap()
   @ApiProperty({
     description: 'The slug of owner',
-    example: 'user-slug-123',
+    example: '',
     required: false,
   })
   @IsOptional()

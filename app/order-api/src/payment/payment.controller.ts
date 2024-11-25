@@ -23,6 +23,7 @@ import {
 } from './payment.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @ApiTags('Payment')
 @ApiBearerAuth()
@@ -40,7 +41,7 @@ export class PaymentController {
   })
   @ApiResponseWithType({
     status: HttpStatus.OK,
-    description: 'Payment has been initiated successfully',
+    description: 'Payment has been retrieved successfully',
     type: PaymentResponseDto,
     isArray: true,
   })
@@ -80,6 +81,7 @@ export class PaymentController {
   }
 
   @Post('callback/status')
+  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Callback' })
   @ApiResponseWithType({
