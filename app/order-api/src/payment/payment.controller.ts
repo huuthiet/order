@@ -5,12 +5,20 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
+  Query,
+  Get,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   CallbackUpdatePaymentStatusRequestDto,
   CreatePaymentDto,
+  GetSpecificPaymentRequestDto,
   PaymentResponseDto,
 } from './payment.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
@@ -21,6 +29,33 @@ import { AppResponseDto } from 'src/app/app.dto';
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
+
+  @Get('specific')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Initiate payment' })
+  @ApiQuery({
+    name: 'transaction',
+    required: true,
+    type: String,
+  })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Payment has been initiated successfully',
+    type: PaymentResponseDto,
+    isArray: true,
+  })
+  async getSpecific(
+    @Query(new ValidationPipe({ transform: true }))
+    query: GetSpecificPaymentRequestDto,
+  ) {
+    const result = await this.paymentService.getSpecific(query);
+    return {
+      message: 'Payment has been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<PaymentResponseDto>;
+  }
 
   @Post('initiate')
   @HttpCode(HttpStatus.OK)
@@ -37,7 +72,7 @@ export class PaymentController {
   ) {
     const result = await this.paymentService.initiate(createPaymentDto);
     return {
-      message: 'QR code has been initiated successfully',
+      message: 'Payment has been initiated successfully',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,

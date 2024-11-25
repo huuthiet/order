@@ -8,6 +8,7 @@ import {
 } from './auth.validation';
 import { AutoMap } from '@automapper/classes';
 import { BranchResponseDto } from 'src/branch/branch.dto';
+import { INVALID_BRANCH_SLUG } from 'src/menu/menu.validation';
 
 export class LoginAuthRequestDto {
   @ApiProperty({ example: '08123456789' })
@@ -35,7 +36,7 @@ export class RegisterAuthRequestDto extends LoginAuthRequestDto {
   lastName: string;
 
   @ApiProperty({ example: 'XOT7hr58Q' })
-  @IsNotEmpty({ message: INVALID_LASTNAME })
+  // @IsNotEmpty({ message: INVALID_BRANCH_SLUG })
   @AutoMap()
   branchSlug: string;
 }
@@ -129,9 +130,20 @@ export class AuthProfileResponseDto {
 }
 
 // PickType: Get the fields from AuthProfileResponseDto
-export class RegisterAuthResponseDto extends PickType(AuthProfileResponseDto, [
-  'slug',
-  'phonenumber',
-  'firstName',
-  'lastName',
-] as const) {}
+export class RegisterAuthResponseDto {
+  @ApiProperty()
+  @AutoMap()
+  slug: string;
+
+  @ApiProperty()
+  @AutoMap()
+  phonenumber: string;
+
+  @ApiProperty()
+  @AutoMap()
+  firstName: string;
+
+  @ApiProperty()
+  @AutoMap()
+  lastName: string;
+}

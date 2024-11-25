@@ -167,6 +167,7 @@ export class AuthService {
     requestData: RegisterAuthRequestDto,
   ): Promise<RegisterAuthResponseDto> {
     const context = `${AuthService.name}.${this.register.name}`;
+    console.log({ requestData });
     // Validation
     const branch = await this.branchRepository.findOne({
       where: {
@@ -175,7 +176,7 @@ export class AuthService {
     });
     if (!branch) {
       this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
-      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
+      // throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
     const userExists = await this.userRepository.findOne({

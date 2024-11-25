@@ -37,6 +37,12 @@ export class CallbackUpdatePaymentStatusRequestDto {
   };
 }
 
+export class GetSpecificPaymentRequestDto {
+  @AutoMap()
+  @ApiProperty({ description: 'Request trace' })
+  transaction: string;
+}
+
 export class PaymentResponseDto extends BaseResponseDto {
   @AutoMap()
   @ApiProperty()
@@ -61,4 +67,10 @@ export class PaymentResponseDto extends BaseResponseDto {
   @AutoMap()
   @ApiProperty()
   userId: string;
+
+  @AutoMap()
+  statusCode: string;
+
+  @AutoMap()
+  statusMessage: string;
 }

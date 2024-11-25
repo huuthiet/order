@@ -11,9 +11,13 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   CallbackUpdatePaymentStatusRequestDto,
   CreatePaymentDto,
+  GetSpecificPaymentRequestDto,
   PaymentResponseDto,
 } from './payment.dto';
 import { Order } from 'src/order/order.entity';
+import * as _ from 'lodash';
+import { PaymentException } from './payment.exception';
+import { PaymentValidation } from './payment.validation';
 
 @Injectable()
 export class PaymentService {
@@ -29,7 +33,32 @@ export class PaymentService {
     private readonly bankTransferStrategy: BankTransferStrategy,
     private readonly internalStrategy: InternalStrategy,
   ) {}
-  async initiate(createPaymentDto: CreatePaymentDto) {
+
+  /**
+   * Get specific payment
+   * @param {GetSpecificPaymentRequestDto} query
+   * @returns {Promise<PaymentResponseDto>} payment
+   */
+  async getSpecific(
+    query: GetSpecificPaymentRequestDto,
+  ): Promise<PaymentResponseDto> {
+    if (_.isEmpty(query)) {
+      throw new PaymentException(PaymentValidation.PAYMENT_QUERY_INVALID);
+    }
+    const payment = await this.paymentRepository.findOne({
+      where: { transactionId: query.transaction },
+    });
+    return this.mapper.map(payment, Payment, PaymentResponseDto);
+  }
+
+  /**
+   * Initiate payment
+   * @param {CreatePaymentDto} createPaymentDto
+   * @returns {Promise<PaymentResponseDto>} payment
+   */
+  async initiate(
+    createPaymentDto: CreatePaymentDto,
+  ): Promise<PaymentResponseDto> {
     const context = `${PaymentService.name}.${this.initiate.name}`;
     // get order
     const order = await this.orderRepository.findOne({
@@ -52,7 +81,7 @@ export class PaymentService {
       //   break;
       default:
         this.logger.error('Invalid payment method');
-        throw new Error('Invalid payment method');
+        throw new PaymentException(PaymentValidation.PAYMENT_METHOD_INVALID);
     }
 
     // Update order
@@ -64,7 +93,15 @@ export class PaymentService {
     return this.mapper.map(payment, Payment, PaymentResponseDto);
   }
 
-  async callback(requestData: CallbackUpdatePaymentStatusRequestDto) {
+  /**
+   * Callback update payment status
+   * @param {CallbackUpdatePaymentStatusRequestDto} requestData
+   * @returns {Promise<PaymentResponseDto>} payment
+   * @throws {PaymentException}
+   */
+  async callback(
+    requestData: CallbackUpdatePaymentStatusRequestDto,
+  ): Promise<PaymentResponseDto> {
     const context = `${PaymentService.name}.${this.callback.name}`;
     const payment = await this.paymentRepository.findOne({
       where: { transactionId: requestData.requestTrace },
@@ -72,7 +109,7 @@ export class PaymentService {
 
     if (!payment) {
       this.logger.error('Payment not found', context);
-      throw new Error('Payment not found');
+      throw new PaymentException(PaymentValidation.PAYMENT_NOT_FOUND);
     }
 
     // update payment status
