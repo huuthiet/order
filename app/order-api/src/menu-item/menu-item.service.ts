@@ -1,4 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MenuItem } from './menu-item.entity';
 import { Repository } from 'typeorm';
@@ -12,6 +17,10 @@ import {
 } from './menu-item.dto';
 import { Menu } from 'src/menu/menu.entity';
 import { Product } from 'src/product/product.entity';
+import { MenuException } from 'src/menu/menu.exception';
+import { MenuValidation } from 'src/menu/menu.validation';
+import { ProductException } from 'src/product/product.exception';
+import ProductValidation from 'src/product/product.validation';
 
 @Injectable()
 export class MenuItemService {
@@ -42,12 +51,12 @@ export class MenuItemService {
       const product = await this.productRepository.findOne({
         where: { slug: menuItemDto.productSlug },
       });
-      if (!product) throw new Error('Product not found');
+      if (!product) throw new BadRequestException('Product not found');
 
       const menu = await this.menuRepository.findOne({
         where: { slug: menuItemDto.menuSlug },
       });
-      if (!menu) throw new Error('Menu not found');
+      if (!menu) throw new BadRequestException('Menu not found');
 
       const menuItem = this.mapper.map(
         menuItemDto,
@@ -82,12 +91,22 @@ export class MenuItemService {
     const product = await this.productRepository.findOne({
       where: { slug: createMenuItemDto.productSlug },
     });
-    if (!product) throw new Error('Product not found');
+    if (!product)
+      throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
 
     const menu = await this.menuRepository.findOne({
       where: { slug: createMenuItemDto.menuSlug },
     });
-    if (!menu) throw new Error('Menu not found');
+    if (!menu) throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+
+    const existedMenuItem = await this.menuItemRepository.findOne({
+      where: {
+        product: { id: product.id },
+        menu: { id: menu.id },
+      },
+    });
+    if (existedMenuItem)
+      throw new BadRequestException('Menu item already exists');
 
     const menuItem = this.mapper.map(
       createMenuItemDto,
@@ -124,15 +143,36 @@ export class MenuItemService {
     const menuItem = await this.menuItemRepository.findOne({
       where: { slug },
     });
-    if (!menuItem) throw new Error('Menu item not found');
+    if (!menuItem) throw new BadRequestException('Menu item not found');
     return this.mapper.map(menuItem, MenuItem, MenuItemResponseDto);
   }
 
-  update(id: number, updateMenuItemDto: UpdateMenuItemDto) {
-    return `This action updates a #${id} menuItem`;
+  async update(slug: string, updateMenuItemDto: UpdateMenuItemDto) {
+    const context = `${MenuItemService.name}.${this.update.name}`;
+
+    const menuItem = await this.menuItemRepository.findOne({
+      where: { slug },
+    });
+    if (!menuItem) throw new BadRequestException('Menu item not found');
+
+    Object.assign(menuItem, { ...updateMenuItemDto });
+    await this.menuItemRepository.save(menuItem);
+    this.logger.log(`Menu item updated: ${menuItem.id}`, context);
+
+    return this.mapper.map(menuItem, MenuItem, MenuItemResponseDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} menuItem`;
+  async remove(slug: string) {
+    const context = `${MenuItemService.name}.${this.remove.name}`;
+
+    const menuItem = await this.menuItemRepository.findOne({
+      where: { slug },
+    });
+    if (!menuItem) throw new BadRequestException('Menu item not found');
+
+    await this.menuItemRepository.remove(menuItem);
+    this.logger.log(`Menu item removed: ${menuItem.id}`, context);
+
+    return menuItem;
   }
 }

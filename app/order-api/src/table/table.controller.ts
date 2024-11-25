@@ -94,7 +94,7 @@ export class TableController {
     } as AppResponseDto<TableResponseDto[]>;
   }
 
-  @Patch('status/:slug')
+  @Patch(':slug/status')
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,

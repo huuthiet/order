@@ -1,4 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ACBConnectorConfig } from './acb-connector.entity';
 import { Repository } from 'typeorm';
@@ -40,7 +45,7 @@ export class ACBConnectorService {
     const hasConfig = await this.acbConnectorConfigRepository.find({ take: 1 });
     if (hasConfig.length > 0) {
       this.logger.error('ACB Config already exists', context);
-      throw new Error('ACB Config already exists');
+      throw new BadRequestException('ACB Config already exists');
     }
     const config = this.mapper.map(
       requestData,
@@ -65,7 +70,7 @@ export class ACBConnectorService {
     });
     if (!config) {
       this.logger.error('ACB Config not found', context);
-      throw new Error('ACB Config not found');
+      throw new BadRequestException('ACB Config not found');
     }
 
     Object.assign(config, { ...requestData });
