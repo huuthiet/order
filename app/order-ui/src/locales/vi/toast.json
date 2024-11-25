@@ -32,6 +32,24 @@
     "deleteProductVariantSuccess": "Xóa phân loại món ăn thành công",
 
     "updateProfileSuccess": "Cập nhật thông tin cá nhân thành công",
-    "deleteProfileSuccess": "Xóa thông tin cá nhân thành công"
+    "deleteProfileSuccess": "Xóa thông tin cá nhân thành công",
+
+    "createMenuSuccess": "Tạo thực đơn thành công",
+    "updateMenuSuccess": "Cập nhật thực đơn thành công",
+    "deleteMenuSuccess": "Xóa thực đơn thành công",
+
+    "addMenuItemSuccess": "Thêm món vào thực đơn thành công",
+    "removeMenuItemSuccess": "Xóa món khỏi thực đơn thành công",
+
+    "createTableSuccess": "Tạo bàn thành công",
+    "updateTableSuccess": "Cập nhật bàn thành công",
+    "updateTableStatusSuccess": "Cập nhật trạng thái bàn thành công",
+    "deleteTableSuccess": "Xóa bàn thành công",
+
+    "createBranchSuccess": "Tạo chi nhánh thành công",
+    "updateBranchSuccess": "Cập nhật chi nhánh thành công",
+    "deleteBranchSuccess": "Xóa chi nhánh thành công",
+
+    "createOrderSuccess": "Tạo đơn hàng thành công"
   }
 }

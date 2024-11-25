@@ -1,7 +1,6 @@
 {
   "menu": {
     "noData": "Không có dữ liệu",
-    "chooseDate": "Chọn thứ",
     "chooseDishCategory": "Chọn loại món",
 
     "addToCart": "Thêm vào giỏ",
@@ -22,7 +21,31 @@
     "discount": "Giảm giá",
     "subTotal": "Tạm tính",
     "continue": "Tiếp tục",
-    "confirm": "Xác nhận đơn hàng"
+    "confirm": "Xác nhận đơn hàng",
+
+    "date": "Ngày",
+    "title": "Quản lý thực đơn",
+    "createdAt": "Ngày tạo",
+    "totalItems": "Tổng số món",
+
+    "create": "Tạo thực đơn",
+    "createMenuDescription": "Điền đầy đủ thông tin để tạo thực đơn mới",
+    "chooseDate": "Chọn ngày",
+    "branchSlug": "Chi nhánh",
+
+    "update": "Chỉnh sửa thực đơn",
+    "updateMenuDescription": "Thay đổi thông tin để cập nhật thực đơn",
+    "delete": "Xóa thực đơn",
+    "deleteContent": "Bạn có chắc muốn xóa thực đơn ngày ",
+    "deleteContent2": " thuộc chi nhánh ",
+    "deleteContent3": " không?",
+
+    "addMenuItem": "Thêm món",
+    "addMenuItemDescription": "Vui lòng xác nhận thông tin trước khi thêm vào thực đơn",
+    "menuSlug": "Slug thực đơn",
+    "productName": "Tên món",
+    "defaultStock": "Số lượng tồn kho",
+    "defaultStockDescription": "Số lượng tồn kho mặc định"
   },
 
   "order": {
@@ -35,11 +58,13 @@
     "enterCustomerName": "Nhập tên khách hàng",
     "phoneNumber": "Số điện thoại",
     "enterPhoneNumber": "Nhập số điện thoại",
+    "orderDate": "Ngày đặt hàng",
     "note": "Ghi chú",
     "enterNote": "Nhập ghi chú",
     "deliveryMethod": "Phương thức giao hàng",
     "dineIn": "Tại quán",
     "takeAway": "Mang đi",
+    "location": "Vị trí",
     "tableNumber": "Số bàn",
     "promotion": "Mã giảm giá",
     "enterPromotion": "Nhập mã giảm giá",
@@ -49,6 +74,7 @@
     "discount": "Giảm giá",
     "vat": "(Đã bao gồm VAT)",
     "grandTotal": "Thành tiền",
+    "totalPayment": "Tổng tiền thanh toán",
     "confirmPaid": "Xác nhận đã thanh toán",
     "complete": "Hoàn tất",
 
@@ -57,7 +83,9 @@
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
     "deleteContent2": " khỏi giỏ hàng không?",
 
-    "orderSuccess": "Đặt hàng thành công!",
+    "create": "Tạo đơn hàng",
+    "confirmOrder": "Bạn có chắc muốn tạo đơn hàng này không?",
+
     "viewDetail": "Xem đơn hàng",
     "backToMenu": "Quay lại menu"
   },
@@ -69,6 +97,12 @@
     "cash": "Tiền mặt",
     "bankTransfer": "Chuyển khoản",
     "internalWallet": "Ví nội bộ",
-    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý."
+    "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý.",
+    "confirmPayment": "Lấy mã QR để thanh toán",
+
+    "cusomterInformation": "Thông tin khách hàng",
+    "customerName": "Tên khách hàng",
+    "orderDate": "Ngày đặt hàng",
+    "phoneNumber": "Số điện thoại"
   }
 }

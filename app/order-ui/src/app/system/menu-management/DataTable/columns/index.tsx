@@ -1,8 +1,4 @@
 // eslint-disable-next-line react-refresh/only-export-components
-export * from './product-columns'
+export * from './menu-columns'
 // eslint-disable-next-line react-refresh/only-export-components
-export * from './catalog-columns'
-// eslint-disable-next-line react-refresh/only-export-components
-export * from './size-columns'
-// eslint-disable-next-line react-refresh/only-export-components
-export * from './product-detail-columns'
+export * from './products-columns'

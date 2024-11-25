@@ -21,3 +21,17 @@ export { default as UpdateProductVariantDialog } from './update-product-variant-
 export { default as DeleteProductVariantDialog } from './delete-product-variant-dialog'
 
 export { default as UpdateProfileDialog } from './update-profile-dialog'
+
+export { default as CreateMenuDialog } from './create-menu-dialog'
+export { default as UpdateMenuDialog } from './update-menu-dialog'
+
+export { default as CreateTableDialog } from './create-table-dialog'
+
+export { default as CreateOrderDialog } from './create-order-dialog'
+
+export { default as CreateBankConnectorDialog } from './create-bank-connector-dialog'
+export { default as UpdateBankConnectorDialog } from './update-bank-connector-dialog'
+
+export { default as QrCodeDialog } from './qr-code-dialog'
+
+export { default as AddMenuItemDialog } from './add-product-to-menu-dialog'

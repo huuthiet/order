@@ -67,6 +67,19 @@ export const ProductManagementPage = React.lazy(() =>
   })),
 )
 
+//Menu page
+export const MenuManagementPage = React.lazy(() =>
+  import('@/app/system/menu-management').then((module) => ({
+    default: module.MenuManagementPage,
+  })),
+)
+
+export const MenuDetailPage = React.lazy(() =>
+  import('@/app/system/menu-management').then((module) => ({
+    default: module.MenuDetailPage,
+  })),
+)
+
 export const ProductDetailPage = React.lazy(() =>
   import('@/app/system/dishes').then((module) => ({
     default: module.ProductDetail,
@@ -84,5 +97,19 @@ export const LoggerPage = React.lazy(() =>
 export const ProfilePage = React.lazy(() =>
   import('@/app/system/profile').then((module) => ({
     default: module.ProfilePage,
+  })),
+)
+
+//Order payment page
+export const OrderPaymentPage = React.lazy(() =>
+  import('@/app/system/payment').then((module) => ({
+    default: module.PaymentPage,
+  })),
+)
+
+//Bank config page
+export const BankConfigPage = React.lazy(() =>
+  import('@/app/system/payment').then((module) => ({
+    default: module.BankConfigPage,
   })),
 )
