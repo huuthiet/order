@@ -6,7 +6,9 @@ export class TransactionService {
   private readonly logger = new Logger(TransactionService.name);
 
   async callback(requestData: UpdateTransactionStatusRequestDto) {
-    this.logger.warn('Callback request received', requestData);
+    const context = `${TransactionService.name}.${this.callback.name}`;
+    console.log({ requestData });
+    this.logger.warn('Callback request received', context);
     return 'ok';
   }
 }

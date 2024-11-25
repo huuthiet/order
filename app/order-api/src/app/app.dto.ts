@@ -20,7 +20,7 @@ export class AppResponseDto<T> {
   message: string;
 }
 
-export class AppPaginatedResponseDto<T> extends AppResponseDto<T> {
+export class AppPaginatedResponseDto<T> {
   @ApiProperty()
   total: number;
 
@@ -38,6 +38,9 @@ export class AppPaginatedResponseDto<T> extends AppResponseDto<T> {
 
   @ApiProperty()
   hasNext: boolean;
+
+  @ApiProperty()
+  totalPages: number;
 }
 
 export class AppExceptionResponseDto extends AppResponseDto<void> {}
