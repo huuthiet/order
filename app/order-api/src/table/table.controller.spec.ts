@@ -1,8 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TableController } from './table.controller';
 import { TableService } from './table.service';
-import { CreateTableRequestDto, TableResponseDto, UpdateTableRequestDto } from './table.dto';
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+  CreateTableRequestDto,
+  TableResponseDto,
+  UpdateTableRequestDto,
+} from './table.dto';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 describe('TableController', () => {
   let controller: TableController;
@@ -22,7 +29,7 @@ describe('TableController', () => {
             update: jest.fn(),
             remove: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 
@@ -43,15 +50,15 @@ describe('TableController', () => {
       const mockInput = {
         name: 'Mock table name',
         branch: 'mock-branch-slug',
-        location: 'mock-table-location'
+        location: 'mock-table-location',
       } as CreateTableRequestDto;
 
       (service.create as jest.Mock).mockRejectedValue(
-        new BadRequestException()
+        new BadRequestException(),
       );
 
       await expect(controller.create(mockInput)).rejects.toThrow(
-        BadRequestException
+        BadRequestException,
       );
     });
 
@@ -59,22 +66,24 @@ describe('TableController', () => {
       const mockInput = {
         name: 'Mock table name',
         branch: 'mock-branch-slug',
-        location: 'mock-table-location'
+        location: 'mock-table-location',
       } as CreateTableRequestDto;
 
       const mockOutput = {
         name: 'Mock table name',
         location: 'mock-table-location',
         isEmpty: true,
-        createdAt: (new Date()).toString(),
-        slug: 'mock-table-slug'
-      } as TableResponseDto; 
+        createdAt: new Date().toString(),
+        slug: 'mock-table-slug',
+        xPosition: 10,
+        yPosition: 10,
+      } as TableResponseDto;
 
       (service.create as jest.Mock).mockResolvedValue(mockOutput);
 
       const result = await controller.create(mockInput);
       expect(result.result).toEqual(mockOutput);
-    }); 
+    });
   });
 
   describe('Get all tables by branch', () => {
@@ -88,9 +97,11 @@ describe('TableController', () => {
         name: 'Mock table name',
         location: 'mock-table-location',
         isEmpty: true,
-        createdAt: (new Date()).toString(),
-        slug: 'mock-table-slug'
-      } as TableResponseDto; 
+        createdAt: new Date().toString(),
+        slug: 'mock-table-slug',
+        xPosition: 10,
+        yPosition: 10,
+      } as TableResponseDto;
       const mockOutput = [table];
 
       (service.findAll as jest.Mock).mockResolvedValue(mockOutput);
@@ -102,10 +113,12 @@ describe('TableController', () => {
     it('should return error when tableService.findAll throws', async () => {
       const branchSlug = 'mock-branch-slug';
       (service.findAll as jest.Mock).mockRejectedValue(
-        new InternalServerErrorException()
+        new InternalServerErrorException(),
       );
 
-      await expect(controller.findAll(branchSlug)).rejects.toThrow(InternalServerErrorException);
+      await expect(controller.findAll(branchSlug)).rejects.toThrow(
+        InternalServerErrorException,
+      );
       expect(service.findAll).toHaveBeenCalled();
     });
   });
@@ -119,15 +132,17 @@ describe('TableController', () => {
       const slug: string = 'mock-table-slug';
       const mockInput = {
         name: 'Mock table name',
-        location: 'mock-table-location'
+        location: 'mock-table-location',
       } as UpdateTableRequestDto;
       const mockOutput = {
         name: 'Mock table name',
         location: 'mock-table-location',
         isEmpty: true,
-        createdAt: (new Date()).toString(),
-        slug: 'mock-table-slug'
-      } as TableResponseDto; 
+        createdAt: new Date().toString(),
+        slug: 'mock-table-slug',
+        xPosition: 10,
+        yPosition: 10,
+      } as TableResponseDto;
 
       (service.update as jest.Mock).mockResolvedValue(mockOutput);
 
@@ -139,16 +154,16 @@ describe('TableController', () => {
       const slug: string = 'mock-product-slug';
       const mockInput = {
         name: 'Mock table name',
-        location: 'mock-table-location'
+        location: 'mock-table-location',
       } as UpdateTableRequestDto;
 
       (service.update as jest.Mock).mockRejectedValue(
-        new BadRequestException()
+        new BadRequestException(),
       );
 
-      await expect(
-        controller.update(slug, mockInput),
-      ).rejects.toThrow(BadRequestException);
+      await expect(controller.update(slug, mockInput)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(service.update).toHaveBeenCalled();
     });
   });
@@ -174,7 +189,7 @@ describe('TableController', () => {
       );
 
       await expect(controller.remove(slug)).rejects.toThrow(
-        BadRequestException
+        BadRequestException,
       );
       expect(service.remove).toHaveBeenCalled();
     });
