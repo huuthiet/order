@@ -13,7 +13,7 @@ import { CartToggleButton } from '@/components/app/button'
 import AddMenuItem from './add-menu-item'
 
 export default function MenuDetailPage() {
-  const [isCartOpen, setIsCartOpen] = useState(true)
+  const [isCartOpen, setIsCartOpen] = useState(false)
   const { t } = useTranslation(['menu'])
   const { slug } = useParams()
   const { data: menuDetail, isLoading } = useSpecificMenu({

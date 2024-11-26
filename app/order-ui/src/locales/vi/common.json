@@ -16,5 +16,20 @@
     "action": "Thao tác",
 
     "createOrder": "Tạo đơn hàng"
+  },
+  "dataTable": {
+    "rowsPerPage": "Số hàng mỗi trang",
+    "display": "Hiển thị",
+    "of": "của",
+    "rows": "hàng",
+    "noData": "Không có dữ liệu",
+    "page": "Trang",
+
+    "filter": "Lọc",
+    "all": "Tất cả",
+    "info": "Info",
+    "warn": "Warn",
+    "error": "Error",
+    "debug": "Debug"
   }
 }

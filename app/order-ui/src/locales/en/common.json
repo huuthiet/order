@@ -13,5 +13,20 @@
     "noData": "No data",
 
     "action": "Action"
+  },
+  "dataTable": {
+    "rowsPerPage": "Rows per page",
+    "display": "Display",
+    "of": "of",
+    "rows": "rows",
+    "noData": "No data",
+    "page": "Page",
+
+    "filter": "Filter",
+    "all": "All",
+    "info": "Info",
+    "warn": "Warn",
+    "error": "Error",
+    "debug": "Debug"
   }
 }
