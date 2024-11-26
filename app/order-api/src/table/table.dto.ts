@@ -89,4 +89,8 @@ export class TableResponseDto extends BaseResponseDto {
   @AutoMap()
   @ApiProperty()
   yPosition: number;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string;
 }
