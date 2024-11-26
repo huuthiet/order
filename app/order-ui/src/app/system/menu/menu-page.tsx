@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import MenuList from './menu-list'
 import { CartContent } from '@/router/loadable'
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton } from '@/components/app/button'
 import { MenuCategorySelect } from '@/components/app/select'
 import { CurrentDateInput } from '@/components/app/input'
@@ -24,8 +23,7 @@ export default function MenuPage() {
           } ${isCollapsed ? 'pl-2' : 'pl-4'}`}
         >
           <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-between">
-              <BreadcrumbComponent />
+            <div className="flex w-full flex-row items-center justify-end">
               <CartToggleButton
                 isCartOpen={isCartOpen}
                 setIsCartOpen={setIsCartOpen}

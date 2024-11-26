@@ -1,6 +1,7 @@
 export * from './auth.schema'
 export * from './bank.schema'
 export * from './catalog.schema'
+export * from './log.schema'
 export * from './menu.schema'
 export * from './product.schema'
 export * from './profile.schema'

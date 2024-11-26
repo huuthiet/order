@@ -1,0 +1,16 @@
+{
+  "route": {
+    "home": "Trang chủ",
+    "menu": "Thực đơn",
+    "checkout-order": "Xác nhận đơn hàng",
+    "order-payment": "Thanh toán",
+    "table-management": "Quản lý bàn",
+    "product-management": "Quản lý món",
+    "menu-management": "Quản lý thực đơn",
+    "menu-detail": "Chi tiết thực đơn",
+    "product": "Món",
+    "product-detail": "Chi tiết món",
+    "log-management": "Quản lý log",
+    "bank-config": "Cấu hình ngân hàng"
+  }
+}

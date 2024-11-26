@@ -1,7 +1,3 @@
-// import React from 'react'
-// import { useTranslation } from 'react-i18next'
-
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CreateTableDialog } from '@/components/app/dialog'
 import { useTables } from '@/hooks'
 
@@ -34,11 +30,8 @@ export default function TablePage() {
   // }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
-        <BreadcrumbComponent />
-      </div>
-      <div className="flex items-center justify-between">
+    <div className="flex h-full flex-col gap-4 px-4">
+      <div className="flex items-center justify-end">
         <CreateTableDialog />
       </div>
       <div className="flex h-full items-start justify-start gap-2 rounded-md border p-4">

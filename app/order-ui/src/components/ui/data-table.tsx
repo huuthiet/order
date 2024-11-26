@@ -201,13 +201,16 @@ export function DataTable<TData, TValue>({
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, index) => (
                 <TableRow
                   key={row.id}
                   data-state={
                     row.getIsSelected() ? t('tablePaging.selected') : undefined
                   }
-                  className="relative cursor-pointer hover:bg-muted/50"
+                  className={cn(
+                    'relative cursor-pointer hover:bg-muted/50',
+                    index % 2 === 0 ? 'bg-white' : 'bg-slate-50',
+                  )}
                   onClick={() => onRowClick && onRowClick(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
