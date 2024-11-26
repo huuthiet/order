@@ -1,4 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './payment.entity';
 import { Repository } from 'typeorm';
@@ -68,7 +73,7 @@ export class PaymentService {
     });
     if (!order) {
       this.logger.error('Order not found', context);
-      throw new Error('Order not found');
+      throw new BadRequestException('Order not found');
     }
 
     let payment: Payment;

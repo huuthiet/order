@@ -1,4 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { IPaymentStrategy } from './payment.strategy';
 import { ACBConnectorClient } from 'src/acb-connector/acb-connector.client';
 import { ConfigService } from '@nestjs/config';
@@ -45,7 +50,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
       take: 1,
     });
     if (_.isEmpty(acbConnectorConfig)) {
-      throw new Error('ACB Connector config not found');
+      throw new BadRequestException('ACB Connector config not found');
     }
     // Get token from ACB
     const { access_token } = await this.acbConnectorClient.token({

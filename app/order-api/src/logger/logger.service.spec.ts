@@ -9,6 +9,7 @@ import {
 import { Repository } from 'typeorm';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 describe('LoggerService', () => {
   let service: LoggerService;
@@ -25,6 +26,10 @@ describe('LoggerService', () => {
         {
           provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
         },
       ],
     }).compile();
