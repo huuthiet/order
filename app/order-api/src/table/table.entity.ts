@@ -13,9 +13,9 @@ export class Table extends Base {
   @Column({ name: 'location_column', nullable: true })
   location?: string;
 
-  @AutoMap()
-  @Column({ name: 'is_empty_column', default: true })
-  isEmpty: Boolean;
+  // @AutoMap()
+  // @Column({ name: 'is_empty_column', default: true })
+  // isEmpty: Boolean;
 
   @ManyToOne(() => Branch, (branch) => branch.tables)
   @JoinColumn({ name: 'branch_column' })
@@ -29,7 +29,7 @@ export class Table extends Base {
   @AutoMap()
   yPosition?: number;
 
-  // @AutoMap()
-  // @Column({ name: 'status_column' })
-  // status: string;
+  @AutoMap()
+  @Column({ name: 'status_column' })
+  status: string;
 }

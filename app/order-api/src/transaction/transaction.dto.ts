@@ -12,8 +12,28 @@ export class UpdateTransactionStatusRequestDto {
   responseDateTime: string;
 
   @ApiProperty()
-  responseStatus: ACBResponseStatusDto;
-
-  @ApiProperty()
-  responseBody: ACBResponseBodyDto;
+  requestParameters: {
+    masterMeta: {
+      clientId: string;
+      clientRequestId: string;
+    };
+    request: {
+      requestMeta: {
+        requestType: string;
+        requestCode: string;
+      };
+      requestParams: {
+        transactions: [
+          {
+            transactionStatus: string;
+            effectiveDate: string;
+            amount: number;
+            transactionEntityAttribute: {
+              traceNumber: string;
+            };
+          },
+        ];
+      };
+    };
+  };
 }

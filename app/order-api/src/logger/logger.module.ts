@@ -7,7 +7,6 @@ import { LoggerController } from './logger.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Logger } from './logger.entity';
 import { LoggerProfile } from './logger.mapper';
-import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { ScheduleModule } from '@nestjs/schedule';
       inject: [DataSource],
     }),
     TypeOrmModule.forFeature([Logger]),
-    ScheduleModule.forRoot(),
   ],
   providers: [LoggerService, LoggerProfile],
   controllers: [LoggerController],

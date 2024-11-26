@@ -2,6 +2,7 @@ import AuthValidation from 'src/auth/auth.validation1';
 import { CatalogValidation } from 'src/catalog/catalog.validation';
 import FileValidation from 'src/file/file.validation';
 import { MenuValidation } from 'src/menu/menu.validation';
+import { OrderValidation } from 'src/order/order.validation';
 import { PaymentValidation } from 'src/payment/payment.validation';
 import ProductValidation from 'src/product/product.validation';
 
@@ -26,6 +27,7 @@ export const AppValidation: TErrorCode = {
   ...FileValidation,
   ...ProductValidation,
   ...PaymentValidation,
+  ...OrderValidation,
 };
 
 const errorCodeKeys = Object.keys(AppValidation);
