@@ -32,6 +32,10 @@ export class CreateTableRequestDto {
   @ApiProperty({ description: 'The y position of table', example: 1 })
   @IsOptional()
   yPosition?: number;
+
+  @AutoMap()
+  @ApiProperty({ description: 'The status of table', example: 'available' })
+  status: string;
 }
 
 export class UpdateTableRequestDto {
@@ -85,4 +89,8 @@ export class TableResponseDto extends BaseResponseDto {
   @AutoMap()
   @ApiProperty()
   yPosition: number;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string;
 }
