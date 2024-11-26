@@ -39,7 +39,8 @@
     "deleteMenuSuccess": "Xóa thực đơn thành công",
 
     "addMenuItemSuccess": "Thêm món vào thực đơn thành công",
-    "removeMenuItemSuccess": "Xóa món khỏi thực đơn thành công",
+    "updateMenuItemSuccess": "Cập nhật món trong thực đơn thành công",
+    "deleteMenuItemSuccess": "Xóa món khỏi thực đơn thành công",
 
     "createTableSuccess": "Tạo bàn thành công",
     "updateTableSuccess": "Cập nhật bàn thành công",

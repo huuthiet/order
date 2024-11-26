@@ -14,8 +14,6 @@ export default function TableSelect() {
   // Lấy danh sách cart items
   const cartItems = getCartItems()
 
-  // console.log('tables', tables?.result)
-
   useEffect(() => {
     // Tìm orderItem nào có table được thiết lập
     const addedTable = cartItems?.table

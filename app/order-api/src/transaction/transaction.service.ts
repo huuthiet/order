@@ -1,13 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { UpdateTransactionStatusRequestDto } from './transaction.dto';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class TransactionService {
-  private readonly logger = new Logger(TransactionService.name);
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+  ) {}
 
   async callback(requestData: UpdateTransactionStatusRequestDto) {
     const context = `${TransactionService.name}.${this.callback.name}`;
-    console.log({ context, requestData });
+    const json = JSON.stringify(requestData);
+    console.log({ context, json });
     this.logger.warn('Callback request received', context);
     return 'ok';
   }

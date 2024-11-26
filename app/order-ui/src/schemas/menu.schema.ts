@@ -26,7 +26,16 @@ export const addMenuItemsSchema = z.array(
   }),
 )
 
+export const updateMenuItemSchema = z.object({
+  slug: z.string(),
+  menuSlug: z.string(),
+  productSlug: z.string(),
+  productName: z.string(),
+  defaultStock: z.number().min(0),
+})
+
 export type TCreateMenuSchema = z.infer<typeof createMenuSchema>
 export type TUpdateMenuSchema = z.infer<typeof updateMenuSchema>
 export type TAddMenuItemSchema = z.infer<typeof addMenuItemSchema>
 export type TAddMenuItemsSchema = z.infer<typeof addMenuItemsSchema>
+export type TUpdateMenuItemSchema = z.infer<typeof updateMenuItemSchema>

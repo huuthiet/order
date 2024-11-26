@@ -1,5 +1,5 @@
 export interface ILogger {
-  level: LoggerLevel
+  level: TLoggerLevel
   message: string
   context: string
   timestamp: string
@@ -7,4 +7,4 @@ export interface ILogger {
   slug: string
 }
 
-export type LoggerLevel = 'error' | 'warn' | 'info' | 'debug'
+export type TLoggerLevel = 'error' | 'warn' | 'info' | 'debug'

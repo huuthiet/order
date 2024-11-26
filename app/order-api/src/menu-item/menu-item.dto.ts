@@ -20,15 +20,23 @@ export class CreateMenuItemDto {
   defaultStock: number;
 }
 
-export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {}
+export class UpdateMenuItemDto {
+  @AutoMap()
+  @IsNumber()
+  @ApiProperty({ example: 50 })
+  defaultStock: number;
+}
 
 export class MenuItemResponseDto {
   @AutoMap()
+  @ApiProperty()
   defaultStock: number;
 
   @AutoMap()
+  @ApiProperty()
   currentStock: number;
 
   @AutoMap(() => ProductResponseDto)
+  @ApiProperty()
   product: ProductResponseDto;
 }
