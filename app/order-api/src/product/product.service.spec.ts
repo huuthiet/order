@@ -21,9 +21,9 @@ import { FileService } from 'src/file/file.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { File } from 'src/file/file.entity';
 import { ProductException } from './product.exception';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 describe('ProductService', () => {
-  const mapperProvider = 'automapper:nestjs:default';
   let service: ProductService;
   let productRepositoryMock: MockType<Repository<Product>>;
   let variantRepositoryMock: MockType<Repository<Variant>>;
@@ -52,7 +52,7 @@ describe('ProductService', () => {
           useFactory: repositoryMockFactory,
         },
         {
-          provide: mapperProvider,
+          provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
         },
         {
@@ -66,7 +66,7 @@ describe('ProductService', () => {
     productRepositoryMock = module.get(getRepositoryToken(Product));
     variantRepositoryMock = module.get(getRepositoryToken(Variant));
     catalogRepositoryMock = module.get(getRepositoryToken(Catalog));
-    mapperMock = module.get(mapperProvider);
+    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
   it('should be defined', () => {

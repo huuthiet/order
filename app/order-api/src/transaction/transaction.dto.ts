@@ -1,4 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  ACBResponseBodyDto,
+  ACBResponseStatusDto,
+} from 'src/acb-connector/acb-connector.dto';
 
 export class UpdateTransactionStatusRequestDto {
   @ApiProperty()
@@ -8,14 +12,8 @@ export class UpdateTransactionStatusRequestDto {
   responseDateTime: string;
 
   @ApiProperty()
-  responseStatus: {
-    responseCode: string;
-    responseMessage: string;
-  };
+  responseStatus: ACBResponseStatusDto;
 
   @ApiProperty()
-  responseBody: {
-    index: string;
-    referenceCode: string;
-  };
+  responseBody: ACBResponseBodyDto;
 }

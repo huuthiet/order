@@ -16,6 +16,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -121,15 +122,32 @@ export class MenuItemController {
   })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   async update(
-    @Param('slug') id: string,
+    @Param('slug') slug: string,
     @Body(new ValidationPipe({ transform: true }))
     updateMenuItemDto: UpdateMenuItemDto,
   ) {
-    return this.menuItemService.update(+id, updateMenuItemDto);
+    const result = await this.menuItemService.update(slug, updateMenuItemDto);
+    return {
+      message: 'Menu item updated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<MenuItemResponseDto>;
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.menuItemService.remove(+id);
+  @Delete(':slug')
+  @ApiOperation({ summary: 'Delete menu item' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Menu item deleted successfully',
+  })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  async remove(@Param('slug') slug: string) {
+    const result = await this.menuItemService.remove(slug);
+    return {
+      message: 'Menu item deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+    } as AppResponseDto<void>;
   }
 }
