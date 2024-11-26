@@ -13,44 +13,45 @@ import {
   Form,
   Button,
 } from '@/components/ui'
-import { createTableSchema, TCreateTableSchema } from '@/schemas'
+import { updateTableSchema, TUpdateTableSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ICreateTableRequest } from '@/types'
-import { useCreateTable } from '@/hooks'
+import { IUpdateTableRequest, ITable } from '@/types'
+import { useUpdateTable } from '@/hooks'
 import { showToast } from '@/utils'
-import { BranchSelect } from '@/components/app/select'
 
-interface IFormCreateTableProps {
+interface IFormUpdateTableProps {
+  table: ITable
   onSubmit: (isOpen: boolean) => void
 }
 
-export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
+export const UpdateTableForm: React.FC<IFormUpdateTableProps> = ({
+  table,
   onSubmit,
 }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['table'])
-  const { mutate: createTable } = useCreateTable()
-  const form = useForm<TCreateTableSchema>({
-    resolver: zodResolver(createTableSchema),
+  const { mutate: updateTable } = useUpdateTable()
+  const form = useForm<TUpdateTableSchema>({
+    resolver: zodResolver(updateTableSchema),
     defaultValues: {
-      name: '',
-      branch: '',
-      location: '',
-      xPosition: 0,
-      yPosition: 0,
+      slug: table.slug,
+      name: table.name,
+      location: table.location,
+      xPosition: table.xPosition || 0,
+      yPosition: table.yPosition || 0,
     },
   })
 
-  const handleSubmit = (data: ICreateTableRequest) => {
-    createTable(data, {
+  const handleSubmit = (data: IUpdateTableRequest) => {
+    updateTable(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ['tables'],
         })
         onSubmit(false)
         form.reset()
-        showToast(t('toast.createTableSuccess'))
+        showToast(t('toast.updateTableSuccess'))
       },
     })
   }
@@ -65,21 +66,6 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
             <FormLabel>{t('table.tableName')}</FormLabel>
             <FormControl>
               <Input {...field} placeholder={t('table.enterTableName')} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    ),
-    branch: (
-      <FormField
-        control={form.control}
-        name="branch"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t('table.branch')}</FormLabel>
-            <FormControl>
-              <BranchSelect {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -146,7 +132,7 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
           </div>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
-              {t('table.create')}
+              {t('table.update')}
             </Button>
           </div>
         </form>

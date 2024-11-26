@@ -1,4 +1,8 @@
-import { CreateTableDialog } from '@/components/app/dialog'
+import {
+  CreateTableDialog,
+  DeleteTableDialog,
+  UpdateTableDialog,
+} from '@/components/app/dialog'
 import { useTables } from '@/hooks'
 
 export default function TablePage() {
@@ -38,8 +42,14 @@ export default function TablePage() {
         {tables?.result.map((table) => (
           <div
             key={table.slug}
-            className="flex h-[8rem] w-[8rem] items-center justify-center rounded-md border p-4"
+            className="group relative flex h-[8rem] w-[12rem] items-center justify-center rounded-md border p-4"
           >
+            <div className="absolute inset-0 flex items-start justify-end opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="flex flex-row gap-2 rounded-md bg-transparent p-4">
+                <UpdateTableDialog table={table} />
+                <DeleteTableDialog table={table} />
+              </div>
+            </div>
             <div>{table.name}</div>
           </div>
         ))}
