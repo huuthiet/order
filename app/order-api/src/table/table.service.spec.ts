@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TableService } from './table.service';
-import { MockType, repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import {
+  MockType,
+  repositoryMockFactory,
+} from 'src/test-utils/repository-mock.factory';
 import { Repository } from 'typeorm';
 import { Table } from './table.entity';
 import { Branch } from 'src/branch/branch.entity';
@@ -11,7 +14,6 @@ import { CreateTableRequestDto, UpdateTableRequestDto } from './table.dto';
 import { BadRequestException } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
-
 
 describe('TableService', () => {
   const mapperProvider = 'automapper:nestjs:default';
@@ -26,15 +28,15 @@ describe('TableService', () => {
         TableService,
         {
           provide: getRepositoryToken(Table),
-          useFactory: repositoryMockFactory
+          useFactory: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(Branch),
-          useFactory: repositoryMockFactory
+          useFactory: repositoryMockFactory,
         },
         {
           provide: MAPPER_MODULE_PROVIDER,
-          useFactory: mapperMockFactory
+          useFactory: mapperMockFactory,
         },
         {
           provide: WINSTON_MODULE_NEST_PROVIDER,
@@ -62,18 +64,20 @@ describe('TableService', () => {
       const mockInput = {
         name: 'Mock table name',
         branch: 'mock-branch-slug',
-        location: 'mock-location-abfA'
+        location: 'mock-location-abfA',
       } as CreateTableRequestDto;
-      
+
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
-      await expect(service.create(mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.create(mockInput)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw error when name of table already exist at this branch', async () => {
       const mockInput = {
         name: 'Mock table name',
         branch: 'mock-branch-slug',
-        location: 'mock-location-abfA'
+        location: 'mock-location-abfA',
       } as CreateTableRequestDto;
       const branch = {
         name: 'Mock branch name',
@@ -81,30 +85,31 @@ describe('TableService', () => {
         id: 'mock-branch-id',
         slug: 'mock-branch-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Branch;
       const mockOutput = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
-      
+
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(branch);
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
 
-      await expect(service.create(mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.create(mockInput)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should create success and return created table', async () => {
       const mockInput = {
         name: 'Mock table name',
         branch: 'mock-branch-slug',
-        location: 'mock-location-abfA'
+        location: 'mock-location-abfA',
       } as CreateTableRequestDto;
       const branch = {
         name: 'Mock branch name',
@@ -112,18 +117,17 @@ describe('TableService', () => {
         id: 'mock-branch-id',
         slug: 'mock-branch-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Branch;
       const mockOutput = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
-      
+
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(branch);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
@@ -145,7 +149,9 @@ describe('TableService', () => {
     it('should throw error when branch is not found', async () => {
       const branchSlug = 'mock-branch-slug';
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
-      await expect(service.findAll(branchSlug)).rejects.toThrow(BadRequestException);
+      await expect(service.findAll(branchSlug)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should get success and return a array of tables', async () => {
@@ -156,19 +162,18 @@ describe('TableService', () => {
         id: 'mock-branch-id',
         slug: 'mock-branch-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Branch;
       const table = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
       const mockOutput = [table];
-      
+
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(branch);
       (tableRepositoryMock.find as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.mapArray as jest.Mock).mockReturnValue(mockOutput);
@@ -183,35 +188,35 @@ describe('TableService', () => {
     it('should throw error when table is not found', async () => {
       const slug = 'mock-table-slug';
       (tableRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
-      await expect(service.changeStatus(slug)).rejects.toThrow(BadRequestException);
+      await expect(
+        service.changeStatus(slug, { status: 'active' }),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should change status success and return changed table data', async () => {
       const slug = 'mock-table-slug';
       const table = {
         name: 'Mock table name',
-        isEmpty: false,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
       const mockOutput = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
 
       (tableRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(table);
       (tableRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
 
-      const result = await service.changeStatus(slug);
+      const result = await service.changeStatus(slug, { status: 'active' });
       expect(result).toEqual(mockOutput);
       expect(mapperMock.map).toHaveBeenCalledTimes(1);
     });
@@ -225,50 +230,52 @@ describe('TableService', () => {
       const slug = 'mock-table-slug';
       const mockInput = {
         name: 'Mock table name',
-        location: 'mock-table-location'
+        location: 'mock-table-location',
       } as UpdateTableRequestDto;
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.update(slug, mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.update(slug, mockInput)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw error when updated name already exist in this branch', async () => {
       const slug = 'mock-table-slug';
       const mockInput = {
         name: 'Mock table name',
-        location: 'mock-table-location'
+        location: 'mock-table-location',
       } as UpdateTableRequestDto;
       const table = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => table);
       jest.spyOn(service, 'isExistUpdatedName').mockResolvedValue(true);
 
-      await expect(service.update(slug, mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.update(slug, mockInput)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should update success and return updated table', async () => {
       const slug = 'mock-table-slug';
       const mockInput = {
         name: 'Mock table name',
-        location: 'mock-table-location'
+        location: 'mock-table-location',
       } as UpdateTableRequestDto;
       const mockOutput = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
@@ -292,7 +299,9 @@ describe('TableService', () => {
       const updatedName = 'Mock table name';
       const currentName = 'Mock table name';
       const branchId = 'mock-branch-id';
-      expect(await service.isExistUpdatedName(updatedName, currentName, branchId)).toEqual(false);
+      expect(
+        await service.isExistUpdatedName(updatedName, currentName, branchId),
+      ).toEqual(false);
     });
 
     it('should return true when updated name and current different but updated name does exist in this branch', async () => {
@@ -301,17 +310,18 @@ describe('TableService', () => {
       const branchId = 'mock-branch-id';
       const table = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
 
-      expect(await service.isExistUpdatedName(updatedName, currentName, branchId)).toEqual(true);
+      expect(
+        await service.isExistUpdatedName(updatedName, currentName, branchId),
+      ).toEqual(true);
     });
 
     it('should return false when updated name is valid', async () => {
@@ -321,7 +331,9 @@ describe('TableService', () => {
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
-      expect(await service.isExistUpdatedName(updatedName, currentName, branchId)).toEqual(false);
+      expect(
+        await service.isExistUpdatedName(updatedName, currentName, branchId),
+      ).toEqual(false);
     });
   });
 
@@ -341,16 +353,17 @@ describe('TableService', () => {
       const slug = 'mock-table-slug';
       const table = {
         name: 'Mock table name',
-        isEmpty: true,
         branch: new Branch(),
         id: 'mock-table-id',
         slug: 'mock-table-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Table;
       const mockOutput = { affected: 1 };
       (tableRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(table);
-      (tableRepositoryMock.softDelete as jest.Mock).mockResolvedValue(mockOutput);
+      (tableRepositoryMock.softDelete as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
 
       const result = await service.remove(slug);
       expect(result).toEqual(mockOutput.affected);

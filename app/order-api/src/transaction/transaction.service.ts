@@ -10,8 +10,9 @@ export class TransactionService {
 
   async callback(requestData: UpdateTransactionStatusRequestDto) {
     const context = `${TransactionService.name}.${this.callback.name}`;
-    console.log({ context, requestData });
-    this.logger.warn('Callback request received', context);
+    const json = JSON.stringify(requestData);
+    console.log({ context, json });
+    this.logger.warn(`Callback request received: ${json}`, context);
     return 'ok';
   }
 }
