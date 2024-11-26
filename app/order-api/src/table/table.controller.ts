@@ -16,6 +16,7 @@ import {
   CreateTableRequestDto,
   TableResponseDto,
   UpdateTableRequestDto,
+  UpdateTableStatusRequestDto,
 } from './table.dto';
 import {
   ApiBearerAuth,
@@ -102,7 +103,6 @@ export class TableController {
     type: TableResponseDto,
   })
   @ApiOperation({ summary: 'Change status table' })
-  @ApiResponse({ status: 200, description: 'Change status table successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -110,8 +110,12 @@ export class TableController {
     required: true,
     example: 'slug-123',
   })
-  async changeStatus(@Param('slug') slug: string) {
-    const result = await this.tableService.changeStatus(slug);
+  async changeStatus(
+    @Param('slug') slug: string,
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: UpdateTableStatusRequestDto,
+  ) {
+    const result = await this.tableService.changeStatus(slug, requestData);
     return {
       message: 'Status table have been changed successfully',
       statusCode: HttpStatus.OK,
@@ -134,7 +138,7 @@ export class TableController {
     name: 'slug',
     description: 'The slug of the table to be updated',
     required: true,
-    example: 'slug-123',
+    example: '',
   })
   async update(
     @Param('slug') slug: string,

@@ -19,7 +19,6 @@ import { VariantModule } from 'src/variant/variant.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { MenuModule } from 'src/menu/menu.module';
 import { BranchModule } from 'src/branch/branch.module';
-import { LoggerModule } from 'src/logger/logger.module';
 import { AppSubscriber } from './app.subscriber';
 import { TableModule } from 'src/table/table.module';
 import { MenuItemModule } from 'src/menu-item/menu-item.module';
@@ -31,6 +30,9 @@ import { TrackingModule } from 'src/tracking/tracking.module';
 import { TrackingOrderItemModule } from 'src/tracking-order-item/tracking-order-item.module';
 import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module';
 import { UserModule } from 'src/user/user.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { LoggerModule } from 'src/logger/logger.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { UserModule } from 'src/user/user.module';
       isGlobal: true,
       validate: validate,
     }),
+    ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     DatabaseModule,
     AuthModule,
     FileModule,

@@ -58,6 +58,13 @@ export class UpdateTableRequestDto {
   yPosition?: number;
 }
 
+export class UpdateTableStatusRequestDto {
+  @AutoMap()
+  @ApiProperty({ description: 'The status of table', example: 'active' })
+  @IsNotEmpty()
+  status: string;
+}
+
 export class TableResponseDto extends BaseResponseDto {
   @AutoMap()
   @ApiProperty()

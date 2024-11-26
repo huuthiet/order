@@ -17,18 +17,4 @@ export class TransactionController {
   ) {
     return this.transactionService.callback(requestData);
   }
-
-  // @Post('status/callback')
-  // async statusCallback(
-  //   @Body(ValidationPipe) requestData: UpdateTransactionStatusRequestDto,
-  // ) {
-  //   return this.transactionService.callback(requestData);
-  // }
-
-  // @Post('qr-transaction/callback')
-  // async qrTransactionCallback(
-  //   @Body(ValidationPipe) requestData: UpdateTransactionStatusRequestDto,
-  // ) {
-  //   return this.transactionService.callback(requestData);
-  // }
 }
