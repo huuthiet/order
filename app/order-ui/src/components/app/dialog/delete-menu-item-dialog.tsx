@@ -14,32 +14,32 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { IApiResponse, ICatalog } from '@/types'
+import { IApiResponse, IMenuItem } from '@/types'
 
-import { useDeleteCatalog } from '@/hooks'
+import { useDeleteMenuItem } from '@/hooks'
 import { showErrorToast, showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
 
-export default function DeleteCatalogDialog({
-  catalog,
+export default function DeleteMenuItemDialog({
+  menuItem,
 }: {
-  catalog: ICatalog
+  menuItem: IMenuItem
 }) {
   const queryClient = useQueryClient()
-  const { t } = useTranslation(['product'])
+  const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation('common')
   const { t: tToast } = useTranslation('toast')
-  const { mutate: deleteCatalog } = useDeleteCatalog()
+  const { mutate: deleteMenuItem } = useDeleteMenuItem()
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleSubmit = (catalogSlug: string) => {
-    deleteCatalog(catalogSlug, {
+  const handleSubmit = (menuItemSlug: string) => {
+    deleteMenuItem(menuItemSlug, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['catalog'],
+          queryKey: ['specific-menu'],
         })
         setIsOpen(false)
-        showToast(tToast('toast.deleteCatalogSuccess'))
+        showToast(tToast('toast.deleteMenuItemSuccess'))
       },
       onError: (error) => {
         if (isAxiosError(error)) {
@@ -56,12 +56,11 @@ export default function DeleteCatalogDialog({
       <DialogTrigger className="flex w-full justify-start" asChild>
         <DialogTrigger asChild>
           <Button
-            variant="ghost"
-            className="gap-1 px-2 text-sm"
+            variant="destructive"
+            className="gap-1 text-sm"
             onClick={() => setIsOpen(true)}
           >
             <Trash2 className="icon" />
-            {t('catalog.delete')}
           </Button>
         </DialogTrigger>
       </DialogTrigger>
@@ -71,7 +70,7 @@ export default function DeleteCatalogDialog({
           <DialogTitle className="border-b border-destructive pb-4 text-destructive">
             <div className="flex items-center gap-2">
               <TriangleAlert className="h-6 w-6" />
-              {t('catalog.delete')}
+              {t('menu.delete')}
             </div>
           </DialogTitle>
           <DialogDescription className="rounded-md bg-red-100 p-2 text-destructive">
@@ -79,10 +78,9 @@ export default function DeleteCatalogDialog({
           </DialogDescription>
 
           <div className="py-4 text-sm text-gray-500">
-            {t('catalog.deleteCatalogWarning1')}{' '}
-            <span className="font-bold">{catalog?.name}</span> <br />
-            <br />
-            {t('catalog.deleteCatalogConfirmation')}
+            {t('menu.deleteMenuItemWarning1')}{' '}
+            <span className="font-bold">{menuItem?.product.name}</span>
+            {t('menu.deleteMenuItemConfirmation')}
           </div>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-center gap-2">
@@ -91,7 +89,7 @@ export default function DeleteCatalogDialog({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => catalog && handleSubmit(catalog.slug || '')}
+            onClick={() => menuItem && handleSubmit(menuItem.slug || '')}
           >
             {tCommon('common.confirmDelete')}
           </Button>

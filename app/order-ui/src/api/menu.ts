@@ -8,6 +8,7 @@ import {
   ISpecificMenuRequest,
   IUpdateMenuRequest,
   IMenuItem,
+  IUpdateMenuItemRequest,
 } from '@/types'
 
 export async function getAllMenus(): Promise<IApiResponse<IMenu[]>> {
@@ -52,6 +53,35 @@ export async function addMenuItem(
   const response = await http.post<IApiResponse<IMenuItem>>(
     `/menu-item`,
     params,
+  )
+  return response.data
+}
+
+export async function addMenuItems(
+  params: IAddMenuItemRequest[],
+): Promise<IApiResponse<IMenuItem>> {
+  const response = await http.post<IApiResponse<IMenuItem>>(
+    `/menu-item/bulk`,
+    params,
+  )
+  return response.data
+}
+
+export async function updateMenuItem(
+  params: IUpdateMenuItemRequest,
+): Promise<IApiResponse<IMenuItem>> {
+  const response = await http.patch<IApiResponse<IMenuItem>>(
+    `/menu-item/${params.slug}`,
+    params,
+  )
+  return response.data
+}
+
+export async function deleteMenuItem(
+  slug: string,
+): Promise<IApiResponse<IMenuItem>> {
+  const response = await http.delete<IApiResponse<IMenuItem>>(
+    `/menu-item/${slug}`,
   )
   return response.data
 }
