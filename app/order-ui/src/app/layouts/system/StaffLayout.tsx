@@ -1,20 +1,24 @@
 import { Outlet } from 'react-router-dom'
 import { SidebarProvider, ScrollArea } from '@/components/ui'
 import { AppSidebar, AppHeader } from '@/components/app'
+import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 
 export default function StaffLayout() {
   return (
     <SidebarProvider>
-      <div className="box-border flex flex-1 min-h-screen">
+      <div className="box-border flex min-h-screen flex-1">
         {/* Sidebar */}
         <AppSidebar />
 
         {/* Main content */}
-        <div className="flex flex-col flex-1 h-screen overflow-hidden ">
+        <div className="flex h-screen flex-1 flex-col overflow-hidden">
           {/* Header */}
           <AppHeader />
 
           {/* Page content */}
+          <div className="sticky top-0 z-10 p-4">
+            <BreadcrumbComponent />
+          </div>
           <ScrollArea>
             <main>
               <Outlet />

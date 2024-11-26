@@ -6,7 +6,7 @@ import { CatalogActionOptions } from './DataTable/actions'
 export default function CatalogTab() {
   const { data: catalogs, isLoading } = useCatalogs()
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
+    <div className="flex h-full flex-row gap-2">
       <DataTable
         columns={useCatalogColumns()}
         data={catalogs?.result || []}

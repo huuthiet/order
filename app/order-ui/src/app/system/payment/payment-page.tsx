@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { Button, ScrollArea } from '@/components/ui'
 import { useInititateQrCode, useOrderBySlug } from '@/hooks'
 import { PaymentMethodSelect } from '@/app/system/payment'
@@ -43,13 +42,10 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
+    <div className="flex h-full flex-row gap-2">
       <ScrollArea className="flex-1">
         <div className={`px-4 transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-between py-2">
-              <BreadcrumbComponent />
-            </div>
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pb-4 pr-4">
             <div className="flex w-full flex-col gap-3">
               {order && (
                 <div className="w-full space-y-2">

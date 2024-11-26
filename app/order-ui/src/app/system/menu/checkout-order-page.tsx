@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { CartToggleButton, QuantitySelector } from '@/components/app/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
@@ -49,8 +48,7 @@ export default function ConfirmOrderPage() {
           } ${isCollapsed ? 'pl-2' : 'pl-4'}`}
         >
           <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-between">
-              <BreadcrumbComponent />
+            <div className="flex w-full flex-row items-center justify-end">
               <CartToggleButton
                 isCartOpen={isCartOpen}
                 setIsCartOpen={setIsCartOpen}
