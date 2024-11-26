@@ -13,10 +13,6 @@ export class Table extends Base {
   @Column({ name: 'location_column', nullable: true })
   location?: string;
 
-  // @AutoMap()
-  // @Column({ name: 'is_empty_column', default: true })
-  // isEmpty: Boolean;
-
   @ManyToOne(() => Branch, (branch) => branch.tables)
   @JoinColumn({ name: 'branch_column' })
   branch: Branch;
