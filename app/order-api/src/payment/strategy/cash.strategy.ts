@@ -4,7 +4,7 @@ import { Payment } from '../payment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { PaymentMethod } from '../payment.constants';
+import { PaymentMethod, PaymentStatus } from '../payment.constants';
 import { Order } from 'src/order/order.entity';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -24,6 +24,8 @@ export class CashStrategy implements IPaymentStrategy {
       message: 'hoa don thanh toan',
       userId: order.owner.id,
       transactionId: uuidv4(),
+      statusCode: PaymentStatus.PENDING,
+      statusMessage: PaymentStatus.PENDING,
     } as Payment;
 
     this.paymentRepository.create(payment);

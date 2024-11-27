@@ -3,7 +3,14 @@ import { Base } from 'src/app/base.entity';
 import { Branch } from 'src/branch/branch.entity';
 import { OrderItem } from 'src/order-item/order-item.entity';
 import { User } from 'src/user/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { OrderStatus } from './order.contants';
 import { Payment } from 'src/payment/payment.entity';
 
@@ -46,8 +53,8 @@ export class Order extends Base {
   })
   orderItems: OrderItem[];
 
-  // Many to one with payment
-  @ManyToOne(() => Payment, (payment) => payment.orders)
+  // One to one with payment
+  @OneToOne(() => Payment, (payment) => payment.order)
   @JoinColumn({ name: 'payment_column' })
   @AutoMap(() => Payment)
   payment: Payment;

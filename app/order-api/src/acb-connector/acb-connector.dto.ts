@@ -60,6 +60,69 @@ export class UpdateACBConnectorConfigRequestDto extends PartialType(
   CreateACBConnectorConfigRequestDto,
 ) {}
 
+export class ACBTransactionEntityAttributeDto {
+  @ApiProperty()
+  traceNumber: string;
+
+  @ApiProperty()
+  beneficiaryName: string;
+
+  @ApiProperty()
+  virtualAccount: string;
+}
+
+export class ACBTransactionDto {
+  @ApiProperty()
+  transactionStatus: string;
+
+  @ApiProperty()
+  transactionChannel: string;
+
+  @ApiProperty()
+  transactionDate: string;
+
+  @ApiProperty()
+  effectiveDate: string;
+
+  @ApiProperty()
+  debitOrCredit: string;
+
+  @ApiProperty()
+  amount: number;
+
+  @ApiProperty()
+  transactionContent: string;
+
+  @ApiProperty()
+  transactionEntityAttribute: ACBTransactionEntityAttributeDto;
+}
+
+export class ACBRequestParamsDto {
+  @ApiProperty()
+  transactions: ACBTransactionDto[];
+}
+
+export class ACBRequestDto {
+  @ApiProperty()
+  requestParams: ACBRequestParamsDto;
+}
+
+export class ACBRequestParametersDto {
+  @ApiProperty()
+  request: ACBRequestDto;
+}
+
+export class ACBStatusRequestDto {
+  @ApiProperty()
+  requestTrace: string;
+
+  @ApiProperty()
+  responseDateTime: string;
+
+  @ApiProperty()
+  requestParameters: ACBRequestParametersDto;
+}
+
 // Response
 export class ACBResponseStatusDto {
   @ApiProperty()
@@ -75,6 +138,20 @@ export class ACBResponseBodyDto {
 
   @ApiProperty()
   referenceCode: string;
+}
+
+export class ACBResponseDto {
+  @ApiProperty()
+  requestTrace: string;
+
+  @ApiProperty()
+  responseDateTime: string;
+
+  @ApiProperty()
+  responseStatus: ACBResponseStatusDto;
+
+  @ApiProperty()
+  responseBody: ACBResponseBodyDto;
 }
 
 export class ACBTokenResponseDto {

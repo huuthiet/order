@@ -3,3 +3,9 @@ export const PaymentMethod = {
   CASH: 'cash',
   INTERNAL: 'internal',
 };
+
+export const PaymentStatus = {
+  PENDING: 'pending',
+  COMPLETED: 'completed',
+  FAILED: 'failed',
+};

@@ -1,10 +1,9 @@
-import { Body, HttpStatus, INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { JwtService } from "@nestjs/jwt";
-import { Test, TestingModule } from "@nestjs/testing";
-import { CatalogModule } from "src/catalog/catalog.module";
-import { CatalogService } from "src/catalog/catalog.service";
-import { AppModule } from "src/app/app.module";
+import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+import { CatalogService } from 'src/catalog/catalog.service';
+import { AppModule } from 'src/app/app.module';
 
 describe('CatalogController (e2e)', () => {
   let app: INestApplication;
@@ -15,43 +14,43 @@ describe('CatalogController (e2e)', () => {
     {
       slug: '123',
       name: 'Đồ ăn',
-      description: 'Các loại đồ ăn'
+      description: 'Các loại đồ ăn',
     },
     {
       slug: '456',
       name: 'Nước uống',
-      description: 'Các loại nước uống'
-    }
+      description: 'Các loại nước uống',
+    },
   ];
 
   const createdCatalogData = {
     slug: '123',
     name: 'Đồ ăn',
-    description: 'Các loại đồ ăn'
+    description: 'Các loại đồ ăn',
   };
 
   const updatedCatalogData = {
     slug: '123',
     name: 'Updated Catalog',
-    description: 'Description of updated catalog'
+    description: 'Description of updated catalog',
   };
 
   // const deletedCatalogData: number = 1;
-  const deletedCatalogData = { 1 : 1 };
+  const deletedCatalogData = { 1: 1 };
 
   let catalogService = {
     getAllCatalogs: () => getAllCatalogsData,
     createCatalog: () => createdCatalogData,
     updateCatalog: () => updatedCatalogData,
-    deleteCatalog: () => deletedCatalogData
+    deleteCatalog: () => deletedCatalogData,
   };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         // CatalogModule,
-        AppModule
-      ]
+        AppModule,
+      ],
     })
       .overrideProvider(CatalogService)
       .useValue(catalogService)
@@ -74,7 +73,7 @@ describe('CatalogController (e2e)', () => {
       .get('/catalogs')
       .set('Authorization', `Bearer ${authToken}`)
       .expect(HttpStatus.OK)
-      .expect(getAllCatalogsData)
+      .expect(getAllCatalogsData);
   });
 
   it('/catalogs (POST)', () => {
@@ -86,7 +85,7 @@ describe('CatalogController (e2e)', () => {
       })
       .set('Authorization', `Bearer ${authToken}`)
       .expect(HttpStatus.CREATED)
-      .expect(createdCatalogData)
+      .expect(createdCatalogData);
   });
 
   it('/catalogs (PATCH)', () => {
@@ -101,7 +100,7 @@ describe('CatalogController (e2e)', () => {
       .send(updateData)
       .set('Authorization', `Bearer ${authToken}`)
       .expect(HttpStatus.OK)
-      .expect(updatedCatalogData)
+      .expect(updatedCatalogData);
   });
 
   it('/catalogs (DELETE)', () => {
@@ -112,9 +111,9 @@ describe('CatalogController (e2e)', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .expect(HttpStatus.OK)
       .expect((res) => {
-        console.log({res: res.body})
+        console.log({ res: res.body });
         // console.log({res})
       })
-      .expect(deletedCatalogData)
+      .expect(deletedCatalogData);
   });
 });

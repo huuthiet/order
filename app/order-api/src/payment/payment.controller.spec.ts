@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { Order } from 'src/order/order.entity';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 describe('PaymentController', () => {
   let controller: PaymentController;
@@ -45,6 +46,12 @@ describe('PaymentController', () => {
               }
               return null;
             }),
+          },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(), // Mock the emit method
           },
         },
         {

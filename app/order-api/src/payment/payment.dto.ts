@@ -1,9 +1,5 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  ACBResponseBodyDto,
-  ACBResponseStatusDto,
-} from 'src/acb-connector/acb-connector.dto';
 import { BaseResponseDto } from 'src/app/base.dto';
 
 export class CreatePaymentDto {
@@ -19,20 +15,6 @@ export class CreatePaymentDto {
   @AutoMap()
   @ApiProperty()
   orderSlug: string;
-}
-
-export class CallbackUpdatePaymentStatusRequestDto {
-  @ApiProperty()
-  requestTrace: string;
-
-  @ApiProperty()
-  responseDateTime: string;
-
-  @ApiProperty()
-  responseStatus: ACBResponseStatusDto;
-
-  @ApiProperty()
-  responseBody: ACBResponseBodyDto;
 }
 
 export class GetSpecificPaymentRequestDto {
