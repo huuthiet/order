@@ -1,9 +1,16 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { ProductController } from "./product.controller";
-import { ProductService } from "./product.service";
-import { CreateProductRequestDto, ProductResponseDto, UpdateProductRequestDto } from "./product.dto";
-import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
-import { CatalogResponseDto } from "src/catalog/catalog.dto";
+import { Test, TestingModule } from '@nestjs/testing';
+import { ProductController } from './product.controller';
+import { ProductService } from './product.service';
+import {
+  CreateProductRequestDto,
+  ProductResponseDto,
+  UpdateProductRequestDto,
+} from './product.dto';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { CatalogResponseDto } from 'src/catalog/catalog.dto';
 
 describe('ProductController', () => {
   let controller: ProductController;
@@ -22,8 +29,8 @@ describe('ProductController', () => {
             updateProduct: jest.fn(),
             deleteProduct: jest.fn(),
           },
-        }
-      ]
+        },
+      ],
     }).compile();
 
     controller = module.get<ProductController>(ProductController);
@@ -44,7 +51,7 @@ describe('ProductController', () => {
         name: 'Mock product name',
         description: 'Description of product',
         isLimit: false,
-        catalog: 'mock-catalog-slug'
+        catalog: 'mock-catalog-slug',
       } as CreateProductRequestDto;
 
       (service.createProduct as jest.Mock).mockRejectedValue(
@@ -52,7 +59,7 @@ describe('ProductController', () => {
       );
 
       await expect(controller.createProduct(mockInput)).rejects.toThrow(
-        BadRequestException
+        BadRequestException,
       );
     });
 
@@ -61,17 +68,17 @@ describe('ProductController', () => {
         name: 'Mock product name',
         description: 'Description of product',
         isLimit: false,
-        catalog: 'mock-catalog-slug'
+        catalog: 'mock-catalog-slug',
       } as CreateProductRequestDto;
       const mockOutput = {
         slug: 'mock-product-slug',
         name: 'Mock product name',
         description: 'Description of product',
-        createdAt: (new Date()).toString(),
+        createdAt: new Date().toString(),
         isActive: false,
         isLimit: false,
         catalog: new CatalogResponseDto(),
-        variants: []
+        variants: [],
       } as ProductResponseDto;
 
       (service.createProduct as jest.Mock).mockResolvedValue(mockOutput);
@@ -92,11 +99,11 @@ describe('ProductController', () => {
         slug: 'mock-product-slug',
         name: 'Mock product name',
         description: 'Description of product',
-        createdAt: (new Date()).toString(),
+        createdAt: new Date().toString(),
         isActive: false,
         isLimit: false,
         catalog: new CatalogResponseDto(),
-        variants: []
+        variants: [],
       };
       const mockOutput = [product];
 
@@ -109,10 +116,12 @@ describe('ProductController', () => {
     it('should return error when service.getAllCatalogs throws', async () => {
       const catalogSlug = 'mock-catalog-slug';
       (service.getAllProducts as jest.Mock).mockRejectedValue(
-        new InternalServerErrorException()
+        new InternalServerErrorException(),
       );
 
-      await expect(controller.getAllProducts(catalogSlug)).rejects.toThrow(InternalServerErrorException);
+      await expect(controller.getAllProducts(catalogSlug)).rejects.toThrow(
+        InternalServerErrorException,
+      );
       expect(service.getAllProducts).toHaveBeenCalled();
     });
   });
@@ -129,18 +138,18 @@ describe('ProductController', () => {
         description: 'The description of product',
         isLimit: false,
         isActive: false,
-        catalog: 'mock-catalog-slug'
+        catalog: 'mock-catalog-slug',
       } as UpdateProductRequestDto;
 
       const mockOutput = {
         slug: 'mock-product-slug',
         name: 'Mock product name',
         description: 'The description of product',
-        createdAt: (new Date()).toString(),
+        createdAt: new Date().toString(),
         isActive: false,
         isLimit: false,
         catalog: new CatalogResponseDto(),
-        variants: []
+        variants: [],
       } as ProductResponseDto;
       (service.updateProduct as jest.Mock).mockResolvedValue(mockOutput);
 
@@ -155,16 +164,16 @@ describe('ProductController', () => {
         description: 'The description of product',
         isLimit: false,
         isActive: false,
-        catalog: 'mock-catalog-slug'
+        catalog: 'mock-catalog-slug',
       } as UpdateProductRequestDto;
 
       (service.updateProduct as jest.Mock).mockRejectedValue(
-        new BadRequestException()
+        new BadRequestException(),
       );
 
-      await expect(
-        controller.updateProduct(slug, mockInput),
-      ).rejects.toThrow(BadRequestException);
+      await expect(controller.updateProduct(slug, mockInput)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(service.updateProduct).toHaveBeenCalled();
     });
   });
@@ -190,7 +199,7 @@ describe('ProductController', () => {
       );
 
       await expect(controller.deleteProduct(slug)).rejects.toThrow(
-        BadRequestException
+        BadRequestException,
       );
       expect(service.deleteProduct).toHaveBeenCalled();
     });
