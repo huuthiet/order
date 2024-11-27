@@ -340,14 +340,15 @@ export class OrderService {
         (acc, trackingItem) => {
           const status = trackingItem.tracking.status;
 
-          if (!acc[status]) {
-            acc[status] = 0;
-          }
-
           acc[status] += trackingItem.quantity;
           return acc;
         },
-        {},
+        {
+          [WorkFlowStatus.PENDING]: 0,
+          [WorkFlowStatus.RUNNING]: 0,
+          [WorkFlowStatus.COMPLETED]: 0,
+          [WorkFlowStatus.FAILED]: 0,
+        },
       );
 
       return {
