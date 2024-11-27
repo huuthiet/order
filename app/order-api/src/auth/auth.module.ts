@@ -14,6 +14,7 @@ import { User } from 'src/user/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthProfile } from './auth.mapper';
 import { Branch } from 'src/branch/branch.entity';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Branch } from 'src/branch/branch.entity';
     }),
     TypeOrmModule.forFeature([User, Branch]),
     ConfigModule,
+    FileModule,
   ],
   controllers: [AuthController],
   providers: [

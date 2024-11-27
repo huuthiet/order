@@ -98,6 +98,8 @@ export class BankTransferStrategy implements IPaymentStrategy {
       context,
     );
 
+    console.log({ requestData, access_token });
+
     const response = await this.acbConnectorClient.initiateQRCode(
       headers,
       requestData,
@@ -105,6 +107,10 @@ export class BankTransferStrategy implements IPaymentStrategy {
     );
     this.logger.log(`Initiate QR Code success`, context);
 
+    this.logger.warn(
+      `Initiate QR Code response: ${JSON.stringify(response)}`,
+      context,
+    );
     // Create payment
     const payment = {
       paymentMethod: PaymentMethod.BANK_TRANSFER,
