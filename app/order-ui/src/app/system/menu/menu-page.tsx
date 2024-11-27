@@ -3,52 +3,50 @@ import { useState } from 'react'
 import MenuList from './menu-list'
 import { CartContent } from '@/router/loadable'
 import { CartToggleButton } from '@/components/app/button'
-import { MenuCategorySelect } from '@/components/app/select'
 import { CurrentDateInput } from '@/components/app/input'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ScrollArea } from '@/components/ui'
+import { useIsMobile } from '@/hooks'
+import { CartDrawer } from '@/components/app/drawer'
 
 export default function MenuPage() {
-  const [isCartOpen, setIsCartOpen] = useState(true)
+  const [isCartOpen, setIsCartOpen] = useState(false)
   const { state } = useSidebar()
+  const isMobile = useIsMobile()
   const isCollapsed = state === 'collapsed'
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
-      {/* Menu Section - Scrollable */}
-      <ScrollArea className="flex-1">
-        <div
-          className={`transition-all duration-300 ease-in-out${
-            isCartOpen ? 'w-[70%]' : 'w-full'
-          } ${isCollapsed ? 'pl-2' : 'pl-4'}`}
-        >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-end">
-              <CartToggleButton
-                isCartOpen={isCartOpen}
-                setIsCartOpen={setIsCartOpen}
-              />
-            </div>
-            <div className="flex w-full justify-end gap-2">
-              {/* <DateSelect /> */}
-              <CurrentDateInput />
-              {/* <CatalogSelect /> */}
-              <MenuCategorySelect />
-            </div>
-          </div>
-          <div className="pr-4">
-            <MenuList isCartOpen={isCartOpen} />
-          </div>
+    <div className="flex h-full flex-row gap-2">
+      <div
+        className={`flex flex-col ${isCartOpen ? 'w-full md:w-[70%]' : 'w-full'} ${isCollapsed ? 'pl-2' : ''}`}
+      >
+        {/* Fixed Header Section */}
+        <div className="sticky top-0 z-10 flex flex-row items-center justify-end gap-2 bg-background py-3 pr-4">
+          <CurrentDateInput />
+          {/* <MenuCategorySelect /> */}
+          {!isMobile && (
+            <CartToggleButton
+              isCartOpen={isCartOpen}
+              setIsCartOpen={setIsCartOpen}
+            />
+          )}
+          {isMobile && <CartDrawer />}
+          {/* <SidebarTrigger /> */}
         </div>
-      </ScrollArea>
+
+        {/* Scrollable Content Section */}
+        <ScrollArea className="mt-2 flex-1">
+          <MenuList isCartOpen={isCartOpen} />
+        </ScrollArea>
+      </div>
 
       {/* Cart Section - Fixed */}
       <div
-        className={`border-l bg-background transition-all duration-300 ease-in-out ${
-          isCartOpen ? 'w-[30%]' : 'w-0 opacity-0'
-        } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
+        className={`fixed right-0 h-[calc(100vh-6.5rem)] border-l bg-background transition-all duration-300 ease-in-out ${
+          isCartOpen ? 'w-full pr-2 md:w-[25%]' : 'w-0 opacity-0'
+        }`}
       >
-        {isCartOpen && <CartContent />}
+        {isCartOpen && !isMobile && <CartContent />}
       </div>
     </div>
   )
