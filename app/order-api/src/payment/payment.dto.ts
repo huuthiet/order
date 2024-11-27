@@ -49,8 +49,10 @@ export class PaymentResponseDto extends BaseResponseDto {
   userId: string;
 
   @AutoMap()
+  @ApiProperty()
   statusCode: string;
 
   @AutoMap()
+  @ApiProperty()
   statusMessage: string;
 }

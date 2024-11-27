@@ -11,12 +11,13 @@ import { Mapper } from '@automapper/core';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { CreateTableRequestDto, UpdateTableRequestDto } from './table.dto';
-import { BadRequestException } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { BranchException } from 'src/branch/branch.exception';
+import { TableException } from './table.exception';
 
 describe('TableService', () => {
   let service: TableService;
@@ -90,9 +91,7 @@ describe('TableService', () => {
       } as CreateTableRequestDto;
 
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
-      await expect(service.create(mockInput)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.create(mockInput)).rejects.toThrow(BranchException);
     });
 
     it('should throw error when name of table already exist at this branch', async () => {
@@ -122,9 +121,7 @@ describe('TableService', () => {
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
 
-      await expect(service.create(mockInput)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.create(mockInput)).rejects.toThrow(TableException);
     });
 
     it('should create success and return created table', async () => {
@@ -172,7 +169,7 @@ describe('TableService', () => {
       const branchSlug = 'mock-branch-slug';
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       await expect(service.findAll(branchSlug)).rejects.toThrow(
-        BadRequestException,
+        BranchException,
       );
     });
 
@@ -212,7 +209,7 @@ describe('TableService', () => {
       (tableRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       await expect(
         service.changeStatus(slug, { status: 'active' }),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(TableException);
     });
 
     it('should change status success and return changed table data', async () => {
@@ -257,7 +254,7 @@ describe('TableService', () => {
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
       await expect(service.update(slug, mockInput)).rejects.toThrow(
-        BadRequestException,
+        TableException,
       );
     });
 
@@ -281,7 +278,7 @@ describe('TableService', () => {
       // jest.spyOn(service, 'isExistUpdatedName').mockResolvedValue(true);
 
       await expect(service.update(slug, mockInput)).rejects.toThrow(
-        BadRequestException,
+        TableException,
       );
     });
 
@@ -321,7 +318,7 @@ describe('TableService', () => {
       const slug = 'mock-table-slug';
       (tableRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.remove(slug)).rejects.toThrow(BadRequestException);
+      await expect(service.remove(slug)).rejects.toThrow(TableException);
     });
 
     it('should delete success and return deleted records', async () => {
