@@ -12,6 +12,8 @@ import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Logger } from 'src/logger/logger.entity';
 import { Branch } from 'src/branch/branch.entity';
+import { FileService } from 'src/file/file.service';
+import { File } from 'src/file/file.entity';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -21,6 +23,11 @@ describe('AuthController', () => {
       controllers: [AuthController],
       providers: [
         AuthService,
+        FileService,
+        {
+          provide: getRepositoryToken(File),
+          useFactory: repositoryMockFactory,
+        },
         {
           provide: getRepositoryToken(User),
           useFactory: repositoryMockFactory,

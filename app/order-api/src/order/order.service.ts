@@ -252,6 +252,7 @@ export class OrderService {
     const order = await this.orderRepository.findOne({
       where: { slug },
       relations: [
+        'payment',
         'owner',
         'orderItems.variant.size',
         'orderItems.variant.product',

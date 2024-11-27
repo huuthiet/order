@@ -67,6 +67,18 @@ export class AuthRefreshRequestDto {
   refreshToken: string;
 }
 
+export class AuthChangePasswordRequestDto {
+  @ApiProperty()
+  @AutoMap()
+  @IsString()
+  oldPassword: string;
+
+  @ApiProperty()
+  @AutoMap()
+  @IsString()
+  newPassword: string;
+}
+
 export class UpdateAuthProfileRequestDto {
   @ApiProperty({ example: 'John' })
   @AutoMap()
@@ -123,6 +135,10 @@ export class AuthProfileResponseDto {
   @AutoMap()
   @ApiProperty()
   readonly address: string;
+
+  @AutoMap()
+  @ApiProperty()
+  readonly image: string;
 
   @AutoMap(() => BranchResponseDto)
   @ApiProperty()
