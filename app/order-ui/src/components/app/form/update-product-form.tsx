@@ -10,7 +10,9 @@ import {
   FormMessage,
   Input,
   Form,
-  Button
+  Button,
+  Textarea,
+  ScrollArea,
 } from '@/components/ui'
 import { updateProductSchema, TUpdateProductSchema } from '@/schemas'
 
@@ -27,7 +29,10 @@ interface IFormUpdateProductProps {
   onSubmit: (isOpen: boolean) => void
 }
 
-export const UpdateProductForm: React.FC<IFormUpdateProductProps> = ({ product, onSubmit }) => {
+export const UpdateProductForm: React.FC<IFormUpdateProductProps> = ({
+  product,
+  onSubmit,
+}) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { mutate: updateProduct } = useUpdateProduct()
@@ -39,20 +44,20 @@ export const UpdateProductForm: React.FC<IFormUpdateProductProps> = ({ product, 
       description: product.description || '',
       isLimit: product.isLimit || false,
       isActive: product.isActive || true,
-      catalog: product.catalog.slug || ''
-    }
+      catalog: product.catalog.slug || '',
+    },
   })
 
   const handleSubmit = (data: IUpdateProductRequest) => {
     updateProduct(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['products']
+          queryKey: ['products'],
         })
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateProductSuccess'))
-      }
+      },
     })
   }
 
@@ -80,7 +85,10 @@ export const UpdateProductForm: React.FC<IFormUpdateProductProps> = ({ product, 
           <FormItem>
             <FormLabel>{t('product.productDescription')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('product.enterProductDescription')} />
+              <Textarea
+                {...field}
+                placeholder={t('product.enterProductDescription')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -94,7 +102,10 @@ export const UpdateProductForm: React.FC<IFormUpdateProductProps> = ({ product, 
         render={({ field }) => (
           <FormItem className="flex items-center gap-4">
             <FormControl className="flex items-center p-0">
-              <IsLimitSwitch defaultValue={product.isLimit} onChange={field.onChange} />
+              <IsLimitSwitch
+                defaultValue={product.isLimit}
+                onChange={field.onChange}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -109,26 +120,31 @@ export const UpdateProductForm: React.FC<IFormUpdateProductProps> = ({ product, 
           <FormItem>
             <FormLabel>{t('product.productCatalog')}</FormLabel>
             <FormControl>
-              <CatalogSelect defaultValue={product.catalog.slug} onChange={field.onChange} />
+              <CatalogSelect
+                defaultValue={product.catalog.slug}
+                onChange={field.onChange}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-    )
+    ),
   }
 
   return (
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 gap-2">
-            {Object.keys(formFields).map((key) => (
-              <React.Fragment key={key}>
-                {formFields[key as keyof typeof formFields]}
-              </React.Fragment>
-            ))}
-          </div>
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="grid grid-cols-1 gap-2">
+              {Object.keys(formFields).map((key) => (
+                <React.Fragment key={key}>
+                  {formFields[key as keyof typeof formFields]}
+                </React.Fragment>
+              ))}
+            </div>
+          </ScrollArea>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
               {t('product.create')}

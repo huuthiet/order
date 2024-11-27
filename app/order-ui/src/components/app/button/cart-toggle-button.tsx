@@ -7,19 +7,17 @@ interface QuantityButtonProps {
   setIsCartOpen: (value: boolean) => void
 }
 
-export default function CartToggleButton({ isCartOpen, setIsCartOpen }: QuantityButtonProps) {
+export default function CartToggleButton({
+  isCartOpen,
+  setIsCartOpen,
+}: QuantityButtonProps) {
   return (
     <div>
       <Button
-        variant="outline"
         onClick={() => setIsCartOpen(!isCartOpen)}
-        className="p-2 transition rounded-full h-fit w-fit"
+        className="h-fit w-fit rounded-full p-2 text-white transition"
       >
-        {isCartOpen ? (
-          <ChevronRight className="text-muted-foreground" />
-        ) : (
-          <ChevronLeft className="text-muted-foreground" />
-        )}
+        {isCartOpen ? <ChevronRight /> : <ChevronLeft />}
       </Button>
     </div>
   )

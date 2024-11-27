@@ -6,7 +6,7 @@ import {
   getOrderBySlug,
   initializeQrCode,
 } from '@/api'
-import { ICreateOrderRequest, IInitateQrCodeRequest } from '@/types'
+import { ICreateOrderRequest, IInitiateQrCodeRequest } from '@/types'
 
 export const useOrders = () => {
   return useQuery({
@@ -32,9 +32,9 @@ export const useOrderBySlug = (slug: string) => {
   })
 }
 
-export const useInititateQrCode = () => {
+export const useInitiateQrCode = () => {
   return useMutation({
-    mutationFn: async (data: IInitateQrCodeRequest) => {
+    mutationFn: async (data: IInitiateQrCodeRequest) => {
       return initializeQrCode(data)
     },
   })

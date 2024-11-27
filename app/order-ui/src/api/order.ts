@@ -3,7 +3,7 @@ import {
   IApiResponse,
   IOrder,
   ICreateOrderRequest,
-  IInitateQrCodeRequest,
+  IInitiateQrCodeRequest,
   ICreateOrderResponse,
   IInitiateQrCodeResponse,
 } from '@/types'
@@ -33,7 +33,7 @@ export async function getOrderBySlug(
 }
 
 export async function initializeQrCode(
-  params: IInitateQrCodeRequest,
+  params: IInitiateQrCodeRequest,
 ): Promise<IApiResponse<IInitiateQrCodeResponse>> {
   const response = await http.post<IApiResponse<IInitiateQrCodeResponse>>(
     `/payment/initiate`,

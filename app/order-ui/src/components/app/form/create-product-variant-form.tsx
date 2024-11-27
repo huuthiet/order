@@ -12,9 +12,12 @@ import {
   FormMessage,
   Input,
   Form,
-  Button
+  Button,
 } from '@/components/ui'
-import { createProductVariantSchema, TCreateProductVariantSchema } from '@/schemas'
+import {
+  createProductVariantSchema,
+  TCreateProductVariantSchema,
+} from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ICreateProductVariantRequest } from '@/types'
@@ -26,9 +29,9 @@ interface IFormCreateProductVariantProps {
   onSubmit: (isOpen: boolean) => void
 }
 
-export const CreateProductVariantForm: React.FC<IFormCreateProductVariantProps> = ({
-  onSubmit
-}) => {
+export const CreateProductVariantForm: React.FC<
+  IFormCreateProductVariantProps
+> = ({ onSubmit }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { slug } = useParams()
@@ -38,20 +41,20 @@ export const CreateProductVariantForm: React.FC<IFormCreateProductVariantProps> 
     defaultValues: {
       price: 0,
       size: '',
-      product: slug
-    }
+      product: slug,
+    },
   })
 
   const handleSubmit = (data: ICreateProductVariantRequest) => {
     createProductVariant(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['productVariants']
+          queryKey: ['product', slug],
         })
         onSubmit(false)
         form.reset()
         showToast(t('toast.createProductVariantSuccess'))
-      }
+      },
     })
   }
 
@@ -91,7 +94,7 @@ export const CreateProductVariantForm: React.FC<IFormCreateProductVariantProps> 
           </FormItem>
         )}
       />
-    )
+    ),
   }
 
   return (

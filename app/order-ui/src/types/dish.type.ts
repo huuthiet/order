@@ -118,7 +118,7 @@ export interface ICreateOrderRequest {
   }[]
 }
 
-export interface IInitateQrCodeRequest {
+export interface IInitiateQrCodeRequest {
   paymentMethod: string
   orderSlug: string
 }

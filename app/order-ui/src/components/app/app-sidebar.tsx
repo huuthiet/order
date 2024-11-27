@@ -61,7 +61,7 @@ export default function AppSidebar() {
             <SidebarMenuButton size="lg" asChild>
               <NavLink
                 to="/staff/home"
-                className="flex w-full items-center gap-3"
+                className="flex w-full items-center justify-center"
               >
                 {/* <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0 group-data-[collapsible=icon]:w-full">
                   <Command className="size-4" />
