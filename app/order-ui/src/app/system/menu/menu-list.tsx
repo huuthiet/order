@@ -39,7 +39,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
   if (isLoading) {
     return (
       <div
-        className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3`}
+        className={`grid ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-3`}
       >
         {[...Array(8)].map((_, index) => (
           <SkeletonMenuList key={index} />
@@ -54,7 +54,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
 
   return (
     <div
-      className={`grid ${isCartOpen ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6`}
+      className={`grid grid-cols-2 ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-6`}
     >
       {menuItems.map((item) => (
         <div
@@ -67,10 +67,10 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
               <img
                 src={`${publicFileURL}/${item.product.image}`}
                 alt={item.product.name}
-                className="h-40 w-full rounded-t-md object-cover"
+                className="h-24 w-full rounded-t-md object-cover"
               />
             ) : (
-              <div className="h-40 w-full rounded-t-md bg-muted/60" />
+              <div className="h-24 w-full rounded-t-md bg-muted/60" />
             )}
 
             {/* Discount Tag */}
@@ -84,8 +84,8 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
           </div>
 
           {/* Content Section - More compact */}
-          <div className="flex flex-1 flex-col space-y-1.5 p-4">
-            <h3 className="text-md line-clamp-1 font-bold">
+          <div className="flex flex-1 flex-col space-y-1.5 p-2">
+            <h3 className="line-clamp-1 text-sm font-bold">
               {item.product.name}
             </h3>
             <p className="line-clamp-2 text-xs text-gray-500">
@@ -95,7 +95,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
             <div className="flex items-center justify-between gap-1">
               <div className="flex flex-col">
                 {item.product.variants.length > 0 ? (
-                  <span className="text-lg font-bold text-primary">
+                  <span className="text-sm font-bold text-primary">
                     {(() => {
                       const range = getPriceRange(item.product.variants)
                       if (!range) return '0đ'
@@ -105,7 +105,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
                     })()}
                   </span>
                 ) : (
-                  <span className="text-lg font-bold text-primary">
+                  <span className="text-sm font-bold text-primary">
                     Liên hệ
                   </span>
                 )}

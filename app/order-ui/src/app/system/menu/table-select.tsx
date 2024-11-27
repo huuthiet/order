@@ -34,12 +34,12 @@ export default function TableSelect() {
       <div className="bg-muted/60 p-4">
         <Label className="text-md">{t('table.title')}</Label>
       </div>
-      <div className="flex h-full items-start justify-start gap-2 rounded-md border p-4">
+      <div className="grid grid-cols-2 gap-2 p-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
         {tables?.result.map((table) => (
           <div
             key={table.slug}
             onClick={() => handleTableSelect(table.slug || '')}
-            className={`flex h-[8rem] w-[8rem] cursor-pointer items-center justify-center rounded-md border p-4 transition-all duration-200 hover:border-primary ${
+            className={`flex h-16 cursor-pointer items-center justify-center rounded-md border p-2 transition-all duration-200 hover:border-primary ${
               selectedTable === table.slug ? 'border-primary bg-primary/10' : ''
             }`}
           >

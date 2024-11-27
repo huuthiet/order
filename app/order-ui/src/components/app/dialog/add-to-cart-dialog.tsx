@@ -74,6 +74,9 @@ export default function AddToCartDialog({
     }
 
     addCartItem(cartItem)
+    // Reset states
+    setNote('')
+    setSelectedVariant(product.variants[0] || null)
     setIsOpen(false)
   }
 
@@ -88,7 +91,7 @@ export default function AddToCartDialog({
         )}
       </DialogTrigger>
 
-      <DialogContent className="px-0 sm:max-w-[64rem]">
+      <DialogContent className="max-w-[22rem] rounded-md px-0 sm:max-w-[64rem]">
         <DialogHeader className="px-6">
           <DialogTitle>{t('menu.confirmProduct')}</DialogTitle>
           <DialogDescription>
@@ -97,14 +100,14 @@ export default function AddToCartDialog({
         </DialogHeader>
 
         <ScrollArea className="max-h-[24rem] px-6">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             {/* Product Image */}
             <div className="relative col-span-2">
               {product.image ? (
                 <img
                   src={`${publicFileURL}/${product.image}`}
                   alt={product.name}
-                  className="h-48 w-full rounded-md object-cover sm:h-64 lg:h-80"
+                  className="h-56 w-full rounded-md object-cover sm:h-64 lg:h-80"
                 />
               ) : (
                 <div className="w-full rounded-md bg-muted/50" />
@@ -170,7 +173,7 @@ export default function AddToCartDialog({
           </div>
         </ScrollArea>
 
-        <DialogFooter className="flex justify-end gap-3 px-6">
+        <DialogFooter className="flex flex-row justify-end gap-3 px-6">
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>

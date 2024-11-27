@@ -12,10 +12,10 @@ import {
 export default function MenuCategorySelect() {
   return (
     <Select>
-      <SelectTrigger className="w-[200px]">
+      <SelectTrigger className="flex w-[200px] items-center">
         <CookingPot className="h-4 w-4 text-muted-foreground" />
         <SelectValue
-          className="text-muted-foreground"
+          className="ml-2 hidden text-muted-foreground sm:inline-block"
           placeholder="Chọn loại món"
         />
       </SelectTrigger>
@@ -23,7 +23,7 @@ export default function MenuCategorySelect() {
         <SelectGroup>
           {/* <SelectLabel></SelectLabel> */}
           <SelectItem value="apple">Món nước</SelectItem>
-          <SelectItem value="banana">Món tráng miêng</SelectItem>
+          <SelectItem value="banana">Món tráng miệng</SelectItem>
           <SelectItem value="blueberry">Cơm</SelectItem>
         </SelectGroup>
       </SelectContent>
