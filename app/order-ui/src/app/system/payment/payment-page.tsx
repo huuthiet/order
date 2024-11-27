@@ -4,7 +4,7 @@ import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
 import { Button, ScrollArea } from '@/components/ui'
-import { useInititateQrCode, useOrderBySlug } from '@/hooks'
+import { useInitiateQrCode, useOrderBySlug } from '@/hooks'
 import { PaymentMethodSelect } from '@/app/system/payment'
 import { QrCodeDialog } from '@/components/app/dialog'
 
@@ -13,7 +13,7 @@ export default function PaymentPage() {
   const { slug } = useParams()
   const [paymentMethod, setPaymentMethod] = useState<string>('')
   const { data: order } = useOrderBySlug(slug as string)
-  const { mutate: inititateQrCode } = useInititateQrCode()
+  const { mutate: initiateQrCode } = useInitiateQrCode()
   const [qrCode, setQrCode] = useState<string>('')
 
   // Tạo biến để kiểm tra trạng thái nút xác nhận
@@ -30,7 +30,7 @@ export default function PaymentPage() {
 
     setQrCode('')
 
-    inititateQrCode(
+    initiateQrCode(
       { orderSlug: slug, paymentMethod },
       {
         onSuccess: (data) => {

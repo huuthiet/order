@@ -107,7 +107,11 @@ export const AddMenuItemForm: React.FC<IFormAddMenuItemProps> = ({
               <Input
                 type="number"
                 placeholder={t('menu.defaultStockDescription')}
-                onChange={field.onChange}
+                onChange={(e) => {
+                  const valueAsNumber =
+                    e.target.value === '' ? '' : Number(e.target.value)
+                  field.onChange(valueAsNumber)
+                }}
               />
             </FormControl>
             <FormMessage />
