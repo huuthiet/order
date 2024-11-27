@@ -18,10 +18,10 @@ export default function MenuPage() {
   return (
     <div className="flex h-full flex-row gap-2">
       <div
-        className={`flex flex-col ${isCartOpen ? 'w-full md:w-[70%]' : 'w-full'} ${isCollapsed ? 'pl-2' : ''}`}
+        className={`flex flex-col transition-all duration-300 ease-in-out ${isCartOpen ? 'w-full md:w-[70%]' : 'w-full'} ${isCollapsed ? 'pl-2' : ''}`}
       >
         {/* Fixed Header Section */}
-        <div className="sticky top-0 z-10 flex flex-row items-center justify-end gap-2 bg-background py-3 pr-4">
+        <div className="sticky top-0 z-10 flex flex-row items-center justify-between gap-2 bg-background py-3 pr-4">
           <CurrentDateInput />
           {/* <MenuCategorySelect /> */}
           {!isMobile && (

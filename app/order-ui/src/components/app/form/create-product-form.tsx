@@ -10,7 +10,9 @@ import {
   FormMessage,
   Input,
   Form,
-  Button
+  Button,
+  Textarea,
+  ScrollArea,
 } from '@/components/ui'
 import { createProductSchema, TCreateProductSchema } from '@/schemas'
 
@@ -26,7 +28,9 @@ interface IFormCreateProductProps {
   onSubmit: (isOpen: boolean) => void
 }
 
-export const CreateProductForm: React.FC<IFormCreateProductProps> = ({ onSubmit }) => {
+export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
+  onSubmit,
+}) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { mutate: createProduct } = useCreateProduct()
@@ -36,20 +40,20 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({ onSubmit 
       name: '',
       description: '',
       isLimit: false,
-      catalog: ''
-    }
+      catalog: '',
+    },
   })
 
   const handleSubmit = (data: ICreateProductRequest) => {
     createProduct(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['products']
+          queryKey: ['products'],
         })
         onSubmit(false)
         form.reset()
         showToast(t('toast.createProductSuccess'))
-      }
+      },
     })
   }
 
@@ -77,7 +81,10 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({ onSubmit 
           <FormItem>
             <FormLabel>{t('product.productDescription')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('product.enterProductDescription')} />
+              <Textarea
+                {...field}
+                placeholder={t('product.enterProductDescription')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -112,20 +119,22 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({ onSubmit 
           </FormItem>
         )}
       />
-    )
+    ),
   }
 
   return (
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 gap-2">
-            {Object.keys(formFields).map((key) => (
-              <React.Fragment key={key}>
-                {formFields[key as keyof typeof formFields]}
-              </React.Fragment>
-            ))}
-          </div>
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="grid grid-cols-1 gap-2">
+              {Object.keys(formFields).map((key) => (
+                <React.Fragment key={key}>
+                  {formFields[key as keyof typeof formFields]}
+                </React.Fragment>
+              ))}
+            </div>
+          </ScrollArea>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
               {t('product.create')}
