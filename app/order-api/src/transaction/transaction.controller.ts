@@ -1,8 +1,8 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
-import { UpdateTransactionStatusRequestDto } from './transaction.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Public } from 'src/auth/public.decorator';
+import { ACBStatusRequestDto } from 'src/acb-connector/acb-connector.dto';
 
 @Controller('transaction')
 @ApiBearerAuth()
@@ -13,7 +13,7 @@ export class TransactionController {
   @Public()
   async statusCallback(
     @Body(new ValidationPipe({ transform: true }))
-    requestData: UpdateTransactionStatusRequestDto,
+    requestData: ACBStatusRequestDto,
   ) {
     return this.transactionService.callback(requestData);
   }

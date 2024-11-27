@@ -1,5 +1,3 @@
-import { ACBConnectorClient } from './acb-connector.client';
-
 export const X_CLIENT_ID = 'X-Client-ID';
 export const X_OWNER_NUMBER = 'X-Owner-Number';
 export const X_OWNER_TYPE = 'X-Owner-Type';
@@ -16,4 +14,9 @@ export enum ACBConnectorStatus {
   INVALID_TOKEN = '42020182',
   MISSING_TOKEN = '42020186',
   OWNER_VALIDATION_ERROR = '30020057',
+}
+
+export enum ACBConnectorTransactionStatus {
+  COMPLETED = 'COMPLETED',
+  ERRORCORRECTED = 'ERRORCORRECTED',
 }
