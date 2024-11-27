@@ -1,3 +1,4 @@
+import { TableStatus } from '@/constants'
 import { IBase } from './base.type'
 
 export interface Table {
@@ -7,13 +8,17 @@ export interface Table {
   y: number
   width: number
   height: number
-  status: 'available' | 'occupied' | 'reserved'
+  status: TableStatus
 }
+
+// export type TTableStatus = 'available' | 'occupied' | 'reserved'
 
 export interface ITable extends IBase {
   name: string
   location: string
   isEmpty: boolean
+  xPosition?: number
+  yPosition?: number
 }
 
 export interface TableContextMenu {
@@ -31,10 +36,19 @@ export interface ICreateTableRequest {
   name: string
   branch: string // Branch slug
   location: string
+  status: TableStatus
+  // isEmpty: boolean
+  xPosition?: number
+  yPosition?: number
 }
 
 export interface IUpdateTableRequest {
   slug: string
   name: string
   location: string
+}
+
+export interface IUpdateTableStatusRequest {
+  slug: string
+  status: TableStatus
 }

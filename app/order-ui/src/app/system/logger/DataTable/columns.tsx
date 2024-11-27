@@ -36,7 +36,15 @@ export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('log.message')} />
       ),
-      cell: ({ row }) => row.getValue('message'),
+      cell: ({ row }) => {
+        const message = row.getValue('message') as string
+        if (!message) return ''
+        return (
+          <div className="max-w-[28rem] whitespace-pre-wrap break-words py-2">
+            {message}
+          </div>
+        )
+      },
     },
     {
       accessorKey: 'context',
@@ -52,5 +60,19 @@ export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
       ),
       cell: ({ row }) => row.getValue('pid'),
     },
+    // {
+    //   accessorKey: 'actions',
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title={t('log.actions')} />
+    //   ),
+    //   cell: ({ row }) => {
+    //     const log = row.original
+    //     return (
+    //       <div className="flex justify-center gap-2">
+    //         <LogDetailDialog log={log} />
+    //       </div>
+    //     )
+    //   },
+    // },
   ]
 }

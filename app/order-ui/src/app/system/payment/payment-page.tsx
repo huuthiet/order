@@ -3,11 +3,9 @@ import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { Button, ScrollArea } from '@/components/ui'
 import { useInititateQrCode, useOrderBySlug } from '@/hooks'
 import { PaymentMethodSelect } from '@/app/system/payment'
-import { publicFileURL } from '@/constants'
 import { QrCodeDialog } from '@/components/app/dialog'
 
 export default function PaymentPage() {
@@ -43,26 +41,23 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
+    <div className="flex h-full flex-row gap-2">
       <ScrollArea className="flex-1">
-        <div className={`px-4 transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-between py-2">
-              <BreadcrumbComponent />
-            </div>
+        <div className={`transition-all duration-300 ease-in-out`}>
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pb-4">
             <div className="flex w-full flex-col gap-3">
               {order && (
                 <div className="w-full space-y-2">
                   {/* Thông tin khách hàng */}
-                  <div className="grid grid-cols-2 items-center justify-between rounded-sm border p-4">
-                    <div className="col-span-1 flex flex-col gap-1 border-r px-4">
-                      <div className="grid grid-cols-2">
+                  <div className="grid grid-cols-1 items-center justify-between rounded-sm border p-4 sm:grid-cols-2">
+                    <div className="col-span-1 flex flex-col gap-1 border-r sm:px-4">
+                      <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.customerName')}
                         </h3>
                         <p className="text-sm font-semibold">{`${order.result.owner.lastName} ${order.result.owner.firstName}`}</p>
                       </div>
-                      <div className="grid grid-cols-2">
+                      <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.orderDate')}
                         </h3>
@@ -72,7 +67,7 @@ export default function PaymentPage() {
                           )}
                         </span>
                       </div>
-                      <div className="grid grid-cols-2">
+                      <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.phoneNumber')}
                         </h3>
@@ -82,8 +77,8 @@ export default function PaymentPage() {
                       </div>
                     </div>
                     {/* Thông tin vận chuyển */}
-                    <div className="col-span-1 flex flex-col gap-1 border-r px-4">
-                      <div className="grid grid-cols-2">
+                    <div className="col-span-1 flex flex-col gap-1 border-r sm:px-4">
+                      <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.deliveryMethod')}
                         </h3>
@@ -93,7 +88,7 @@ export default function PaymentPage() {
                             : 'Giao hàng'}
                         </p>
                       </div>
-                      <div className="grid grid-cols-2">
+                      <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.location')}
                         </h3>
@@ -105,8 +100,8 @@ export default function PaymentPage() {
                   </div>
                   {/* Thông tin đơn hàng */}
                   <div>
-                    <div className="grid w-full grid-cols-5 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
-                      <span className="col-span-2">{t('order.product')}</span>
+                    <div className="grid w-full grid-cols-4 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
+                      <span className="col-span-1">{t('order.product')}</span>
                       <span className="col-span-1">{t('order.unitPrice')}</span>
                       <span className="col-span-1 text-center">
                         {t('order.quantity')}
@@ -122,14 +117,14 @@ export default function PaymentPage() {
                         key={item.slug}
                         className="grid w-full items-center gap-4 rounded-t-md border-b p-4 pb-4"
                       >
-                        <div className="grid w-full grid-cols-5 flex-row items-center">
-                          <div className="col-span-2 flex w-full gap-2">
-                            <div className="flex flex-row items-center justify-center gap-2">
-                              <img
+                        <div className="grid w-full grid-cols-4 flex-row items-center">
+                          <div className="col-span-1 flex w-full gap-2">
+                            <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
+                              {/* <img
                                 src={`${publicFileURL}/${item.variant.product.image}`}
                                 alt={item.variant.product.name}
-                                className="h-16 w-24 rounded-lg object-cover"
-                              />
+                                className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
+                              /> */}
                               <div className="flex flex-col">
                                 <span className="truncate font-bold">
                                   {item.variant.product.name}
@@ -137,7 +132,7 @@ export default function PaymentPage() {
                               </div>
                             </div>
                           </div>
-                          <div className="col-span-1 flex">
+                          <div className="col-span-1 flex items-center">
                             <span className="text-sm">
                               {`${(item.variant.price || 0).toLocaleString('vi-VN')}đ`}
                             </span>
@@ -155,7 +150,7 @@ export default function PaymentPage() {
                         </div>
                       </div>
                     ))}
-                    <div className="flex w-full flex-col items-end justify-end gap-2 p-4">
+                    <div className="flex w-full flex-col items-start justify-center gap-2 p-4 sm:items-end sm:justify-end">
                       <div className="flex w-[20rem] flex-col justify-start gap-2">
                         <div className="flex w-full justify-between border-b pb-4">
                           <h3 className="text-sm font-medium">

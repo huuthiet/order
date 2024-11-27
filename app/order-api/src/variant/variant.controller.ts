@@ -47,10 +47,12 @@ export class VariantController {
   @ApiResponse({ status: 200, description: 'Create new variant successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createVariant(
-    @Body(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    }))
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     requestData: CreateVariantRequestDto,
   ) {
     const result = await this.variantService.createVariant(requestData);
@@ -105,14 +107,16 @@ export class VariantController {
     name: 'slug',
     description: 'The slug of the variant to be updated',
     required: true,
-    example: 'slug-123',
+    example: '',
   })
   async updateVariant(
     @Param('slug') slug: string,
-    @Body(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    })) 
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     updateVariantDto: UpdateVariantRequestDto,
   ) {
     const result = await this.variantService.updateVariant(
@@ -142,7 +146,7 @@ export class VariantController {
     name: 'slug',
     description: 'The slug of the variant to be deleted',
     required: true,
-    example: 'slug-123',
+    example: '',
   })
   async deleteVariant(@Param('slug') slug: string) {
     const result = await this.variantService.deleteVariant(slug);

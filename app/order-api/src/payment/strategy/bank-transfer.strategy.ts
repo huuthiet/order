@@ -25,7 +25,8 @@ import * as shortid from 'shortid';
 import * as moment from 'moment';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Payment } from '../payment.entity';
-import { PaymentMethod } from '../payment.constants';
+import { PaymentMethod, PaymentStatus } from '../payment.constants';
+import { formatMoment } from 'src/helper';
 
 @Injectable()
 export class BankTransferStrategy implements IPaymentStrategy {
@@ -71,9 +72,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
 
     // Convert date to with format: yyyy-MM-ddTHH:mm:ss.SSSZ
     // example: 2024-11-09T11:03:33.033+0700
-    const requestDateTime = moment()
-      .format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-      .replace(/(\+\d{2}):(\d{2})$/, '$1$2');
+    const requestDateTime = formatMoment();
     this.logger.log(`Request date time: ${requestDateTime}`, context);
 
     const requestData = {
@@ -94,11 +93,10 @@ export class BankTransferStrategy implements IPaymentStrategy {
       },
     } as ACBInitiateQRCodeRequestDto;
 
-    console.log({
+    this.logger.warn(
+      `Initiate QR Code request: ${JSON.stringify(requestData)}`,
       context,
-      headers,
-      requestData,
-    });
+    );
 
     const response = await this.acbConnectorClient.initiateQRCode(
       headers,
@@ -115,6 +113,8 @@ export class BankTransferStrategy implements IPaymentStrategy {
       transactionId: response.requestTrace,
       qrCode: response.responseBody.qrDataUrl,
       userId: order.owner.id,
+      statusCode: PaymentStatus.PENDING,
+      statusMessage: PaymentStatus.PENDING,
     } as Payment;
 
     this.paymentRepository.create(payment);

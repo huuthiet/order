@@ -1,8 +1,8 @@
-// import React from 'react'
-// import { useTranslation } from 'react-i18next'
-
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
-import { CreateTableDialog } from '@/components/app/dialog'
+import {
+  CreateTableDialog,
+  DeleteTableDialog,
+  UpdateTableDialog,
+} from '@/components/app/dialog'
 import { useTables } from '@/hooks'
 
 export default function TablePage() {
@@ -34,19 +34,22 @@ export default function TablePage() {
   // }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
-        <BreadcrumbComponent />
-      </div>
-      <div className="flex items-center justify-between">
+    <div className="flex h-full flex-col gap-4 px-4">
+      <div className="flex items-center justify-end">
         <CreateTableDialog />
       </div>
       <div className="flex h-full items-start justify-start gap-2 rounded-md border p-4">
         {tables?.result.map((table) => (
           <div
             key={table.slug}
-            className="flex h-[8rem] w-[8rem] items-center justify-center rounded-md border p-4"
+            className="group relative flex h-[8rem] w-[12rem] items-center justify-center rounded-md border p-4"
           >
+            <div className="absolute inset-0 flex items-start justify-end opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="flex flex-row gap-2 rounded-md bg-transparent p-4">
+                <UpdateTableDialog table={table} />
+                <DeleteTableDialog table={table} />
+              </div>
+            </div>
             <div>{table.name}</div>
           </div>
         ))}

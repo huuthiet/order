@@ -24,5 +24,6 @@ import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
     CashStrategy,
     InternalStrategy,
   ],
+  exports: [PaymentService],
 })
 export class PaymentModule {}

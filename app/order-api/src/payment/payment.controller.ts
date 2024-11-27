@@ -16,7 +16,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
-  CallbackUpdatePaymentStatusRequestDto,
   CreatePaymentDto,
   GetSpecificPaymentRequestDto,
   PaymentResponseDto,
@@ -24,6 +23,7 @@ import {
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
 import { Public } from 'src/auth/public.decorator';
+import { ACBStatusRequestDto } from 'src/acb-connector/acb-connector.dto';
 
 @ApiTags('Payment')
 @ApiBearerAuth()
@@ -84,21 +84,16 @@ export class PaymentController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Callback' })
-  @ApiResponseWithType({
-    status: HttpStatus.OK,
-    description: 'Callback has been processed successfully',
-    type: PaymentResponseDto,
-  })
+  // @ApiResponseWithType({
+  //   status: HttpStatus.OK,
+  //   description: 'Callback has been processed successfully',
+  //   type: PaymentResponseDto,
+  // })
   async callback(
     @Body(new ValidationPipe({ transform: true }))
-    requestData: CallbackUpdatePaymentStatusRequestDto,
+    requestData: ACBStatusRequestDto,
   ) {
     const result = await this.paymentService.callback(requestData);
-    return {
-      message: 'Callback has been processed successfully',
-      statusCode: HttpStatus.OK,
-      timestamp: new Date().toISOString(),
-      result,
-    } as AppResponseDto<PaymentResponseDto>;
+    return result;
   }
 }

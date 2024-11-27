@@ -17,6 +17,11 @@ import { Branch } from 'src/branch/branch.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
+import { BranchException } from 'src/branch/branch.exception';
+import { BranchValidation } from 'src/branch/branch.validation';
+import { TableException } from './table.exception';
+import { TableValidation } from './table.validation';
 
 @Injectable()
 export class TableService {
@@ -27,7 +32,12 @@ export class TableService {
     private readonly branchRepository: Repository<Branch>,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+    private readonly robotConnectorClient: RobotConnectorClient,
   ) {}
+
+  async getLocations() {
+    return this.robotConnectorClient.retrieveAllQRLocations();
+  }
 
   /**
    * Create a new table
@@ -44,7 +54,7 @@ export class TableService {
     });
     if (!branch) {
       this.logger.warn(`Branch ${createTableDto.branch} not found`, context);
-      throw new BadRequestException('Branch is not found');
+      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
     const tableData = this.mapper.map(
@@ -65,7 +75,7 @@ export class TableService {
         `Table name ${createTableDto.name} already exists`,
         context,
       );
-      throw new BadRequestException('Table name already exists');
+      throw new TableException(TableValidation.TABLE_NAME_EXIST);
     }
 
     Object.assign(tableData, { branch });
@@ -89,7 +99,7 @@ export class TableService {
     const branchData = await this.branchRepository.findOneBy({ slug: branch });
     if (!branchData) {
       this.logger.warn(`Branch ${branch} not found`, context);
-      throw new BadRequestException('Branch is not found');
+      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
     const tables = await this.tableRepository.find({
@@ -117,7 +127,7 @@ export class TableService {
     const table = await this.tableRepository.findOneBy({ slug });
     if (!table) {
       this.logger.warn(`Table ${slug} not found`, context);
-      throw new BadRequestException('Table is not found');
+      throw new TableException(TableValidation.TABLE_NOT_FOUND);
     }
 
     Object.assign(table, { ...requestData });
@@ -148,7 +158,25 @@ export class TableService {
     });
     if (!table) {
       this.logger.warn(`Table ${slug} not found`, context);
-      throw new BadRequestException('Table is not found');
+      throw new TableException(TableValidation.TABLE_NOT_FOUND);
+    }
+
+    const isExist = await this.tableRepository.findOne({
+      where: {
+        name: updateTableDto.name,
+        location: updateTableDto.location,
+        branch: {
+          id: table.branch.id,
+        },
+      },
+    });
+
+    if (isExist) {
+      this.logger.warn(
+        `Table with ${updateTableDto.name} and ${updateTableDto.location} location already exist`,
+        context,
+      );
+      throw new TableException(TableValidation.TABLE_NAME_EXIST);
     }
 
     const tableData = this.mapper.map(
@@ -156,53 +184,12 @@ export class TableService {
       UpdateTableRequestDto,
       Table,
     );
-    const isExist = await this.isExistUpdatedName(
-      tableData.name,
-      table.name,
-      table.branch.id,
-    );
-    if (isExist) {
-      this.logger.warn(
-        `Table name ${tableData.name} already exist in this branch`,
-        context,
-      );
-      throw new BadRequestException(
-        'The updated name already exists in this branch',
-      );
-    }
 
     Object.assign(table, tableData);
     const updatedTable = await this.tableRepository.save(table);
     this.logger.log(`Table ${slug} updated successfully`, context);
     const tableDto = this.mapper.map(updatedTable, Table, TableResponseDto);
     return tableDto;
-  }
-
-  /**
-   * Check the updated does exists or not
-   * @param {string} updatedName The name to update for table
-   * @param {string} currentName The current name of table
-   * @param branchId The branch id of table
-   * @returns {Promise<Boolean>} The result of checking is true or false
-   */
-  async isExistUpdatedName(
-    updatedName: string,
-    currentName: string,
-    branchId: string,
-  ): Promise<Boolean> {
-    if (updatedName === currentName) return false;
-
-    const tableExist = await this.tableRepository.findOne({
-      where: {
-        name: updatedName,
-        branch: {
-          id: branchId,
-        },
-      },
-    });
-    if (tableExist) return true;
-
-    return false;
   }
 
   /**
@@ -215,7 +202,7 @@ export class TableService {
     const table = await this.tableRepository.findOneBy({ slug });
     if (!table) {
       this.logger.warn(`Table ${slug} not found`, context);
-      throw new BadRequestException('Table is not found');
+      throw new TableException(TableValidation.TABLE_NOT_FOUND);
     }
     const deleted = await this.tableRepository.softDelete({ slug });
     this.logger.log(`Table ${slug} deleted successfully`, context);

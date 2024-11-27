@@ -1,5 +1,15 @@
-import { getAllTables, createTable, updateTable, deleteTable } from '@/api'
-import { ICreateTableRequest, IUpdateTableRequest } from '@/types'
+import {
+  getAllTables,
+  createTable,
+  updateTable,
+  deleteTable,
+  updateTableStatus,
+} from '@/api'
+import {
+  ICreateTableRequest,
+  IUpdateTableRequest,
+  IUpdateTableStatusRequest,
+} from '@/types'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useTables = () => {
@@ -24,5 +34,12 @@ export const useUpdateTable = () => {
 export const useDeleteTable = () => {
   return useMutation({
     mutationFn: async (slug: string) => deleteTable(slug),
+  })
+}
+
+export const useUpdateTableStatus = () => {
+  return useMutation({
+    mutationFn: async (params: IUpdateTableStatusRequest) =>
+      updateTableStatus(params),
   })
 }

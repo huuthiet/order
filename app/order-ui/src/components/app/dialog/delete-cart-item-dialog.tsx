@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trash2, TriangleAlert } from 'lucide-react'
 
@@ -13,7 +14,6 @@ import {
   Label,
 } from '@/components/ui'
 import { IOrderItem } from '@/types'
-import { useState } from 'react'
 import { useCartItemStore } from '@/stores'
 
 interface DialogDeleteCartItemProps {
@@ -40,7 +40,7 @@ export default function DeleteCartItemDialog({
           <Trash2 size={20} className="text-muted-foreground" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[32rem]">
+      <DialogContent className="max-w-[22rem] rounded-md sm:max-w-[32rem]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
             <TriangleAlert />
@@ -52,13 +52,13 @@ export default function DeleteCartItemDialog({
         </DialogHeader>
         <div>
           <div className="mt-4 flex items-center gap-4">
-            <Label htmlFor="name" className="text-left">
+            <Label htmlFor="name" className="text-left leading-5">
               {t('order.deleteContent')} <strong>{cartItem.name}</strong>
               {t('order.deleteContent2')}
             </Label>
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex flex-row justify-end gap-2">
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>

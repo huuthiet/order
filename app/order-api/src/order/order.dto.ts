@@ -1,14 +1,23 @@
-import { AutoMap } from "@automapper/classes";
-import { ApiProperty } from "@nestjs/swagger";
-import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsOptional, ValidateNested } from "class-validator";
-import { OrderType } from "./order.contants";
-import { BaseResponseDto } from "src/app/base.dto";
-import { BranchResponseDto } from "src/branch/branch.dto";
-import { CreateOrderItemRequestDto, OrderItemResponseDto } from "src/order-item/order-item.dto";
-import { Type } from "class-transformer";
-import { Order } from "./order.entity";
-import { Table } from "typeorm";
-import { OrderItem } from "src/order-item/order-item.entity";
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
+import { OrderType } from './order.contants';
+import { BaseResponseDto } from 'src/app/base.dto';
+import { BranchResponseDto } from 'src/branch/branch.dto';
+import {
+  CreateOrderItemRequestDto,
+  OrderItemResponseDto,
+} from 'src/order-item/order-item.dto';
+import { Type } from 'class-transformer';
+import { Order } from './order.entity';
+import { OrderItem } from 'src/order-item/order-item.entity';
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -18,7 +27,7 @@ export class CreateOrderRequestDto {
   type: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of table', example: 'table-slug-123' })
+  @ApiProperty({ description: 'The slug of table', example: 'table-' })
   @IsNotEmpty({ message: 'Invalid slug of table' })
   table: string;
 
@@ -43,7 +52,7 @@ export class CreateOrderRequestDto {
     example: [
       {
         quantity: 2,
-        variant: 'variant-slug-123',
+        variant: 'variant-',
         note: 'Ghi chú',
       },
     ],
@@ -151,9 +160,8 @@ export class CheckDataCreateOrderResponseDto {
   mappedOrder?: Order;
 }
 
-
 export class CheckDataCreateOrderItemResponseDto {
-  isValid: Boolean; 
-  mappedOrderItems?: OrderItem[]; 
-  subtotal?: number
+  isValid: Boolean;
+  mappedOrderItems?: OrderItem[];
+  subtotal?: number;
 }

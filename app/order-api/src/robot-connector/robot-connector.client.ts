@@ -1,18 +1,23 @@
-import { HttpService } from "@nestjs/axios";
-import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { 
-  RunWorkFlowRequestDto, 
-  WorkFlowExecutionResponseDto, 
-  CreateWorkflowRequestDto,
+import { HttpService } from '@nestjs/axios';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import {
+  RunWorkFlowRequestDto,
+  WorkFlowExecutionResponseDto,
   WorkFlowResponseDto,
   QRLocationResponseDto,
   CreateQRLocationRequestDto,
   UpdateQRLocationRequestDto,
-  GetWorkFlowExecutionResponseDto
+  GetWorkFlowExecutionResponseDto,
+  CreateWorkflowRequestDto
 } from "./robot-connector.dto";
-import { catchError, firstValueFrom } from "rxjs";
+import { catchError, firstValueFrom, retry } from "rxjs";
 import { AxiosError } from "axios";
 import { CreateTableRequestDto, TableResponseDto } from "src/table/table.dto";
 import { CreateSizeRequestDto } from "src/size/size.dto";
@@ -36,17 +41,15 @@ export class RobotConnectorClient {
     const requestUrl = `${this.robotApiUrl}/workflows`;
     const { data } = await firstValueFrom(
       this.httpService
-      .post<WorkFlowResponseDto>(requestUrl, requestData, {
-
-      })
-      .pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(
-            `Create WorkFlow from ROBOT API failed: ${error.message}`,
-          );
-          throw error;
-        }),
-      )
+        .post<WorkFlowResponseDto>(requestUrl, requestData, {})
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(
+              `Create WorkFlow from ROBOT API failed: ${error.message}`,
+            );
+            throw error;
+          }),
+        ),
     );
     return data;
   }
@@ -54,23 +57,21 @@ export class RobotConnectorClient {
   async getAllWorkFlows(): Promise<WorkFlowResponseDto[]> {
     const requestUrl = `${this.robotApiUrl}/workflows`;
     const { data } = await firstValueFrom(
-      this.httpService
-      .get<WorkFlowResponseDto[]>(requestUrl)
-      .pipe(
+      this.httpService.get<WorkFlowResponseDto[]>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get all WorkFlows from ROBOT API failed: ${error.message}`,
           );
           throw error;
         }),
-      )
+      ),
     );
     return data;
   }
 
   async runWorkFlow(
     workFlowId: string,
-    requestData: RunWorkFlowRequestDto
+    requestData: RunWorkFlowRequestDto,
   ): Promise<WorkFlowExecutionResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.runWorkFlow.name}`;
     const requestUrl = `${this.robotApiUrl}/workflows/${workFlowId}/run`;
@@ -106,7 +107,7 @@ export class RobotConnectorClient {
           );
           throw error;
         }),
-      )
+      ),
     );
     return data;
   }
@@ -123,124 +124,95 @@ export class RobotConnectorClient {
           );
           throw error;
         }),
-      )
+      ),
     );
     return data;
   }
 
   /** QR LOCATIONS */
   async retrieveAllQRLocations(): Promise<QRLocationResponseDto[]> {
+    const context = `${RobotConnectorClient.name}.${this.retrieveAllQRLocations.name}`;
     const requestUrl = `${this.robotApiUrl}/qr-locations`;
+    console.log({ requestUrl });
     const { data } = await firstValueFrom(
-      this.httpService
-      .get<QRLocationResponseDto[]>(requestUrl)
-      .pipe(
+      this.httpService.get<QRLocationResponseDto[]>(requestUrl).pipe(
+        retry(3),
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get all QR locations from ROBOT API failed: ${error.message}`,
+            context,
           );
-          throw error;
+          throw new BadRequestException(error.message);
         }),
-      )
+      ),
     );
     return data;
   }
 
   async createQRLocation(
-    requestData: CreateQRLocationRequestDto
+    requestData: CreateQRLocationRequestDto,
   ): Promise<QRLocationResponseDto> {
     const requestUrl = `${this.robotApiUrl}/qr-locations`;
     const { data } = await firstValueFrom(
       this.httpService
-      .post<QRLocationResponseDto>(requestUrl, requestData)
-      .pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(
-            `Create QR location from ROBOT API failed: ${error.message}`,
-          );
-          throw error;
-        }),
-      )
+        .post<QRLocationResponseDto>(requestUrl, requestData)
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(
+              `Create QR location from ROBOT API failed: ${error.message}`,
+            );
+            throw error;
+          }),
+        ),
     );
     return data;
   }
 
-  async getQRLocationById(
-    id: string
-  ): Promise<QRLocationResponseDto> {
+  async getQRLocationById(id: string): Promise<QRLocationResponseDto> {
     const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
     const { data } = await firstValueFrom(
-      this.httpService
-      .get<QRLocationResponseDto>(requestUrl)
-      .pipe(
+      this.httpService.get<QRLocationResponseDto>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get QR location by ID from ROBOT API failed: ${error.message}`,
           );
           throw error;
         }),
-      )
+      ),
     );
     return data;
   }
 
   async updateQRLocation(
     id: string,
-    requestData: UpdateQRLocationRequestDto
+    requestData: UpdateQRLocationRequestDto,
   ): Promise<QRLocationResponseDto> {
     const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
     const { data } = await firstValueFrom(
-      this.httpService
-      .put<QRLocationResponseDto>(requestUrl, requestData)
-      .pipe(
+      this.httpService.put<QRLocationResponseDto>(requestUrl, requestData).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Update QR location by ID from ROBOT API failed: ${error.message}`,
           );
           throw error;
         }),
-      )
+      ),
     );
     return data;
   }
 
-  async deleteQRLocation(
-    id: string,
-  ): Promise<number> {
+  async deleteQRLocation(id: string): Promise<number> {
     const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
     const response = await firstValueFrom(
-      this.httpService
-      .delete<number>(requestUrl)
-      .pipe(
+      this.httpService.delete<number>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Delete QR location by ID from ROBOT API failed: ${error.message}`,
           );
           throw error;
         }),
-      )
+      ),
     );
     return response.status;
-  }
-
-  async testClient(
-    requestData: CreateSizeRequestDto
-  ): Promise<TableResponseDto> {
-    
-    const requestUrl = `http://localhost:8081/api/v1.0.0/sizes`;
-    const { data } = await firstValueFrom(
-      this.httpService
-      .post<TableResponseDto>(requestUrl, requestData)
-      .pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(
-            `Delete QR location by ID from ROBOT API failed: ${error.message}`,
-          );
-          throw error;
-        }),
-      )
-    );
-    console.log({data})
-    return data;
   }
 }
