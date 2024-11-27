@@ -11,7 +11,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui'
 
 import { IApiResponse, IProductVariant } from '@/types'
@@ -19,15 +19,17 @@ import { IApiResponse, IProductVariant } from '@/types'
 import { useDeleteProductVariant } from '@/hooks'
 import { showErrorToast, showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
+import { useParams } from 'react-router-dom'
 
 export default function DeleteProductVariantDialog({
-  productVariant
+  productVariant,
 }: {
   productVariant: IProductVariant
 }) {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { t: tCommon } = useTranslation('common')
+  const { slug } = useParams()
   const { t: tToast } = useTranslation('toast')
   const { mutate: deleteProductVariant } = useDeleteProductVariant()
   const [isOpen, setIsOpen] = useState(false)
@@ -36,7 +38,7 @@ export default function DeleteProductVariantDialog({
     deleteProductVariant(productVariantSlug, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['productVariants']
+          queryKey: ['product', slug],
         })
         setIsOpen(false)
         showToast(tToast('toast.deleteProductVariantSuccess'))
@@ -44,32 +46,37 @@ export default function DeleteProductVariantDialog({
       onError: (error) => {
         if (isAxiosError(error)) {
           const axiosError = error as AxiosError<IApiResponse<void>>
-          if (axiosError.response?.data.code) showErrorToast(axiosError.response.data.code)
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
         }
-      }
+      },
     })
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex justify-start w-full" asChild>
+      <DialogTrigger className="flex w-full justify-start" asChild>
         <DialogTrigger asChild>
-          <Button variant="ghost" className="gap-1 px-2 text-sm" onClick={() => setIsOpen(true)}>
+          <Button
+            variant="ghost"
+            className="gap-1 px-2 text-sm"
+            onClick={() => setIsOpen(true)}
+          >
             <Trash2 className="icon" />
             {t('productVariant.delete')}
           </Button>
         </DialogTrigger>
       </DialogTrigger>
 
-      <DialogContent className="max-w-[22rem] rounded-md sm:max-w-[32rem] font-beVietNam">
+      <DialogContent className="max-w-[22rem] rounded-md font-beVietNam sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="pb-4 border-b border-destructive text-destructive">
+          <DialogTitle className="border-b border-destructive pb-4 text-destructive">
             <div className="flex items-center gap-2">
-              <TriangleAlert className="w-6 h-6" />
+              <TriangleAlert className="h-6 w-6" />
               {t('productVariant.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className="p-2 bg-red-100 rounded-md text-destructive">
+          <DialogDescription className="rounded-md bg-red-100 p-2 text-destructive">
             {tCommon('common.deleteNote')}
           </DialogDescription>
 
@@ -86,7 +93,9 @@ export default function DeleteProductVariantDialog({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => productVariant && handleSubmit(productVariant.slug || '')}
+            onClick={() =>
+              productVariant && handleSubmit(productVariant.slug || '')
+            }
           >
             {tCommon('common.confirmDelete')}
           </Button>

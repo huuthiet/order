@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
+  AuthChangePasswordRequestDto,
   AuthProfileResponseDto,
   AuthRefreshRequestDto,
   LoginAuthRequestDto,
@@ -30,6 +31,7 @@ import { Branch } from 'src/branch/branch.entity';
 import { BranchValidation } from 'src/branch/branch.validation';
 import { BranchException } from 'src/branch/branch.exception';
 import { UserRequest } from './user.decorator';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class AuthService {
@@ -47,12 +49,68 @@ export class AuthService {
     @InjectMapper()
     private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+    private readonly fileService: FileService,
   ) {
     this.saltOfRounds = this.configService.get<number>('SALT_ROUNDS');
     this.duration = this.configService.get<number>('DURATION');
     this.refeshableDuration = this.configService.get<number>(
       'REFRESHABLE_DURATION',
     );
+  }
+
+  async uploadAvatar(user: UserRequest, file: Express.Multer.File) {
+    const context = `${AuthService.name}.${this.uploadAvatar.name}`;
+    const userEntity = await this.userRepository.findOne({
+      where: { id: user.userId },
+    });
+
+    // Delete old avatar
+    await this.fileService.removeFile(userEntity.image);
+
+    // Save new avatar
+    const uploadedFile = await this.fileService.uploadFile(file);
+    userEntity.image = uploadedFile.name;
+    await this.userRepository.save(userEntity);
+    this.logger.log(`User ${user.userId} uploaded avatar`, context);
+
+    return this.mapper.map(userEntity, User, AuthProfileResponseDto);
+  }
+
+  async changePassword(
+    user: UserRequest,
+    requestData: AuthChangePasswordRequestDto,
+  ) {
+    const context = `${AuthService.name}.${this.changePassword.name}`;
+    const userEntity = await this.userRepository.findOne({
+      where: { id: user.userId },
+    });
+    if (!userEntity) {
+      this.logger.warn(`User ${user.userId} not found`, context);
+      throw new AuthException(AuthValidation.USER_NOT_FOUND);
+    }
+
+    // Validate same old password
+    const isMatch = await bcrypt.compare(
+      requestData.oldPassword,
+      userEntity.password,
+    );
+    if (!isMatch) {
+      this.logger.warn(
+        `User ${user.userId} provided invalid old password`,
+        context,
+      );
+      throw new AuthException(AuthValidation.INVALID_OLD_PASSWORD);
+    }
+
+    const hashedPass = await bcrypt.hash(
+      requestData.newPassword,
+      this.saltOfRounds,
+    );
+    userEntity.password = hashedPass;
+    await this.userRepository.save(userEntity);
+    this.logger.log(`User ${user.userId} changed password`, context);
+
+    return this.mapper.map(userEntity, User, AuthProfileResponseDto);
   }
 
   /**
