@@ -49,14 +49,15 @@ export class CatalogController {
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async createCatalog(
-    @Body(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    }),
-  )
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     requestData: CreateCatalogRequestDto,
-  ){
-    console.log({requestData})
+  ) {
+    console.log({ requestData });
     const result = await this.catalogService.createCatalog(requestData);
     return {
       message: 'Catalog have been created successfully',
@@ -102,14 +103,16 @@ export class CatalogController {
     name: 'slug',
     description: 'The slug of the catalog to be updated',
     required: true,
-    example: 'slug-123',
+    example: '',
   })
   async updateCatalog(
     @Param('slug') slug: string,
-    @Body(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    })) 
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     updateCatalogDto: UpdateCatalogRequestDto,
   ) {
     const result = await this.catalogService.updateCatalog(
@@ -139,7 +142,7 @@ export class CatalogController {
     name: 'slug',
     description: 'The slug of the catalog to be deleted',
     required: true,
-    example: 'slug-123',
+    example: '',
   })
   async deleteCatalog(@Param('slug') slug: string) {
     const result = await this.catalogService.deleteCatalog(slug);

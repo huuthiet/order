@@ -1,10 +1,9 @@
-import { AutoMap } from "@automapper/classes";
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, Min } from "class-validator";
-import { BaseResponseDto } from "src/app/base.dto";
-import { ProductResponseDto } from "src/product/product.dto";
-import { TrackingOrderItemResponseDto } from "src/tracking-order-item/tracking-order-item.dto";
-import { VariantResponseDto } from "src/variant/variant.dto";
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, Min } from 'class-validator';
+import { BaseResponseDto } from 'src/app/base.dto';
+import { TrackingOrderItemResponseDto } from 'src/tracking-order-item/tracking-order-item.dto';
+import { VariantResponseDto } from 'src/variant/variant.dto';
 import { WorkFlowStatus } from 'src/tracking/tracking.constants';
 
 export class CreateOrderItemRequestDto {
@@ -16,7 +15,7 @@ export class CreateOrderItemRequestDto {
 
   @AutoMap()
   @ApiProperty({ description: 'The note of order item', example: 'Ghi chú' })
-  @IsNotEmpty({ message: 'Invalid note of order item' })
+  @IsOptional()
   note: string;
 
   @AutoMap()
@@ -37,7 +36,7 @@ export class UpdateOrderItemRequestDto {
 
   @AutoMap()
   @ApiProperty({ description: 'The note of order item', example: 'Ghi chú' })
-  @IsNotEmpty({ message: 'Invalid note of order item' })
+  @IsOptional()
   note: string;
 
   @AutoMap()
@@ -82,4 +81,3 @@ export class OrderItemResponseDto extends BaseResponseDto {
   @AutoMap(() => StatusOrderItemResponseDto)
   status: StatusOrderItemResponseDto;
 }
-

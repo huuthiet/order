@@ -14,6 +14,7 @@ import { CashStrategy } from './strategy/cash.strategy';
 import { ConfigService } from '@nestjs/config';
 import { Order } from 'src/order/order.entity';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -36,6 +37,12 @@ describe('PaymentService', () => {
               }
               return null;
             }),
+          },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(), // Mock the emit method
           },
         },
         {
