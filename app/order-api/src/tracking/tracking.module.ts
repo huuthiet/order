@@ -9,6 +9,7 @@ import { Order } from 'src/order/order.entity';
 import { TrackingProfile } from './tracking.mapper';
 import { Table } from 'src/table/table.entity';
 import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module';
+import { Workflow } from 'src/workflow/workflow.entity';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module
     TrackingOrderItem, 
     OrderItem,
     Order,
-    Table
+    Table,
+    Workflow
     ]),
     RobotConnectorModule
   ],

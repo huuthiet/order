@@ -148,7 +148,6 @@ export class GetOrderRequestDto {
 
 export class CheckDataCreateOrderResponseDto {
   isValid: Boolean;
-  message?: string; 
   mappedOrder?: Order;
 }
 

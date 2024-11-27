@@ -1,18 +1,21 @@
 import { HttpService } from "@nestjs/axios";
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { 
   RunWorkFlowRequestDto, 
   WorkFlowExecutionResponseDto, 
-  CreateWorkFlowRequestDto,
+  CreateWorkflowRequestDto,
   WorkFlowResponseDto,
   QRLocationResponseDto,
   CreateQRLocationRequestDto,
-  UpdateQRLocationRequestDto
+  UpdateQRLocationRequestDto,
+  GetWorkFlowExecutionResponseDto
 } from "./robot-connector.dto";
 import { catchError, firstValueFrom } from "rxjs";
 import { AxiosError } from "axios";
+import { CreateTableRequestDto, TableResponseDto } from "src/table/table.dto";
+import { CreateSizeRequestDto } from "src/size/size.dto";
 
 @Injectable()
 export class RobotConnectorClient {
@@ -28,7 +31,7 @@ export class RobotConnectorClient {
 
   /* WORK FLOWS */
   async createWorkFlow(
-    requestData: CreateWorkFlowRequestDto
+    requestData: CreateWorkflowRequestDto
   ): Promise<WorkFlowResponseDto> {
     const requestUrl = `${this.robotApiUrl}/workflows`;
     const { data } = await firstValueFrom(
@@ -69,18 +72,18 @@ export class RobotConnectorClient {
     workFlowId: string,
     requestData: RunWorkFlowRequestDto
   ): Promise<WorkFlowExecutionResponseDto> {
+    const context = `${RobotConnectorClient.name}.${this.runWorkFlow.name}`;
     const requestUrl = `${this.robotApiUrl}/workflows/${workFlowId}/run`;
     const { data } = await firstValueFrom(
       this.httpService
-      .post<WorkFlowExecutionResponseDto>(requestUrl, requestData, {
-
-      })
+      .post<WorkFlowExecutionResponseDto>(requestUrl, requestData)
       .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
-            `Init WorkFlow from ROBOT API failed: ${error.message}`,
+            `Run workflow from ROBOT API ${workFlowId} failed: ${error.message}`, 
+            context
           );
-          throw error;
+          throw new BadRequestException(`Run workflow failed`);
         }),
       )
     );
@@ -90,11 +93,12 @@ export class RobotConnectorClient {
   /* WORKFLOW EXECUTIONS */
   async retrieveWorkFlowExecution(
     workFlowInstanceId: string
-  ): Promise<WorkFlowExecutionResponseDto> {
-    const requestUrl = `${this.robotApiUrl}/executions/${workFlowInstanceId}`;
+  ): Promise<GetWorkFlowExecutionResponseDto> {
+    console.log({workFlowInstanceId})
+    const requestUrl = `${this.robotApiUrl}/workflow-executions/${workFlowInstanceId}`;
     const { data } = await firstValueFrom(
       this.httpService
-      .get<WorkFlowExecutionResponseDto>(requestUrl)
+      .get<GetWorkFlowExecutionResponseDto>(requestUrl)
       .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
@@ -107,11 +111,11 @@ export class RobotConnectorClient {
     return data;
   }
 
-  async retrieveAllWorkFlowExecutions(): Promise<WorkFlowExecutionResponseDto[]> {
-    const requestUrl = `${this.robotApiUrl}/executions`;
+  async retrieveAllWorkFlowExecutions(): Promise<GetWorkFlowExecutionResponseDto[]> {
+    const requestUrl = `${this.robotApiUrl}/workflow-executions`;
     const { data } = await firstValueFrom(
       this.httpService
-      .get<WorkFlowExecutionResponseDto[]>(requestUrl)
+      .get<GetWorkFlowExecutionResponseDto[]>(requestUrl)
       .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
@@ -217,5 +221,26 @@ export class RobotConnectorClient {
       )
     );
     return response.status;
+  }
+
+  async testClient(
+    requestData: CreateSizeRequestDto
+  ): Promise<TableResponseDto> {
+    
+    const requestUrl = `http://localhost:8081/api/v1.0.0/sizes`;
+    const { data } = await firstValueFrom(
+      this.httpService
+      .post<TableResponseDto>(requestUrl, requestData)
+      .pipe(
+        catchError((error: AxiosError) => {
+          this.logger.error(
+            `Delete QR location by ID from ROBOT API failed: ${error.message}`,
+          );
+          throw error;
+        }),
+      )
+    );
+    console.log({data})
+    return data;
   }
 }

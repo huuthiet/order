@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { BaseResponseDto } from 'src/app/base.dto';
 
 export class CreateBranchDto {
   @AutoMap()
@@ -14,7 +15,7 @@ export class CreateBranchDto {
   address: string;
 }
 
-export class BranchResponseDto {
+export class BranchResponseDto extends BaseResponseDto {
   @AutoMap()
   @ApiProperty()
   name: string;

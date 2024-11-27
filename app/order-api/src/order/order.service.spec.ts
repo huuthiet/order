@@ -18,6 +18,7 @@ import { Tracking } from "src/tracking/tracking.entity";
 import { RobotConnectorClient } from "src/robot-connector/robot-connector.client";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
+import { DataSource } from 'typeorm';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -28,6 +29,21 @@ describe('OrderService', () => {
   let variantRepositoryMock: MockType<Repository<Variant>>;
   let trackingRepositoryMock: MockType<Repository<Tracking>>;
   let mapperMock: MockType<Mapper>;
+
+  const mockQueryRunner = {
+    connect: jest.fn(),
+    startTransaction: jest.fn(),
+    commitTransaction: jest.fn(),
+    rollbackTransaction: jest.fn(),
+    release: jest.fn(),
+    manager: {
+      save: jest.fn(),
+    },
+  };
+
+  const mockDataSource = {
+    createQueryRunner: jest.fn().mockReturnValue(mockQueryRunner),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -52,6 +68,10 @@ describe('OrderService', () => {
             get: jest.fn(),
             post: jest.fn(),
           },
+        },
+        { 
+          provide: DataSource, 
+          useValue: mockDataSource 
         },
         {
           provide: getRepositoryToken(Order),
