@@ -53,7 +53,6 @@ export class TableController {
     @Body(
       new ValidationPipe({
         transform: true,
-        whitelist: true,
       }),
     )
     createTableDto: CreateTableRequestDto,

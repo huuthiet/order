@@ -77,6 +77,7 @@ describe('TableController', () => {
         slug: 'mock-table-slug',
         xPosition: 10,
         yPosition: 10,
+        status: 'available',
       } as TableResponseDto;
 
       (service.create as jest.Mock).mockResolvedValue(mockOutput);
@@ -101,6 +102,7 @@ describe('TableController', () => {
         slug: 'mock-table-slug',
         xPosition: 10,
         yPosition: 10,
+        status: 'available',
       } as TableResponseDto;
       const mockOutput = [table];
 
@@ -142,6 +144,7 @@ describe('TableController', () => {
         slug: 'mock-table-slug',
         xPosition: 10,
         yPosition: 10,
+        status: 'available',
       } as TableResponseDto;
 
       (service.update as jest.Mock).mockResolvedValue(mockOutput);
