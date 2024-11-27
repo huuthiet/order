@@ -9,7 +9,6 @@ import { Payment } from './payment.entity';
 import { Repository } from 'typeorm';
 import { CashStrategy } from './strategy/cash.strategy';
 import { BankTransferStrategy } from './strategy/bank-transfer.strategy';
-import { InternalStrategy } from './strategy/internal.strategy';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -47,7 +46,6 @@ export class PaymentService {
     private readonly logger: Logger,
     private readonly cashStrategy: CashStrategy,
     private readonly bankTransferStrategy: BankTransferStrategy,
-    private readonly internalStrategy: InternalStrategy,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -170,6 +168,7 @@ export class PaymentService {
         referenceCode: payment.slug,
       },
     } as ACBResponseDto;
+    this.logger.warn(`Callback response: ${JSON.stringify(response)}`, context);
     return response;
   }
 }

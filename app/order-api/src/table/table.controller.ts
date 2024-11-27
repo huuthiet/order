@@ -29,6 +29,7 @@ import {
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
+import { QRLocationResponseDto } from 'src/robot-connector/robot-connector.dto';
 
 @ApiTags('Table')
 @Controller('tables')
@@ -107,7 +108,7 @@ export class TableController {
     name: 'slug',
     description: 'The slug of the table to be changed',
     required: true,
-    example: 'slug-123',
+    example: '',
   })
   async changeStatus(
     @Param('slug') slug: string,
@@ -144,7 +145,6 @@ export class TableController {
     @Body(
       new ValidationPipe({
         transform: true,
-        whitelist: true,
       }),
     )
     updateTableDto: UpdateTableRequestDto,
@@ -172,7 +172,7 @@ export class TableController {
     name: 'slug',
     description: 'The slug of the table to be deleted',
     required: true,
-    example: 'slug-123',
+    example: '',
   })
   async remove(@Param('slug') slug: string) {
     const result = await this.tableService.remove(slug);
@@ -182,5 +182,30 @@ export class TableController {
       timestamp: new Date().toISOString(),
       result: `${result} table have been deleted successfully`,
     } as AppResponseDto<string>;
+  }
+
+  @Get('locations')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Get all table locations successfully',
+    type: QRLocationResponseDto,
+    isArray: true,
+  })
+  @ApiOperation({ summary: 'Get all table locations' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all table locations successfully',
+  })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  async getLocations() {
+    const result = await this.tableService.getLocations();
+    return {
+      message: 'Table locations have been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<QRLocationResponseDto[]>;
   }
 }

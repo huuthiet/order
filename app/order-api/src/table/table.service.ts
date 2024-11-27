@@ -17,6 +17,7 @@ import { Branch } from 'src/branch/branch.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
 
 @Injectable()
 export class TableService {
@@ -27,7 +28,12 @@ export class TableService {
     private readonly branchRepository: Repository<Branch>,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+    private readonly robotConnectorClient: RobotConnectorClient,
   ) {}
+
+  async getLocations() {
+    return this.robotConnectorClient.retrieveAllQRLocations();
+  }
 
   /**
    * Create a new table
@@ -151,19 +157,19 @@ export class TableService {
       throw new BadRequestException('Table is not found');
     }
 
-    const tableData = this.mapper.map(
-      updateTableDto,
-      UpdateTableRequestDto,
-      Table,
-    );
-    const isExist = await this.isExistUpdatedName(
-      tableData.name,
-      table.name,
-      table.branch.id,
-    );
+    const isExist = await this.tableRepository.findOne({
+      where: {
+        name: updateTableDto.name,
+        location: updateTableDto.location,
+        branch: {
+          id: table.branch.id,
+        },
+      },
+    });
+
     if (isExist) {
       this.logger.warn(
-        `Table name ${tableData.name} already exist in this branch`,
+        `Table with ${updateTableDto.name} and ${updateTableDto.location} location already exist`,
         context,
       );
       throw new BadRequestException(
@@ -171,38 +177,17 @@ export class TableService {
       );
     }
 
+    const tableData = this.mapper.map(
+      updateTableDto,
+      UpdateTableRequestDto,
+      Table,
+    );
+
     Object.assign(table, tableData);
     const updatedTable = await this.tableRepository.save(table);
     this.logger.log(`Table ${slug} updated successfully`, context);
     const tableDto = this.mapper.map(updatedTable, Table, TableResponseDto);
     return tableDto;
-  }
-
-  /**
-   * Check the updated does exists or not
-   * @param {string} updatedName The name to update for table
-   * @param {string} currentName The current name of table
-   * @param branchId The branch id of table
-   * @returns {Promise<Boolean>} The result of checking is true or false
-   */
-  async isExistUpdatedName(
-    updatedName: string,
-    currentName: string,
-    branchId: string,
-  ): Promise<Boolean> {
-    if (updatedName === currentName) return false;
-
-    const tableExist = await this.tableRepository.findOne({
-      where: {
-        name: updatedName,
-        branch: {
-          id: branchId,
-        },
-      },
-    });
-    if (tableExist) return true;
-
-    return false;
   }
 
   /**
