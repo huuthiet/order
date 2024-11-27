@@ -1,6 +1,6 @@
 'use client'
 
-import { ShoppingCart, Trash2 } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 // import { Bar, BarChart, ResponsiveContainer } from 'recharts'
 
 import { Button } from '@/components/ui/button'
@@ -16,16 +16,17 @@ import {
 } from '@/components/ui/drawer'
 import { useTranslation } from 'react-i18next'
 import { useCartItemStore } from '@/stores'
-import { ScrollArea } from '@/components/ui'
-import { QuantitySelector } from '@/components/app/button'
+import { ScrollArea, Input, Label } from '@/components/ui'
 import { CartNoteInput, PromotionInput } from '@/components/app/input'
-import { publicFileURL, ROUTE } from '@/constants'
-import { NavLink } from 'react-router-dom'
+import { publicFileURL } from '@/constants'
+// import { NavLink, useNavigate } from 'react-router-dom'
+import { CreateOrderDialog } from '../dialog'
 
 export default function CheckoutCartDrawer() {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
-  const { getCartItems, removeCartItem } = useCartItemStore()
+  //   const navigate = useNavigate()
+  const { getCartItems } = useCartItemStore()
 
   const cartItems = getCartItems()
 
@@ -36,10 +37,6 @@ export default function CheckoutCartDrawer() {
 
   const discount = 0 // Giả sử giảm giá là 0
   const total = subtotal ? subtotal - discount : 0
-
-  const handleRemoveCartItem = (id: string) => {
-    removeCartItem(id)
-  }
 
   return (
     <Drawer>
@@ -58,11 +55,36 @@ export default function CheckoutCartDrawer() {
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
-            <DrawerTitle>{t('menu.order')}</DrawerTitle>
+            <DrawerTitle>{t('order.orderInformation')}</DrawerTitle>
             <DrawerDescription>{t('menu.orderDescription')}</DrawerDescription>
           </DrawerHeader>
           <div className="flex-1 overflow-hidden">
             <ScrollArea className="h-[28rem]">
+              <div className="mt-6 flex flex-col gap-4 border-b p-4">
+                <div className="flex flex-col gap-2">
+                  <Label>{t('order.customerName')}</Label>
+                  <Input placeholder={t('order.enterCustomerName')} />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>{t('order.phoneNumber')}</Label>
+                  <Input placeholder={t('order.enterPhoneNumber')} />
+                </div>
+              </div>
+              <div className="mt-5 flex flex-col gap-4 border-b p-4">
+                <div className="flex flex-col gap-2">
+                  <Label>{t('order.deliveryMethod')}</Label>
+                  <div className="flex flex-row items-center gap-4">
+                    <div className="flex w-fit items-center justify-center rounded-full bg-primary/15 px-4 py-1 text-xs font-thin text-primary">
+                      {t('order.dineIn')}
+                    </div>
+                    <div>
+                      <span className="text-xs text-muted-foreground">
+                        {t('order.tableNumber')}: 8
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="flex flex-col gap-4 p-4">
                 <div className="flex flex-col gap-4 space-y-2 py-2">
                   {cartItems ? (
@@ -81,29 +103,19 @@ export default function CheckoutCartDrawer() {
                             alt={item.name}
                             className="h-20 w-20 rounded-2xl object-cover"
                           />
-                          <div className="flex flex-1 flex-col gap-2">
-                            <div className="flex flex-row items-start justify-between">
-                              <div className="flex min-w-0 flex-1 flex-col">
+                          <div className="flex h-20 flex-1 flex-col gap-2 py-2">
+                            <div className="flex h-full flex-row items-start justify-between">
+                              <div className="flex h-full min-w-0 flex-1 flex-col justify-between">
                                 <span className="truncate font-bold">
                                   {item.name}
                                 </span>
-                                <span className="text-xs font-thin text-muted-foreground">
+                                <span className="flex items-center justify-between text-xs font-thin text-muted-foreground">
                                   {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                                  <span className="text-muted-foreground">
+                                    x1
+                                  </span>
                                 </span>
                               </div>
-                              <Button
-                                variant="ghost"
-                                onClick={() => handleRemoveCartItem(item.id)}
-                              >
-                                <Trash2
-                                  size={20}
-                                  className="text-muted-foreground"
-                                />
-                              </Button>
-                            </div>
-
-                            <div className="flex w-full items-center justify-between text-sm font-medium">
-                              <QuantitySelector cartItem={item} />
                             </div>
                           </div>
                         </div>
@@ -121,40 +133,51 @@ export default function CheckoutCartDrawer() {
             </ScrollArea>
           </div>
           <DrawerFooter>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('menu.total')}</span>
-                <span>{`${subtotal?.toLocaleString('vi-VN') || 0}đ`}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  {t('menu.discount')}
-                </span>
-                <span className="text-xs text-green-600">
-                  - {`${discount.toLocaleString('vi-VN')}đ`}
-                </span>
-              </div>
-              <div className="flex justify-between border-t pt-2 font-medium">
-                <span className="font-semibold">{t('menu.subTotal')}</span>
-                <span className="text-lg font-bold text-primary">
-                  {`${total.toLocaleString('vi-VN')}đ`}
-                </span>
+            <div className="mt-auto border-t bg-background p-4">
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {t('order.total')}
+                  </span>
+                  <span>{`${subtotal?.toLocaleString('vi-VN')}đ`}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {t('order.discount')}
+                  </span>
+                  <span className="text-xs text-green-600">
+                    - {`${discount.toLocaleString('vi-VN')}đ`}
+                  </span>
+                </div>
+                <div className="flex flex-col justify-start border-t pt-2">
+                  <div className="flex justify-between">
+                    <span className="font-semibold">
+                      {t('order.grandTotal')}
+                    </span>
+                    <span className="text-lg font-bold text-primary">
+                      {`${total.toLocaleString('vi-VN')}đ`}
+                    </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {t('order.vat')}
+                  </div>
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-2 flex-row gap-2">
               <DrawerClose asChild>
-                <Button variant="outline" className="mt-4 w-full rounded-full">
+                <Button variant="outline" className="w-full rounded-full">
                   {tCommon('common.close')}
                 </Button>
               </DrawerClose>
-              <NavLink to={ROUTE.STAFF_CHECKOUT_ORDER}>
-                <Button
-                  disabled={!cartItems}
-                  className="mt-4 w-full rounded-full bg-primary text-white"
-                >
-                  {t('menu.continue')}
-                </Button>
-              </NavLink>
+              {/* <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={() => navigate(-1)}
+              >
+                {tCommon('common.back')}
+              </Button> */}
+              <CreateOrderDialog disabled={!cartItems?.orderItems.length} />
             </div>
           </DrawerFooter>
         </div>

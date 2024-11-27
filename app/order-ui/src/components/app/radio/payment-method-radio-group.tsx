@@ -1,8 +1,7 @@
 import { Coins, CreditCard, WalletMinimal } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup, RadioGroupItem, Label } from '@/components/ui'
 
 interface PaymentMethodRadioGroupProps {
   onSubmit?: (paymentMethod: string) => void
@@ -35,14 +34,14 @@ export default function PaymentMethodRadioGroup({
         <RadioGroupItem value="bank-transfer" id="r2" />
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">
           <CreditCard size={20} />
-          <Label htmlFor="r1">{t('paymentMethod.bankTransfer')}</Label>
+          <Label htmlFor="r2">{t('paymentMethod.bankTransfer')}</Label>
         </div>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="cash" id="r3" />
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">
           <Coins size={20} />
-          <Label htmlFor="r1">{t('paymentMethod.cash')}</Label>
+          <Label htmlFor="r3">{t('paymentMethod.cash')}</Label>
         </div>
       </div>
     </RadioGroup>

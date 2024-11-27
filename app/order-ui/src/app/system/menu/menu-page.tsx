@@ -43,7 +43,7 @@ export default function MenuPage() {
       {/* Cart Section - Fixed */}
       <div
         className={`fixed right-0 h-[calc(100vh-6.5rem)] border-l bg-background transition-all duration-300 ease-in-out ${
-          isCartOpen ? 'w-full pr-2 md:w-[25%]' : 'w-0 opacity-0'
+          isCartOpen ? 'w-[25%]' : 'w-0 opacity-0'
         }`}
       >
         {isCartOpen && !isMobile && <CartContent />}
