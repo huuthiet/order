@@ -10,7 +10,7 @@ export default function ProductTab() {
   //   navigate(`${ROUTE.STAFF_PRODUCT_DETAIL}/${product.slug}`)
   // }
   return (
-    <div className="flex flex-row gap-2 h-[calc(100vh-4rem)]">
+    <div className="flex h-full flex-row gap-2">
       <DataTable
         columns={useProductColumns()}
         data={products?.result || []}

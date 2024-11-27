@@ -7,13 +7,17 @@ export interface Table {
   y: number
   width: number
   height: number
-  status: 'available' | 'occupied' | 'reserved'
+  status: TTableStatus
 }
+
+export type TTableStatus = 'available' | 'occupied' | 'reserved'
 
 export interface ITable extends IBase {
   name: string
   location: string
   isEmpty: boolean
+  xPosition?: number
+  yPosition?: number
 }
 
 export interface TableContextMenu {
@@ -37,4 +41,9 @@ export interface IUpdateTableRequest {
   slug: string
   name: string
   location: string
+}
+
+export interface IUpdateTableStatusRequest {
+  slug: string
+  status: TTableStatus
 }

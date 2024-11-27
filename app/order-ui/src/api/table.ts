@@ -4,6 +4,7 @@ import {
   ICreateTableRequest,
   ITable,
   IUpdateTableRequest,
+  IUpdateTableStatusRequest,
 } from '@/types'
 
 export async function getAllTables(): Promise<IApiResponse<ITable[]>> {
@@ -24,7 +25,7 @@ export async function createTable(
 export async function updateTable(
   data: IUpdateTableRequest,
 ): Promise<IApiResponse<IUpdateTableRequest>> {
-  const response = await http.put<IApiResponse<IUpdateTableRequest>>(
+  const response = await http.patch<IApiResponse<IUpdateTableRequest>>(
     `/tables/${data.slug}`,
     data,
   )
@@ -33,5 +34,15 @@ export async function updateTable(
 
 export async function deleteTable(slug: string): Promise<IApiResponse<null>> {
   const response = await http.delete<IApiResponse<null>>(`/tables/${slug}`)
+  return response.data
+}
+
+export async function updateTableStatus(
+  params: IUpdateTableStatusRequest,
+): Promise<IApiResponse<ITable>> {
+  const response = await http.patch<IApiResponse<ITable>>(
+    `/tables/${params.slug}/status`,
+    params.status,
+  )
   return response.data
 }

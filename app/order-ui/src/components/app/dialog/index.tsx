@@ -26,6 +26,8 @@ export { default as CreateMenuDialog } from './create-menu-dialog'
 export { default as UpdateMenuDialog } from './update-menu-dialog'
 
 export { default as CreateTableDialog } from './create-table-dialog'
+export { default as UpdateTableDialog } from './update-table-dialog'
+export { default as DeleteTableDialog } from './delete-table-dialog'
 
 export { default as CreateOrderDialog } from './create-order-dialog'
 
@@ -35,3 +37,6 @@ export { default as UpdateBankConnectorDialog } from './update-bank-connector-di
 export { default as QrCodeDialog } from './qr-code-dialog'
 
 export { default as AddMenuItemDialog } from './add-product-to-menu-dialog'
+export { default as AddMultipleItemsDialog } from './add-multiple-products-to-menu-dialog'
+export { default as UpdateMenuItemDialog } from './update-menu-item-dialog'
+export { default as DeleteMenuItemDialog } from './delete-menu-item-dialog'

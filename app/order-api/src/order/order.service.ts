@@ -381,9 +381,10 @@ export class OrderService {
     );
 
     for (let i = 0; i < uniqueWorkFlowInstanceIds.length; i++) {
-      const workFlow = await this.robotConnectorClient.retrieveWorkFlow(
-        uniqueWorkFlowInstanceIds[i],
-      );
+      const workFlow =
+        await this.robotConnectorClient.retrieveWorkFlowExecution(
+          uniqueWorkFlowInstanceIds[i],
+        );
       const tracking = await this.trackingRepository.findOne({
         where: {
           workFlowInstance: uniqueWorkFlowInstanceIds[i],

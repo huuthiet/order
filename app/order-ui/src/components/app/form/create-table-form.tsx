@@ -37,6 +37,8 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
       name: '',
       branch: '',
       location: '',
+      xPosition: 0,
+      yPosition: 0,
     },
   })
 
@@ -84,7 +86,7 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
         )}
       />
     ),
-    lcoation: (
+    location: (
       <FormField
         control={form.control}
         name="location"
@@ -93,6 +95,36 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
             <FormLabel>{t('table.location')}</FormLabel>
             <FormControl>
               <Input {...field} placeholder={t('table.enterLocation')} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    ),
+    xPosition: (
+      <FormField
+        control={form.control}
+        name="xPosition"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('table.xPosition')}</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder={t('table.enterXPosition')} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    ),
+    yPosition: (
+      <FormField
+        control={form.control}
+        name="yPosition"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('table.yPosition')}</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder={t('table.enterYPosition')} />
             </FormControl>
             <FormMessage />
           </FormItem>

@@ -14,7 +14,7 @@ import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.e
 import { Table } from 'src/table/table.entity';
 import { OrderType } from "src/order/order.contants";
 import { RobotConnectorClient } from "src/robot-connector/robot-connector.client";
-import { InitiateWorkFlowInstanceRequestDto } from "src/robot-connector/robot-connector.dto";
+import { RunWorkFlowRequestDto } from "src/robot-connector/robot-connector.dto";
 
 @Injectable()
 export class TrackingService {
@@ -65,11 +65,19 @@ export class TrackingService {
         throw new BadRequestException('Can not find table location, please check table information');
       }
       // CALL WORK FLOW
-      // const requestData: InitiateWorkFlowInstanceRequestDto = {
-      //   orderCode: checkOrderItemInOneOrderResult.slug,
+      // const workFlowId = 
+      //   await this.getWorkFlowIdByBranch(checkOrderItemInOneOrderResult.branch.slug);
+      // if(!workFlowId) {
+      //   this.logger.warn(`Must add work flow for this branch ${checkOrderItemInOneOrderResult.branch.slug}`, context);
+      //   throw new BadRequestException('Must add work flow for this branch');
+      // }
+      // const requestData: RunWorkFlowRequestDto = {
+      //   order_code: checkOrderItemInOneOrderResult.slug,
       //   location: tableLocation
       // }
-      // const workFlow = await this.robotConnectorClient.initiateWorkFlowInstance(requestData);
+
+      // const workFlow: RunWorkFlowRequestDto = 
+      //   await this.robotConnectorClient.runWorkFlow(workFlowId, requestData);
 
       const workFlowInstanceId = 'work-flow-instance-id';
       const tracking = new Tracking();
@@ -210,5 +218,11 @@ export class TrackingService {
     if(!table) return null;
 
     return table.location;
+  }
+
+  async getWorkFlowIdByBranch (
+    branchSlug: string
+  ): Promise<string | null> {
+    return 'work-flow-id';
   }
 }

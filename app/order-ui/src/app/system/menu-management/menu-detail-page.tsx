@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
+import moment from 'moment'
 
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { ScrollArea } from '@/components/ui'
 import { useSpecificMenu } from '@/hooks'
 import { ProductDetailSkeleton } from '@/components/app/skeleton'
@@ -12,8 +12,8 @@ import { CartToggleButton } from '@/components/app/button'
 import AddMenuItem from './add-menu-item'
 
 export default function MenuDetailPage() {
-  const [isCartOpen, setIsCartOpen] = useState(true)
-  const { t } = useTranslation(['product'])
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const { t } = useTranslation(['menu'])
   const { slug } = useParams()
   const { data: menuDetail, isLoading } = useSpecificMenu({
     slug: slug as string,
@@ -34,33 +34,27 @@ export default function MenuDetailPage() {
             isCartOpen ? 'w-full' : 'w-full'
           }`}
         >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-between">
-              <BreadcrumbComponent />
-              <CartToggleButton
-                isCartOpen={isCartOpen}
-                setIsCartOpen={setIsCartOpen}
-              />
-            </div>
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pr-4">
+            <div className="flex w-full flex-row items-center justify-end"></div>
           </div>
-          <div className="flex flex-row items-center justify-between">
-            <span className="flex items-center gap-1 text-lg">
+          <div className="flex w-full flex-row items-center justify-between">
+            <span className="flex w-full items-center gap-1 text-lg">
               <SquareMenu />
-              {t('product.title')}
+              {t('menu.title')}
+              {' - '}
+              {moment(menuDetailData?.date).format('DD/MM/YYYY')}
             </span>
+            <CartToggleButton
+              isCartOpen={isCartOpen}
+              setIsCartOpen={setIsCartOpen}
+            />
           </div>
+
           <div
-            className={`mt-4 grid grid-cols-1 gap-4 ${isCartOpen ? 'md:grid-cols-2' : 'md:grid-cols-3'} `}
+            className={`mt-4 grid grid-cols-1 gap-4 ${isCartOpen ? 'md:grid-cols-2' : 'md:grid-cols-5'} `}
           >
             {menuDetailData?.menuItems.map((item) => (
-              <MenuItemCard
-                key={item.slug}
-                image={item.product.image}
-                name={item.product.name}
-                description={item.product.description}
-                stock={item.currentStock}
-                price={item.product.variants[0]?.price}
-              />
+              <MenuItemCard menuItem={item} />
             ))}
           </div>
         </div>

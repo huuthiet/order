@@ -1,42 +1,82 @@
 import { ColumnDef } from '@tanstack/react-table'
+import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-// import { AddMenuItemDialog } from '@/components/app/dialog/add-menu-item-dialog'
 
 import { DataTableColumnHeader, Checkbox } from '@/components/ui'
 import { IProduct } from '@/types'
 import { publicFileURL } from '@/constants'
 import { AddMenuItemDialog } from '@/components/app/dialog'
+import { useMenuItemStore } from '@/stores'
 
 export const useProductColumns = (): ColumnDef<IProduct>[] => {
   const { t } = useTranslation(['product'])
+  const { slug: menuSlug } = useParams()
+  const { addMenuItem, removeMenuItem, getMenuItems } = useMenuItemStore()
+
+  // Lấy danh sách menuItems từ store
+  const menuItems = getMenuItems()
 
   return [
     {
       id: 'select',
       header: ({ table }) => (
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value)
+            const rows = table.getRowModel().rows
+            rows.forEach((row) => {
+              const product = row.original
+              if (value) {
+                addMenuItem({
+                  menuSlug: menuSlug || '',
+                  productName: product.name,
+                  productSlug: product.slug,
+                  defaultStock: 50,
+                })
+              } else {
+                removeMenuItem(product.slug)
+              }
+            })
+          }}
           aria-label="Select all"
         />
       ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
+      cell: ({ row }) => {
+        const product = row.original
+        // Kiểm tra xem sản phẩm đã tồn tại trong store chưa
+        const isSelected = menuItems.some(
+          (item) => item.productSlug === product.slug,
+        )
+
+        return (
+          <Checkbox
+            checked={isSelected} // Sử dụng trạng thái từ store thay vì từ row
+            onCheckedChange={(value) => {
+              row.toggleSelected(!!value)
+              const product = row.original
+              if (value) {
+                addMenuItem({
+                  menuSlug: menuSlug || '',
+                  productName: product.name,
+                  productSlug: product.slug,
+                  defaultStock: 50,
+                })
+              } else {
+                removeMenuItem(product.slug)
+              }
+            }}
+            aria-label="Select row"
+          />
+        )
+      },
       enableSorting: false,
       enableHiding: false,
     },
     {
       accessorKey: 'actions',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('product.name')} />
+        <DataTableColumnHeader column={column} title={t('product.actions')} />
       ),
       cell: ({ row }) => {
         const product = row.original

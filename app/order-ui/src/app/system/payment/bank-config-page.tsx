@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { ScrollArea } from '@/components/ui'
 import { useGetBankConnector } from '@/hooks'
 import {
@@ -14,16 +13,12 @@ export default function BankConfigPage() {
   const { data: bankConfig } = useGetBankConnector()
 
   const bankConfigData = bankConfig?.result
-  console.log('bankConfigData', bankConfigData)
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
+    <div className="flex h-full flex-row gap-2">
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
         <div className={`px-4 transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background py-3 pr-4">
-            <div className="flex w-full flex-row items-center justify-between">
-              <BreadcrumbComponent />
-            </div>
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pr-4">
             <div className="flex w-full justify-end gap-2">
               {!bankConfigData && <CreateBankConnectorDialog />}
               <UpdateBankConnectorDialog bankConnector={bankConfigData} />
