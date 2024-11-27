@@ -17,7 +17,6 @@ import {
 } from 'src/order-item/order-item.dto';
 import { Type } from 'class-transformer';
 import { Order } from './order.entity';
-import { Table } from 'typeorm';
 import { OrderItem } from 'src/order-item/order-item.entity';
 
 export class CreateOrderRequestDto {
@@ -158,7 +157,6 @@ export class GetOrderRequestDto {
 
 export class CheckDataCreateOrderResponseDto {
   isValid: Boolean;
-  message?: string;
   mappedOrder?: Order;
 }
 
