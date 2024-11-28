@@ -1,4 +1,4 @@
-export class CreateWorkFlowRequestDto {
+export class CreateWorkflowRequestDto {
   name: string;
   description: string;
 }
@@ -13,9 +13,10 @@ export class RunWorkFlowRequestDto {
 }
 
 export class WorkFlowExecutionResponseDto {
-  id: string;
+  workflow_execution_id: string;
+}
+export class GetWorkFlowExecutionResponseDto {
   status: string;
-  workflow_id: string;
 }
 
 export class CreateQRLocationRequestDto {

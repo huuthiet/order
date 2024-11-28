@@ -25,6 +25,12 @@ export class CreateTrackingOrderItemWithQuantityAndOrderItemEntity {
   orderItem: OrderItem;
 }
 
+export class ValidateDefinedAndQuantityOrderItem {
+  isValid: Boolean; 
+
+  orderItemsData?: CreateTrackingOrderItemWithQuantityAndOrderItemEntity[]
+}
+
 export class TrackingOrderItemResponseDto extends BaseResponseDto {
   @AutoMap()
   quantity: number;

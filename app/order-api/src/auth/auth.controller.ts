@@ -4,13 +4,17 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
 import {
+  AuthChangePasswordRequestDto,
   AuthProfileResponseDto,
   AuthRefreshRequestDto,
   LoginAuthRequestDto,
@@ -21,13 +25,17 @@ import {
 } from './auth.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
+  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AppResponseDto } from 'src/app/app.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { User, UserRequest } from './user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -56,10 +64,10 @@ export class AuthController {
     const result = await this.authService.login(requestData);
     const response = {
       message: 'Login successful',
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as unknown as AppResponseDto<LoginAuthResponseDto>;
+    } as AppResponseDto<LoginAuthResponseDto>;
     return response;
   }
 
@@ -150,5 +158,68 @@ export class AuthController {
       timestamp: new Date().toISOString(),
       result,
     } as unknown as AppResponseDto<LoginAuthResponseDto>;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('change-password')
+  @ApiOperation({ summary: 'Change password' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiResponseWithType({
+    type: AuthProfileResponseDto,
+    description: 'Password changed successfully',
+  })
+  async changePassword(
+    @User(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserRequest,
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: AuthChangePasswordRequestDto,
+  ): Promise<AppResponseDto<AuthProfileResponseDto>> {
+    const result = await this.authService.changePassword(user, requestData);
+    return {
+      message: 'Password changed successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<AuthProfileResponseDto>;
+  }
+
+  @Patch('/upload')
+  @HttpCode(HttpStatus.OK)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Avatar have been uploaded successfully',
+    type: AuthProfileResponseDto,
+  })
+  @ApiOperation({ summary: 'Upload avatar' })
+  @ApiResponse({
+    status: 200,
+    description: 'Avatar have been uploaded successfully',
+  })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(
+    @User(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserRequest,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const result = await this.authService.uploadAvatar(user, file);
+    return {
+      message: 'Avatar been created successfully',
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<AuthProfileResponseDto>;
   }
 }

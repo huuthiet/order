@@ -6,10 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import {
   CheckDataCreateOrderItemResponseDto,
-  CheckDataCreateOrderResponseDto,
   CreateOrderRequestDto,
   GetOrderRequestDto,
   OrderResponseDto,
@@ -31,6 +30,14 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { OrderException } from './order.exception';
 import { OrderValidation } from './order.validation';
 import { PaymentStatus } from 'src/payment/payment.constants';
+import { BranchException } from 'src/branch/branch.exception';
+import { BranchValidation } from 'src/branch/branch.validation';
+import { TableException } from 'src/table/table.exception';
+import { TableValidation } from 'src/table/table.validation';
+import { AuthException } from 'src/auth/auth.exception';
+import AuthValidation from 'src/auth/auth.validation1';
+import { VariantException } from 'src/variant/variant.exception';
+import { VariantValidation } from 'src/variant/variant.validation';
 
 @Injectable()
 export class OrderService {
@@ -50,6 +57,7 @@ export class OrderService {
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     private readonly robotConnectorClient: RobotConnectorClient,
+    private readonly dataSource: DataSource,
   ) {}
 
   @OnEvent('payment.paid')
@@ -86,31 +94,43 @@ export class OrderService {
     requestData: CreateOrderRequestDto,
   ): Promise<OrderResponseDto> {
     const context = `${OrderService.name}.${this.createOrder.name}`;
-    const checkValidOrderData = await this.checkCreatedOrderData(requestData);
-    if (!checkValidOrderData.isValid) {
-      this.logger.warn(checkValidOrderData.message, context);
-      throw new BadRequestException(checkValidOrderData.message);
-    }
-    const checkValidOrderItemData = await this.checkCreatedOrderItemData(
-      requestData.orderItems,
-    );
-    if (!checkValidOrderItemData.isValid) {
-      this.logger.warn('Invalid order item data', context);
-      throw new BadRequestException('Invalid order item data');
-    }
 
-    const mappedOrder: Order = checkValidOrderData.mappedOrder;
-    Object.assign(mappedOrder, {
-      orderItems: checkValidOrderItemData.mappedOrderItems,
-      subtotal: checkValidOrderItemData.subtotal,
-    });
+    const mappedOrder: Order = await this.validateCreatedOrderData(requestData);
 
-    const newOrder = this.orderRepository.create(mappedOrder);
-    const createdOrder = await this.orderRepository.save(newOrder);
-    this.logger.log(
-      `Create new order ${createdOrder.slug} successfully`,
-      context,
-    );
+    const checkValidOrderItemData = await this.validateCreatedOrderItemData(requestData.orderItems);
+
+    let createdOrder: Order;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      Object.assign(
+        mappedOrder, 
+        { 
+          orderItems: checkValidOrderItemData.mappedOrderItems,
+          subtotal: checkValidOrderItemData.subtotal
+        }
+      );
+      const newOrder = this.orderRepository.create(mappedOrder);
+
+      createdOrder = await queryRunner.manager.save(newOrder);
+      await queryRunner.commitTransaction();
+      this.logger.log(
+        `Create new order ${createdOrder.slug} successfully`,
+        context,
+      );
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      this.logger.warn(
+        `Create new order failed`,
+        context,
+      );
+      throw new BadRequestException('Create new order failed')
+    } finally {
+      await queryRunner.release();
+    }
+    
     const orderDto = this.mapper.map(createdOrder, Order, OrderResponseDto);
     return orderDto;
   }
@@ -118,72 +138,48 @@ export class OrderService {
   /**
    *
    * @param {CreateOrderRequestDto} data The data to create order
-   * @returns {Promise<CheckDataCreateOrderResponseDto>} The result of checking
+   * @returns {Promise<Order>} The result of checking
    */
-  async checkCreatedOrderData(
-    data: CreateOrderRequestDto,
-  ): Promise<CheckDataCreateOrderResponseDto> {
+  async validateCreatedOrderData(
+    data: CreateOrderRequestDto
+  ): Promise<Order> {
+    const context = `${OrderService.name}.${this.validateCreatedOrderData.name}`;
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
-    if (!branch)
-      return {
-        isValid: false,
-        message: 'Branch is not found',
-      };
+    if (!branch) {
+      this.logger.warn(`${BranchValidation.BRANCH_NOT_FOUND} ${data.branch}`, context);
+      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
+    }
 
-    const checkTable = await this.checkOrderType(
-      data.table,
-      data.branch,
-      data.type === OrderType.AT_TABLE
-        ? OrderType.AT_TABLE
-        : OrderType.TAKE_OUT,
-    );
-    if (!checkTable)
-      return {
-        isValid: false,
-        message: 'Table is not found in this branch',
-      };
+    let tableName: string = null; // default for take-out
+    if(data.type === OrderType.AT_TABLE) {
+      
+      const table = await this.tableRepository.findOne({
+        where: {
+          slug: data.table,
+          branch: {
+            slug: data.branch,
+          },
+        },
+      });
+      if(!table) {
+        this.logger.warn(`${TableValidation.TABLE_NOT_FOUND} ${data.table}`, context);
+        throw new TableException(TableValidation.TABLE_NOT_FOUND);
+      }
+      tableName = table.name;
+    }
 
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
-    if (!owner)
-      return {
-        isValid: false,
-        message: 'The owner is not found',
-      };
-
+    if (!owner) {
+      this.logger.warn(`${OrderValidation.OWNER_NOT_FOUND} ${data.owner}`, context);
+      throw new OrderException(OrderValidation.OWNER_NOT_FOUND);
+    }
     const order = this.mapper.map(data, CreateOrderRequestDto, Order);
     Object.assign(order, {
       owner: owner,
       branch: branch,
-      tableName: data.type === OrderType.AT_TABLE ? checkTable.name : null,
-    });
-    return { isValid: true, mappedOrder: order };
-  }
-
-  /**
-   *
-   * @param {string} tableSlug The slug of table
-   * @param {string} branchSlug The slug of branch
-   * @param {string} type The type of order
-   * @returns {Promise<Table | null>} Table data or null
-   */
-  async checkOrderType(
-    tableSlug: string,
-    branchSlug: string,
-    type: OrderType,
-  ): Promise<Table | null> {
-    if (type === OrderType.TAKE_OUT) return null;
-
-    const table = await this.tableRepository.findOne({
-      where: {
-        slug: tableSlug,
-        branch: {
-          slug: branchSlug,
-        },
-      },
-    });
-    if (!table) return null;
-
-    return table;
+      tableName,
+    })
+    return order;
   }
 
   /**
@@ -191,10 +187,10 @@ export class OrderService {
    * @param {CreateOrderItemRequestDto} data The array of data to create order item
    * @returns {Promise<CheckDataCreateOrderItemResponseDto>} The result of checking
    */
-  async checkCreatedOrderItemData(
+  async validateCreatedOrderItemData(
     data: CreateOrderItemRequestDto[],
   ): Promise<CheckDataCreateOrderItemResponseDto> {
-    if (data.length < 1) return { isValid: false };
+    const context = `${OrderService.name}.${this.validateCreatedOrderItemData.name}`;
 
     let subtotal: number = 0;
     const mappedOrderItems: OrderItem[] = [];
@@ -202,7 +198,11 @@ export class OrderService {
       let variant = await this.variantRepository.findOneBy({
         slug: data[i].variant,
       });
-      if (!variant) return { isValid: false };
+      if (!variant) {
+        this.logger.warn(`${VariantValidation.VARIANT_NOT_FOUND} ${data[i].variant}`, context);
+        throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
+      }
+
       subtotal += variant.price * data[i].quantity;
       const mappedOrderItem = this.mapper.map(
         data[i],
@@ -216,7 +216,7 @@ export class OrderService {
       mappedOrderItems.push(mappedOrderItem);
     }
 
-    return { isValid: true, mappedOrderItems, subtotal };
+    return { mappedOrderItems, subtotal };
   }
 
   /**
@@ -257,10 +257,10 @@ export class OrderService {
    */
   async getOrderBySlug(slug: string): Promise<OrderResponseDto> {
     const context = `${OrderService.name}.${this.getOrderBySlug.name}`;
-    // CẦN GỌI LẠI
     const order = await this.orderRepository.findOne({
       where: { slug },
       relations: [
+        'payment',
         'owner',
         'orderItems.variant.size',
         'orderItems.variant.product',
@@ -272,7 +272,7 @@ export class OrderService {
       this.logger.warn(`Order ${slug} not found`, context);
       throw new BadRequestException('Order is not found');
     }
-    // await this.updateStatusForTrackingByOrder(order);
+    await this.updateStatusForTrackingByOrder(order);
 
     const orderDto = await this.getStatusEachOrderItemInOrder(order);
     const updatedStatus: string = await this.checkAndUpdateStatusOrder(order);
@@ -281,22 +281,16 @@ export class OrderService {
     return orderDto;
   }
 
-  async checkAndUpdateStatusOrder(order: Order): Promise<string> {
+  /**
+   * Check and update latest status order
+   * @param {Order} order The order entity relates to tracking
+   * @returns {Promise<string>} The updated status of order
+   */
+  async checkAndUpdateStatusOrder(
+    order: Order
+  ): Promise<string> {
     // check by total quantity each order item
-    const totalBase = order.orderItems.reduce(
-      (sum, item) => sum + item.quantity,
-      0,
-    );
-
-    // const totalCompletedQuantity = order.orderItems.reduce((total, item) => {
-    //   const completedQuantity = item.trackingOrderItems.reduce((sum, trackingItem) => {
-    //     if (trackingItem.tracking.status === WorkFlowStatus.COMPLETED) {
-    //       return sum + trackingItem.quantity;
-    //     }
-    //     return sum;
-    //   }, 0);
-    //   return total + completedQuantity;
-    // }, 0);
+    const totalBase = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
     const totalQuantities = order.orderItems.reduce(
       (totals, item) => {
         const itemQuantities = item.trackingOrderItems.reduce(
@@ -313,8 +307,7 @@ export class OrderService {
           },
           {} as Record<WorkFlowStatus, number>,
         );
-
-        // Cộng dồn tổng số lượng từ `item` vào `totals`
+    
         Object.keys(itemQuantities).forEach((status) => {
           totals[status as WorkFlowStatus] =
             (totals[status as WorkFlowStatus] || 0) +
@@ -342,20 +335,28 @@ export class OrderService {
     return defaultStatus;
   }
 
-  async getStatusEachOrderItemInOrder(order: Order): Promise<OrderResponseDto> {
+  /**
+   * Assign status synthesis for each order item in order
+   * @param {Order} order The order data relates to tracking
+   * @returns {Promise<OrderResponseDto>} The order data with order item have status synthesis
+   */
+  async getStatusEachOrderItemInOrder(
+    order: Order
+  ): Promise<OrderResponseDto> {
     const orderItems = order.orderItems.map((item) => {
       const statusQuantities = item.trackingOrderItems.reduce(
         (acc, trackingItem) => {
           const status = trackingItem.tracking.status;
 
-          if (!acc[status]) {
-            acc[status] = 0;
-          }
-
           acc[status] += trackingItem.quantity;
           return acc;
         },
-        {},
+        {
+          [WorkFlowStatus.PENDING]: 0,
+          [WorkFlowStatus.RUNNING]: 0,
+          [WorkFlowStatus.COMPLETED]: 0,
+          [WorkFlowStatus.FAILED]: 0,
+        },
       );
 
       return {
@@ -369,7 +370,15 @@ export class OrderService {
     return orderDto;
   }
 
-  async updateStatusForTrackingByOrder(order: Order): Promise<void> {
+  /**
+   * Get data from robot client and update status for tracking relates to order
+   * @param order The order data relates to tracking
+   */
+  async updateStatusForTrackingByOrder(
+    order: Order
+  ): Promise<void> {
+    const context = `${OrderService.name}.${this.updateStatusForTrackingByOrder.name}`;
+
     const uniqueWorkFlowInstanceIds = Array.from(
       new Set(
         order.orderItems.flatMap((item) =>
@@ -379,19 +388,23 @@ export class OrderService {
         ),
       ),
     );
-
-    for (let i = 0; i < uniqueWorkFlowInstanceIds.length; i++) {
-      const workFlow =
-        await this.robotConnectorClient.retrieveWorkFlowExecution(
-          uniqueWorkFlowInstanceIds[i],
-        );
-      const tracking = await this.trackingRepository.findOne({
-        where: {
-          workFlowInstance: uniqueWorkFlowInstanceIds[i],
-        },
-      });
-      Object.assign(tracking, { status: workFlow.status });
-      await this.trackingRepository.save(tracking);
-    }
+    
+    // if a query fail, it skip, not interrupt
+    await Promise.all(
+      uniqueWorkFlowInstanceIds.map(async (id) => {
+        try {
+          const workFlow = await this.robotConnectorClient.retrieveWorkFlowExecution(id);
+          
+          const tracking = await this.trackingRepository.findOne({
+            where: { workFlowInstance: id },
+          });
+    
+          Object.assign(tracking, { status: workFlow.status });
+          await this.trackingRepository.save(tracking);
+        } catch (error) {
+          this.logger.warn(`Error processing workflow instance ${id}`, context);
+        }
+      })
+    );
   }
 }

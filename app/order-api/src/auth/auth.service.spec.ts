@@ -25,6 +25,8 @@ import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { Logger } from 'src/logger/logger.entity';
 import { AuthException } from './auth.exception';
 import { Branch } from 'src/branch/branch.entity';
+import { FileService } from 'src/file/file.service';
+import { File } from 'src/file/file.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -37,6 +39,11 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        FileService,
+        {
+          provide: getRepositoryToken(File),
+          useFactory: repositoryMockFactory,
+        },
         {
           provide: JwtService,
           useFactory: jwtServiceMockFactory,

@@ -1,5 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   ACBInitiateQRCodeRequestDto,
@@ -41,10 +46,10 @@ export class ACBConnectorClient {
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(
-              `Get token from ACB API failed: ${error.message}`,
+              `Get token from ACB API failed: ${JSON.stringify(error.response?.data)}`,
               context,
             );
-            throw error;
+            throw new BadRequestException(error.message);
           }),
         ),
     );
@@ -77,10 +82,10 @@ export class ACBConnectorClient {
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(
-              `Init QR Code from ACB API failed: ${error.message}`,
+              `Init QR Code from ACB API failed: ${JSON.stringify(error.response?.data)}`,
               context,
             );
-            throw error;
+            throw new BadRequestException(error.message);
           }),
         ),
     );
