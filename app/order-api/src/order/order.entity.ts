@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { OrderStatus } from './order.contants';
 import { Payment } from 'src/payment/payment.entity';
+import { Invoice } from 'src/invoice/invoice.entity';
 
 @Entity('order_tbl')
 export class Order extends Base {
@@ -58,4 +59,12 @@ export class Order extends Base {
   @JoinColumn({ name: 'payment_column' })
   @AutoMap(() => Payment)
   payment: Payment;
+
+  // One to one with invoice
+  // if there is a new Invoice instance set
+  // on this relation, Order will be inserted automatically to the db when you save this Invoice entity
+  @OneToOne(() => Invoice, (invoice) => invoice.order)
+  @JoinColumn({ name: 'invoice_column' })
+  @AutoMap(() => Invoice)
+  invoice: Invoice;
 }

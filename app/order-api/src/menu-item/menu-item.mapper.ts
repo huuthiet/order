@@ -11,6 +11,7 @@ import { Injectable } from '@nestjs/common';
 import { MenuItem } from './menu-item.entity';
 import { CreateMenuItemDto, MenuItemResponseDto } from './menu-item.dto';
 import { baseMapper } from 'src/app/base.mapper';
+import { forEach } from 'lodash';
 
 @Injectable()
 export class MenuItemProfile extends AutomapperProfile {

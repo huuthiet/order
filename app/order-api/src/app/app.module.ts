@@ -33,6 +33,8 @@ import { UserModule } from 'src/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'src/logger/logger.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { InvoiceModule } from 'src/invoice/invoice.module';
+import { InvoiceItemModule } from 'src/invoice-item/invoice-item.module';
 
 @Module({
   imports: [
@@ -65,6 +67,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     TrackingOrderItemModule,
     RobotConnectorModule,
     UserModule,
+    InvoiceModule,
+    InvoiceItemModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),

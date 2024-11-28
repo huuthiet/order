@@ -30,7 +30,7 @@ import { Tracking } from 'src/tracking/tracking.entity';
 import { OnEvent } from '@nestjs/event-emitter';
 import { OrderException } from './order.exception';
 import { OrderValidation } from './order.validation';
-import { PaymentStatus } from 'src/payment/payment.constants';
+import { PaymentAction, PaymentStatus } from 'src/payment/payment.constants';
 
 @Injectable()
 export class OrderService {
@@ -52,7 +52,7 @@ export class OrderService {
     private readonly robotConnectorClient: RobotConnectorClient,
   ) {}
 
-  @OnEvent('payment.paid')
+  @OnEvent(PaymentAction.PAYMENT_PAID)
   async handleUpdateOrderStatus(requestData: { orderId: string }) {
     const context = `${OrderService.name}.${this.handleUpdateOrderStatus.name}`;
     this.logger.log(`Update order status after payment process`, context);
@@ -67,10 +67,13 @@ export class OrderService {
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
-    if (order.payment?.statusCode === PaymentStatus.COMPLETED) {
+    if (
+      order.payment?.statusCode === PaymentStatus.COMPLETED &&
+      order.status === OrderStatus.PENDING
+    ) {
       Object.assign(order, { status: OrderStatus.PAID });
       await this.orderRepository.save(order);
-      this.logger.log(`Update order status to PAID`, context);
+      this.logger.log(`Update order status from PENDING to PAID`, context);
     }
   }
 
@@ -240,6 +243,7 @@ export class OrderService {
         'orderItems.variant.size',
         'orderItems.variant.product',
         'payment',
+        'invoice',
       ],
     });
 
@@ -266,6 +270,7 @@ export class OrderService {
         'orderItems.variant.size',
         'orderItems.variant.product',
         'orderItems.trackingOrderItems.tracking',
+        'invoice.invoiceItems',
       ],
     });
 
