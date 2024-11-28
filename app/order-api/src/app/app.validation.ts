@@ -6,6 +6,7 @@ import { OrderValidation } from 'src/order/order.validation';
 import { PaymentValidation } from 'src/payment/payment.validation';
 import ProductValidation from 'src/product/product.validation';
 import { TableValidation } from 'src/table/table.validation';
+import { VariantValidation } from 'src/variant/variant.validation';
 
 export type TErrorCodeValue = {
   code: number;
@@ -30,6 +31,7 @@ export const AppValidation: TErrorCode = {
   ...PaymentValidation,
   ...OrderValidation,
   ...TableValidation,
+  ...VariantValidation,
 };
 
 const errorCodeKeys = Object.keys(AppValidation);

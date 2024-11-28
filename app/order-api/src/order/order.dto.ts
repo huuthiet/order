@@ -155,13 +155,7 @@ export class GetOrderRequestDto {
   owner?: string;
 }
 
-export class CheckDataCreateOrderResponseDto {
-  isValid: Boolean;
-  mappedOrder?: Order;
-}
-
 export class CheckDataCreateOrderItemResponseDto {
-  isValid: Boolean;
-  mappedOrderItems?: OrderItem[];
-  subtotal?: number;
+  mappedOrderItems: OrderItem[];
+  subtotal: number;
 }
