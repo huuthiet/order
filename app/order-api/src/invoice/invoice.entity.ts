@@ -39,8 +39,10 @@ export class Invoice extends Base {
   customer: string;
 
   //   One invoice can have many invoice items
+  // Cascade insert here means if there is a new PostDetails InvoiceItem set
+  // on this relation, it will be inserted automatically to the db when you save this Invoice entity
   @OneToMany(() => InvoiceItem, (invoiceItem) => invoiceItem.invoice, {
-    cascade: true,
+    cascade: ['insert', 'update'],
   })
   @AutoMap(() => InvoiceItem)
   invoiceItems: InvoiceItem[];

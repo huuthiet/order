@@ -60,7 +60,20 @@ export class InvoiceService {
       return this.mapper.map(order.invoice, Invoice, InvoiceResponseDto);
     }
 
-    const invoice = {
+    const invoiceItems = order.orderItems.map((item) => {
+      const invoiceItem = new InvoiceItem();
+      Object.assign(invoiceItem, {
+        productName: item.variant.product.name,
+        quantity: item.quantity,
+        price: item.variant.price,
+        total: item.subtotal,
+        size: item.variant.size.name,
+      });
+      return invoiceItem;
+    });
+
+    const invoice = new Invoice();
+    Object.assign(invoice, {
       order,
       logo: 'https://i.imgur',
       amount: order.subtotal,
@@ -70,23 +83,16 @@ export class InvoiceService {
       customer: `${order.owner.firstName} ${order.owner.lastName}`,
       branchAddress: order.branch.address,
       cashier: `${order.approvalBy?.firstName} ${order.approvalBy?.lastName}`,
-    } as Invoice;
-
-    const invoiceItems = order.orderItems.map((item) => {
-      return {
-        productName: item.variant.product.name,
-        quantity: item.quantity,
-        price: item.variant.price,
-        total: item.subtotal,
-        size: item.variant.size.name,
-      } as InvoiceItem;
+      invoiceItems,
     });
 
-    invoice.invoiceItems = invoiceItems;
     await this.invoiceRepository.manager.transaction(async (manager) => {
-      await manager.insert(Invoice, invoice);
+      try {
+        await manager.save(invoice);
+      } catch (error) {
+        throw new BadRequestException(error.message);
+      }
     });
-    console.log({ invoice });
 
     this.logger.log(
       `Invoice ${invoice.id} created for order ${order.id}`,

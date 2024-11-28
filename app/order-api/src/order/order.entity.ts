@@ -61,9 +61,11 @@ export class Order extends Base {
   payment: Payment;
 
   // One to one with invoice
-  // if there is a new Invoice instance set
-  // on this relation, Order will be inserted automatically to the db when you save this Invoice entity
-  @OneToOne(() => Invoice, (invoice) => invoice.order)
+  // Cascade insert here means if there is a new Invoice instance set
+  // on this relation, it will be inserted automatically to the db when you save this Order entity
+  @OneToOne(() => Invoice, (invoice) => invoice.order, {
+    cascade: ['insert', 'update'],
+  })
   @JoinColumn({ name: 'invoice_column' })
   @AutoMap(() => Invoice)
   invoice: Invoice;

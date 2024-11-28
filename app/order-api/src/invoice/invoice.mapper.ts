@@ -19,10 +19,6 @@ export class InvoiceProfile extends AutomapperProfile {
         Invoice,
         InvoiceResponseDto,
         extend(baseMapper(mapper)),
-        // forMember(
-        //   (d) => d.invoiceItems,
-        //   mapWith(InvoiceItemResponseDto, InvoiceItem, (s) => s.invoiceItems),
-        // ),
       );
     };
   }

@@ -56,7 +56,7 @@ export class InvoiceResponseDto extends BaseResponseDto {
   @ApiProperty()
   customer: string;
 
-  // @AutoMap(() => InvoiceItemResponseDto)
-  // @ApiProperty()
-  // invoiceItems: InvoiceItemResponseDto[];
+  @AutoMap(() => InvoiceItemResponseDto)
+  @ApiProperty()
+  invoiceItems: InvoiceItemResponseDto[];
 }
