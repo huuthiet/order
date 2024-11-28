@@ -267,4 +267,23 @@ export class TrackingService {
       await queryRunner.release();
     }
   }
+
+  async changeStatus (
+    slug: string,
+    status: string
+  ): Promise<TrackingResponseDto> {
+    const tracking = await this.trackingRepository.findOne({
+      where: {
+        slug
+      },
+      relations: ['trackingOrderItems.orderItem']
+    });
+
+    if(!tracking) throw new BadRequestException("Tracking not found");
+
+    Object.assign(tracking, { status });
+    const updatedTracking = await this.trackingRepository.save(tracking);
+    const trackingDto = this.mapper.map(updatedTracking, Tracking, TrackingResponseDto);
+    return trackingDto;
+  }
 }

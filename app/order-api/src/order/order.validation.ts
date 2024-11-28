@@ -5,7 +5,7 @@ export const ORDER_NOT_FOUND = 'ORDER_NOT_FOUND';
 
 export type TOrderErrorCodeKey =
   | typeof OWNER_NOT_FOUND
-  | typeof ORDER_NOT_FOUND;
+  | typeof ORDER_NOT_FOUND
 
 export type TOrderErrorCode = Record<TOrderErrorCodeKey, TErrorCodeValue>;
 

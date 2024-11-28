@@ -9,7 +9,6 @@ import { Order } from './order.entity';
 import { DataSource, Repository } from 'typeorm';
 import {
   CheckDataCreateOrderItemResponseDto,
-  CheckDataCreateOrderResponseDto,
   CreateOrderRequestDto,
   GetOrderRequestDto,
   OrderResponseDto,
@@ -31,6 +30,14 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { OrderException } from './order.exception';
 import { OrderValidation } from './order.validation';
 import { PaymentStatus } from 'src/payment/payment.constants';
+import { BranchException } from 'src/branch/branch.exception';
+import { BranchValidation } from 'src/branch/branch.validation';
+import { TableException } from 'src/table/table.exception';
+import { TableValidation } from 'src/table/table.validation';
+import { AuthException } from 'src/auth/auth.exception';
+import AuthValidation from 'src/auth/auth.validation1';
+import { VariantException } from 'src/variant/variant.exception';
+import { VariantValidation } from 'src/variant/variant.validation';
 
 @Injectable()
 export class OrderService {
@@ -87,30 +94,26 @@ export class OrderService {
     requestData: CreateOrderRequestDto,
   ): Promise<OrderResponseDto> {
     const context = `${OrderService.name}.${this.createOrder.name}`;
+
     const mappedOrder: Order = await this.validateCreatedOrderData(requestData);
 
-    const checkValidOrderItemData = await this.checkCreatedOrderItemData(requestData.orderItems);
-    if(!checkValidOrderItemData.isValid) {
-      this.logger.warn('Invalid order item data', context);
-      throw new BadRequestException('Invalid order item data');
-    }
-
-    Object.assign(
-      mappedOrder, 
-      { 
-        orderItems: checkValidOrderItemData.mappedOrderItems,
-        subtotal: checkValidOrderItemData.subtotal
-      }
-    );
-    
-    const newOrder = this.orderRepository.create(mappedOrder);
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const checkValidOrderItemData = await this.validateCreatedOrderItemData(requestData.orderItems);
 
     let createdOrder: Order;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
+      Object.assign(
+        mappedOrder, 
+        { 
+          orderItems: checkValidOrderItemData.mappedOrderItems,
+          subtotal: checkValidOrderItemData.subtotal
+        }
+      );
+      const newOrder = this.orderRepository.create(mappedOrder);
+
       createdOrder = await queryRunner.manager.save(newOrder);
       await queryRunner.commitTransaction();
       this.logger.log(
@@ -135,7 +138,7 @@ export class OrderService {
   /**
    *
    * @param {CreateOrderRequestDto} data The data to create order
-   * @returns {Promise<CheckDataCreateOrderResponseDto>} The result of checking
+   * @returns {Promise<Order>} The result of checking
    */
   async validateCreatedOrderData(
     data: CreateOrderRequestDto
@@ -143,12 +146,13 @@ export class OrderService {
     const context = `${OrderService.name}.${this.validateCreatedOrderData.name}`;
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
     if (!branch) {
-      this.logger.warn(`Branch ${data.branch} is not found`, context);
-      throw new BadRequestException('Branch is not found');
+      this.logger.warn(`${BranchValidation.BRANCH_NOT_FOUND} ${data.branch}`, context);
+      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
     let tableName: string = null; // default for take-out
     if(data.type === OrderType.AT_TABLE) {
+      
       const table = await this.tableRepository.findOne({
         where: {
           slug: data.table,
@@ -158,16 +162,16 @@ export class OrderService {
         },
       });
       if(!table) {
-        this.logger.warn(`Table ${data.table} is not found in this branch`, context);
-        throw new BadRequestException('Table is not found in this branch');
+        this.logger.warn(`${TableValidation.TABLE_NOT_FOUND} ${data.table}`, context);
+        throw new TableException(TableValidation.TABLE_NOT_FOUND);
       }
       tableName = table.name;
     }
 
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
     if (!owner) {
-      this.logger.warn(`The owner ${data.owner} is not found`, context);
-      throw new BadRequestException('The owner is not found');
+      this.logger.warn(`${OrderValidation.OWNER_NOT_FOUND} ${data.owner}`, context);
+      throw new OrderException(OrderValidation.OWNER_NOT_FOUND);
     }
     const order = this.mapper.map(data, CreateOrderRequestDto, Order);
     Object.assign(order, {
@@ -183,10 +187,10 @@ export class OrderService {
    * @param {CreateOrderItemRequestDto} data The array of data to create order item
    * @returns {Promise<CheckDataCreateOrderItemResponseDto>} The result of checking
    */
-  async checkCreatedOrderItemData(
+  async validateCreatedOrderItemData(
     data: CreateOrderItemRequestDto[],
   ): Promise<CheckDataCreateOrderItemResponseDto> {
-    if (data.length < 1) return { isValid: false };
+    const context = `${OrderService.name}.${this.validateCreatedOrderItemData.name}`;
 
     let subtotal: number = 0;
     const mappedOrderItems: OrderItem[] = [];
@@ -194,7 +198,11 @@ export class OrderService {
       let variant = await this.variantRepository.findOneBy({
         slug: data[i].variant,
       });
-      if (!variant) return { isValid: false };
+      if (!variant) {
+        this.logger.warn(`${VariantValidation.VARIANT_NOT_FOUND} ${data[i].variant}`, context);
+        throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
+      }
+
       subtotal += variant.price * data[i].quantity;
       const mappedOrderItem = this.mapper.map(
         data[i],
@@ -208,7 +216,7 @@ export class OrderService {
       mappedOrderItems.push(mappedOrderItem);
     }
 
-    return { isValid: true, mappedOrderItems, subtotal };
+    return { mappedOrderItems, subtotal };
   }
 
   /**
