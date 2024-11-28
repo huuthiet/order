@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui'
 
 import { UpdateSizeForm } from '@/components/app/form'
@@ -28,7 +28,7 @@ export default function UpdateSizeDialog({ size }: DialogUpdateSizeProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild className="flex justify-start w-full">
+      <DialogTrigger asChild className="flex w-full justify-start">
         <Button
           variant="ghost"
           className="flex justify-start gap-1 px-2 text-sm"
@@ -38,10 +38,12 @@ export default function UpdateSizeDialog({ size }: DialogUpdateSizeProps) {
           {t('size.update')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-md max-w-[20rem] sm:max-w-[36rem]">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
         <DialogHeader>
           <DialogTitle>{t('size.update')}</DialogTitle>
-          <DialogDescription>{t('size.updateSizeDescription')}</DialogDescription>
+          <DialogDescription>
+            {t('size.updateSizeDescription')}
+          </DialogDescription>
         </DialogHeader>
         <UpdateSizeForm size={size} onSubmit={handleSubmit} />
       </DialogContent>

@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui'
 
 import { UpdateProductForm } from '@/components/app/form'
@@ -19,7 +19,9 @@ interface DialogUpdateProductProps {
   product: IProduct
 }
 
-export default function UpdateProductDialog({ product }: DialogUpdateProductProps) {
+export default function UpdateProductDialog({
+  product,
+}: DialogUpdateProductProps) {
   const { t } = useTranslation(['product'])
   const [isOpen, setIsOpen] = useState(false)
   const handleSubmit = (isOpen: boolean) => {
@@ -28,7 +30,7 @@ export default function UpdateProductDialog({ product }: DialogUpdateProductProp
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild className="flex justify-start w-full">
+      <DialogTrigger asChild className="flex w-full justify-start">
         <Button
           variant="ghost"
           className="flex justify-start gap-1 px-2 text-sm"
@@ -38,10 +40,12 @@ export default function UpdateProductDialog({ product }: DialogUpdateProductProp
           {t('product.update')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-md max-w-[20rem] sm:max-w-[36rem]">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
         <DialogHeader>
           <DialogTitle>{t('product.update')}</DialogTitle>
-          <DialogDescription>{t('product.updateProductDescription')}</DialogDescription>
+          <DialogDescription>
+            {t('product.updateProductDescription')}
+          </DialogDescription>
         </DialogHeader>
         <UpdateProductForm product={product} onSubmit={handleSubmit} />
       </DialogContent>

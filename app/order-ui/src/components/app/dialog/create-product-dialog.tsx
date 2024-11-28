@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui'
 
 import { CreateProductForm } from '@/components/app/form'
@@ -24,15 +24,21 @@ export default function CreateProductDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="h-10 gap-1 text-sm" onClick={() => setIsOpen(true)}>
+        <Button
+          variant="outline"
+          className="h-10 gap-1 text-sm"
+          onClick={() => setIsOpen(true)}
+        >
           <PlusCircledIcon className="icon" />
           {t('product.create')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-md max-w-[20rem] sm:max-w-[36rem]">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
         <DialogHeader>
           <DialogTitle>{t('product.create')}</DialogTitle>
-          <DialogDescription>{t('product.createProductDescription')}</DialogDescription>
+          <DialogDescription>
+            {t('product.createProductDescription')}
+          </DialogDescription>
         </DialogHeader>
         <CreateProductForm onSubmit={handleSubmit} />
       </DialogContent>

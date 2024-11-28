@@ -34,7 +34,7 @@ export default function UpdateTableDialog({ table }: UpdateTableDialogProps) {
           <PenSquareIcon className="icon" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[20rem] rounded-md sm:max-w-[36rem]">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
         <DialogHeader>
           <DialogTitle>{t('table.update')}</DialogTitle>
           <DialogDescription>

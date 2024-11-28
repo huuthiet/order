@@ -21,9 +21,8 @@ export interface IQuery {
 }
 
 export interface IBase {
-  createdAt?: string
-  updatedAt?: string
-  slug?: string
+  createdAt: string
+  slug: string
 }
 
 export interface IApiErrorResponse {

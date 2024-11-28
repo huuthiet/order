@@ -22,6 +22,7 @@ import {
   OrderPaymentPage,
   BankConfigPage,
   MenuDetailPage,
+  OrderManagementPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 
@@ -121,6 +122,25 @@ export const router = createBrowserRouter([
           <ProtectedElement
             // allowedAuthorities={[Authority.READ_USER]}
             element={<SuspenseElement component={OrderSuccessPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.STAFF_ORDER_MANAGEMENT,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            // allowedAuthorities={[Authority.READ_USER]}
+            element={<SuspenseElement component={OrderManagementPage} />}
           />
         ),
       },

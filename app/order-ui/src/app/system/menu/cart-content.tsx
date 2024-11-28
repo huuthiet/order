@@ -24,6 +24,7 @@ export default function CartContent() {
   const total = subtotal ? subtotal - discount : 0
 
   const handleRemoveCartItem = (id: string) => {
+    console.log('Remove cart item', id)
     removeCartItem(id)
   }
 
