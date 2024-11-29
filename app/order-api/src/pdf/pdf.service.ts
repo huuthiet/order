@@ -2,10 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as puppeteer from 'puppeteer';
-import * as handlebars from 'handlebars';
 import { formatCurrency } from 'src/helper';
-
-handlebars.registerHelper('formatCurrency', formatCurrency);
+import * as ejs from 'ejs';
 
 @Injectable()
 export class PdfService {
@@ -15,7 +13,7 @@ export class PdfService {
   ): Promise<string> {
     const templatePath = path.resolve(
       'public/templates',
-      `${templateName}.hbs`,
+      `${templateName}.ejs`,
     );
     if (!fs.existsSync(templatePath)) {
       throw new BadRequestException(
@@ -23,8 +21,8 @@ export class PdfService {
       );
     }
     const templateSource = fs.readFileSync(templatePath, 'utf8');
-    const template = handlebars.compile(templateSource);
-    return template(data);
+    const template = ejs.render(templateSource, { ...data, formatCurrency });
+    return template;
   }
 
   public async generatePdf(templateName: string, data: any): Promise<Buffer> {

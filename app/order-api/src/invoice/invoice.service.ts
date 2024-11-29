@@ -35,12 +35,16 @@ export class InvoiceService {
   ) {}
 
   async exportInvoice(slug: string): Promise<Buffer> {
+    const context = `${InvoiceService.name}.${this.exportInvoice.name}`;
     const invoice = await this.invoiceRepository.findOne({
       where: { slug },
       relations: ['invoiceItems'],
     });
     if (!invoice) throw new BadRequestException('Invoice not found');
+
     const data = await this.pdfService.generatePdf('invoice', invoice);
+    this.logger.log(`Invoice ${slug} exported`, context);
+
     return data;
   }
 
