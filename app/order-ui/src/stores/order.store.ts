@@ -1,4 +1,4 @@
-import { IOrderDetail, IOrderStore } from '@/types'
+import { IOrder, IOrderDetail, IOrderStore, IOrderTrackingStore } from '@/types'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -6,17 +6,35 @@ export const useOrderStore = create<IOrderStore>()(
   persist(
     (set, get) => ({
       order: null,
-      selectedItems: [],
 
       getOrder: () => get().order,
 
-      addOrder: (orderInfo: IOrderDetail) => {
-        set({ order: orderInfo })
+      addOrder: (orderInfo: IOrder) => {
+        console.log('Updating order in store:', orderInfo)
+
+        set((state) => ({
+          ...state,
+          order: orderInfo,
+        }))
       },
 
       removeOrder: () => {
-        set({ order: null })
+        set((state) => ({
+          ...state,
+          order: null,
+        }))
       },
+    }),
+    {
+      name: 'order-store',
+    },
+  ),
+)
+
+export const useOrderTrackingStore = create<IOrderTrackingStore>()(
+  persist(
+    (set, get) => ({
+      selectedItems: [],
 
       getSelectedItems: () => get().selectedItems,
 
@@ -86,7 +104,7 @@ export const useOrderStore = create<IOrderStore>()(
       },
     }),
     {
-      name: 'order-store',
+      name: 'order-tracking-store',
     },
   ),
 )

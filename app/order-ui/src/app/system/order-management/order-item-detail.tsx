@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { CheckedState } from '@radix-ui/react-checkbox'
 
-import { IOrderDetail } from '@/types'
+import { IOrderDetail, OrderStatus } from '@/types'
 import { Button, Checkbox } from '@/components/ui'
-import { useOrderStore } from '@/stores'
+import { useOrderTrackingStore } from '@/stores'
+import OrderItemStatusBadge from '@/components/app/badge/order-item-status-badge'
 
 interface OrderItemDetailProps {
   order: IOrderDetail
@@ -13,7 +14,7 @@ interface OrderItemDetailProps {
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   const [showDetails, setShowDetails] = useState(false)
   const { addSelectedItem, removeSelectedItem, isItemSelected } =
-    useOrderStore()
+    useOrderTrackingStore()
   const [selectedIndexes, setSelectedIndexes] = useState<{
     [key: string]: boolean
   }>({})
@@ -55,12 +56,12 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       .fill(null)
       .map((_, index) => {
         if (index < orderItem.status.completed) {
-          return { status: 'completed', index }
+          return { status: OrderStatus.COMPLETED, index }
         }
         if (index < orderItem.status.completed + orderItem.status.running) {
-          return { status: 'running', index }
+          return { status: OrderStatus.RUNNING, index }
         }
-        return { status: 'pending', index }
+        return { status: OrderStatus.PENDING, index }
       })
 
     return (
@@ -78,7 +79,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
               key={item.index}
               className="grid grid-cols-3 flex-row items-center gap-3 rounded-md border px-2 py-4"
             >
-              {item.status === 'pending' ? (
+              {item.status === OrderStatus.PENDING ? (
                 <div className="col-span-1 flex flex-row items-center gap-2">
                   <Checkbox
                     checked={isChecked(orderItem, item.index)}
@@ -95,9 +96,9 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                 <div className="col-span-1 flex flex-row items-center justify-start gap-3">
                   <div
                     className={`h-3 w-3 rounded-full ${
-                      item.status === 'completed'
+                      item.status === OrderStatus.COMPLETED
                         ? 'bg-green-500'
-                        : item.status === 'running'
+                        : item.status === OrderStatus.RUNNING
                           ? 'bg-blue-500'
                           : 'bg-gray-300'
                     }`}
@@ -112,11 +113,9 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
               <div className="col-span-1 text-center text-sm">
                 {orderItem.variant.price.toLocaleString()} VND
               </div>
-              <p className="col-span-1 flex w-full justify-end">
-                <span className="rounded-full border border-muted-foreground/40 px-2 py-0.5 text-xs text-gray-500">
-                  {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                </span>
-              </p>
+              <div className="col-span-1 flex justify-end">
+                <OrderItemStatusBadge status={item.status} />
+              </div>
             </div>
           ))}
         </div>
