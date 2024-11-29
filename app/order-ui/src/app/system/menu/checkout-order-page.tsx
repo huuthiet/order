@@ -31,7 +31,7 @@ export default function ConfirmOrderPage() {
     <div className="flex h-full flex-row gap-2">
       <div
         className={`flex flex-col ${
-          isCartOpen ? 'w-full md:w-[70%]' : 'w-full'
+          isCartOpen && !isMobile ? 'w-full md:w-[70%]' : 'w-full'
         } ${isCollapsed ? 'pl-2' : ''}`}
       >
         <div className="sticky top-0 z-10 flex items-center justify-end gap-2 bg-white py-3 pr-4">
@@ -106,7 +106,7 @@ export default function ConfirmOrderPage() {
       {/* Cart Section - Fixed */}
       <div
         className={`fixed right-0 h-[calc(100vh-6.5rem)] border-l bg-background transition-all duration-300 ease-in-out ${
-          isCartOpen ? 'w-[25%]' : 'w-0 opacity-0'
+          isCartOpen && !isMobile ? 'w-[25%]' : 'w-0 opacity-0'
         }`}
       >
         {isCartOpen && !isMobile && <CheckoutCart />}

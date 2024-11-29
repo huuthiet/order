@@ -41,14 +41,14 @@ export default function AddMenuItemsDialog({
           {t('menu.addMenuItem')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[20rem] rounded-md px-0 sm:max-w-[44rem]">
-        <DialogHeader className="px-6">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[44rem]">
+        <DialogHeader>
           <DialogTitle>{t('menu.addMenuItem')}</DialogTitle>
           <DialogDescription>
             {t('menu.addMenuItemDescription')}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[24rem] px-6">
+        <ScrollArea className="max-h-[24rem]">
           <AddMenuMultipleItemsForm
             onSubmit={handleSubmit}
             products={products}

@@ -36,9 +36,7 @@ export default function StaffLayout() {
             <main
               className={cn(
                 'min-h-full',
-                isMobile
-                  ? 'px-3 pb-[env(safe-area-inset-bottom)]'
-                  : 'px-4 pb-4',
+                isMobile ? 'px-3 pb-[env(safe-area-inset-bottom)]' : 'px-4',
               )}
             >
               <Outlet />

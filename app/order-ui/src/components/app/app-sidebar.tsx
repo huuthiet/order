@@ -3,6 +3,7 @@
 import { ChevronRight, Sparkles } from 'lucide-react'
 import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useSidebar } from '@/components/ui'
 
 import {
   Collapsible,
@@ -35,6 +36,7 @@ import { Logo } from '@/assets/images'
 export default function AppSidebar() {
   const { t } = useTranslation('sidebar')
   const location = useLocation()
+  const { state, toggleSidebar } = useSidebar()
   const isActive = (path: string) => location.pathname === path
 
   const translatedSidebarRoute = (sidebarRoutes: ISidebarRoute) => ({
@@ -87,7 +89,15 @@ export default function AppSidebar() {
                     tooltip={item.title}
                     className={isActive(item.path) ? 'text-primary' : ''}
                   >
-                    <NavLink to={item.path}>
+                    <NavLink
+                      to={item.path}
+                      onClick={(e) => {
+                        if (state === 'collapsed') {
+                          e.preventDefault()
+                          toggleSidebar()
+                        }
+                      }}
+                    >
                       {item.icon && (
                         <IconWrapper
                           Icon={item.icon}
@@ -152,7 +162,6 @@ export default function AppSidebar() {
                     Upgrade to Pro
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
                 <DropdownMenuSeparator />
               </DropdownMenuContent>
             </DropdownMenu>

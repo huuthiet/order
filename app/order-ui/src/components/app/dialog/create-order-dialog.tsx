@@ -90,7 +90,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
         </DialogTrigger>
       </DialogTrigger>
 
-      <DialogContent className="max-w-[22rem] rounded-md font-beVietNam sm:max-w-[32rem]">
+      <DialogContent className="max-w-[22rem] rounded-md px-6 font-beVietNam sm:max-w-[32rem]">
         <DialogHeader>
           <DialogTitle className="border-b pb-4">
             <div className="flex items-center gap-2 text-primary">
