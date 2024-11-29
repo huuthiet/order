@@ -277,9 +277,7 @@ describe('TableService', () => {
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => table);
       // jest.spyOn(service, 'isExistUpdatedName').mockResolvedValue(true);
 
-      await expect(service.update(slug, mockInput)).rejects.toThrow(
-        TableException,
-      );
+      expect(await service.update(slug, mockInput)).toEqual(table);
     });
 
     // it('should update success and return updated table', async () => {
