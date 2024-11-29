@@ -41,7 +41,7 @@ export default function TableContextMenu({
   return (
     <div
       ref={menuRef}
-      className="fixed z-50 flex w-fit rounded-lg border bg-white shadow-lg"
+      className="fixed z-50 flex max-w-[16rem] rounded-lg border bg-white shadow-lg"
       style={{ left: x, top: y }}
     >
       <div className="space-y-1 p-2">
@@ -57,7 +57,7 @@ export default function TableContextMenu({
           className="w-full justify-start"
           onClick={() => onStatusChange(tableId, 'reserved')}
         >
-          Đánh dấu đã đ��t
+          Đánh dấu đã đặt
         </Button>
         <Button
           variant="ghost"
