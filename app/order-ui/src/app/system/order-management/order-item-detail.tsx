@@ -4,7 +4,7 @@ import { CheckedState } from '@radix-ui/react-checkbox'
 
 import { IOrderDetail } from '@/types'
 import { Button, Checkbox } from '@/components/ui'
-import { useOrderStore } from '@/stores'
+import { useOrderTrackingStore } from '@/stores'
 
 interface OrderItemDetailProps {
   order: IOrderDetail
@@ -13,7 +13,7 @@ interface OrderItemDetailProps {
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   const [showDetails, setShowDetails] = useState(false)
   const { addSelectedItem, removeSelectedItem, isItemSelected } =
-    useOrderStore()
+    useOrderTrackingStore()
   const [selectedIndexes, setSelectedIndexes] = useState<{
     [key: string]: boolean
   }>({})

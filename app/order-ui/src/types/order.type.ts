@@ -1,13 +1,22 @@
-import { IOrderDetail } from './dish.type'
+import { IOrderDetail, IOrder } from './dish.type'
 
 export interface IOrderStore {
-  order: IOrderDetail | null
-  selectedItems: IOrderDetail[]
+  order: IOrder | null
+  // selectedItems: IOrderDetail[]
 
-  getOrder: () => IOrderDetail | null
-  addOrder: (order: IOrderDetail) => void
+  getOrder: () => IOrder | null
+  addOrder: (order: IOrder) => void
   removeOrder: () => void
 
+  // getSelectedItems: () => IOrderDetail[]
+  // isItemSelected: (orderId: string, itemIndex: number) => boolean
+  // addSelectedItem: (item: IOrderDetail) => void
+  // removeSelectedItem: (itemId: string) => void
+  // clearSelectedItems: () => void
+}
+
+export interface IOrderTrackingStore {
+  selectedItems: IOrderDetail[]
   getSelectedItems: () => IOrderDetail[]
   isItemSelected: (orderId: string, itemIndex: number) => boolean
   addSelectedItem: (item: IOrderDetail) => void

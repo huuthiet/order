@@ -113,7 +113,14 @@
     "preparing": "Đang chuẩn bị",
     "served": "Đã phục vụ",
     "ordered": "Đã đặt hàng",
-    "orderDetail": "Chi tiết đơn hàng"
+    "orderDetail": "Chi tiết đơn hàng",
+    "createOrderTrackingByStaff": "Nhân viên giao",
+    "confirmOrderTrackingByStaff": "Xác nhận giao hàng",
+    "createOrderTrackingByStaffDescription": "Nhân viên sẽ giao hàng tới vị trí bàn của khách hàng",
+    "productName": "Tên món",
+    "confirmCreateOrderTracking": "Xác nhận giao hàng",
+    "createOrderTrackingByRobot": "Gọi robot giao",
+    "createOrderTrackingByRobotDescription": "Robot sẽ giao hàng tới vị trí bàn của khách hàng"
   },
   "table": {
     "title": "Danh sách bàn"

@@ -1,22 +1,22 @@
 import { useTranslation } from 'react-i18next'
 import { AlarmClock, Clock, ShoppingCartIcon, SquareMenu } from 'lucide-react'
 import moment from 'moment'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Button, ScrollArea } from '@/components/ui'
-import { useCreateOrderTracking, useOrderBySlug, useOrders } from '@/hooks'
-import { useOrderStore, useUserStore } from '@/stores'
+import { useOrderBySlug, useOrders } from '@/hooks'
+import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
 import { IOrder, IOrderType, OrderStatus } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import { publicFileURL } from '@/constants'
 import OrderItemDetail from './order-item-detail'
-import { showToast } from '@/utils'
+import { CreateOrderTrackingByStaffDialog } from '@/components/app/dialog'
 
 export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
   const { userInfo } = useUserStore()
-  const { mutate: createOrderTracking } = useCreateOrderTracking()
-  const { getOrder, getSelectedItems, clearSelectedItems } = useOrderStore()
+  const { addOrder, getOrder } = useOrderStore()
+  const { clearSelectedItems } = useOrderTrackingStore()
 
   const { data } = useOrders({
     ownerSlug: '',
@@ -38,37 +38,18 @@ export default function OrderManagementPage() {
   const [selectedOrderSlug, setSelectedOrderSlug] = useState<string>('')
   const { data: orderDetail } = useOrderBySlug(selectedOrderSlug)
 
+  useEffect(() => {
+    if (orderDetail?.result) {
+      addOrder(orderDetail.result)
+    }
+  }, [orderDetail, addOrder])
+
   const handleOrderClick = (order: IOrder) => {
     setSelectedOrderSlug(order.slug)
     clearSelectedItems()
   }
 
   const orderDetailData = orderDetail?.result
-  // console.log('Check order detail: ', orderDetailData)
-
-  const handleCallStaff = () => {
-    // console.log('Call staff', getSelectedItems())
-    // const selectedOrderItems = getSelectedItems()
-    // console.log(selectedOrderItems)
-    // if (selectedOrderItems) {
-
-    // }
-    createOrderTracking({
-      type: 'by-staff',
-      trackingOrderItems: getSelectedItems().map(
-        (item) => ({
-          quantity: item.quantity,
-          orderItem: item.slug,
-        }),
-        {
-          onSuccess: () => {
-            clearSelectedItems()
-            showToast(t('toast.callStaffSuccess'))
-          },
-        },
-      ),
-    })
-  }
   return (
     <div className="flex flex-1 flex-row gap-2">
       <ScrollArea className="flex-1">
@@ -280,10 +261,8 @@ export default function OrderManagementPage() {
                 )}
               </div>
               <div className="flex w-full justify-end gap-2">
-                <Button onClick={handleCallStaff}>
-                  {t('order.callStaff')}
-                </Button>
-                <Button>{t('order.callRobot')}</Button>
+                <CreateOrderTrackingByStaffDialog />
+                <Button>{t('order.byRobot')}</Button>
               </div>
             </div>
           </div>
