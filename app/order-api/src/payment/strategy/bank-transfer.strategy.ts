@@ -22,7 +22,6 @@ import * as _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { ACBInitiateQRCodeRequestDto } from 'src/acb-connector/acb-connector.dto';
 import * as shortid from 'shortid';
-import * as moment from 'moment';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Payment } from '../payment.entity';
 import { PaymentMethod, PaymentStatus } from '../payment.constants';
@@ -51,6 +50,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
       take: 1,
     });
     if (_.isEmpty(acbConnectorConfig)) {
+      this.logger.error('ACB Connector config not found', context);
       throw new BadRequestException('ACB Connector config not found');
     }
     // Get token from ACB
@@ -64,9 +64,9 @@ export class BankTransferStrategy implements IPaymentStrategy {
     const requestTrace = uuidv4();
     const headers = {
       [X_CLIENT_ID]: this.clientId,
-      [X_OWNER_NUMBER]: acbConnectorConfig[0].xOwnerNumber,
-      [X_OWNER_TYPE]: acbConnectorConfig[0].xOwnerType,
-      [X_PROVIDER_ID]: acbConnectorConfig[0].xProviderId,
+      [X_OWNER_NUMBER]: acbConnectorConfig[0]?.xOwnerNumber,
+      [X_OWNER_TYPE]: acbConnectorConfig[0]?.xOwnerType,
+      [X_PROVIDER_ID]: acbConnectorConfig[0]?.xProviderId,
       [X_REQUEST_ID]: uuidv4(),
     };
 
@@ -81,13 +81,13 @@ export class BankTransferStrategy implements IPaymentStrategy {
       requestParameters: {
         traceNumber: requestTrace,
         amount: order.subtotal,
-        beneficiaryName: acbConnectorConfig[0].beneficiaryName,
+        beneficiaryName: acbConnectorConfig[0]?.beneficiaryName,
         merchantId: shortid(),
         orderId: order.slug,
         terminalId: shortid(),
         userId: order.owner.id,
         loyaltyCode: shortid(),
-        virtualAccountPrefix: acbConnectorConfig[0].virtualAccountPrefix,
+        virtualAccountPrefix: acbConnectorConfig[0]?.virtualAccountPrefix,
         voucherCode: shortid(),
         description: 'hoa don thanh toan',
       },
@@ -97,8 +97,6 @@ export class BankTransferStrategy implements IPaymentStrategy {
       `Initiate QR Code request: ${JSON.stringify(requestData)}`,
       context,
     );
-
-    console.log({ requestData, access_token });
 
     const response = await this.acbConnectorClient.initiateQRCode(
       headers,
@@ -115,9 +113,9 @@ export class BankTransferStrategy implements IPaymentStrategy {
     const payment = {
       paymentMethod: PaymentMethod.BANK_TRANSFER,
       amount: order.subtotal,
-      message: requestData.requestParameters.description,
+      message: requestData.requestParameters?.description,
       transactionId: response.requestTrace,
-      qrCode: response.responseBody.qrDataUrl,
+      qrCode: response.responseBody?.qrDataUrl,
       userId: order.owner.id,
       statusCode: PaymentStatus.PENDING,
       statusMessage: PaymentStatus.PENDING,

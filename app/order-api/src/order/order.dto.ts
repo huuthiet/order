@@ -18,6 +18,7 @@ import {
 import { Type } from 'class-transformer';
 import { Order } from './order.entity';
 import { OrderItem } from 'src/order-item/order-item.entity';
+import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -133,6 +134,9 @@ export class OrderResponseDto extends BaseResponseDto {
 
   @AutoMap(() => OrderPaymentResponseDto)
   payment: OrderPaymentResponseDto;
+
+  @AutoMap(() => InvoiceResponseDto)
+  invoice: InvoiceResponseDto;
 }
 
 export class GetOrderRequestDto {
