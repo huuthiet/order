@@ -19,7 +19,6 @@ async function bootstrap() {
   app.enableCors(corsOptions);
   app.enableShutdownHooks();
   app.useStaticAssets(path.resolve('public'));
-  app.setViewEngine('hbs');
 
   const config = new DocumentBuilder()
     .setTitle('Order API')

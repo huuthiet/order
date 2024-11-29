@@ -7,6 +7,7 @@ import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { Invoice } from './invoice.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Order } from 'src/order/order.entity';
+import { PdfService } from 'src/pdf/pdf.service';
 
 describe('InvoiceService', () => {
   let service: InvoiceService;
@@ -15,6 +16,7 @@ describe('InvoiceService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         InvoiceService,
+        PdfService,
         {
           provide: getRepositoryToken(Invoice),
           useFactory: repositoryMockFactory,
