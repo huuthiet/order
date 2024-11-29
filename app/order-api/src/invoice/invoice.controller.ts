@@ -7,6 +7,8 @@ import {
   Get,
   Query,
   ValidationPipe,
+  Param,
+  StreamableFile,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import {
@@ -21,7 +23,6 @@ import {
   GetSpecificInvoiceRequestDto,
   InvoiceResponseDto,
 } from './invoice.dto';
-import { App } from 'supertest/types';
 import { AppResponseDto } from 'src/app/app.dto';
 
 @Controller('invoice')
@@ -68,5 +69,16 @@ export class InvoiceController {
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
     } as AppResponseDto<InvoiceResponseDto>;
+  }
+
+  @Get(':slug/export')
+  @ApiOperation({ summary: 'Export invoice' })
+  async exportInvoice(@Param('slug') slug: string): Promise<StreamableFile> {
+    const result = await this.invoiceService.exportInvoice(slug);
+    return new StreamableFile(result, {
+      type: 'application/pdf',
+      length: result.length,
+      disposition: `attachment; filename="invoice-${new Date().toISOString()}.pdf"`,
+    });
   }
 }

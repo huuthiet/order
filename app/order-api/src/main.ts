@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { corsOptions } from './config/cors.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as path from 'path';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -18,8 +17,6 @@ async function bootstrap() {
   app.setGlobalPrefix(`api/${version}`);
   app.enableCors(corsOptions);
   app.enableShutdownHooks();
-  app.useStaticAssets(path.resolve('public'));
-  app.setViewEngine('hbs');
 
   const config = new DocumentBuilder()
     .setTitle('Order API')

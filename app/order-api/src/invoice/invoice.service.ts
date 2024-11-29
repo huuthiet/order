@@ -20,6 +20,7 @@ import { OrderException } from 'src/order/order.exception';
 import { OrderValidation } from 'src/order/order.validation';
 import { InvoiceItem } from 'src/invoice-item/invoice-item.entity';
 import * as _ from 'lodash';
+import { PdfService } from 'src/pdf/pdf.service';
 
 @Injectable()
 export class InvoiceService {
@@ -30,7 +31,22 @@ export class InvoiceService {
     private readonly orderRepository: Repository<Order>,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+    private readonly pdfService: PdfService,
   ) {}
+
+  async exportInvoice(slug: string): Promise<Buffer> {
+    const context = `${InvoiceService.name}.${this.exportInvoice.name}`;
+    const invoice = await this.invoiceRepository.findOne({
+      where: { slug },
+      relations: ['invoiceItems'],
+    });
+    if (!invoice) throw new BadRequestException('Invoice not found');
+
+    const data = await this.pdfService.generatePdf('invoice', invoice);
+    this.logger.log(`Invoice ${slug} exported`, context);
+
+    return data;
+  }
 
   async create(createInvoiceDto: CreateInvoiceDto) {
     const context = `${InvoiceService.name}.${this.create.name}`;
