@@ -78,6 +78,7 @@ export interface IOrderDetail extends IBase {
 
 export enum OrderStatus {
   PENDING = 'pending',
+  RUNNING = 'running',
   FAILED = 'failed',
   COMPLETED = 'completed',
 }

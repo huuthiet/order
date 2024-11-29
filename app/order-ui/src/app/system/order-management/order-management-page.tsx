@@ -1,22 +1,26 @@
-import { useTranslation } from 'react-i18next'
-import { AlarmClock, Clock, ShoppingCartIcon, SquareMenu } from 'lucide-react'
-import moment from 'moment'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Clock, ShoppingCartIcon, SquareMenu } from 'lucide-react'
+import moment from 'moment'
 
 import { Button, ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder, IOrderType, OrderStatus } from '@/types'
+import { IOrder, OrderStatus } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-import { publicFileURL } from '@/constants'
-import OrderItemDetail from './order-item-detail'
 import { CreateOrderTrackingByStaffDialog } from '@/components/app/dialog'
+import TotalOrders from './total-orders'
+import OrderWaitListCounting from './order-wait-list-counting'
+import CustomerInformation from './customer-information'
+import OrderItemList from './order-item-list'
 
 export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
+  const [selectedOrderSlug, setSelectedOrderSlug] = useState<string>('')
   const { userInfo } = useUserStore()
   const { addOrder, getOrder } = useOrderStore()
   const { clearSelectedItems } = useOrderTrackingStore()
+  const { data: orderDetail } = useOrderBySlug(selectedOrderSlug)
 
   const { data } = useOrders({
     ownerSlug: '',
@@ -24,19 +28,11 @@ export default function OrderManagementPage() {
   })
 
   const orders = data?.result || []
-  const countPendingOrders = (orders: IOrder[]): number => {
-    return orders.filter((order) => order.status === OrderStatus.PENDING).length
-  }
 
   const sortedPendingOrders = orders.filter(
     (order) => order.status === OrderStatus.PENDING,
   )
-
-  const pendingCount = countPendingOrders(orders)
   const currentOrders = getOrder()
-
-  const [selectedOrderSlug, setSelectedOrderSlug] = useState<string>('')
-  const { data: orderDetail } = useOrderBySlug(selectedOrderSlug)
 
   useEffect(() => {
     if (orderDetail?.result) {
@@ -63,29 +59,11 @@ export default function OrderManagementPage() {
           <div className="grid h-full grid-cols-1 gap-2 sm:grid-cols-9">
             <div className="col-span-4 flex flex-col gap-2">
               <div className="grid grid-cols-2 gap-2">
-                <div className="flex h-[8rem] min-w-[12rem] flex-col justify-between rounded-md border bg-primary p-6 text-white">
-                  <div className="text-md flex flex-row items-center justify-between">
-                    {t('order.totalOrders')}
-                    <div className="flex h-fit w-fit items-center justify-center rounded-lg bg-white p-3">
-                      <ShoppingCartIcon className="icon text-primary" />
-                    </div>
-                  </div>
-                  <span className="flex h-full items-center text-3xl">
-                    {orders.length}
-                  </span>
-                </div>
-                <div className="flex h-[8rem] min-w-[12rem] flex-col justify-between rounded-md border p-6 text-muted-foreground">
-                  <div className="text-md flex flex-row items-center justify-between">
-                    {t('order.pendingOrders')}
-                    <div className="flex h-fit w-fit items-center justify-center rounded-lg bg-green-100 p-3">
-                      <AlarmClock className="icon text-green-500" />
-                    </div>
-                  </div>
-                  <span className="flex h-full items-center text-3xl">
-                    {pendingCount}
-                  </span>
-                </div>
+                <TotalOrders orders={orders} />
+                <OrderWaitListCounting />
               </div>
+
+              {/* Order wait list */}
               <div className="flex flex-1 rounded-md border py-4">
                 <div className="flex w-full flex-col gap-2">
                   <span className="px-6 text-lg font-semibold text-muted-foreground">
@@ -114,9 +92,6 @@ export default function OrderManagementPage() {
                               </div>
                             </div>
                           </div>
-                          {/* <span className="text-sm">
-                            {pendingOrder.tableName}
-                          </span> */}
                           <span className="flex flex-row items-center justify-start gap-1 text-[0.5rem] text-muted-foreground/60">
                             <Clock size={12} />
                             {moment(pendingOrder.createdAt).format(
@@ -141,118 +116,9 @@ export default function OrderManagementPage() {
                 {orderDetailData ? (
                   <div className="flex flex-col gap-2">
                     {/* Customer Information */}
-                    <div className="grid grid-cols-2 gap-2 border-b-2 pb-6">
-                      {/* Customer Information */}
-                      <div className="col-span-1 flex flex-col gap-1 border-r-2 px-4 text-muted-foreground">
-                        <div className="grid grid-cols-2">
-                          <span className="col-span-1 text-xs font-semibold">
-                            {t('order.customerName')}
-                          </span>
-                          <span className="col-span-1 text-xs">
-                            {orderDetailData?.owner?.firstName}{' '}
-                            {orderDetailData?.owner?.lastName}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2">
-                          <span className="col-span-1 text-xs font-semibold">
-                            {t('order.orderDate')}
-                          </span>
-                          <span className="col-span-1 text-xs">
-                            {moment(orderDetailData?.createdAt).format(
-                              'hh:mm DD/MM/YYYY',
-                            )}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2">
-                          <span className="col-span-1 text-xs font-semibold">
-                            {t('order.phoneNumber')}
-                          </span>
-                          <span className="col-span-1 text-xs">
-                            {orderDetailData?.owner?.phonenumber}
-                          </span>
-                        </div>
-                      </div>
-                      {/* Deliver Information */}
-                      <div className="col-span-1 text-muted-foreground">
-                        <div className="grid grid-cols-3">
-                          <span className="col-span-2 text-xs font-semibold">
-                            {t('order.deliveryMethod')}
-                          </span>
-                          <span className="col-span-1 text-xs">
-                            {orderDetailData?.type === IOrderType.AT_TABLE
-                              ? t('order.dineIn')
-                              : t('order.takeAway')}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-3">
-                          <span className="col-span-2 text-xs font-semibold">
-                            {t('order.tableNumber')}
-                          </span>
-                          <span className="col-span-1 text-xs">
-                            {orderDetailData?.tableName}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                    <CustomerInformation orderDetailData={orderDetailData} />
                     {/* Danh sách sản phẩm */}
-                    <div className="flex flex-col gap-1">
-                      <span className="px-4 py-1 text-lg font-medium">
-                        {t('order.orderDetail')}
-                      </span>
-                      <div className="flex w-full flex-col gap-2">
-                        <ScrollArea className="h-[24rem] px-4">
-                          {orderDetailData?.orderItems?.map((item) => (
-                            <div
-                              key={item.slug}
-                              className="grid w-full items-center gap-4 border-b-2 py-4"
-                            >
-                              <div
-                                key={`${item.slug}`}
-                                className="grid w-full grid-cols-4 flex-row items-center"
-                              >
-                                <div className="col-span-2 flex w-full justify-start">
-                                  <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
-                                    <div className="relative">
-                                      <img
-                                        src={`${publicFileURL}/${item.variant.product.image}`}
-                                        alt={item.variant.product.name}
-                                        className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
-                                      />
-                                      <span className="absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs text-white">
-                                        x{item.quantity}
-                                      </span>
-                                    </div>
-
-                                    <div className="flex h-full flex-col items-start">
-                                      <span className="truncate font-bold">
-                                        {item.variant.product.name}
-                                      </span>
-
-                                      <span className="text-sm text-muted-foreground">
-                                        {`${(item.variant.price || 0).toLocaleString('vi-VN')}đ`}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-span-2 flex justify-end">
-                                  <span className="text-sm font-semibold text-primary">
-                                    {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
-                                  </span>
-                                </div>
-                              </div>
-                              {/* <div className="flex items-center gap-2">
-                                <NotepadText
-                                  size={24}
-                                  className="text-muted-foreground"
-                                />
-                                <Input value={item.note} readOnly />
-                              </div> */}
-                              <OrderItemDetail order={item} />
-                            </div>
-                          ))}
-                        </ScrollArea>
-                      </div>
-                    </div>
+                    <OrderItemList orderDetailData={orderDetailData} />
                   </div>
                 ) : (
                   <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
@@ -262,7 +128,7 @@ export default function OrderManagementPage() {
               </div>
               <div className="flex w-full justify-end gap-2">
                 <CreateOrderTrackingByStaffDialog />
-                <Button>{t('order.byRobot')}</Button>
+                <Button>{t('order.createOrderTrackingByRobot')}</Button>
               </div>
             </div>
           </div>
