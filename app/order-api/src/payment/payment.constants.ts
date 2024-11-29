@@ -9,3 +9,7 @@ export const PaymentStatus = {
   COMPLETED: 'completed',
   FAILED: 'failed',
 };
+
+export const PaymentAction = {
+  PAYMENT_PAID: 'payment.paid',
+};
