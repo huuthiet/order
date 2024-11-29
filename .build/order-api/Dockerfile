@@ -1,7 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:18-alpine
-
-RUN apk add --no-cache curl
+FROM node:18-buster
 
 RUN apt-get update && apt-get install -y \
     libnss3 \
@@ -15,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     libatspi2.0-0 \
     libgtk-3-0 \
     libxshmfence1 \
-    default-mysql-client
+    default-mysql-client \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /app
