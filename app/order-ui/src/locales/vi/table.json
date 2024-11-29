@@ -1,6 +1,7 @@
 {
   "table": {
     "title": "Quản lý bàn",
+    "uploadBackgroundImage": "Tải ảnh nền",
     "create": "Tạo bàn",
     "createTableDescription": "Thay đổi thông tin bên dưới để tạo bàn mới",
     "tableName": "Tên bàn",
