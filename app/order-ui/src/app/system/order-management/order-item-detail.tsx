@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { CheckedState } from '@radix-ui/react-checkbox'
 
@@ -12,14 +13,13 @@ interface OrderItemDetailProps {
 }
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
+  const { t } = useTranslation(['menu'])
   const [showDetails, setShowDetails] = useState(false)
   const { addSelectedItem, removeSelectedItem, isItemSelected } =
     useOrderTrackingStore()
   const [selectedIndexes, setSelectedIndexes] = useState<{
     [key: string]: boolean
   }>({})
-
-  console.log(order.variant.product.name)
 
   const handleSelectOrderItem = (
     checked: CheckedState,
@@ -38,6 +38,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       }
       addSelectedItem(singleItem)
     } else {
+      console.log('remove', key)
       setSelectedIndexes((prev) => ({ ...prev, [key]: false }))
       removeSelectedItem(`${orderItem.slug}-${itemIndex}`)
     }
@@ -89,6 +90,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                   />
                   <p className="text-sm">{orderItem.variant.product.name}</p>
                   <p className="text-sm">
+                    {t('order.size')}
                     {orderItem.variant.size?.name.toUpperCase()}
                   </p>
                 </div>
@@ -104,14 +106,16 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                     }`}
                   />
                   <p className="text-sm">{orderItem.variant.product.name}</p>
+                  {'-'}
                   <p className="text-sm">
+                    {t('order.size')}
                     {orderItem.variant.size?.name.toUpperCase()}
                   </p>
                 </div>
               )}
 
               <div className="col-span-1 text-center text-sm">
-                {orderItem.variant.price.toLocaleString()} VND
+                {orderItem.variant.price.toLocaleString()}đ
               </div>
               <div className="col-span-1 flex justify-end">
                 <OrderItemStatusBadge status={item.status} />

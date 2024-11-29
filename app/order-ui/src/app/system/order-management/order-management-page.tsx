@@ -16,10 +16,11 @@ import OrderItemList from './order-item-list'
 
 export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
+  const { t: tCommon } = useTranslation(['common'])
   const [selectedOrderSlug, setSelectedOrderSlug] = useState<string>('')
   const { userInfo } = useUserStore()
   const { addOrder, getOrder } = useOrderStore()
-  const { clearSelectedItems } = useOrderTrackingStore()
+  const { clearSelectedItems, getSelectedItems } = useOrderTrackingStore()
   const { data: orderDetail } = useOrderBySlug(selectedOrderSlug)
 
   const { data } = useOrders({
@@ -122,14 +123,16 @@ export default function OrderManagementPage() {
                   </div>
                 ) : (
                   <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
-                    {t('common.noData')}
+                    {tCommon('common.noData')}
                   </p>
                 )}
               </div>
-              <div className="flex w-full justify-end gap-2">
-                <CreateOrderTrackingByStaffDialog />
-                <Button>{t('order.createOrderTrackingByRobot')}</Button>
-              </div>
+              {getSelectedItems().length > 0 && (
+                <div className="flex w-full justify-end gap-2">
+                  <CreateOrderTrackingByStaffDialog />
+                  <Button>{t('order.createOrderTrackingByRobot')}</Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
