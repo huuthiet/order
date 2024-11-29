@@ -10,7 +10,7 @@ export default function ProfileForm() {
       <Tabs defaultValue="general-info" className="w-full">
         <TabsList className="gap-3">
           <TabsTrigger value="general-info">
-            {t('account.generalInfo')}
+            {t('profile.generalInfo')}
           </TabsTrigger>
           <TabsTrigger value="password-and-authentication">
             {t('account.passwordAndAuthentication')}

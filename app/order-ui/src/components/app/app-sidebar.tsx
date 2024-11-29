@@ -1,8 +1,9 @@
 'use client'
 
-import { ChevronRight, Command, Sparkles } from 'lucide-react'
+import { ChevronRight, Sparkles } from 'lucide-react'
 import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useSidebar } from '@/components/ui'
 
 import {
   Collapsible,
@@ -26,14 +27,16 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator,
   DropdownMenuGroup,
-  DropdownMenuItem
+  DropdownMenuItem,
 } from '@/components/ui'
 import { sidebarRoutes } from '@/router/routes'
 import { ISidebarRoute } from '@/types'
+import { Logo } from '@/assets/images'
 
 export default function AppSidebar() {
   const { t } = useTranslation('sidebar')
   const location = useLocation()
+  const { state, toggleSidebar } = useSidebar()
   const isActive = (path: string) => location.pathname === path
 
   const translatedSidebarRoute = (sidebarRoutes: ISidebarRoute) => ({
@@ -41,27 +44,35 @@ export default function AppSidebar() {
     title: t(`${sidebarRoutes.title}`),
     children: sidebarRoutes.children?.map((child) => ({
       ...child,
-      title: t(`${child.title}`)
-    }))
+      title: t(`${child.title}`),
+    })),
   })
 
   // Translate all sidebar routes
   const translatedRoutes = sidebarRoutes.map(translatedSidebarRoute)
 
   return (
-    <Sidebar variant="inset" className="z-50 bg-white border-r" collapsible="icon">
+    <Sidebar
+      variant="inset"
+      className="z-50 border-r bg-white"
+      collapsible="icon"
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="w-full">
             <SidebarMenuButton size="lg" asChild>
-              <NavLink to="/staff/home" className="flex items-center w-full gap-3">
-                <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0 group-data-[collapsible=icon]:w-full">
+              <NavLink
+                to="/staff/home"
+                className="flex w-full items-center justify-center"
+              >
+                {/* <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0 group-data-[collapsible=icon]:w-full">
                   <Command className="size-4" />
                 </div>
                 <div className="flex items-center">
                   <span className="font-semibold text-primary">SMART</span>
                   <span>COFFEE</span>
-                </div>
+                </div> */}
+                <img src={Logo} alt="logo" className="h-6" />
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -78,7 +89,15 @@ export default function AppSidebar() {
                     tooltip={item.title}
                     className={isActive(item.path) ? 'text-primary' : ''}
                   >
-                    <NavLink to={item.path}>
+                    <NavLink
+                      to={item.path}
+                      onClick={(e) => {
+                        if (state === 'collapsed') {
+                          e.preventDefault()
+                          toggleSidebar()
+                        }
+                      }}
+                    >
                       {item.icon && (
                         <IconWrapper
                           Icon={item.icon}
@@ -102,9 +121,14 @@ export default function AppSidebar() {
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton
                                 asChild
-                                className={isActive(subItem.path) ? 'text-primary' : ''}
+                                className={
+                                  isActive(subItem.path) ? 'text-primary' : ''
+                                }
                               >
-                                <NavLink to={subItem.path} className="flex flex-col gap-4">
+                                <NavLink
+                                  to={subItem.path}
+                                  className="flex flex-col gap-4"
+                                >
                                   <span>{subItem.title}</span>
                                 </NavLink>
                               </SidebarMenuSubButton>
@@ -138,7 +162,6 @@ export default function AppSidebar() {
                     Upgrade to Pro
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
                 <DropdownMenuSeparator />
               </DropdownMenuContent>
             </DropdownMenu>

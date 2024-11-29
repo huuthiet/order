@@ -53,6 +53,13 @@ export const OrderSuccessPage = React.lazy(() =>
   })),
 )
 
+//Order management page
+export const OrderManagementPage = React.lazy(() =>
+  import('@/app/system/order-management').then((module) => ({
+    default: module.OrderManagementPage,
+  })),
+)
+
 //Table page
 export const TablePage = React.lazy(() =>
   import('@/app/system/table').then((module) => ({

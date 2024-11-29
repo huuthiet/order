@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui'
 
 interface IUpdateProductVariantDialogProps {
@@ -20,7 +20,7 @@ import { UpdateProductVariantForm } from '@/components/app/form'
 import { IProductVariant } from '@/types'
 
 export default function UpdateProductVariantDialog({
-  productVariant
+  productVariant,
 }: IUpdateProductVariantDialogProps) {
   const { t } = useTranslation(['product'])
   const [isOpen, setIsOpen] = useState(false)
@@ -31,17 +31,26 @@ export default function UpdateProductVariantDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="flex items-center justify-start">
-        <Button variant="ghost" className="h-10 gap-1 px-2 text-sm" onClick={() => setIsOpen(true)}>
+        <Button
+          variant="ghost"
+          className="h-10 gap-1 px-2 text-sm"
+          onClick={() => setIsOpen(true)}
+        >
           <PlusCircledIcon className="icon" />
           {t('productVariant.update')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-md max-w-[20rem] sm:max-w-[36rem]">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
         <DialogHeader>
           <DialogTitle>{t('productVariant.create')}</DialogTitle>
-          <DialogDescription>{t('productVariant.updateVariantDescription')}</DialogDescription>
+          <DialogDescription>
+            {t('productVariant.updateVariantDescription')}
+          </DialogDescription>
         </DialogHeader>
-        <UpdateProductVariantForm productVariant={productVariant} onSubmit={handleSubmit} />
+        <UpdateProductVariantForm
+          productVariant={productVariant}
+          onSubmit={handleSubmit}
+        />
       </DialogContent>
     </Dialog>
   )

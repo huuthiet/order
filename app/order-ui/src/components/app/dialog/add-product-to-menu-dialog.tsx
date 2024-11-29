@@ -38,12 +38,12 @@ export default function AddMenuItemDialog({ product }: AddMenuItemDialogProps) {
           <PlusCircledIcon className="icon" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[20rem] rounded-md px-0 sm:max-w-[44rem]">
-        <DialogHeader className="px-6">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[44rem]">
+        <DialogHeader>
           <DialogTitle>{t('menu.addMenuItem')}</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[24rem] px-6">
+        <ScrollArea className="max-h-[24rem]">
           <AddMenuItemForm onSubmit={handleSubmit} product={product} />
         </ScrollArea>
       </DialogContent>

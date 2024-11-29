@@ -12,6 +12,7 @@ import {
   Input,
   Form,
   Button,
+  ScrollArea,
 } from '@/components/ui'
 import { createTableSchema, TCreateTableSchema } from '@/schemas'
 
@@ -20,6 +21,8 @@ import { ICreateTableRequest } from '@/types'
 import { useCreateTable } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
+import { TableStatus } from '@/constants'
+// import { IsEmptySwitch } from '../switch'
 
 interface IFormCreateTableProps {
   onSubmit: (isOpen: boolean) => void
@@ -37,6 +40,8 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
       name: '',
       branch: '',
       location: '',
+      status: TableStatus.AVAILABLE,
+      // isEmpty: false,
       xPosition: 0,
       yPosition: 0,
     },
@@ -101,6 +106,35 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
         )}
       />
     ),
+    status: (
+      <FormField
+        control={form.control}
+        name="status"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('table.status')}</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder={t('table.enterStatus')} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    ),
+    // isEmpty: (
+    //   <FormField
+    //     control={form.control}
+    //     name="isEmpty"
+    //     render={({ field }) => (
+    //       <FormItem>
+    //         <FormControl>
+    //           <IsEmptySwitch defaultValue={false} {...field} />
+    //         </FormControl>
+    //         <FormMessage />
+    //       </FormItem>
+    //     )}
+    //   />
+    // ),
     xPosition: (
       <FormField
         control={form.control}
@@ -137,13 +171,15 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 gap-2">
-            {Object.keys(formFields).map((key) => (
-              <React.Fragment key={key}>
-                {formFields[key as keyof typeof formFields]}
-              </React.Fragment>
-            ))}
-          </div>
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="grid grid-cols-1 gap-2">
+              {Object.keys(formFields).map((key) => (
+                <React.Fragment key={key}>
+                  {formFields[key as keyof typeof formFields]}
+                </React.Fragment>
+              ))}
+            </div>
+          </ScrollArea>
           <div className="flex justify-end">
             <Button className="flex justify-end" type="submit">
               {t('table.create')}

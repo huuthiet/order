@@ -6,16 +6,16 @@ import { SearchBar } from '@/components/app/input'
 
 export default function AppHeader() {
   return (
-    <header className="sticky top-0 px-3 z-20 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center flex-1 w-full h-14">
+    <header className="sticky top-0 z-20 w-full border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-14 w-full flex-1 items-center">
         <div className="flex flex-row items-center gap-6">
           <SidebarTrigger />
           <SearchBar />
         </div>
-        <div className="flex items-center justify-end flex-1 w-full gap-2">
+        <div className="flex w-full flex-1 items-center justify-end gap-2">
           <ModeToggle />
           <DropdownHeader />
-          <span className="flex flex-col">
+          <span className="hidden flex-col sm:flex">
             <span className="ml-2 text-sm font-semibold">Phan Quyết Thắng</span>
             <span className="ml-2 text-xs text-gray-500">Nhân viên</span>
           </span>

@@ -8,7 +8,7 @@ export const ROUTE = {
   PROFILE: '/profile',
 
   // Staff Routes
-  STAFF_HOME: '/home',
+  STAFF_HOME: '/',
   STAFF_MENU: '/menu',
   STAFF_CHECKOUT_ORDER: '/checkout-order',
   STAFF_ORDER_PAYMENT: '/order-payment',
@@ -22,7 +22,7 @@ export const ROUTE = {
   STAFF_PRODUCT_DETAIL: '/product',
   STAFF_DELIVERY_MANAGEMENT: '/delivery-management',
   STAFF_WALLET_MANAGEMENT: '/wallet-management',
-  STAFF_LOG_MANAGEMENT: '/log-management',
+  STAFF_LOG_MANAGEMENT: '/log',
   STAFF_BANK_CONFIG: '/bank-config',
 
   // Admin Routes

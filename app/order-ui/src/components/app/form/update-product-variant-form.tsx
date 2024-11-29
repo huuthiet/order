@@ -11,9 +11,12 @@ import {
   FormMessage,
   Input,
   Form,
-  Button
+  Button,
 } from '@/components/ui'
-import { updateProductVariantSchema, TUpdateProductVariantSchema } from '@/schemas'
+import {
+  updateProductVariantSchema,
+  TUpdateProductVariantSchema,
+} from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IUpdateProductVariantRequest, IProductVariant } from '@/types'
@@ -25,10 +28,9 @@ interface IFormUpdateProductVariantProps {
   onSubmit: (isOpen: boolean) => void
 }
 
-export const UpdateProductVariantForm: React.FC<IFormUpdateProductVariantProps> = ({
-  productVariant,
-  onSubmit
-}) => {
+export const UpdateProductVariantForm: React.FC<
+  IFormUpdateProductVariantProps
+> = ({ productVariant, onSubmit }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { mutate: createProductVariant } = useUpdateProductVariant()
@@ -36,20 +38,20 @@ export const UpdateProductVariantForm: React.FC<IFormUpdateProductVariantProps> 
     resolver: zodResolver(updateProductVariantSchema),
     defaultValues: {
       price: productVariant.price,
-      product: productVariant.slug
-    }
+      product: productVariant.slug,
+    },
   })
 
   const handleSubmit = (data: IUpdateProductVariantRequest) => {
     createProductVariant(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['productVariants']
+          queryKey: ['product', productVariant.slug],
         })
         onSubmit(false)
         form.reset()
-        showToast(t('toast.createProductVariantSuccess'))
-      }
+        showToast(t('toast.updateProductVariantSuccess'))
+      },
     })
   }
 
@@ -74,7 +76,7 @@ export const UpdateProductVariantForm: React.FC<IFormUpdateProductVariantProps> 
           </FormItem>
         )}
       />
-    )
+    ),
   }
 
   return (

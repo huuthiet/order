@@ -12,6 +12,7 @@
     "enterNote": "Nhập ghi chú",
 
     "order": "Đơn hàng",
+    "orderDescription": "Vui lòng kiểm tra thông tin đơn hàng",
     "dineIn": "Tại quán",
     "takeAway": "Mang đi",
     "promotion": "Mã giảm giá",
@@ -88,6 +89,10 @@
     "confirmPaid": "Xác nhận đã thanh toán",
     "complete": "Hoàn tất",
 
+    "pending": "Đang chuẩn bị",
+    "completed": "Đã hoàn tất",
+    "failed": "Thất bại",
+
     "deleteItem": "Xóa sản phẩm",
     "deleteNote": "Lưu ý: Hành động này không thể hoàn tác!",
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
@@ -97,7 +102,18 @@
     "confirmOrder": "Bạn có chắc muốn tạo đơn hàng này không?",
 
     "viewDetail": "Xem đơn hàng",
-    "backToMenu": "Quay lại menu"
+    "backToMenu": "Quay lại menu",
+
+    "title": "Quản lý đơn hàng",
+    "totalOrders": "Tổng đơn hàng",
+    "pendingOrders": "Danh sách chờ",
+    "orderList": "Danh sách đơn hàng",
+    "item": "Món",
+    "ready": "Sẵn sàng phục vụ",
+    "preparing": "Đang chuẩn bị",
+    "served": "Đã phục vụ",
+    "ordered": "Đã đặt hàng",
+    "orderDetail": "Chi tiết đơn hàng"
   },
   "table": {
     "title": "Danh sách bàn"

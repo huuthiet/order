@@ -22,10 +22,38 @@ export const useCartItemStore = create<ICartItemStore>()(
       },
 
       addCartItem: (item: ICartItem) => {
-        // Lưu duy nhất một cart item vào cartItems
-        set({
-          cartItems: item, // Lưu trực tiếp item vào cartItems
-        })
+        const { cartItems } = get()
+        if (!cartItems) {
+          // If cart is empty, create new cart with the item
+          set({ cartItems: item })
+        } else {
+          // Check if item already exists in cart
+          const existingItemIndex = cartItems.orderItems.findIndex(
+            (orderItem) => orderItem.id === item.orderItems[0].id,
+          )
+
+          if (existingItemIndex >= 0) {
+            // If item exists, increase its quantity
+            const updatedOrderItems = [...cartItems.orderItems]
+            updatedOrderItems[existingItemIndex].quantity +=
+              item.orderItems[0].quantity
+
+            set({
+              cartItems: {
+                ...cartItems,
+                orderItems: updatedOrderItems,
+              },
+            })
+          } else {
+            // If item doesn't exist, add it to the array
+            set({
+              cartItems: {
+                ...cartItems,
+                orderItems: [...cartItems.orderItems, ...item.orderItems],
+              },
+            })
+          }
+        }
         showToast(i18next.t('toast.addSuccess'))
       },
 
@@ -81,20 +109,37 @@ export const useCartItemStore = create<ICartItemStore>()(
 
       removeCartItem: (cartItemId: string) => {
         const { cartItems } = get()
-
+        console.log('Remove cart item', cartItemId)
         if (cartItems) {
-          // Lọc bỏ orderItem có id trùng với orderItemId
-          const updatedOrderItems = cartItems.orderItems.filter(
-            (orderItem) => orderItem.id !== cartItemId,
+          const itemToRemove = cartItems.orderItems.find(
+            (item) => item.id === cartItemId,
           )
-
-          // Cập nhật lại cartItems với orderItems đã thay đổi
-          set({
-            cartItems: {
-              ...cartItems,
-              orderItems: updatedOrderItems,
-            },
-          })
+          console.log('Item to remove', itemToRemove)
+          if (itemToRemove && itemToRemove.quantity > 1) {
+            // If quantity > 1, decrease quantity by 1
+            const updatedOrderItems = cartItems.orderItems.map((orderItem) =>
+              orderItem.id === cartItemId
+                ? { ...orderItem, quantity: orderItem.quantity - 1 }
+                : orderItem,
+            )
+            set({
+              cartItems: {
+                ...cartItems,
+                orderItems: updatedOrderItems,
+              },
+            })
+          } else {
+            // If quantity is 1, remove the item completely
+            const updatedOrderItems = cartItems.orderItems.filter(
+              (orderItem) => orderItem.id !== cartItemId,
+            )
+            set({
+              cartItems: {
+                ...cartItems,
+                orderItems: updatedOrderItems,
+              },
+            })
+          }
           showToast(i18next.t('toast.removeSuccess'))
         }
       },

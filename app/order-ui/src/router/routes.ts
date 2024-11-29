@@ -25,7 +25,7 @@ export const sidebarRoutes: ISidebarRoute[] = [
   },
   {
     title: 'sidebar.orderManagement',
-    path: ROUTE.STAFF_ORDER_HISTORY,
+    path: ROUTE.STAFF_ORDER_MANAGEMENT,
     icon: FileChartColumnIncreasing,
   },
   {

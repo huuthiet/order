@@ -10,14 +10,17 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   RunWorkFlowRequestDto,
   WorkFlowExecutionResponseDto,
-  CreateWorkFlowRequestDto,
   WorkFlowResponseDto,
   QRLocationResponseDto,
   CreateQRLocationRequestDto,
   UpdateQRLocationRequestDto,
-} from './robot-connector.dto';
-import { catchError, firstValueFrom, retry } from 'rxjs';
-import { AxiosError } from 'axios';
+  GetWorkFlowExecutionResponseDto,
+  CreateWorkflowRequestDto
+} from "./robot-connector.dto";
+import { catchError, firstValueFrom, retry } from "rxjs";
+import { AxiosError } from "axios";
+import { CreateTableRequestDto, TableResponseDto } from "src/table/table.dto";
+import { CreateSizeRequestDto } from "src/size/size.dto";
 
 @Injectable()
 export class RobotConnectorClient {
@@ -33,7 +36,7 @@ export class RobotConnectorClient {
 
   /* WORK FLOWS */
   async createWorkFlow(
-    requestData: CreateWorkFlowRequestDto,
+    requestData: CreateWorkflowRequestDto
   ): Promise<WorkFlowResponseDto> {
     const requestUrl = `${this.robotApiUrl}/workflows`;
     const { data } = await firstValueFrom(
@@ -70,29 +73,34 @@ export class RobotConnectorClient {
     workFlowId: string,
     requestData: RunWorkFlowRequestDto,
   ): Promise<WorkFlowExecutionResponseDto> {
+    const context = `${RobotConnectorClient.name}.${this.runWorkFlow.name}`;
     const requestUrl = `${this.robotApiUrl}/workflows/${workFlowId}/run`;
     const { data } = await firstValueFrom(
       this.httpService
-        .post<WorkFlowExecutionResponseDto>(requestUrl, requestData, {})
-        .pipe(
-          catchError((error: AxiosError) => {
-            this.logger.error(
-              `Init WorkFlow from ROBOT API failed: ${error.message}`,
-            );
-            throw error;
-          }),
-        ),
+      .post<WorkFlowExecutionResponseDto>(requestUrl, requestData)
+      .pipe(
+        catchError((error: AxiosError) => {
+          this.logger.error(
+            `Run workflow from ROBOT API ${workFlowId} failed: ${error.message}`, 
+            context
+          );
+          throw new BadRequestException(`Run workflow failed`);
+        }),
+      )
     );
     return data;
   }
 
   /* WORKFLOW EXECUTIONS */
   async retrieveWorkFlowExecution(
-    workFlowInstanceId: string,
-  ): Promise<WorkFlowExecutionResponseDto> {
-    const requestUrl = `${this.robotApiUrl}/executions/${workFlowInstanceId}`;
+    workFlowInstanceId: string
+  ): Promise<GetWorkFlowExecutionResponseDto> {
+    console.log({workFlowInstanceId})
+    const requestUrl = `${this.robotApiUrl}/workflow-executions/${workFlowInstanceId}`;
     const { data } = await firstValueFrom(
-      this.httpService.get<WorkFlowExecutionResponseDto>(requestUrl).pipe(
+      this.httpService
+      .get<GetWorkFlowExecutionResponseDto>(requestUrl)
+      .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get WorkFlow Execution from ROBOT API failed: ${error.message}`,
@@ -104,12 +112,12 @@ export class RobotConnectorClient {
     return data;
   }
 
-  async retrieveAllWorkFlowExecutions(): Promise<
-    WorkFlowExecutionResponseDto[]
-  > {
-    const requestUrl = `${this.robotApiUrl}/executions`;
+  async retrieveAllWorkFlowExecutions(): Promise<GetWorkFlowExecutionResponseDto[]> {
+    const requestUrl = `${this.robotApiUrl}/workflow-executions`;
     const { data } = await firstValueFrom(
-      this.httpService.get<WorkFlowExecutionResponseDto[]>(requestUrl).pipe(
+      this.httpService
+      .get<GetWorkFlowExecutionResponseDto[]>(requestUrl)
+      .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get all WorkFlow Executions from ROBOT API failed: ${error.message}`,

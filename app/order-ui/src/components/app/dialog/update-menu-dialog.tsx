@@ -38,7 +38,7 @@ export default function UpdateMenuDialog({ menu }: IUpdateMenuDialogProps) {
           {t('menu.update')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[20rem] rounded-md sm:max-w-[36rem]">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
         <DialogHeader>
           <DialogTitle>{t('menu.update')}</DialogTitle>
           <DialogDescription>
