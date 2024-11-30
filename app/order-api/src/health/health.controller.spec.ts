@@ -6,6 +6,7 @@ import {
   TerminusModule,
 } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 describe('HealthController', () => {
   let controller: HealthController;
@@ -14,6 +15,19 @@ describe('HealthController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TerminusModule, HttpModule],
       controllers: [HealthController],
+      providers: [
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'SALT_ROUNDS') {
+                return 10;
+              }
+              return null;
+            }),
+          },
+        },
+      ],
       // providers: [
       //   {
       //     provide: HealthCheckService,

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
 import {
   CheckDataCreateOrderItemResponseDto,
   CreateOrderRequestDto,
@@ -36,6 +36,7 @@ import { VariantValidation } from 'src/variant/variant.validation';
 import { Tracking } from 'src/tracking/tracking.entity';
 import { PaymentAction, PaymentStatus } from 'src/payment/payment.constants';
 import { BranchException } from 'src/branch/branch.exception';
+import { AppPaginatedResponseDto } from 'src/app/app.dto';
 
 @Injectable()
 export class OrderService {
@@ -228,19 +229,28 @@ export class OrderService {
   /**
    *
    * @param {GetOrderRequestDto} options The options to retrieved order
-   * @returns {Promise<OrderResponseDto>} All orders retrieved
+   * @returns {Promise<AppPaginatedResponseDto<OrderResponseDto>>} All orders retrieved
    */
-  async getAllOrders(options: GetOrderRequestDto): Promise<OrderResponseDto[]> {
+  async getAllOrders(
+    options: GetOrderRequestDto,
+  ): Promise<AppPaginatedResponseDto<OrderResponseDto>> {
     const context = `${OrderService.name}.${this.getAllOrders.name}`;
-    const orders = await this.orderRepository.find({
-      where: {
-        branch: {
-          slug: options.branch,
-        },
-        owner: {
-          slug: options.owner,
-        },
+
+    const findOptionsWhere: FindOptionsWhere<any> = {
+      branch: {
+        slug: options.branch,
       },
+      owner: {
+        slug: options.owner,
+      },
+    };
+
+    if (options.status.length > 0) {
+      findOptionsWhere.status = In(options.status);
+    }
+
+    const [orders, total] = await this.orderRepository.findAndCount({
+      where: findOptionsWhere,
       relations: [
         'owner',
         'orderItems.variant.size',
@@ -248,12 +258,29 @@ export class OrderService {
         'payment',
         'invoice',
       ],
+      order: { createdAt: 'DESC' },
+      skip: (options.page - 1) * options.size,
+      take: options.size,
     });
 
     const ordersDto = this.mapper.mapArray(orders, Order, OrderResponseDto);
     this.logger.log(`Get all orders successfully`, context);
 
-    return ordersDto;
+    // Calculate total pages
+    const totalPages = Math.ceil(total / options.size);
+    // Determine hasNext and hasPrevious
+    const hasNext = options.page < totalPages;
+    const hasPrevious = options.page > 1;
+
+    return {
+      hasNext: hasNext,
+      hasPrevios: hasPrevious,
+      items: ordersDto,
+      total,
+      page: options.page,
+      pageSize: options.size,
+      totalPages,
+    } as AppPaginatedResponseDto<OrderResponseDto>;
   }
 
   /**
