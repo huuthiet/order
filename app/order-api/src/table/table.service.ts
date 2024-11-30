@@ -161,23 +161,23 @@ export class TableService {
       throw new TableException(TableValidation.TABLE_NOT_FOUND);
     }
 
-    const isExist = await this.tableRepository.findOne({
-      where: {
-        name: updateTableDto.name,
-        location: updateTableDto.location,
-        branch: {
-          id: table.branch.id,
-        },
-      },
-    });
+    // const isExist = await this.tableRepository.findOne({
+    //   where: {
+    //     name: updateTableDto.name,
+    //     location: updateTableDto.location,
+    //     branch: {
+    //       id: table.branch.id,
+    //     },
+    //   },
+    // });
 
-    if (isExist) {
-      this.logger.warn(
-        `Table with ${updateTableDto.name} and ${updateTableDto.location} location already exist`,
-        context,
-      );
-      throw new TableException(TableValidation.TABLE_NAME_EXIST);
-    }
+    // if (isExist) {
+    //   this.logger.warn(
+    //     `Table with ${updateTableDto.name} and ${updateTableDto.location} location already exist`,
+    //     context,
+    //   );
+    //   throw new TableException(TableValidation.TABLE_NAME_EXIST);
+    // }
 
     const tableData = this.mapper.map(
       updateTableDto,
