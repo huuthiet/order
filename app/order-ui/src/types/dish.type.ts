@@ -26,6 +26,7 @@ export interface ICartItem {
   branch?: string
   orderItems: IOrderItem[]
   table?: string
+  tableName?: string
   note?: string
 }
 

@@ -33,6 +33,7 @@ export default function TablePage() {
     [key: string]: { x: number; y: number }
   }>({})
   const mapRef = useRef<HTMLDivElement>(null)
+  const tableData = tables?.result
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -216,7 +217,7 @@ export default function TablePage() {
             open={contextMenu.show}
             x={contextMenu.x}
             y={contextMenu.y}
-            tableId={contextMenu.tableId}
+            table={tableData?.find((t) => t.slug === contextMenu.tableId) || null}
             onOpenChange={(open) =>
               setContextMenu(prev => ({ ...prev, show: open }))
             }

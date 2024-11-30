@@ -1,3 +1,4 @@
+import { DeleteTableDialog } from "@/components/app/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -5,12 +6,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { TableStatus } from '@/constants'
+import { ITable } from "@/types"
 
 interface TableContextMenuProps {
   open: boolean
   x: number
   y: number
-  tableId: string
+  table: ITable | null
   onOpenChange: (open: boolean) => void
   onStatusChange: (tableId: string, status: TableStatus) => void
   onDelete: (tableId: string) => void
@@ -20,10 +22,10 @@ export default function TableContextMenu({
   open,
   x,
   y,
-  tableId,
+  table,
   onOpenChange,
   onStatusChange,
-  onDelete,
+  // onDelete,
 }: TableContextMenuProps) {
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
@@ -35,19 +37,18 @@ export default function TableContextMenu({
           top: y,
         }}
       >
-        <DropdownMenuItem onClick={() => onStatusChange(tableId, TableStatus.AVAILABLE)}>
+        <DropdownMenuItem onClick={() => table && onStatusChange(table.slug, TableStatus.AVAILABLE)}>
           Đánh dấu trống
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onStatusChange(tableId, TableStatus.RESERVED)}>
+        <DropdownMenuItem onClick={() => table && onStatusChange(table.slug, TableStatus.RESERVED)}>
           Đánh dấu đã đặt
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="text-red-600 focus:text-red-600"
-          onClick={() => onDelete(tableId)}
-        >
-          Xóa bàn
-        </DropdownMenuItem>
+        <DeleteTableDialog
+          table={table}
+          onContextOpen={() => onOpenChange(false)}
+        // onDialogOpen={() => onOpenChange(false)}
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   )

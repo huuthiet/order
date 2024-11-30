@@ -20,13 +20,20 @@ import { useDeleteTable } from '@/hooks'
 import { showErrorToast, showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
 
-export default function DeleteTablelog({ table }: { table: ITable }) {
+interface DeleteTableDialogProps {
+  table: ITable | null;
+  onContextOpen?: () => void;
+}
+
+export default function DeleteTableDialog({ table, onContextOpen }: DeleteTableDialogProps) {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['table'])
   const { t: tCommon } = useTranslation('common')
   const { t: tToast } = useTranslation('toast')
   const { mutate: deleteTable } = useDeleteTable()
   const [isOpen, setIsOpen] = useState(false)
+
+  console.log('table', table)
 
   const handleSubmit = (tableSlug: string) => {
     deleteTable(tableSlug, {
@@ -48,28 +55,32 @@ export default function DeleteTablelog({ table }: { table: ITable }) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex w-full justify-start" asChild>
-        <DialogTrigger asChild>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      setIsOpen(open);
+      if (onContextOpen && isOpen) onContextOpen();
+    }}>
+      <DialogTrigger className="flex justify-start w-full" asChild>
+        <DialogTrigger asChild >
           <Button
-            variant="destructive"
-            className="gap-1 text-sm"
+            variant="ghost"
+            className="gap-1 px-2 text-sm"
             onClick={() => setIsOpen(true)}
           >
             <Trash2 className="icon" />
+            {t('table.delete')}
           </Button>
         </DialogTrigger>
       </DialogTrigger>
 
       <DialogContent className="max-w-[22rem] rounded-md font-beVietNam sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="border-b border-destructive pb-4 text-destructive">
+          <DialogTitle className="pb-4 border-b border-destructive text-destructive">
             <div className="flex items-center gap-2">
-              <TriangleAlert className="h-6 w-6" />
+              <TriangleAlert className="w-6 h-6" />
               {t('table.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className="rounded-md bg-red-100 p-2 text-destructive">
+          <DialogDescription className="p-2 bg-red-100 rounded-md text-destructive">
             {tCommon('common.deleteNote')}
           </DialogDescription>
 
@@ -83,12 +94,14 @@ export default function DeleteTablelog({ table }: { table: ITable }) {
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>
-          <Button
-            variant="destructive"
-            onClick={() => table && handleSubmit(table.slug || '')}
-          >
-            {tCommon('common.confirmDelete')}
-          </Button>
+          {table && (
+            <Button
+              variant="destructive"
+              onClick={() => handleSubmit(table.slug)}
+            >
+              {tCommon('common.confirmDelete')}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
