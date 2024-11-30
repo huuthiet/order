@@ -4,7 +4,7 @@ import { Clock, ShoppingCartIcon, SquareMenu } from 'lucide-react'
 import moment from 'moment'
 
 import { Button, ScrollArea } from '@/components/ui'
-import { useOrderBySlug, useOrders } from '@/hooks'
+import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
 import { IOrder, OrderStatus } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
@@ -22,13 +22,17 @@ export default function OrderManagementPage() {
   const { addOrder, getOrder } = useOrderStore()
   const { clearSelectedItems, getSelectedItems } = useOrderTrackingStore()
   const { data: orderDetail } = useOrderBySlug(selectedOrderSlug)
+  const { pagination } = usePagination()
 
   const { data } = useOrders({
-    ownerSlug: '',
+    page: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+    ownerSlug: userInfo?.slug,
+    order: 'DESC',
     branchSlug: userInfo?.branch.slug,
   })
 
-  const orders = data?.result || []
+  const orders = data?.result.items || []
 
   const sortedPendingOrders = orders.filter(
     (order) => order.status === OrderStatus.PENDING,
@@ -48,25 +52,25 @@ export default function OrderManagementPage() {
 
   const orderDetailData = orderDetail?.result
   return (
-    <div className="flex flex-1 flex-row gap-2">
+    <div className="flex flex-row flex-1 gap-2">
       <ScrollArea className="flex-1">
         <div className="flex flex-col">
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pb-4">
-            <span className="flex w-full items-center justify-start gap-1 text-lg">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
+            <span className="flex items-center justify-start w-full gap-1 text-lg">
               <SquareMenu />
               {t('order.title')}
             </span>
           </div>
           <div className="grid h-full grid-cols-1 gap-2 sm:grid-cols-9">
-            <div className="col-span-4 flex flex-col gap-2">
+            <div className="flex flex-col col-span-4 gap-2">
               <div className="grid grid-cols-2 gap-2">
                 <TotalOrders orders={orders} />
                 <OrderWaitListCounting />
               </div>
 
               {/* Order wait list */}
-              <div className="flex flex-1 rounded-md border py-4">
-                <div className="flex w-full flex-col gap-2">
+              <div className="flex flex-1 py-4 border rounded-md">
+                <div className="flex flex-col w-full gap-2">
                   <span className="px-6 text-lg font-semibold text-muted-foreground">
                     {t('order.orderList')}
                   </span>
@@ -78,9 +82,9 @@ export default function OrderManagementPage() {
                           key={pendingOrder.slug}
                           className={`grid cursor-pointer grid-cols-4 ${currentOrders?.slug === pendingOrder.slug ? 'border border-primary bg-primary/10' : ''} flex-row items-center rounded-md px-2 py-3 transition-colors duration-200 hover:bg-primary/10`}
                         >
-                          <div className="col-span-2 flex justify-start gap-4">
+                          <div className="flex justify-start col-span-2 gap-4">
                             <div className="flex items-center justify-start rounded-lg bg-primary p-2.5">
-                              <ShoppingCartIcon className="icon text-white" />
+                              <ShoppingCartIcon className="text-white icon" />
                             </div>
                             <div className="flex flex-col justify-start text-sm">
                               <span>
@@ -109,7 +113,7 @@ export default function OrderManagementPage() {
             </div>
 
             {/* Order Information */}
-            <div className="col-span-5 flex flex-col gap-1 rounded-md border py-4">
+            <div className="flex flex-col col-span-5 gap-1 py-4 border rounded-md">
               <span className="px-4 text-lg font-medium">
                 {t('order.orderInformation')}
               </span>
@@ -128,7 +132,7 @@ export default function OrderManagementPage() {
                 )}
               </div>
               {getSelectedItems().length > 0 && (
-                <div className="flex w-full justify-end gap-2">
+                <div className="flex justify-end w-full gap-2">
                   <CreateOrderTrackingByStaffDialog />
                   <Button>{t('order.createOrderTrackingByRobot')}</Button>
                 </div>

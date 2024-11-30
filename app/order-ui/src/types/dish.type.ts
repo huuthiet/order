@@ -1,3 +1,4 @@
+import { paymentStatus } from '@/constants'
 import { IBase } from './base.type'
 import { ICatalog } from './catalog.type'
 import { IProduct, IProductVariant } from './product.type'
@@ -44,22 +45,34 @@ export interface IOrderItem {
   note?: string
 }
 
+export interface IOrderOwner {
+  phonenumber: string
+  firstName: string
+  lastName: string
+  createdAt: string
+  slug: string
+}
+
+export interface IPayment extends IBase {
+  paymentMethod: string
+  message: string
+  transactionId: string
+  statusCode: string
+  statusMessage: string
+}
+
 export interface IOrder {
   createdAt: string
   slug: string
   type: string
   tableName: string
+  payment: IPayment
   branch: string
-  owner: {
-    phonenumber: string
-    firstName: string
-    lastName: string
-    createdAt: string
-    slug: string
-  }
+  owner: IOrderOwner
   subtotal: number
   orderItems: IOrderDetail[]
   status: OrderStatus
+  invoice: IOrderInvoice
 }
 
 export interface IOrderDetail extends IBase {
@@ -166,4 +179,31 @@ export interface ICreateOrderTrackingRequest {
     quantity: number
     orderItem: string
   }[]
+}
+
+export interface IOrderInvoice {
+  paymentMethod: string
+  amount: number
+  status: paymentStatus
+  logo: string
+  tableName: string
+  branchAddress: string
+  cashier: string
+  customer: string
+  invoiceItems: {
+    productName: string
+    quantity: number
+    price: number
+    total: number
+    size: string
+    createdAt: string
+    slug: string
+  }[]
+  createdAt: string
+  slug: string
+}
+
+export interface IGetOrderInvoiceRequest {
+  order: string // order slug
+  slug: string // invoice slug
 }

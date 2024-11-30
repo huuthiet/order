@@ -101,13 +101,24 @@
     "create": "Tạo đơn hàng",
     "confirmOrder": "Bạn có chắc muốn tạo đơn hàng này không?",
 
-    "viewDetail": "Xem chi tiét",
+    "viewDetail": "Xem chi tiết",
+    "updatePayment": "Cập nhật thanh toán",
+    "createInvoice": "Tạo hóa đơn",
+    "exportInvoice": "Xuất hóa đơn",
     "backToMenu": "Quay lại menu",
 
     "title": "Quản lý đơn hàng",
     "totalOrders": "Tổng đơn hàng",
     "pendingOrders": "Danh sách chờ",
     "orderList": "Danh sách đơn hàng",
+
+    "customerInformation": "Thông tin khách hàng",
+    "paymentMethod": "Phương thức thanh toán",
+    "slug": "Mã đơn hàng",
+    "orderType": "Loại đơn hàng",
+    "owner": "Người đặt",
+    "subtotal": "Tổng tiền",
+    "orderItemCount": "Số lượng món",
     "item": "Món",
     "size": "Size ",
     "ready": "Sẵn sàng phục vụ",
@@ -129,7 +140,8 @@
   "paymentMethod": {
     "title": "Phương thức thanh toán",
     "cash": "Tiền mặt",
-    "bankTransfer": "Chuyển khoản",
+    "status": "Trạng thái",
+    "bankTransfer": "Chuyển khoản ngân hàng",
     "internalWallet": "Ví nội bộ",
     "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý.",
     "confirmPayment": "Lấy mã QR để thanh toán",
@@ -137,6 +149,10 @@
     "cusomterInformation": "Thông tin khách hàng",
     "customerName": "Tên khách hàng",
     "orderDate": "Ngày đặt hàng",
-    "phoneNumber": "Số điện thoại"
+    "phoneNumber": "Số điện thoại",
+
+    "pending": "Chờ xác nhận",
+    "paid": "Đã thanh toán",
+    "canceled": "Đã hủy"
   }
 }
