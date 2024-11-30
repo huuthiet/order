@@ -1,10 +1,31 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, ValidationPipe } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { OrderService } from "./order.service";
-import { Public } from "src/auth/public.decorator";
-import { ApiResponseWithType } from "src/app/app.decorator";
-import { CreateOrderRequestDto, GetOrderRequestDto, OrderResponseDto } from "./order.dto";
-import { AppResponseDto } from "src/app/app.dto";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Req,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { OrderService } from './order.service';
+import { Public } from 'src/auth/public.decorator';
+import { ApiResponseWithType } from 'src/app/app.decorator';
+import {
+  CreateOrderRequestDto,
+  GetOrderRequestDto,
+  OrderResponseDto,
+} from './order.dto';
+import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Order')
 @Controller('orders')
@@ -57,13 +78,14 @@ export class OrderController {
     @Query(new ValidationPipe({ transform: true, whitelist: true }))
     query: GetOrderRequestDto,
   ) {
+    console.log({ query });
     const result = await this.orderService.getAllOrders(query);
     return {
       message: 'All orders have been retrieved successfully',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<OrderResponseDto[]>;
+    } as AppResponseDto<AppPaginatedResponseDto<OrderResponseDto>>;
   }
 
   @Get(':slug')

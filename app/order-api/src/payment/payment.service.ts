@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './payment.entity';
 import { Repository } from 'typeorm';
@@ -22,7 +17,11 @@ import { v4 as uuidv4 } from 'uuid';
 import * as _ from 'lodash';
 import { PaymentException } from './payment.exception';
 import { PaymentValidation } from './payment.validation';
-import { PaymentMethod, PaymentStatus } from './payment.constants';
+import {
+  PaymentAction,
+  PaymentMethod,
+  PaymentStatus,
+} from './payment.constants';
 import {
   ACBResponseDto,
   ACBStatusRequestDto,
@@ -33,6 +32,9 @@ import {
   ACBConnectorTransactionStatus,
 } from 'src/acb-connector/acb-connector.constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { OrderException } from 'src/order/order.exception';
+import { OrderValidation } from 'src/order/order.validation';
+import { OrderStatus } from 'src/order/order.contants';
 
 @Injectable()
 export class PaymentService {
@@ -78,11 +80,19 @@ export class PaymentService {
     // get order
     const order = await this.orderRepository.findOne({
       where: { slug: createPaymentDto.orderSlug },
-      relations: ['owner'],
+      relations: ['owner', 'payment'],
     });
     if (!order) {
       this.logger.error('Order not found', context);
-      throw new BadRequestException('Order not found');
+      throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
+    }
+
+    if (order.status !== OrderStatus.PENDING) {
+      this.logger.error('Order is not pending', context);
+      throw new OrderException(
+        OrderValidation.ORDER_STATUS_INVALID,
+        'Order is not pending',
+      );
     }
 
     let payment: Payment;
@@ -97,6 +107,11 @@ export class PaymentService {
       default:
         this.logger.error('Invalid payment method', context);
         throw new PaymentException(PaymentValidation.PAYMENT_METHOD_INVALID);
+    }
+
+    // Delete previous payment
+    if (order.payment) {
+      await this.paymentRepository.softRemove(order.payment);
     }
 
     // Update order
@@ -149,7 +164,9 @@ export class PaymentService {
     this.logger.log(`Payment ${updatedPayment.id}`, context);
 
     // Update order status
-    this.eventEmitter.emit('payment.paid', { orderId: payment.order?.id });
+    this.eventEmitter.emit(PaymentAction.PAYMENT_PAID, {
+      orderId: payment.order?.id,
+    });
 
     // return data for acb
     const response = {

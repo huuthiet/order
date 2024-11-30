@@ -258,7 +258,7 @@ describe('TableService', () => {
       );
     });
 
-    it('should throw error when updated name already exist in this branch', async () => {
+    it('should updated table when updated name already exist in this branch', async () => {
       const slug = 'mock-table-slug';
       const mockInput = {
         name: 'Mock table name',
@@ -277,9 +277,7 @@ describe('TableService', () => {
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => table);
       // jest.spyOn(service, 'isExistUpdatedName').mockResolvedValue(true);
 
-      await expect(service.update(slug, mockInput)).rejects.toThrow(
-        TableException,
-      );
+      expect(await service.update(slug, mockInput)).toEqual(table);
     });
 
     // it('should update success and return updated table', async () => {

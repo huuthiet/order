@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
 import {
   CheckDataCreateOrderItemResponseDto,
   CreateOrderRequestDto,
@@ -25,19 +25,18 @@ import { Variant } from 'src/variant/variant.entity';
 import { OrderStatus, OrderType } from './order.contants';
 import { WorkflowStatus } from 'src/tracking/tracking.constants';
 import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
-import { Tracking } from 'src/tracking/tracking.entity';
 import { OnEvent } from '@nestjs/event-emitter';
 import { OrderException } from './order.exception';
 import { OrderValidation } from './order.validation';
-import { PaymentStatus } from 'src/payment/payment.constants';
-import { BranchException } from 'src/branch/branch.exception';
 import { BranchValidation } from 'src/branch/branch.validation';
 import { TableException } from 'src/table/table.exception';
 import { TableValidation } from 'src/table/table.validation';
-import { AuthException } from 'src/auth/auth.exception';
-import AuthValidation from 'src/auth/auth.validation1';
 import { VariantException } from 'src/variant/variant.exception';
 import { VariantValidation } from 'src/variant/variant.validation';
+import { Tracking } from 'src/tracking/tracking.entity';
+import { PaymentAction, PaymentStatus } from 'src/payment/payment.constants';
+import { BranchException } from 'src/branch/branch.exception';
+import { AppPaginatedResponseDto } from 'src/app/app.dto';
 
 @Injectable()
 export class OrderService {
@@ -60,7 +59,7 @@ export class OrderService {
     private readonly dataSource: DataSource,
   ) {}
 
-  @OnEvent('payment.paid')
+  @OnEvent(PaymentAction.PAYMENT_PAID)
   async handleUpdateOrderStatus(requestData: { orderId: string }) {
     const context = `${OrderService.name}.${this.handleUpdateOrderStatus.name}`;
     this.logger.log(`Update order status after payment process`, context);
@@ -75,10 +74,13 @@ export class OrderService {
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
-    if (order.payment?.statusCode === PaymentStatus.COMPLETED) {
+    if (
+      order.payment?.statusCode === PaymentStatus.COMPLETED &&
+      order.status === OrderStatus.PENDING
+    ) {
       Object.assign(order, { status: OrderStatus.PAID });
       await this.orderRepository.save(order);
-      this.logger.log(`Update order status to PAID`, context);
+      this.logger.log(`Update order status from PENDING to PAID`, context);
     }
   }
 
@@ -97,7 +99,9 @@ export class OrderService {
 
     const mappedOrder: Order = await this.validateCreatedOrderData(requestData);
 
-    const checkValidOrderItemData = await this.validateCreatedOrderItemData(requestData.orderItems);
+    const checkValidOrderItemData = await this.validateCreatedOrderItemData(
+      requestData.orderItems,
+    );
 
     let createdOrder: Order;
 
@@ -105,13 +109,10 @@ export class OrderService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      Object.assign(
-        mappedOrder, 
-        { 
-          orderItems: checkValidOrderItemData.mappedOrderItems,
-          subtotal: checkValidOrderItemData.subtotal
-        }
-      );
+      Object.assign(mappedOrder, {
+        orderItems: checkValidOrderItemData.mappedOrderItems,
+        subtotal: checkValidOrderItemData.subtotal,
+      });
       const newOrder = this.orderRepository.create(mappedOrder);
 
       createdOrder = await queryRunner.manager.save(newOrder);
@@ -122,15 +123,12 @@ export class OrderService {
       );
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      this.logger.warn(
-        `Create new order failed`,
-        context,
-      );
-      throw new BadRequestException('Create new order failed')
+      this.logger.warn(`Create new order failed`, context);
+      throw new BadRequestException('Create new order failed');
     } finally {
       await queryRunner.release();
     }
-    
+
     const orderDto = this.mapper.map(createdOrder, Order, OrderResponseDto);
     return orderDto;
   }
@@ -140,19 +138,19 @@ export class OrderService {
    * @param {CreateOrderRequestDto} data The data to create order
    * @returns {Promise<Order>} The result of checking
    */
-  async validateCreatedOrderData(
-    data: CreateOrderRequestDto
-  ): Promise<Order> {
+  async validateCreatedOrderData(data: CreateOrderRequestDto): Promise<Order> {
     const context = `${OrderService.name}.${this.validateCreatedOrderData.name}`;
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
     if (!branch) {
-      this.logger.warn(`${BranchValidation.BRANCH_NOT_FOUND} ${data.branch}`, context);
+      this.logger.warn(
+        `${BranchValidation.BRANCH_NOT_FOUND} ${data.branch}`,
+        context,
+      );
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
     let tableName: string = null; // default for take-out
-    if(data.type === OrderType.AT_TABLE) {
-      
+    if (data.type === OrderType.AT_TABLE) {
       const table = await this.tableRepository.findOne({
         where: {
           slug: data.table,
@@ -161,8 +159,11 @@ export class OrderService {
           },
         },
       });
-      if(!table) {
-        this.logger.warn(`${TableValidation.TABLE_NOT_FOUND} ${data.table}`, context);
+      if (!table) {
+        this.logger.warn(
+          `${TableValidation.TABLE_NOT_FOUND} ${data.table}`,
+          context,
+        );
         throw new TableException(TableValidation.TABLE_NOT_FOUND);
       }
       tableName = table.name;
@@ -170,7 +171,10 @@ export class OrderService {
 
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
     if (!owner) {
-      this.logger.warn(`${OrderValidation.OWNER_NOT_FOUND} ${data.owner}`, context);
+      this.logger.warn(
+        `${OrderValidation.OWNER_NOT_FOUND} ${data.owner}`,
+        context,
+      );
       throw new OrderException(OrderValidation.OWNER_NOT_FOUND);
     }
     const order = this.mapper.map(data, CreateOrderRequestDto, Order);
@@ -178,7 +182,7 @@ export class OrderService {
       owner: owner,
       branch: branch,
       tableName,
-    })
+    });
     return order;
   }
 
@@ -199,7 +203,10 @@ export class OrderService {
         slug: data[i].variant,
       });
       if (!variant) {
-        this.logger.warn(`${VariantValidation.VARIANT_NOT_FOUND} ${data[i].variant}`, context);
+        this.logger.warn(
+          `${VariantValidation.VARIANT_NOT_FOUND} ${data[i].variant}`,
+          context,
+        );
         throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
       }
 
@@ -222,31 +229,58 @@ export class OrderService {
   /**
    *
    * @param {GetOrderRequestDto} options The options to retrieved order
-   * @returns {Promise<OrderResponseDto>} All orders retrieved
+   * @returns {Promise<AppPaginatedResponseDto<OrderResponseDto>>} All orders retrieved
    */
-  async getAllOrders(options: GetOrderRequestDto): Promise<OrderResponseDto[]> {
+  async getAllOrders(
+    options: GetOrderRequestDto,
+  ): Promise<AppPaginatedResponseDto<OrderResponseDto>> {
     const context = `${OrderService.name}.${this.getAllOrders.name}`;
-    const orders = await this.orderRepository.find({
-      where: {
-        branch: {
-          slug: options.branch,
-        },
-        owner: {
-          slug: options.owner,
-        },
+
+    const findOptionsWhere: FindOptionsWhere<any> = {
+      branch: {
+        slug: options.branch,
       },
+      owner: {
+        slug: options.owner,
+      },
+    };
+
+    if (options.status.length > 0) {
+      findOptionsWhere.status = In(options.status);
+    }
+
+    const [orders, total] = await this.orderRepository.findAndCount({
+      where: findOptionsWhere,
       relations: [
         'owner',
         'orderItems.variant.size',
         'orderItems.variant.product',
         'payment',
+        'invoice',
       ],
+      order: { createdAt: 'DESC' },
+      skip: (options.page - 1) * options.size,
+      take: options.size,
     });
 
     const ordersDto = this.mapper.mapArray(orders, Order, OrderResponseDto);
     this.logger.log(`Get all orders successfully`, context);
 
-    return ordersDto;
+    // Calculate total pages
+    const totalPages = Math.ceil(total / options.size);
+    // Determine hasNext and hasPrevious
+    const hasNext = options.page < totalPages;
+    const hasPrevious = options.page > 1;
+
+    return {
+      hasNext: hasNext,
+      hasPrevios: hasPrevious,
+      items: ordersDto,
+      total,
+      page: options.page,
+      pageSize: options.size,
+      totalPages,
+    } as AppPaginatedResponseDto<OrderResponseDto>;
   }
 
   /**
@@ -265,6 +299,7 @@ export class OrderService {
         'orderItems.variant.size',
         'orderItems.variant.product',
         'orderItems.trackingOrderItems.tracking',
+        'invoice.invoiceItems',
       ],
     });
 

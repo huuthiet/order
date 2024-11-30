@@ -4,6 +4,7 @@ import { OrderService } from "./order.service";
 import { ApprovalUserResponseDto, CreateOrderRequestDto, GetOrderRequestDto, OrderPaymentResponseDto, OrderResponseDto, OwnerResponseDto } from "./order.dto";
 import { OrderException } from "./order.exception";
 import { BadRequestException } from "@nestjs/common";
+import { InvoiceResponseDto } from "src/invoice/invoice.dto";
 
 describe('SizeController', () => {
   let controller: OrderController;
@@ -87,11 +88,14 @@ describe('SizeController', () => {
     });
 
     it('should return array of order when get success', async () => {
-      const mockInput: GetOrderRequestDto = {
+      const mockInput = {
         branch: '',
-        owner: ''
-      };
-      const order: OrderResponseDto = {
+        owner: '',
+        page: 0,
+        size: 0,
+        status: []
+      } as GetOrderRequestDto;
+      const order = {
         subtotal: 0,
         status: "",
         type: "",
@@ -101,8 +105,9 @@ describe('SizeController', () => {
         orderItems: [],
         payment: new OrderPaymentResponseDto,
         createdAt: "",
-        slug: ""
-      };
+        slug: "",
+        invoice: new InvoiceResponseDto
+      } as OrderResponseDto;
       const mockOutput = [order];
       (service.getAllOrders as jest.Mock).mockResolvedValue(mockOutput);
       expect((await controller.getAllOrders(mockInput)).result).toEqual(mockOutput);

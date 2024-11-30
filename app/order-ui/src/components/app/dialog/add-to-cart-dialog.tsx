@@ -91,15 +91,15 @@ export default function AddToCartDialog({
         )}
       </DialogTrigger>
 
-      <DialogContent className="max-w-[22rem] rounded-md px-0 sm:max-w-[64rem]">
-        <DialogHeader className="px-6">
+      <DialogContent className="max-w-[22rem] rounded-md px-6 sm:max-w-[64rem]">
+        <DialogHeader>
           <DialogTitle>{t('menu.confirmProduct')}</DialogTitle>
           <DialogDescription>
             {t('menu.confirmProductDescription')}
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[24rem] px-6">
+        <ScrollArea className="max-h-[24rem]">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             {/* Product Image */}
             <div className="relative col-span-2">
@@ -173,7 +173,7 @@ export default function AddToCartDialog({
           </div>
         </ScrollArea>
 
-        <DialogFooter className="flex flex-row justify-end gap-3 px-6">
+        <DialogFooter className="flex w-full flex-row justify-end gap-3">
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>

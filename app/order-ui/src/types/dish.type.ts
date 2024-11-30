@@ -1,6 +1,7 @@
 import { IBase } from './base.type'
 import { ICatalog } from './catalog.type'
-import { IProduct } from './product.type'
+import { IProduct, IProductVariant } from './product.type'
+import { ISize } from './size.type'
 
 export interface IDish {
   id: number
@@ -43,43 +44,57 @@ export interface IOrderItem {
 }
 
 export interface IOrder {
+  createdAt: string
+  slug: string
   type: string
-  table: string
+  tableName: string
   branch: string
-  owner: string
-  orderItems: {
-    quantity: number
-    variant: string
-    note: string
+  owner: {
+    phonenumber: string
+    firstName: string
+    lastName: string
+    createdAt: string
+    slug: string
   }
+  subtotal: number
+  orderItems: IOrderDetail[]
+  status: OrderStatus
 }
-// "subtotal": 35000,
-// "status": "pending",
-// "type": "at-table",
-// "tableName": "BÀN 1",
-// "owner": {
-//     "phonenumber": "0888888888",
-//     "firstName": "Thắng",
-//     "lastName": "Phan",
-//     "createdAt": "Mon Nov 18 2024 14:39:21 GMT+0700 (Indochina Time)",
-//     "slug": "BhRqvJswCg"
-// },
-// "orderItems": [
-//     {
-//         "quantity": 1,
-//         "subtotal": 35000,
-//         "note": "Nhiều nước dùng",
-//         "variant": {
-//             "price": 35000,
-//             "createdAt": "Wed Nov 20 2024 21:26:24 GMT+0700 (Indochina Time)",
-//             "slug": "vRIcfHqxa"
-//         },
-//         "createdAt": "Sat Nov 23 2024 22:28:47 GMT+0700 (Indochina Time)",
-//         "slug": "IHqsvaApGd"
-//     }
-// ],
-// "createdAt": "Sat Nov 23 2024 22:28:47 GMT+0700 (Indochina Time)",
-// "slug": "XFPTkOc0H"
+
+export interface IOrderDetail extends IBase {
+  id: string
+  note: string
+  quantity: number
+  status: {
+    pending: number
+    completed: number
+    failed: number
+    running: number
+  }
+  subtotal: number
+  variant: IProductVariant
+  size: ISize
+}
+
+export enum OrderStatus {
+  PENDING = 'pending',
+  RUNNING = 'running',
+  FAILED = 'failed',
+  COMPLETED = 'completed',
+}
+
+export enum OrderItemStatus {
+  PENDING = 'pending',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+}
+
+export enum IOrderType {
+  AT_TABLE = 'at-table',
+  TAKE_AWAY = 'take-away',
+}
+
 export interface ICreateOrderResponse extends IBase {
   subtotal: number
   type: string
@@ -126,4 +141,28 @@ export interface IInitiateQrCodeRequest {
 export interface IInitiateQrCodeResponse {
   requestTrace: string
   qrCode: string
+}
+
+export interface IOrderTracking extends IBase {
+  status: string
+  trackingOrderItems: {
+    quantity: number
+    orderItem: {
+      quantity: number
+      subtotal: number
+      note: string
+      createdAt: string
+      slug: string
+    }
+    createdAt: string
+    slug: string
+  }
+}
+
+export interface ICreateOrderTrackingRequest {
+  type: string
+  trackingOrderItems: {
+    quantity: number
+    orderItem: string
+  }[]
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -10,7 +11,7 @@ import {
   FormMessage,
   Input,
   Form,
-  Button
+  Button,
 } from '@/components/ui'
 import { createCatalogSchema, TCreateCatalogSchema } from '@/schemas'
 
@@ -18,13 +19,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ICreateCatalogRequest } from '@/types'
 import { useCreateCatalog } from '@/hooks'
 import { showToast } from '@/utils'
-import { useQueryClient } from '@tanstack/react-query'
 
 interface IFormCreateCatalogProps {
   onSubmit: (isOpen: boolean) => void
 }
 
-export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({ onSubmit }) => {
+export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({
+  onSubmit,
+}) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { mutate: createCatalog } = useCreateCatalog()
@@ -32,20 +34,20 @@ export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({ onSubmit 
     resolver: zodResolver(createCatalogSchema),
     defaultValues: {
       name: '',
-      description: ''
-    }
+      description: '',
+    },
   })
 
   const handleSubmit = (data: ICreateCatalogRequest) => {
     createCatalog(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['catalog']
+          queryKey: ['catalog'],
         })
         onSubmit(false)
         form.reset()
         showToast(t('toast.createCatalogSuccess'))
-      }
+      },
     })
   }
 
@@ -73,13 +75,16 @@ export const CreateCatalogForm: React.FC<IFormCreateCatalogProps> = ({ onSubmit 
           <FormItem>
             <FormLabel>{t('catalog.catalogDescription')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('catalog.enterCatalogDescription')} />
+              <Input
+                {...field}
+                placeholder={t('catalog.enterCatalogDescription')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-    )
+    ),
   }
 
   return (
