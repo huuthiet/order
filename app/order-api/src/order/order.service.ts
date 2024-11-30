@@ -23,7 +23,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { User } from 'src/user/user.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { OrderStatus, OrderType } from './order.contants';
-import { WorkFlowStatus } from 'src/tracking/tracking.constants';
+import { WorkflowStatus } from 'src/tracking/tracking.constants';
 import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
 import { Tracking } from 'src/tracking/tracking.entity';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -269,70 +269,15 @@ export class OrderService {
     });
 
     if (!order) {
-      this.logger.warn(`Order ${slug} not found`, context);
-      throw new BadRequestException('Order is not found');
+      this.logger.warn(`${OrderValidation.ORDER_NOT_FOUND} ${slug}`, context);
+      throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
-    await this.updateStatusForTrackingByOrder(order);
 
-    const orderDto = await this.getStatusEachOrderItemInOrder(order);
-    const updatedStatus: string = await this.checkAndUpdateStatusOrder(order);
-    Object.assign(orderDto, { status: updatedStatus });
+    const orderDto = this.getStatusEachOrderItemInOrder(order);
+    // const updatedStatus: string = await this.checkAndUpdateStatusOrder(order);
+    // Object.assign(orderDto, { status: updatedStatus });
     this.logger.log(`Get order by slug ${slug} successfully`, context);
     return orderDto;
-  }
-
-  /**
-   * Check and update latest status order
-   * @param {Order} order The order entity relates to tracking
-   * @returns {Promise<string>} The updated status of order
-   */
-  async checkAndUpdateStatusOrder(
-    order: Order
-  ): Promise<string> {
-    // check by total quantity each order item
-    const totalBase = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalQuantities = order.orderItems.reduce(
-      (totals, item) => {
-        const itemQuantities = item.trackingOrderItems.reduce(
-          (statusSums, trackingItem) => {
-            const status = trackingItem.tracking.status;
-            if (
-              status === WorkFlowStatus.COMPLETED ||
-              status === WorkFlowStatus.RUNNING
-            ) {
-              statusSums[status] =
-                (statusSums[status] || 0) + trackingItem.quantity;
-            }
-            return statusSums;
-          },
-          {} as Record<WorkFlowStatus, number>,
-        );
-    
-        Object.keys(itemQuantities).forEach((status) => {
-          totals[status as WorkFlowStatus] =
-            (totals[status as WorkFlowStatus] || 0) +
-            itemQuantities[status as WorkFlowStatus];
-        });
-
-        return totals;
-      },
-      {} as Record<WorkFlowStatus, number>,
-    );
-
-    let defaultStatus: string = order.status;
-
-    if (totalBase > totalQuantities[WorkFlowStatus.COMPLETED]) {
-      if (totalQuantities[WorkFlowStatus.RUNNING] > 0) {
-        Object.assign(order, { status: OrderStatus.SHIPPING });
-        const updatedOrder = await this.orderRepository.save(order);
-        defaultStatus = updatedOrder.status;
-      }
-    } else if (totalBase === totalQuantities[WorkFlowStatus.COMPLETED]) {
-      Object.assign(order, { status: OrderStatus.COMPLETED });
-      const updatedOrder = await this.orderRepository.save(order);
-      defaultStatus = updatedOrder.status;
-    }
-    return defaultStatus;
   }
 
   /**
@@ -340,9 +285,9 @@ export class OrderService {
    * @param {Order} order The order data relates to tracking
    * @returns {Promise<OrderResponseDto>} The order data with order item have status synthesis
    */
-  async getStatusEachOrderItemInOrder(
+  getStatusEachOrderItemInOrder(
     order: Order
-  ): Promise<OrderResponseDto> {
+  ): OrderResponseDto {
     const orderItems = order.orderItems.map((item) => {
       const statusQuantities = item.trackingOrderItems.reduce(
         (acc, trackingItem) => {
@@ -352,10 +297,10 @@ export class OrderService {
           return acc;
         },
         {
-          [WorkFlowStatus.PENDING]: 0,
-          [WorkFlowStatus.RUNNING]: 0,
-          [WorkFlowStatus.COMPLETED]: 0,
-          [WorkFlowStatus.FAILED]: 0,
+          [WorkflowStatus.PENDING]: 0,
+          [WorkflowStatus.RUNNING]: 0,
+          [WorkflowStatus.COMPLETED]: 0,
+          [WorkflowStatus.FAILED]: 0,
         },
       );
 
@@ -364,47 +309,100 @@ export class OrderService {
         status: statusQuantities,
       };
     });
-
     const orderDto = this.mapper.map(order, Order, OrderResponseDto);
     Object.assign(orderDto, { orderItems });
     return orderDto;
   }
 
-  /**
-   * Get data from robot client and update status for tracking relates to order
-   * @param order The order data relates to tracking
-   */
-  async updateStatusForTrackingByOrder(
-    order: Order
-  ): Promise<void> {
-    const context = `${OrderService.name}.${this.updateStatusForTrackingByOrder.name}`;
+  // /**
+  //  * Get data from robot client and update status for tracking relates to order
+  //  * @param order The order data relates to tracking
+  //  */
+  // async updateStatusForTrackingByOrder(
+  //   order: Order
+  // ): Promise<void> {
+  //   const context = `${OrderService.name}.${this.updateStatusForTrackingByOrder.name}`;
 
-    const uniqueWorkFlowInstanceIds = Array.from(
-      new Set(
-        order.orderItems.flatMap((item) =>
-          item.trackingOrderItems.map(
-            (trackingItem) => trackingItem.tracking.workFlowInstance,
-          ),
-        ),
-      ),
-    );
+  //   const uniqueWorkflowExecutionIds = Array.from(
+  //     new Set(
+  //       order.orderItems.flatMap((item) =>
+  //         item.trackingOrderItems.map(
+  //           (trackingItem) => trackingItem.tracking.workflowExecution,
+  //         ),
+  //       ),
+  //     ),
+  //   );
     
-    // if a query fail, it skip, not interrupt
-    await Promise.all(
-      uniqueWorkFlowInstanceIds.map(async (id) => {
-        try {
-          const workFlow = await this.robotConnectorClient.retrieveWorkFlowExecution(id);
+  //   // if a query fail, it skip, not interrupt
+  //   await Promise.all(
+  //     uniqueWorkflowExecutionIds.map(async (id) => {
+  //       try {
+  //         const workflow = await this.robotConnectorClient.retrieveWorkflowExecution(id);
           
-          const tracking = await this.trackingRepository.findOne({
-            where: { workFlowInstance: id },
-          });
+  //         const tracking = await this.trackingRepository.findOne({
+  //           where: { workflowExecution: id },
+  //         });
     
-          Object.assign(tracking, { status: workFlow.status });
-          await this.trackingRepository.save(tracking);
-        } catch (error) {
-          this.logger.warn(`Error processing workflow instance ${id}`, context);
-        }
-      })
-    );
-  }
+  //         Object.assign(tracking, { status: workflow.status });
+  //         await this.trackingRepository.save(tracking);
+  //       } catch (error) {
+  //         this.logger.warn(`Error processing workflow instance ${id}`, context);
+  //       }
+  //     })
+  //   );
+  // }
+
+  // /**
+  //  * Check and update latest status order
+  //  * @param {Order} order The order entity relates to tracking
+  //  * @returns {Promise<string>} The updated status of order
+  //  */
+  // async checkAndUpdateStatusOrder(
+  //   order: Order
+  // ): Promise<string> {
+  //   // check by total quantity each order item
+  //   const totalBase = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
+  //   const totalQuantities = order.orderItems.reduce(
+  //     (totals, item) => {
+  //       const itemQuantities = item.trackingOrderItems.reduce(
+  //         (statusSums, trackingItem) => {
+  //           const status = trackingItem.tracking.status;
+  //           if (
+  //             status === WorkflowStatus.COMPLETED ||
+  //             status === WorkflowStatus.RUNNING
+  //           ) {
+  //             statusSums[status] =
+  //               (statusSums[status] || 0) + trackingItem.quantity;
+  //           }
+  //           return statusSums;
+  //         },
+  //         {} as Record<WorkflowStatus, number>,
+  //       );
+    
+  //       Object.keys(itemQuantities).forEach((status) => {
+  //         totals[status as WorkflowStatus] =
+  //           (totals[status as WorkflowStatus] || 0) +
+  //           itemQuantities[status as WorkflowStatus];
+  //       });
+
+  //       return totals;
+  //     },
+  //     {} as Record<WorkflowStatus, number>,
+  //   );
+
+  //   let defaultStatus: string = order.status;
+
+  //   if (totalBase > totalQuantities[WorkflowStatus.COMPLETED]) {
+  //     if (totalQuantities[WorkflowStatus.RUNNING] > 0) {
+  //       Object.assign(order, { status: OrderStatus.SHIPPING });
+  //       const updatedOrder = await this.orderRepository.save(order);
+  //       defaultStatus = updatedOrder.status;
+  //     }
+  //   } else if (totalBase === totalQuantities[WorkflowStatus.COMPLETED]) {
+  //     Object.assign(order, { status: OrderStatus.COMPLETED });
+  //     const updatedOrder = await this.orderRepository.save(order);
+  //     defaultStatus = updatedOrder.status;
+  //   }
+  //   return defaultStatus;
+  // }
 }

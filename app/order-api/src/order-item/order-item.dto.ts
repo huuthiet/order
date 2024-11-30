@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 import { TrackingOrderItemResponseDto } from 'src/tracking-order-item/tracking-order-item.dto';
 import { VariantResponseDto } from 'src/variant/variant.dto';
-import { WorkFlowStatus } from 'src/tracking/tracking.constants';
+import { WorkflowStatus } from 'src/tracking/tracking.constants';
 
 export class CreateOrderItemRequestDto {
   @AutoMap()
@@ -50,16 +50,16 @@ export class UpdateOrderItemRequestDto {
 
 export class StatusOrderItemResponseDto {
   @AutoMap()
-  [WorkFlowStatus.PENDING]: number;
+  [WorkflowStatus.PENDING]: number;
 
   @AutoMap()
-  [WorkFlowStatus.RUNNING]: number;
+  [WorkflowStatus.RUNNING]: number;
 
   @AutoMap()
-  [WorkFlowStatus.COMPLETED]: number;
+  [WorkflowStatus.COMPLETED]: number;
 
   @AutoMap()
-  [WorkFlowStatus.FAILED]: number;
+  [WorkflowStatus.FAILED]: number;
 }
 
 export class OrderItemResponseDto extends BaseResponseDto {

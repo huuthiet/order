@@ -23,7 +23,7 @@ export class OrderController {
   @ApiOperation({ summary: 'Create new order' })
   @ApiResponse({ status: 200, description: 'Create new order successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async createProduct(
+  async createOrder(
     @Body(
       new ValidationPipe({
         transform: true,

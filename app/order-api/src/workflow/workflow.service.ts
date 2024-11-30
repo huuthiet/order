@@ -47,18 +47,18 @@ export class WorkflowService {
       throw new BadRequestException('Workflow already exists');
     }
     
-    const workFlowData = this.mapper.map(requestData, CreateWorkflowRequestDto, Workflow);
-    Object.assign(workFlowData, { branch });
-    const newWorkflow = this.workflowRepository.create(workFlowData);
+    const workflowData = this.mapper.map(requestData, CreateWorkflowRequestDto, Workflow);
+    Object.assign(workflowData, { branch });
+    const newWorkflow = this.workflowRepository.create(workflowData);
     const createdWorkflow = await this.workflowRepository.save(newWorkflow);
     const workflowDto = this.mapper.map(createdWorkflow, Workflow, WorkflowResponseDto);
     return workflowDto;
   }
 
-  async getAllWorkFlowByBranch(
+  async getAllWorkflowByBranch(
     branchSlug: string
   ): Promise<WorkflowResponseDto[]> {
-    const context = `${WorkflowService.name}.${this.getAllWorkFlowByBranch.name}`;
+    const context = `${WorkflowService.name}.${this.getAllWorkflowByBranch.name}`;
     // const branch = this.branchRepository.findOneBy({ slug: branchSlug });
     // if(!branch) {
     //   this.logger.warn(`Branch ${branchSlug} is not found`, context);

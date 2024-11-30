@@ -8,14 +8,15 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
-  RunWorkFlowRequestDto,
-  WorkFlowExecutionResponseDto,
-  WorkFlowResponseDto,
+  RunWorkflowRequestDto,
+  WorkflowExecutionResponseDto,
+  WorkflowResponseDto,
   QRLocationResponseDto,
   CreateQRLocationRequestDto,
   UpdateQRLocationRequestDto,
-  GetWorkFlowExecutionResponseDto,
-  CreateWorkflowRequestDto
+  GetWorkflowExecutionResponseDto,
+  CreateWorkflowRequestDto,
+  RobotResponseDto
 } from "./robot-connector.dto";
 import { catchError, firstValueFrom, retry } from "rxjs";
 import { AxiosError } from "axios";
@@ -34,18 +35,40 @@ export class RobotConnectorClient {
     private readonly logger: Logger,
   ) {}
 
-  /* WORK FLOWS */
-  async createWorkFlow(
-    requestData: CreateWorkflowRequestDto
-  ): Promise<WorkFlowResponseDto> {
-    const requestUrl = `${this.robotApiUrl}/workflows`;
+  /* RAYBOTS */
+  async getRobotById(
+    id: string
+  ): Promise<RobotResponseDto> {
+    const context = `${RobotConnectorClient.name}.${this.getRobotById.name}`;
+    const requestUrl = `${this.robotApiUrl}/raybots/${id}`;
     const { data } = await firstValueFrom(
       this.httpService
-        .post<WorkFlowResponseDto>(requestUrl, requestData, {})
+        .get<RobotResponseDto>(requestUrl)
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(
-              `Create WorkFlow from ROBOT API failed: ${error.message}`,
+              `Get robot ${id} data from ROBOT API failed: ${error.message}`, 
+              context
+            );
+            throw new BadRequestException(`Get robot data failed`);
+          }),
+        ),
+    );
+    return data;
+  }
+
+  /* WORK FLOWS */
+  async createWorkflow(
+    requestData: CreateWorkflowRequestDto
+  ): Promise<WorkflowResponseDto> {
+    const requestUrl = `${this.robotApiUrl}/workflows`;
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<WorkflowResponseDto>(requestUrl, requestData, {})
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(
+              `Create Workflow from ROBOT API failed: ${error.message}`,
             );
             throw error;
           }),
@@ -54,13 +77,13 @@ export class RobotConnectorClient {
     return data;
   }
 
-  async getAllWorkFlows(): Promise<WorkFlowResponseDto[]> {
+  async getAllWorkflows(): Promise<WorkflowResponseDto[]> {
     const requestUrl = `${this.robotApiUrl}/workflows`;
     const { data } = await firstValueFrom(
-      this.httpService.get<WorkFlowResponseDto[]>(requestUrl).pipe(
+      this.httpService.get<WorkflowResponseDto[]>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
-            `Get all WorkFlows from ROBOT API failed: ${error.message}`,
+            `Get all Workflows from ROBOT API failed: ${error.message}`,
           );
           throw error;
         }),
@@ -69,19 +92,19 @@ export class RobotConnectorClient {
     return data;
   }
 
-  async runWorkFlow(
-    workFlowId: string,
-    requestData: RunWorkFlowRequestDto,
-  ): Promise<WorkFlowExecutionResponseDto> {
-    const context = `${RobotConnectorClient.name}.${this.runWorkFlow.name}`;
-    const requestUrl = `${this.robotApiUrl}/workflows/${workFlowId}/run`;
+  async runWorkflow(
+    workflowId: string,
+    requestData: RunWorkflowRequestDto,
+  ): Promise<WorkflowExecutionResponseDto> {
+    const context = `${RobotConnectorClient.name}.${this.runWorkflow.name}`;
+    const requestUrl = `${this.robotApiUrl}/workflows/${workflowId}/run`;
     const { data } = await firstValueFrom(
       this.httpService
-      .post<WorkFlowExecutionResponseDto>(requestUrl, requestData)
+      .post<WorkflowExecutionResponseDto>(requestUrl, requestData)
       .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
-            `Run workflow from ROBOT API ${workFlowId} failed: ${error.message}`, 
+            `Run workflow from ROBOT API ${workflowId} failed: ${error.message}`, 
             context
           );
           throw new BadRequestException(`Run workflow failed`);
@@ -92,18 +115,18 @@ export class RobotConnectorClient {
   }
 
   /* WORKFLOW EXECUTIONS */
-  async retrieveWorkFlowExecution(
-    workFlowInstanceId: string
-  ): Promise<GetWorkFlowExecutionResponseDto> {
-    console.log({workFlowInstanceId})
-    const requestUrl = `${this.robotApiUrl}/workflow-executions/${workFlowInstanceId}`;
+  async retrieveWorkflowExecution(
+    workflowExecutionId: string
+  ): Promise<GetWorkflowExecutionResponseDto> {
+    console.log({workflowExecutionId})
+    const requestUrl = `${this.robotApiUrl}/workflow-executions/${workflowExecutionId}`;
     const { data } = await firstValueFrom(
       this.httpService
-      .get<GetWorkFlowExecutionResponseDto>(requestUrl)
+      .get<GetWorkflowExecutionResponseDto>(requestUrl)
       .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
-            `Get WorkFlow Execution from ROBOT API failed: ${error.message}`,
+            `Get Workflow Execution from ROBOT API failed: ${error.message}`,
           );
           throw error;
         }),
@@ -112,15 +135,15 @@ export class RobotConnectorClient {
     return data;
   }
 
-  async retrieveAllWorkFlowExecutions(): Promise<GetWorkFlowExecutionResponseDto[]> {
+  async retrieveAllWorkflowExecutions(): Promise<GetWorkflowExecutionResponseDto[]> {
     const requestUrl = `${this.robotApiUrl}/workflow-executions`;
     const { data } = await firstValueFrom(
       this.httpService
-      .get<GetWorkFlowExecutionResponseDto[]>(requestUrl)
+      .get<GetWorkflowExecutionResponseDto[]>(requestUrl)
       .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
-            `Get all WorkFlow Executions from ROBOT API failed: ${error.message}`,
+            `Get all Workflow Executions from ROBOT API failed: ${error.message}`,
           );
           throw error;
         }),

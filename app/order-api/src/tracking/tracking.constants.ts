@@ -1,8 +1,8 @@
-export enum WorkFlowStatus {
-  PENDING = 'pending',
-  RUNNING = 'running',
-  COMPLETED = 'completed',
-  FAILED = 'failed'
+export enum WorkflowStatus {
+  PENDING = 'PENDING',
+  RUNNING = 'RUNNING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED'
 }
 
 export enum TrackingType {
