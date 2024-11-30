@@ -6,6 +6,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsOptional,
+  Min,
   ValidateNested,
 } from 'class-validator';
 import { OrderType } from './order.contants';
@@ -15,8 +16,7 @@ import {
   CreateOrderItemRequestDto,
   OrderItemResponseDto,
 } from 'src/order-item/order-item.dto';
-import { Type } from 'class-transformer';
-import { Order } from './order.entity';
+import { Transform, Type } from 'class-transformer';
 import { OrderItem } from 'src/order-item/order-item.entity';
 import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
 
@@ -157,6 +157,39 @@ export class GetOrderRequestDto {
   })
   @IsOptional()
   owner?: string;
+
+  @AutoMap()
+  @ApiProperty({
+    example: 1,
+    description: 'Page number',
+    required: false,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @Min(1)
+  page: number = 1;
+
+  @AutoMap()
+  @ApiProperty({
+    example: 10,
+    description: 'Number of items per page',
+    required: false,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @Min(1)
+  size: number = 10;
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'Order status',
+    required: false,
+  })
+  @IsOptional()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.split(',') : [value],
+  )
+  status: string[] = [];
 }
 
 export class CheckDataCreateOrderItemResponseDto {
