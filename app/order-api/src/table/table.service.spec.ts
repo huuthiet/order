@@ -258,7 +258,7 @@ describe('TableService', () => {
       );
     });
 
-    it('should throw error when updated name already exist in this branch', async () => {
+    it('should updated table when updated name already exist in this branch', async () => {
       const slug = 'mock-table-slug';
       const mockInput = {
         name: 'Mock table name',
