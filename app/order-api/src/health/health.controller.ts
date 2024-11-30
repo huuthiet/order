@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ApiExcludeController, ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
@@ -11,9 +12,12 @@ import { Public } from 'src/auth/public.decorator';
 @Controller('health')
 @ApiExcludeController(true)
 export class HealthController {
+  private readonly version: string = this.configService.get<string>('VERSION');
+
   constructor(
     private readonly healthCheckService: HealthCheckService,
     private httpHealthIndicator: HttpHealthIndicator,
+    private readonly configService: ConfigService,
   ) {}
 
   @Get()
@@ -24,7 +28,7 @@ export class HealthController {
       () =>
         this.httpHealthIndicator.pingCheck(
           'order-api',
-          'http://localhost:8080/api/v1.0.0/hello',
+          `http://localhost:8080/api/${this.version}/hello`,
         ),
     ]);
   }

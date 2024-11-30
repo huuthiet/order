@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from './order.entity';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
-import { OrderItem } from 'src/order-item/order-item.entity';
 import { OrderProfile } from './order.mapper';
 import { Table } from 'src/table/table.entity';
 import { Branch } from 'src/branch/branch.entity';
@@ -14,21 +13,11 @@ import { Tracking } from 'src/tracking/tracking.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Order, 
-      Table,
-      Branch, 
-      User,
-      Variant, 
-      Tracking
-    ]),
-    RobotConnectorModule
+    TypeOrmModule.forFeature([Order, Table, Branch, User, Variant, Tracking]),
+    RobotConnectorModule,
   ],
   controllers: [OrderController],
-  providers: [
-    OrderService,
-    OrderProfile
-  ],
-  exports: [OrderService]
+  providers: [OrderService, OrderProfile],
+  exports: [OrderService],
 })
 export class OrderModule {}
