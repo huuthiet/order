@@ -1,28 +1,27 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Clock, ShoppingCartIcon, SquareMenu } from 'lucide-react'
-import moment from 'moment'
+import { SquareMenu } from 'lucide-react'
 
-import { ScrollArea } from '@/components/ui'
+import { DataTable, ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder, OrderStatus } from '@/types'
-import OrderStatusBadge from '@/components/app/badge/order-status-badge'
+import { IOrder } from '@/types'
 import { CreateOrderTrackingByStaffDialog, CreateOrderTrackingByRobotDialog } from '@/components/app/dialog'
 import TotalOrders from './total-orders'
 import OrderWaitListCounting from './order-wait-list-counting'
 import CustomerInformation from './customer-information'
 import OrderItemList from './order-item-list'
+import { usePendingOrdersColumns } from './DataTable/columns'
 
 export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
   const [selectedOrderSlug, setSelectedOrderSlug] = useState<string>('')
   const { userInfo } = useUserStore()
-  const { addOrder, getOrder } = useOrderStore()
+  const { addOrder } = useOrderStore()
   const { clearSelectedItems, getSelectedItems } = useOrderTrackingStore()
   const { data: orderDetail, refetch } = useOrderBySlug(selectedOrderSlug)
-  const { pagination } = usePagination()
+  const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
 
   const { data } = useOrders({
     page: pagination.pageIndex,
@@ -33,11 +32,6 @@ export default function OrderManagementPage() {
   })
 
   const orders = data?.result.items || []
-
-  const sortedPendingOrders = orders.filter(
-    (order) => order.status === OrderStatus.PENDING,
-  )
-  const currentOrders = getOrder()
 
   useEffect(() => {
     if (orderDetail?.result) {
@@ -60,7 +54,7 @@ export default function OrderManagementPage() {
 
   const orderDetailData = orderDetail?.result
   return (
-    <div className="flex flex-row flex-1 gap-2">
+    <div className="flex flex-row flex-1 gap-2 py-4">
       <ScrollArea className="flex-1">
         <div className="flex flex-col">
           <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
@@ -77,12 +71,22 @@ export default function OrderManagementPage() {
               </div>
 
               {/* Order wait list */}
-              <div className="flex flex-1 py-4 border rounded-md">
+              <DataTable
+                isLoading={false}
+                data={data?.result.items || []}
+                columns={usePendingOrdersColumns()}
+                pages={data?.result?.page || 1}
+                onRowClick={handleOrderClick}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+              />
+
+              {/* <div className="flex flex-1 py-4 border rounded-md">
                 <div className="flex flex-col w-full gap-2">
                   <span className="px-6 text-lg font-semibold text-muted-foreground">
                     {t('order.orderList')}
                   </span>
-                  <ScrollArea className="max-h-[24rem] w-full flex-1 px-3">
+                  <ScrollArea className="max-h-[28rem] w-full flex-1 px-3">
                     <div className="flex flex-col gap-1">
                       {sortedPendingOrders.map((pendingOrder) => (
                         <div
@@ -117,7 +121,7 @@ export default function OrderManagementPage() {
                     </div>
                   </ScrollArea>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Order Information */}

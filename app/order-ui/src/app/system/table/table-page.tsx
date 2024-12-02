@@ -12,7 +12,6 @@ import { ImageIcon } from '@radix-ui/react-icons'
 import { CreateTableDialog } from '@/components/app/dialog'
 import { Button } from '@/components/ui'
 import {
-  useDeleteTable,
   useTables,
   useUpdateTable,
   useUpdateTableStatus,
@@ -31,7 +30,7 @@ export default function TablePage() {
   const { getUserInfo } = useUserStore()
   const { data: tables } = useTables(getUserInfo()?.branch.slug)
   const { mutateAsync: updateTable } = useUpdateTable()
-  const { mutate: deleteTable } = useDeleteTable()
+  // const { mutate: deleteTable } = useDeleteTable()
   const { mutate: updateTableStatus } = useUpdateTableStatus()
   const [backgroundImage, setBackgroundImage] = useState<string>('')
   const [tablePositions, setTablePositions] = useState<{
@@ -106,20 +105,6 @@ export default function TablePage() {
     setContextMenu({ show: false, x: 0, y: 0, tableId: '' })
   }
 
-  const handleDeleteTable = (tableId: string) => {
-    // Implement delete logic here
-    console.log('Delete table:', tableId)
-    deleteTable(tableId, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ['tables', getUserInfo()?.branch.slug],
-        })
-        showToast(tToast('toast.deleteTableSuccess'))
-      },
-    })
-    setContextMenu({ show: false, x: 0, y: 0, tableId: '' })
-  }
-
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
@@ -189,8 +174,8 @@ export default function TablePage() {
   }
 
   return (
-    <div className="flex flex-col px-4 h-screen">
-      <div className="flex gap-2 justify-end items-center py-4">
+    <div className="flex flex-col h-screen">
+      <div className="flex items-center justify-end gap-2 py-4">
         <div>
           <label htmlFor="bg-image-upload">
             <Button variant="outline" className="gap-2" asChild>
@@ -211,21 +196,21 @@ export default function TablePage() {
         <CreateTableDialog />
       </div>
 
-      <div className="relative flex-1 rounded-md border">
+      <div className="relative flex-1 border rounded-md">
         <div className="flex flex-row gap-4 p-4">
-          <div className="flex flex-row gap-2 items-center">
-            <div className="w-4 h-4 rounded-sm border bg-muted-foreground/10" />
+          <div className="flex flex-row items-center gap-2">
+            <div className="w-4 h-4 border rounded-sm bg-muted-foreground/10" />
             <span className="text-sm">{t('table.available')}</span>
           </div>
-          <div className="flex flex-row gap-2 items-center">
-            <div className="w-4 h-4 bg-red-100 rounded-sm border border-red-500" />
+          <div className="flex flex-row items-center gap-2">
+            <div className="w-4 h-4 bg-red-100 border border-red-500 rounded-sm" />
             <span className="text-sm">{t('table.reserved')}</span>
           </div>
         </div>
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <div
             ref={mapRef}
-            className="relative w-full h-full bg-red-200"
+            className="relative w-full h-full"
             style={{
               backgroundImage: backgroundImage
                 ? `url(${backgroundImage})`
@@ -234,19 +219,17 @@ export default function TablePage() {
               backgroundPosition: 'center',
             }}
           >
-            <div>
-              {tables?.result.map((table) => (
-                <TableItem
-                  key={table.slug}
-                  table={table}
-                  position={tablePositions[table.slug]}
-                  onContextMenu={(e) => handleContextMenu(e, table.slug)}
-                  onResize={(size) => handleTableResize(table.slug, size)}
-                  size={tableSizes[table.slug]}
-                  containerBounds={mapRef.current?.getBoundingClientRect()}
-                />
-              ))}
-            </div>
+            {tables?.result.map((table) => (
+              <TableItem
+                key={table.slug}
+                table={table}
+                position={tablePositions[table.slug]}
+                onContextMenu={(e) => handleContextMenu(e, table.slug)}
+                onResize={(size) => handleTableResize(table.slug, size)}
+                size={tableSizes[table.slug]}
+                containerBounds={mapRef.current?.getBoundingClientRect()}
+              />
+            ))}
           </div>
         </DndContext>
         {contextMenu.show && (
@@ -261,7 +244,6 @@ export default function TablePage() {
               setContextMenu((prev) => ({ ...prev, show: open }))
             }
             onStatusChange={handleStatusChange}
-            onDelete={handleDeleteTable}
           />
         )}
       </div>

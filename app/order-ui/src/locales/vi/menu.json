@@ -91,6 +91,7 @@
 
     "pending": "Đang chuẩn bị",
     "completed": "Đã hoàn tất",
+    "running": "Đang giao hàng",
     "failed": "Thất bại",
 
     "deleteItem": "Xóa sản phẩm",

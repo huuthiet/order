@@ -3,6 +3,7 @@
     "title": "Quản lý bàn",
     "available": "Bàn trống",
     "reserved": "Bàn đã đặt",
+    "selected": "Bàn đã chọn",
     "uploadBackgroundImage": "Tải ảnh nền",
     "create": "Tạo bàn",
     "createTableDescription": "Thay đổi thông tin bên dưới để tạo bàn mới",

@@ -3,8 +3,7 @@ import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { CartToggleButton, QuantitySelector } from '@/components/app/button'
-import { useSidebar } from '@/components/ui/sidebar'
-import { ScrollArea } from '@/components/ui'
+import { ScrollArea, useSidebar } from '@/components/ui'
 import {
   CheckoutCart,
   // PaymentMethodSelect,

@@ -18,32 +18,32 @@ export default function OrderItemList({
       <span className="px-4 py-1 text-lg font-medium">
         {t('order.orderDetail')}
       </span>
-      <div className="flex w-full flex-col gap-2">
+      <div className="flex flex-col w-full gap-2">
         <ScrollArea className="h-[24rem] px-4">
           {orderDetailData?.orderItems?.map((item) => (
             <div
               key={item.slug}
-              className="grid w-full items-center gap-4 border-b-2 py-4"
+              className="grid items-center w-full gap-4 py-4 border-b-2"
             >
               <div
                 key={`${item.slug}`}
-                className="grid w-full grid-cols-4 flex-row items-center"
+                className="grid flex-row items-center w-full grid-cols-4"
               >
-                <div className="col-span-2 flex w-full justify-start">
-                  <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
+                <div className="flex justify-start w-full col-span-2">
+                  <div className="flex flex-col items-center w-full gap-4 sm:flex-row">
                     <div className="relative">
                       <img
                         src={`${publicFileURL}/${item.variant.product.image}`}
                         alt={item.variant.product.name}
-                        className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                        className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                       />
-                      <span className="absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs text-white">
+                      <span className="absolute flex items-center justify-center text-xs text-white rounded-full -bottom-2 -right-2 h-7 w-7 bg-primary">
                         x{item.quantity}
                       </span>
                     </div>
 
-                    <div className="flex h-full flex-col items-start">
-                      <span className="truncate font-bold">
+                    <div className="flex flex-col items-start h-full">
+                      <span className="font-bold truncate">
                         {item.variant.product.name}
                       </span>
 
@@ -53,7 +53,7 @@ export default function OrderItemList({
                     </div>
                   </div>
                 </div>
-                <div className="col-span-2 flex justify-end">
+                <div className="flex justify-end col-span-2">
                   <span className="text-sm font-semibold text-primary">
                     {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
                   </span>

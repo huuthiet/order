@@ -22,7 +22,7 @@ import { useCreateTable } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { TableStatus } from '@/constants'
-// import TableLocationSelect from '../select/table-location-select'
+import TableLocationSelect from '../select/table-location-select'
 import { useUserStore } from '@/stores'
 // import { IsEmptySwitch } from '../switch'
 
@@ -103,8 +103,8 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
           <FormItem>
             <FormLabel>{t('table.location')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('table.enterLocation')} />
-              {/* <TableLocationSelect {...field} /> */}
+              {/* <Input {...field} placeholder={t('table.enterLocation')} /> */}
+              <TableLocationSelect {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

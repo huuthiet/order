@@ -16,6 +16,7 @@ import { IOrder } from '@/types'
 import { ROUTE } from '@/constants'
 import { useCreateOrderInvoice, useExportOrderInvoice } from '@/hooks'
 import { showToast } from '@/utils'
+import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 
 export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
   const { t } = useTranslation(['menu'])
@@ -62,6 +63,21 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
       cell: ({ row }) => {
         const order = row.original
         return `${order?.slug}`
+      },
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('order.status')} />
+      ),
+      cell: ({ row }) => {
+        const order = row.original
+        return (
+          <OrderStatusBadge
+            status={order?.status}
+          />
+
+        )
       },
     },
     {

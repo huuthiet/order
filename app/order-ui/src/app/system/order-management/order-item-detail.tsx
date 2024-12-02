@@ -13,6 +13,7 @@ interface OrderItemDetailProps {
 }
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
+  console.log('OrderItemDetail', order)
   const { t } = useTranslation(['menu'])
   const [showDetails, setShowDetails] = useState(false)
   const { addSelectedItem, removeSelectedItem, isItemSelected } =
@@ -50,16 +51,17 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   }
 
   const renderOrderItem = (orderItem: IOrderDetail) => {
+    console.log('renderOrderItem', orderItem.status)
     const totalProcessedItems =
-      orderItem.status.running + orderItem.status.completed
+      orderItem.status.RUNNING + orderItem.status.COMPLETED
 
     const items = Array(orderItem.quantity)
       .fill(null)
       .map((_, index) => {
-        if (index < orderItem.status.completed) {
+        if (index < orderItem.status.COMPLETED) {
           return { status: OrderStatus.COMPLETED, index }
         }
-        if (index < orderItem.status.completed + orderItem.status.running) {
+        if (index < orderItem.status.COMPLETED + orderItem.status.RUNNING) {
           return { status: OrderStatus.RUNNING, index }
         }
         return { status: OrderStatus.PENDING, index }
@@ -68,7 +70,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
     return (
       <div key={orderItem.id} className="space-y-2">
         <div className="font-medium">
-          {orderItem.variant.product.name} ({orderItem.note.toLowerCase()})
+          {orderItem.variant.product.name} {orderItem.note && `(${orderItem.note})`}
           <span className="ml-2 text-sm text-gray-500">
             ({totalProcessedItems}/{orderItem.quantity})
           </span>

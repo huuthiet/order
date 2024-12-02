@@ -54,7 +54,7 @@ export default function AppSidebar() {
   return (
     <Sidebar
       variant="inset"
-      className="z-50 border-r bg-white"
+      className="z-50 bg-white border-r"
       collapsible="icon"
     >
       <SidebarHeader>
@@ -63,7 +63,7 @@ export default function AppSidebar() {
             <SidebarMenuButton size="lg" asChild>
               <NavLink
                 to="/staff/home"
-                className="flex w-full items-center justify-center"
+                className="flex items-center justify-center w-full"
               >
                 {/* <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0 group-data-[collapsible=icon]:w-full">
                   <Command className="size-4" />

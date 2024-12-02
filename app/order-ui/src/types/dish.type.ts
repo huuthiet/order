@@ -80,14 +80,27 @@ export interface IOrderDetail extends IBase {
   note: string
   quantity: number
   status: {
-    pending: number
-    completed: number
-    failed: number
-    running: number
+    PENDING: number
+    COMPLETED: number
+    FAILED: number
+    RUNNING: number
   }
   subtotal: number
   variant: IProductVariant
   size: ISize
+  trackingOrderItems: ITrackingOrderItems[]
+}
+
+export interface ITrackingOrderItems extends IBase {
+  id: string
+  quantity: number
+  tracking: {
+    createdAt: string
+    slug: string
+    id: string
+    status: OrderItemStatus
+    workflowExecution: string
+  }
 }
 
 export enum OrderStatus {
@@ -98,10 +111,10 @@ export enum OrderStatus {
 }
 
 export enum OrderItemStatus {
-  PENDING = 'pending',
-  RUNNING = 'running',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
+  PENDING = 'PENDING',
+  RUNNING = 'RUNNING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
 }
 
 export enum IOrderType {
