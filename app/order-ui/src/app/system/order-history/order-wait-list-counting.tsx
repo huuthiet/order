@@ -1,9 +1,8 @@
-import { useTranslation } from 'react-i18next'
-import { AlarmClock } from 'lucide-react'
-
 import { useOrders, usePagination } from '@/hooks'
 import { useUserStore } from '@/stores'
 import { IOrder, OrderStatus } from '@/types'
+import { AlarmClock } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function OrderWaitListCounting() {
   const { t } = useTranslation(['menu'])

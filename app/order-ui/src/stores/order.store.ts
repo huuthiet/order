@@ -81,21 +81,28 @@ export const useOrderTrackingStore = create<IOrderTrackingStore>()(
       },
 
       removeSelectedItem: (itemId: string) => {
+        console.log('Removing item:', itemId)
         const currentItems = get().selectedItems
+        console.log('Current items:', currentItems)
         const [orderId] = itemId.split('-')
+        console.log('Order ID:', orderId)
 
         set({
           selectedItems: currentItems
             .map((item) => {
               if (item.slug === orderId) {
+                console.log('Found item:', item)
                 const newQuantity = item.quantity - 1
-                return newQuantity > 0
-                  ? { ...item, quantity: newQuantity }
-                  : item
+                if (newQuantity === 0) return null
+                return {
+                  ...item,
+                  quantity: newQuantity,
+                  subtotal: item.variant.price * newQuantity,
+                }
               }
               return item
             })
-            .filter((item) => item.quantity > 0),
+            .filter((item): item is IOrderDetail => item !== null),
         })
       },
 

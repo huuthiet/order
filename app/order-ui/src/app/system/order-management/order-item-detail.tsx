@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { CheckedState } from '@radix-ui/react-checkbox'
 
@@ -12,14 +13,13 @@ interface OrderItemDetailProps {
 }
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
+  const { t } = useTranslation(['menu'])
   const [showDetails, setShowDetails] = useState(false)
   const { addSelectedItem, removeSelectedItem, isItemSelected } =
     useOrderTrackingStore()
   const [selectedIndexes, setSelectedIndexes] = useState<{
     [key: string]: boolean
   }>({})
-
-  console.log(order.variant.product.name)
 
   const handleSelectOrderItem = (
     checked: CheckedState,
@@ -38,6 +38,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       }
       addSelectedItem(singleItem)
     } else {
+      console.log('remove', key)
       setSelectedIndexes((prev) => ({ ...prev, [key]: false }))
       removeSelectedItem(`${orderItem.slug}-${itemIndex}`)
     }
@@ -77,10 +78,10 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
           {items.map((item) => (
             <div
               key={item.index}
-              className="grid grid-cols-3 flex-row items-center gap-3 rounded-md border px-2 py-4"
+              className="grid flex-row items-center grid-cols-5 gap-3 px-2 py-4 border rounded-md"
             >
               {item.status === OrderStatus.PENDING ? (
-                <div className="col-span-1 flex flex-row items-center gap-2">
+                <div className="flex flex-row items-center col-span-3 gap-2">
                   <Checkbox
                     checked={isChecked(orderItem, item.index)}
                     onCheckedChange={(checked) =>
@@ -89,31 +90,33 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                   />
                   <p className="text-sm">{orderItem.variant.product.name}</p>
                   <p className="text-sm">
+                    {t('order.size')}
                     {orderItem.variant.size?.name.toUpperCase()}
                   </p>
                 </div>
               ) : (
-                <div className="col-span-1 flex flex-row items-center justify-start gap-3">
+                <div className="flex flex-row items-center justify-start col-span-3 gap-3">
                   <div
-                    className={`h-3 w-3 rounded-full ${
-                      item.status === OrderStatus.COMPLETED
-                        ? 'bg-green-500'
-                        : item.status === OrderStatus.RUNNING
-                          ? 'bg-blue-500'
-                          : 'bg-gray-300'
-                    }`}
+                    className={`h-3 w-3 rounded-full ${item.status === OrderStatus.COMPLETED
+                      ? 'bg-green-500'
+                      : item.status === OrderStatus.RUNNING
+                        ? 'bg-blue-500'
+                        : 'bg-gray-300'
+                      }`}
                   />
                   <p className="text-sm">{orderItem.variant.product.name}</p>
+                  {'-'}
                   <p className="text-sm">
+                    {t('order.size')}
                     {orderItem.variant.size?.name.toUpperCase()}
                   </p>
                 </div>
               )}
 
-              <div className="col-span-1 text-center text-sm">
-                {orderItem.variant.price.toLocaleString()} VND
+              <div className="col-span-1 text-sm text-center">
+                {orderItem.variant.price.toLocaleString()}đ
               </div>
-              <div className="col-span-1 flex justify-end">
+              <div className="flex justify-end col-span-1">
                 <OrderItemStatusBadge status={item.status} />
               </div>
             </div>
@@ -128,7 +131,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       <Button
         variant="outline"
         onClick={() => setShowDetails(!showDetails)}
-        className="w-fit justify-between"
+        className="justify-between w-fit"
       >
         <span className="text-sm font-medium">Order detail</span>
         {showDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}

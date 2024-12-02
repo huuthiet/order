@@ -60,6 +60,20 @@ export const OrderManagementPage = React.lazy(() =>
   })),
 )
 
+//Order history page
+export const OrderHistoryPage = React.lazy(() =>
+  import('@/app/system/order-history').then((module) => ({
+    default: module.OrderHistoryPage,
+  })),
+)
+
+//Order detail page
+export const OrderDetailPage = React.lazy(() =>
+  import('@/app/system/order-history').then((module) => ({
+    default: module.OrderDetailPage,
+  })),
+)
+
 //Table page
 export const TablePage = React.lazy(() =>
   import('@/app/system/table').then((module) => ({
