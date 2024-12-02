@@ -61,6 +61,9 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   ACB_CLIENT_SECRET: string;
+
+  @IsNotEmpty()
+  ROBOT_API_URL: string;
 }
 
 export function validate(config: Record<string, unknown>) {
