@@ -4,7 +4,7 @@ import { Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, ValidateNested } from "class-validator";
 import { BaseResponseDto } from "src/app/base.dto";
 import { CreateTrackingOrderItemRequestDto, TrackingOrderItemResponseDto } from "src/tracking-order-item/tracking-order-item.dto";
-import { TrackingType, WorkFlowStatus } from "./tracking.constants";
+import { TrackingType, WorkflowStatus } from "./tracking.constants";
 
 export class CreateTrackingRequestDto {
   @AutoMap()
@@ -39,8 +39,8 @@ export class TrackingResponseDto extends BaseResponseDto {
 
 export class ChangeStatusRequestDto {
   @AutoMap()
-  @ApiProperty({ description: 'The status of tracking', example: 'pending' })
+  @ApiProperty({ description: 'The status of tracking', example: 'PENDING' })
   @IsNotEmpty({ message: 'Invalid status of tracking' })
-  @IsEnum(WorkFlowStatus, { message: 'Invalid status of tracking' })
+  @IsEnum(WorkflowStatus, { message: 'Invalid status of tracking' })
   status: string;
 }

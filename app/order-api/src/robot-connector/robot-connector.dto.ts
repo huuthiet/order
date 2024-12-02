@@ -1,21 +1,25 @@
+export class RobotResponseDto {
+  status: string
+}
+
 export class CreateWorkflowRequestDto {
   name: string;
   description: string;
 }
-export class WorkFlowResponseDto {
+export class WorkflowResponseDto {
   id: string;
   name: string;
 }
 
-export class RunWorkFlowRequestDto {
+export class RunWorkflowRequestDto {
   order_code: string;
   location: string;
 }
 
-export class WorkFlowExecutionResponseDto {
+export class WorkflowExecutionResponseDto {
   workflow_execution_id: string;
 }
-export class GetWorkFlowExecutionResponseDto {
+export class GetWorkflowExecutionResponseDto {
   status: string;
 }
 

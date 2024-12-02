@@ -10,6 +10,7 @@ import { TrackingProfile } from './tracking.mapper';
 import { Table } from 'src/table/table.entity';
 import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module';
 import { Workflow } from 'src/workflow/workflow.entity';
+import { TrackingScheduler } from './tracking.scheduler';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { Workflow } from 'src/workflow/workflow.entity';
     RobotConnectorModule
   ],
   controllers: [TrackingController],
-  providers: [TrackingService, TrackingProfile],
+  providers: [TrackingService, TrackingProfile, TrackingScheduler],
 })
 export class TrackingModule {}

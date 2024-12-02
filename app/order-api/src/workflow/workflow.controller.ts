@@ -58,7 +58,7 @@ export class WorkflowController {
     type: String,
   })
   async getAllWorkflows(@Query('branch') branch: string) {
-    const result = await this.workflowService.getAllWorkFlowByBranch(branch);
+    const result = await this.workflowService.getAllWorkflowByBranch(branch);
     return {
       message: 'Workflows have been retrieved successfully',
       statusCode: HttpStatus.OK,
