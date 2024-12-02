@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Param, Patch, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Patch, Post, ValidationPipe } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TrackingService } from "./tracking.service";
 import { ApiResponseWithType } from "src/app/app.decorator";
@@ -44,11 +44,11 @@ export class TrackingController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
-    description: 'Update size successfully',
+    description: 'Update tracking successfully',
     type: TrackingResponseDto,
   })
-  @ApiOperation({ summary: 'Update size' })
-  @ApiResponse({ status: 200, description: 'Update size successfully' })
+  @ApiOperation({ summary: 'Update tracking' })
+  @ApiResponse({ status: 200, description: 'Update tracking successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
@@ -56,7 +56,7 @@ export class TrackingController {
     required: true,
     example: '',
   })
-  async updateSize(
+  async updateTracking(
     @Param('slug') slug: string,
     @Body(
       new ValidationPipe({
@@ -73,5 +73,34 @@ export class TrackingController {
       timestamp: new Date().toISOString(),
       result,
     } as AppResponseDto<TrackingResponseDto>;
+  }
+
+  @Delete(':slug')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Delete tracking successfully',
+    type: TrackingResponseDto,
+  })
+  @ApiOperation({ summary: 'Delete tracking' })
+  @ApiResponse({ status: 200, description: 'Delete tracking successfully' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @ApiParam({
+    name: 'slug',
+    description: 'The slug of the tracking to be deleted',
+    required: true,
+    example: '',
+  })
+  async deleteTracking(
+    @Param('slug') slug: string,
+  ) {
+    const result = await this.trackingService.delete(slug);
+    return {
+      message: 'The tracking have been deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result: `${result} records has been deleted`,
+    } as AppResponseDto<string>;
   }
 }

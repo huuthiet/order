@@ -23,3 +23,11 @@ export interface IOrderTrackingStore {
   removeSelectedItem: (itemId: string) => void
   clearSelectedItems: () => void
 }
+
+export interface IOrdersQuery {
+  ownerSlug?: string
+  branchSlug?: string
+  page: number | 1
+  pageSize: number | 10
+  order: 'ASC' | 'DESC'
+}

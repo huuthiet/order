@@ -1,11 +1,11 @@
 import { TableStatus } from '@/constants'
 import { IBase } from './base.type'
 
-export interface Table {
+export interface Table extends IBase {
   id: string
   name: string
-  x: number
-  y: number
+  xPosition: number
+  yPosition: number
   width: number
   height: number
   status: TableStatus
@@ -16,7 +16,7 @@ export interface Table {
 export interface ITable extends IBase {
   name: string
   location: string
-  isEmpty: boolean
+  status: string
   xPosition?: number
   yPosition?: number
 }
@@ -46,6 +46,8 @@ export interface IUpdateTableRequest {
   slug: string
   name: string
   location: string
+  xPosition?: number
+  yPosition?: number
 }
 
 export interface IUpdateTableStatusRequest {

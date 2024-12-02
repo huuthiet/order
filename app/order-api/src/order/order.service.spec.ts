@@ -13,7 +13,7 @@ import { mapperMockFactory } from "src/test-utils/mapper-mock.factory";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { OrderType } from "./order.contants";
-import { CreateOrderRequestDto } from "./order.dto";
+import { CheckDataCreateOrderItemResponseDto, CreateOrderRequestDto, GetOrderRequestDto, OrderResponseDto, OwnerResponseDto } from "./order.dto";
 import { Tracking } from "src/tracking/tracking.entity";
 import { RobotConnectorClient } from "src/robot-connector/robot-connector.client";
 import { HttpService } from "@nestjs/axios";
@@ -30,6 +30,10 @@ import { OrderItem } from "src/order-item/order-item.entity";
 import { Size } from "src/size/size.entity";
 import { Product } from "src/product/product.entity";
 import { VariantException } from "src/variant/variant.exception";
+import { BranchValidation } from "src/branch/branch.validation";
+import { VariantValidation } from "src/variant/variant.validation";
+import { WorkflowStatus } from "src/tracking/tracking.constants";
+import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -371,11 +375,228 @@ describe('OrderService', () => {
   });
 
   describe('createOrder - create a new order', () => {
-    // beforeEach(() => {
-    //   jest.clearAllMocks();
-    // });
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
 
+    it('should throw error when service.validateCreatedOrderData throws', async () => {
+      // only mock one of the errors of validateCreatedOrderData
+      const createOrderItem = {
+        quantity: 0,
+        note: "",
+        variant: "mock-variant-slug"
+      } as CreateOrderItemRequestDto;
+      const mockInput: CreateOrderRequestDto = {
+        type: "mock-type-order",
+        table: "mock-table-slug",
+        branch: "mock-branch-slug",
+        owner: "mock-owner-slug",
+        orderItems: [createOrderItem]
+      };
 
+      jest.spyOn(service, 'validateCreatedOrderData')
+        .mockRejectedValue(new BranchException(BranchValidation.BRANCH_NOT_FOUND));
 
+      await expect(service.createOrder(mockInput)).rejects.toThrow(BranchException);
+    });
+
+    it('should throw error when service.validateCreatedOrderItemData throws', async () => {
+      const createOrderItem = {
+        quantity: 0,
+        note: "",
+        variant: "mock-variant-slug"
+      } as CreateOrderItemRequestDto;
+      const mockInput: CreateOrderRequestDto = {
+        type: "mock-type-order",
+        table: "mock-table-slug",
+        branch: "mock-branch-slug",
+        owner: "mock-owner-slug",
+        orderItems: [createOrderItem]
+      };
+      const order = {
+        subtotal: 100,
+        status: "",
+        type: "",
+        branch: new Branch(),
+        owner: new User(),
+        id: "mock-order-id",
+        slug: "mock-order-slug",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as Order;
+
+      jest.spyOn(service, 'validateCreatedOrderData').mockResolvedValue(order);
+      jest.spyOn(service, 'validateCreatedOrderItemData')
+        .mockRejectedValue(new VariantException(VariantValidation.VARIANT_NOT_FOUND));
+
+      await expect(service.createOrder(mockInput)).rejects.toThrow(VariantException);
+    });
+
+    it('should create success and return created order', async () => {
+      const createOrderItem = {
+        quantity: 0,
+        note: "",
+        variant: "mock-variant-slug"
+      } as CreateOrderItemRequestDto;
+      const mockInput: CreateOrderRequestDto = {
+        type: "mock-type-order",
+        table: "mock-table-slug",
+        branch: "mock-branch-slug",
+        owner: "mock-owner-slug",
+        orderItems: [createOrderItem]
+      };
+      const orderItem = {
+        quantity: 1,
+        subtotal: 100,
+        order: new Order(),
+        variant: new Variant(),
+        id: "mock-order-item-id",
+        slug: "mock-order-item-slug",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as OrderItem;
+      const validateCreatedOrderItemDataResultMock: CheckDataCreateOrderItemResponseDto = {
+        mappedOrderItems: [orderItem],
+        subtotal: 0
+      };
+      const mockOutput = {
+        subtotal: 100,
+        status: "",
+        type: "",
+        branch: new Branch(),
+        owner: new User(),
+        orderItems: [orderItem],
+        id: "mock-order-id",
+        slug: "mock-order-slug",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as Order;
+
+      jest.spyOn(service, 'validateCreatedOrderData').mockResolvedValue(mockOutput);
+      jest.spyOn(service, 'validateCreatedOrderItemData')
+        .mockResolvedValue(validateCreatedOrderItemDataResultMock);
+      (orderRepositoryMock.create as jest.Mock).mockResolvedValue(mockOutput);
+      (mockQueryRunner.manager.save as jest.Mock).mockResolvedValue(mockOutput);
+      (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
+
+      expect(await service.createOrder(mockInput)).toEqual(mockOutput);
+    });
+  });
+
+  // describe('getAllOrders - get all order by options(branch, owner', () => {
+  //   beforeEach(() => {
+  //     jest.clearAllMocks();
+  //   });
+
+  //   it('should return all order when retrieve success', async () => {
+  //     const mockInput = {
+  //       page: 0,
+  //       size: 0,
+  //       status: []
+  //     } as GetOrderRequestDto;
+  //     const order = {
+  //       subtotal: 100,
+  //       status: "",
+  //       type: "",
+  //       branch: new Branch(),
+  //       owner: new User(),
+  //       orderItems: [],
+  //       id: "mock-order-id",
+  //       slug: "mock-order-slug",
+  //       createdAt: new Date(),
+  //       updatedAt: new Date()
+  //     } as Order;
+  //     const mockOutput = [order];
+      
+  //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(mockOutput);
+  //     (mapperMock.mapArray as jest.Mock).mockReturnValue(mockOutput);
+
+  //     expect(await service.getAllOrders(mockInput)).toEqual(mockOutput);
+  //   });
+  // });
+
+  describe('getOrderBySlug - retrieve a order by slug', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should throw error when order not found', async () => {
+      const slug: string = 'mock-order-slug';
+
+      (orderRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.getOrderBySlug(slug)).rejects.toThrow(OrderException);
+    });
+
+    it('should retrieved success and throw order data', async () => {
+      const slug: string = 'mock-order-slug';
+
+      const mockOutput = {
+        subtotal: 0,
+        status: "",
+        type: "",
+        tableName: "",
+        owner: new OwnerResponseDto(),
+        orderItems: [],
+        createdAt: (new Date()).toString(),
+        slug: ""
+      } as OrderResponseDto;
+
+      const order = {
+        subtotal: 100,
+        status: "",
+        type: "",
+        branch: new Branch(),
+        owner: new User(),
+        orderItems: [],
+        id: "mock-order-id",
+        slug: "mock-order-slug",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as Order;
+
+      (orderRepositoryMock.findOne as jest.Mock).mockResolvedValue(order);
+      jest.spyOn(service, 'getStatusEachOrderItemInOrder').mockReturnValue(mockOutput);
+      // jest.spyOn(service, 'checkAndUpdateStatusOrder').mockResolvedValue('mock-status-order');
+
+      expect(await service.getOrderBySlug(slug)).toEqual(mockOutput);
+    });
+  });
+
+  describe('getStatusEachOrderItemInOrder', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should calculate status quantities correctly for each order item', () => {
+      const tracking = {
+        workflowExecution: "",
+        status: WorkflowStatus.PENDING,
+      } as Tracking;
+      const trackingOrderItem = {
+        quantity: 5,
+        tracking: tracking,
+      } as TrackingOrderItem;
+      const orderItem = {
+        quantity: 10,
+        subtotal: 0,
+        trackingOrderItems: [trackingOrderItem],
+      } as OrderItem;
+      const mockInput = {
+        subtotal: 0,
+        status: "",
+        type: "",
+        orderItems: [orderItem],
+      } as Order;
+  
+      const result = service.getStatusEachOrderItemInOrder(mockInput);
+  
+      expect(result.orderItems[0].status).toEqual({
+        [WorkflowStatus.PENDING]: 5,
+        [WorkflowStatus.RUNNING]: 0,
+        [WorkflowStatus.COMPLETED]: 0,
+        [WorkflowStatus.FAILED]: 0,
+      });
+    });
   });
 });

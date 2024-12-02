@@ -2,24 +2,26 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 
 import {
   createOrder,
+  createOrderInvoice,
   createOrderTracking,
+  exportOrderInvoice,
   getAllOrders,
   getOrderBySlug,
+  getOrderInvoice,
   initializeQrCode,
 } from '@/api'
 import {
   ICreateOrderRequest,
   IInitiateQrCodeRequest,
   ICreateOrderTrackingRequest,
+  IGetOrderInvoiceRequest,
+  IOrdersQuery,
 } from '@/types'
 
-export const useOrders = (params: {
-  ownerSlug?: string
-  branchSlug?: string
-}) => {
+export const useOrders = (q: IOrdersQuery) => {
   return useQuery({
-    queryKey: ['orders', params],
-    queryFn: () => getAllOrders(params),
+    queryKey: ['orders', JSON.stringify(q)],
+    queryFn: () => getAllOrders(q),
     placeholderData: keepPreviousData,
   })
 }
@@ -52,6 +54,30 @@ export const useCreateOrderTracking = () => {
   return useMutation({
     mutationFn: async (data: ICreateOrderTrackingRequest) => {
       return createOrderTracking(data)
+    },
+  })
+}
+
+export const useGetOrderInvoice = (params: IGetOrderInvoiceRequest) => {
+  return useQuery({
+    queryKey: ['order-invoice', params],
+    queryFn: () => getOrderInvoice(params),
+    placeholderData: keepPreviousData,
+  })
+}
+
+export const useCreateOrderInvoice = () => {
+  return useMutation({
+    mutationFn: async (orderSlug: string) => {
+      return createOrderInvoice(orderSlug)
+    },
+  })
+}
+
+export const useExportOrderInvoice = () => {
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      return exportOrderInvoice(slug)
     },
   })
 }
