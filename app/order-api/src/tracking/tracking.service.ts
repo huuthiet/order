@@ -9,7 +9,7 @@ import { CreateTrackingRequestDto, TrackingResponseDto } from "./tracking.dto";
 import { CreateTrackingOrderItemRequestDto, CreateTrackingOrderItemWithQuantityAndOrderItemEntity, ValidateDefinedAndQuantityOrderItem } from "src/tracking-order-item/tracking-order-item.dto";
 import { Order } from "src/order/order.entity";
 import { OrderItem } from "src/order-item/order-item.entity";
-import { TrackingType, WorkflowStatus } from "./tracking.constants";
+import { NameCronTracking, TrackingType, WorkflowStatus } from "./tracking.constants";
 import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
 import { Table } from 'src/table/table.entity';
 import { OrderStatus, OrderType } from "src/order/order.contants";
@@ -19,13 +19,13 @@ import { Workflow } from "src/workflow/workflow.entity";
 import { ConfigService } from "@nestjs/config";
 import { RobotStatus } from "src/robot-connector/robot-connector.constants";
 import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
+import * as _ from 'lodash';
+import { TrackingScheduler } from "./tracking.scheduler";
 
 @Injectable()
 export class TrackingService {
   private readonly robotId: string =
     this.configService.get<string>('ROBOT_ID');
-
-  private currentTrackingUpdate: string = null; //id
 
   constructor(
     @InjectRepository(Tracking)
@@ -45,7 +45,7 @@ export class TrackingService {
     private readonly robotConnectorClient: RobotConnectorClient,
     private readonly dataSource: DataSource,
     private readonly configService: ConfigService,
-    private readonly schedulerRegistry: SchedulerRegistry
+    private readonly trackingScheduler: TrackingScheduler,
   ) {}
 
   /**
@@ -90,6 +90,7 @@ export class TrackingService {
       const robotData: RobotResponseDto = 
         await this.robotConnectorClient.getRobotById(this.robotId);
 
+      console.log({h: robotData.status})
       if(robotData.status !== RobotStatus.IDLE) {
         this.logger.warn(`Robot ${this.robotId} is busy`, context);
         throw new BadRequestException('Robot is busy'); 
@@ -132,7 +133,7 @@ export class TrackingService {
         tracking,
         orderItemsData
       );
-      this.startCronJob('UpdateStatusTracking', savedTrackingId);
+      this.trackingScheduler.startUpdateStatusTracking();
     }
 
     if(requestData.type === TrackingType.BY_STAFF) {
@@ -143,7 +144,7 @@ export class TrackingService {
         tracking,
         orderItemsData
       );
-      await this.updateStatusOrder(savedTrackingId);
+      await this.trackingScheduler.updateStatusOrder(savedTrackingId);
     }
 
     const trackingData = await this.trackingRepository.findOne({
@@ -355,150 +356,5 @@ export class TrackingService {
     } finally {
       await queryRunner.release();
     }
-  }
-
-  /**
-   * Update status of tracking every 30 seconds 
-   */
-  @Cron(CronExpression.EVERY_30_SECONDS, { name: 'UpdateStatusTracking' })
-  async UpdateStatusTracking() {
-    const context = `${TrackingService.name}.${this.UpdateStatusTracking.name}`;
-    const trackings = await this.trackingRepository.find({
-      where: {
-        id: this.currentTrackingUpdate,
-        status: In([WorkflowStatus.PENDING, WorkflowStatus.RUNNING]),
-      }
-    });
-    if(trackings.length < 1) this.stopCronJob('UpdateStatusTracking');
-
-    // update for tracking
-    const workflowExecutionIds = trackings.map((item) => item.workflowExecution);
-    await Promise.all(
-      workflowExecutionIds.map(async (id) => {
-        try {
-          const workflow = await this.robotConnectorClient.retrieveWorkflowExecution(id);
-          
-          const tracking = await this.trackingRepository.findOne({
-            where: { workflowExecution: id },
-          });
-    
-          Object.assign(tracking, { status: workflow.status });
-          await this.trackingRepository.save(tracking);
-          console.log("updated tracking")
-        } catch (error) {
-          this.logger.warn(`Error processing workflow execution ${id}`, context);
-        }
-      })
-    );
-    
-
-    // update order status
-    const trackingIds = trackings.map((item) => item.id);
-    await Promise.all(
-      trackingIds.map(async (id) => {
-        try {
-          await this.updateStatusOrder(id);
-          console.log("updated order")
-        } catch (error) {
-          this.logger.warn(`Error updating status for order`, context);
-        }
-      })
-    );
-    
-  }
-
-  /**
-   * Stop a specific cron function
-   * @param {string} name The name of cron function
-   */
-  private stopCronJob(name: string) {
-    const context = `${TrackingService.name}.${this.stopCronJob.name}`;
-    const job = this.schedulerRegistry.getCronJob(name);
-    job.stop();
-    this.logger.log(`Cron job "${name}" has been stopped.`, context);
-  }
-
-  /**
-   * Restart a specific cron function
-   * @param {string} name The name of cron function
-   * @param {string} trackingId The id of tracking
-   */
-  private startCronJob(name: string, trackingId: string) {
-    const context = `${TrackingService.name}.${this.startCronJob.name}`;
-    this.currentTrackingUpdate = trackingId;
-    const job = this.schedulerRegistry.getCronJob(name);
-    job.start();
-    this.logger.log(`Cron job "${name}" has been restarted.`, context);
-  }
-
-  /**
-   * Update latest order status by tracking id
-   * @param {string} trackingId The id of tracking
-   */
-  async updateStatusOrder(
-    trackingId: string
-  ) {
-    const order = await this.orderRepository.findOne({
-      where: {
-        orderItems: {
-          trackingOrderItems: {
-            tracking: {
-              id: trackingId
-            }
-          }
-        }
-      },
-      relations: [
-        'payment',
-        'owner',
-        'orderItems.variant.size',
-        'orderItems.variant.product',
-        'orderItems.trackingOrderItems.tracking',
-      ],
-    });
-    // check by total quantity each order item
-    const totalBase = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalQuantities = order.orderItems.reduce(
-      (totals, item) => {
-        const itemQuantities = item.trackingOrderItems.reduce(
-          (statusSums, trackingItem) => {
-            const status = trackingItem.tracking.status;
-            if (
-              status === WorkflowStatus.COMPLETED ||
-              status === WorkflowStatus.RUNNING
-            ) {
-              statusSums[status] =
-                (statusSums[status] || 0) + trackingItem.quantity;
-            }
-            return statusSums;
-          },
-          {} as Record<WorkflowStatus, number>,
-        );
-    
-        Object.keys(itemQuantities).forEach((status) => {
-          totals[status as WorkflowStatus] =
-            (totals[status as WorkflowStatus] || 0) +
-            itemQuantities[status as WorkflowStatus];
-        });
-
-        return totals;
-      },
-      {} as Record<WorkflowStatus, number>,
-    );
-
-    let defaultStatus: string = order.status;
-
-    if (totalBase > totalQuantities[WorkflowStatus.COMPLETED]) {
-      if (totalQuantities[WorkflowStatus.RUNNING] > 0) {
-        Object.assign(order, { status: OrderStatus.SHIPPING });
-        const updatedOrder = await this.orderRepository.save(order);
-        defaultStatus = updatedOrder.status;
-      }
-    } else if (totalBase === totalQuantities[WorkflowStatus.COMPLETED]) {
-      Object.assign(order, { status: OrderStatus.COMPLETED });
-      const updatedOrder = await this.orderRepository.save(order);
-      defaultStatus = updatedOrder.status;
-    }
-    console.log('updated in order function')
   }
 }

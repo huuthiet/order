@@ -50,16 +50,16 @@ export class UpdateOrderItemRequestDto {
 
 export class StatusOrderItemResponseDto {
   @AutoMap()
-  [WorkflowStatus.PENDING]: number;
+  PENDING: number;
 
   @AutoMap()
-  [WorkflowStatus.RUNNING]: number;
+  RUNNING: number;
 
   @AutoMap()
-  [WorkflowStatus.COMPLETED]: number;
+  COMPLETED: number;
 
   @AutoMap()
-  [WorkflowStatus.FAILED]: number;
+  FAILED: number;
 }
 
 export class OrderItemResponseDto extends BaseResponseDto {
