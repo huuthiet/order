@@ -37,7 +37,7 @@ export default function OrderItemStatusBadge({
   // Ensure the component returns valid JSX
   return (
     <span
-      className={`inline-block w-fit px-4 py-1 text-center font-beVietNam text-[0.5rem] ${getBadgeColor(
+      className={`inline-block w-fit px-3 py-1 text-center font-beVietNam text-[0.5rem] ${getBadgeColor(
         status,
       )} rounded-full`}
     >

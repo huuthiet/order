@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { Clock, ShoppingCartIcon, SquareMenu } from 'lucide-react'
 import moment from 'moment'
 
-import { Button, ScrollArea } from '@/components/ui'
+import { ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
 import { IOrder, OrderStatus } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-import { CreateOrderTrackingByStaffDialog } from '@/components/app/dialog'
+import { CreateOrderTrackingByStaffDialog, CreateOrderTrackingByRobotDialog } from '@/components/app/dialog'
 import TotalOrders from './total-orders'
 import OrderWaitListCounting from './order-wait-list-counting'
 import CustomerInformation from './customer-information'
@@ -21,7 +21,7 @@ export default function OrderManagementPage() {
   const { userInfo } = useUserStore()
   const { addOrder, getOrder } = useOrderStore()
   const { clearSelectedItems, getSelectedItems } = useOrderTrackingStore()
-  const { data: orderDetail } = useOrderBySlug(selectedOrderSlug)
+  const { data: orderDetail, refetch } = useOrderBySlug(selectedOrderSlug)
   const { pagination } = usePagination()
 
   const { data } = useOrders({
@@ -49,6 +49,14 @@ export default function OrderManagementPage() {
     setSelectedOrderSlug(order.slug)
     clearSelectedItems()
   }
+
+  //i want to refetch orderDetail every 1 second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch()
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [refetch])
 
   const orderDetailData = orderDetail?.result
   return (
@@ -134,7 +142,7 @@ export default function OrderManagementPage() {
               {getSelectedItems().length > 0 && (
                 <div className="flex justify-end w-full gap-2">
                   <CreateOrderTrackingByStaffDialog />
-                  <Button>{t('order.createOrderTrackingByRobot')}</Button>
+                  <CreateOrderTrackingByRobotDialog />
                 </div>
               )}
             </div>

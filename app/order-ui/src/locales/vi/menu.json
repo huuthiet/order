@@ -128,6 +128,7 @@
     "orderDetail": "Chi tiết đơn hàng",
     "createOrderTrackingByStaff": "Nhân viên giao",
     "confirmOrderTrackingByStaff": "Xác nhận giao hàng",
+    "confirmOrderTrackingByRobot": "Xác nhận giao hàng bằng robot",
     "createOrderTrackingByStaffDescription": "Nhân viên sẽ giao hàng tới vị trí bàn của khách hàng",
     "productName": "Tên món",
     "confirmCreateOrderTracking": "Xác nhận giao hàng",

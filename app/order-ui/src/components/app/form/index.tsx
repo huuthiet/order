@@ -42,3 +42,5 @@ export * from './add-menu-multiple-items-form'
 export * from './update-menu-item-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './create-order-tracking-by-staff-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './create-order-tracking-by-robot-form'

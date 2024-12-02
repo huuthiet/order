@@ -106,7 +106,7 @@ export const CreateOrderTrackingByStaffForm: React.FC<
                     key={`product-row-${index}`}
                     className="grid grid-cols-5 gap-4 text-sm text-muted-foreground"
                   >
-                    <div className="col-span-3 flex flex-col gap-1">
+                    <div className="flex flex-col col-span-3 gap-1">
                       <Label>{t('order.productName')}</Label>
                       <Input
                         className="flex-1"
@@ -121,18 +121,19 @@ export const CreateOrderTrackingByStaffForm: React.FC<
                         placeholder={`Product Name ${index + 1}`}
                       />
                     </div>
-                    <div className="col-span-2 flex w-full flex-col gap-1">
+                    <div className="flex flex-col w-full col-span-2 gap-1">
                       <Label>{t('order.quantity')}</Label>
                       <Input
+                        readOnly
                         value={form.getValues('productQuantity')[index]}
-                        onChange={(e) => {
-                          const updatedQuantities = [
-                            ...form.getValues('productQuantity'),
-                          ]
-                          updatedQuantities[index] =
-                            parseInt(e.target.value, 10) || 0
-                          form.setValue('productQuantity', updatedQuantities)
-                        }}
+                        // onChange={(e) => {
+                        //   const updatedQuantities = [
+                        //     ...form.getValues('productQuantity'),
+                        //   ]
+                        //   updatedQuantities[index] =
+                        //     parseInt(e.target.value, 10) || 0
+                        //   form.setValue('productQuantity', updatedQuantities)
+                        // }}
                         placeholder="Quantity"
                         type="number"
                         min={0}

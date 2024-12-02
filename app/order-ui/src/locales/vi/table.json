@@ -11,7 +11,7 @@
     "branch": "Chi nhánh",
     "location": "Vị trí",
     "enterLocation": "Nhập vị trí",
-    "isEmpty": "Trạng thái (bật là bàn trống)",
+    "status": "Trạng thái",
     "xPosition": "Tọa độ X",
     "enterXPosition": "Nhập tọa độ X",
     "yPosition": "Tọa độ Y",

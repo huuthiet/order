@@ -4,6 +4,7 @@ import {
   updateTable,
   deleteTable,
   updateTableStatus,
+  getAllLocations,
 } from '@/api'
 import {
   ICreateTableRequest,
@@ -41,5 +42,12 @@ export const useUpdateTableStatus = () => {
   return useMutation({
     mutationFn: async (params: IUpdateTableStatusRequest) =>
       updateTableStatus(params),
+  })
+}
+
+export const useAllTableLocations = () => {
+  return useQuery({
+    queryKey: ['tableLocations'],
+    queryFn: async () => getAllLocations(),
   })
 }

@@ -133,7 +133,9 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         onClick={() => setShowDetails(!showDetails)}
         className="justify-between w-fit"
       >
-        <span className="text-sm font-medium">Order detail</span>
+        <span className="text-sm font-medium">
+          {t('order.orderDetail')}
+        </span>
         {showDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
       </Button>
 

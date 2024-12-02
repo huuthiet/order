@@ -33,7 +33,11 @@ export async function getAllOrders(
 export async function getOrderBySlug(
   slug: string,
 ): Promise<IApiResponse<IOrder>> {
-  const response = await http.get<IApiResponse<IOrder>>(`/orders/${slug}`)
+  const response = await http.get<IApiResponse<IOrder>>(`/orders/${slug}`, {
+    // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
+    doNotShowLoading: true,
+  })
+  // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
   return response.data
 }
 
