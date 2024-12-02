@@ -27,6 +27,8 @@ services:
       ACB_API_URL: ${ACB_API_URL}
       ACB_CLIENT_ID: ${ACB_CLIENT_ID}
       ACB_CLIENT_SECRET: ${ACB_CLIENT_SECRET}
+      ROBOT_API_URL: ${ROBOT_API_URL}
+      ROBOT_ID: ${ROBOT_ID}
       TZ: Asia/Ho_Chi_Minh
     depends_on:
       mysql_db:

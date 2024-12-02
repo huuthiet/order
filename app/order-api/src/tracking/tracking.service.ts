@@ -9,16 +9,24 @@ import { CreateTrackingRequestDto, TrackingResponseDto } from "./tracking.dto";
 import { CreateTrackingOrderItemRequestDto, CreateTrackingOrderItemWithQuantityAndOrderItemEntity, ValidateDefinedAndQuantityOrderItem } from "src/tracking-order-item/tracking-order-item.dto";
 import { Order } from "src/order/order.entity";
 import { OrderItem } from "src/order-item/order-item.entity";
-import { TrackingType, WorkFlowStatus } from "./tracking.constants";
+import { NameCronTracking, TrackingType, WorkflowStatus } from "./tracking.constants";
 import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
 import { Table } from 'src/table/table.entity';
-import { OrderType } from "src/order/order.contants";
+import { OrderStatus, OrderType } from "src/order/order.contants";
 import { RobotConnectorClient } from "src/robot-connector/robot-connector.client";
-import { RunWorkFlowRequestDto, WorkFlowExecutionResponseDto } from "src/robot-connector/robot-connector.dto";
+import { RobotResponseDto, RunWorkflowRequestDto, WorkflowExecutionResponseDto } from "src/robot-connector/robot-connector.dto";
 import { Workflow } from "src/workflow/workflow.entity";
+import { ConfigService } from "@nestjs/config";
+import { RobotStatus } from "src/robot-connector/robot-connector.constants";
+import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
+import * as _ from 'lodash';
+import { TrackingScheduler } from "./tracking.scheduler";
 
 @Injectable()
 export class TrackingService {
+  private readonly robotId: string =
+    this.configService.get<string>('ROBOT_ID');
+
   constructor(
     @InjectRepository(Tracking)
     private readonly trackingRepository: Repository<Tracking>,
@@ -36,6 +44,8 @@ export class TrackingService {
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     private readonly robotConnectorClient: RobotConnectorClient,
     private readonly dataSource: DataSource,
+    private readonly configService: ConfigService,
+    private readonly trackingScheduler: TrackingScheduler,
   ) {}
 
   /**
@@ -47,6 +57,15 @@ export class TrackingService {
     requestData: CreateTrackingRequestDto
   ): Promise<TrackingResponseDto> {
     const context = `${TrackingService.name}.${this.createTracking.name}`;
+    const trackings = await this.trackingRepository.find({
+      where: {
+        status: In([WorkflowStatus.PENDING, WorkflowStatus.RUNNING])
+      }
+    });
+    if(trackings.length > 0) {
+      this.logger.warn('Please wait for current shipment completed', context);
+      throw new BadRequestException('Please wait for current shipment completed');
+    }
     const checkDefinedAndQuantityOrderItemResult = await this.validateDefinedAndQuantityOrderItem(
       requestData.trackingOrderItems
     );
@@ -68,12 +87,21 @@ export class TrackingService {
         throw new BadRequestException('This order for take out, can not use robot');
       }
 
+      const robotData: RobotResponseDto = 
+        await this.robotConnectorClient.getRobotById(this.robotId);
+
+      console.log({h: robotData.status})
+      if(robotData.status !== RobotStatus.IDLE) {
+        this.logger.warn(`Robot ${this.robotId} is busy`, context);
+        throw new BadRequestException('Robot is busy'); 
+      }
+
       const tableLocation: string = await this.getLocationTableByOrder(orderResult);
       if(!tableLocation) {
         this.logger.warn(`Can not find table location in order ${orderResult.slug} , please check table information`, context);
         throw new BadRequestException('Can not find table location, please check table information');
       }
-      const workflow = await this.workflowRepository.findOne({
+      const workflowData = await this.workflowRepository.findOne({
         where: {
           branch: {
             orders: {
@@ -82,36 +110,41 @@ export class TrackingService {
           }
         }
       });
-      if(!workflow) {
+      if(!workflowData) {
         this.logger.warn(`Must add work flow for this branch ${orderResult.branch.slug}`, context);
         throw new BadRequestException('Must add work flow for this branch');
       }
-      const requestData: RunWorkFlowRequestDto = {
+      const requestData: RunWorkflowRequestDto = {
         order_code: orderResult.slug,
         location: tableLocation
       }
-      const workFlow: WorkFlowExecutionResponseDto = 
-        await this.robotConnectorClient.runWorkFlow(workflow.workflowId, requestData);
+      const workflowRobot: WorkflowExecutionResponseDto = 
+        await this.robotConnectorClient.runWorkflow(workflowData.workflowId, requestData);
 
       const tracking = new Tracking();
       Object.assign(tracking, {
-        workFlowInstance: workFlow.workflow_execution_id
+        workflowExecution: workflowRobot.workflow_execution_id
       });
+      // Object.assign(tracking, {
+      //   workflowExecution: 'WFTESThaah'
+      // });
 
       savedTrackingId = await this.createTrackingAndTrackingOrderItem(
         tracking,
         orderItemsData
       );
+      this.trackingScheduler.startUpdateStatusTracking();
     }
 
     if(requestData.type === TrackingType.BY_STAFF) {
       const tracking = new Tracking();
-      Object.assign(tracking, { status: WorkFlowStatus.COMPLETED });
+      Object.assign(tracking, { status: WorkflowStatus.COMPLETED });
       
       savedTrackingId = await this.createTrackingAndTrackingOrderItem(
         tracking,
         orderItemsData
       );
+      await this.trackingScheduler.updateStatusOrder(savedTrackingId);
     }
 
     const trackingData = await this.trackingRepository.findOne({
@@ -170,7 +203,7 @@ export class TrackingService {
 
       // order item have tracking order item
       const totalCompleted = orderItem.trackingOrderItems.reduce((total, item) => {
-        return item.tracking.status ===WorkFlowStatus.COMPLETED ? total + item.quantity : total;
+        return item.tracking.status ===WorkflowStatus.COMPLETED ? total + item.quantity : total;
       }, 0);
       if((totalCompleted + orderItems[i].quantity) > orderItem.quantity) return  { isValid: false };
     }
@@ -285,5 +318,43 @@ export class TrackingService {
     const updatedTracking = await this.trackingRepository.save(tracking);
     const trackingDto = this.mapper.map(updatedTracking, Tracking, TrackingResponseDto);
     return trackingDto;
+  }
+
+  async delete(slug: string): Promise<number> {
+    const context = `${TrackingService.name}.${this.delete.name}`;
+    const tracking = await this.trackingRepository.findOne({
+      where: { slug },
+      relations: ['trackingOrderItems']
+    });
+    if(!tracking) {
+      this.logger.warn(`Tracking ${slug} is not found`, context);
+      throw new BadRequestException('Tracking is not found');
+    }
+    const trackingOrderItems = tracking.trackingOrderItems;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // create tracking order item
+      for(let i = 0; i < trackingOrderItems.length; i++) {
+        await queryRunner.manager.softDelete(TrackingOrderItem, {slug: trackingOrderItems[i].slug});
+      }
+      const deleted = await queryRunner.manager.softDelete(Tracking, { slug });
+
+      await queryRunner.commitTransaction();
+
+      return deleted.affected || 0;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      this.logger.warn(
+        `Create tracking and tracking order item failed`,
+        context,
+      );
+      throw new BadRequestException('Create tracking adn tracking order item failed')
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
