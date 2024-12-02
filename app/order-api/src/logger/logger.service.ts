@@ -1,14 +1,11 @@
 import { Inject, Injectable, Logger as NestLogger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from './logger.entity';
-import { And, LessThan, MoreThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { GetLoggerRequestDto, LoggerResponseDto } from './logger.dto';
 import { AppPaginatedResponseDto } from 'src/app/app.dto';
-import * as moment from 'moment';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class LoggerService {
@@ -17,8 +14,6 @@ export class LoggerService {
     private readonly loggerRepository: Repository<Logger>,
     @InjectMapper()
     private readonly mapper: Mapper,
-    @Inject(WINSTON_MODULE_NEST_PROVIDER)
-    private readonly logger: NestLogger,
   ) {}
 
   async getAllLogs(query: GetLoggerRequestDto) {
@@ -44,21 +39,5 @@ export class LoggerService {
       pageSize: query.size,
       totalPages,
     } as AppPaginatedResponseDto<LoggerResponseDto>;
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_11PM)
-  async handleDeleteLogs() {
-    const context = `${LoggerService.name}.${this.handleDeleteLogs.name}`;
-    const dateOfLastWeek = moment().subtract(1, 'weeks').toDate();
-    this.logger.log(`Deleting logs at ${dateOfLastWeek}`, context);
-
-    const deleteResult = await this.loggerRepository.delete({
-      createdAt: dateOfLastWeek,
-    });
-
-    this.logger.log(`Deleted ${deleteResult.affected || 0} logs`, context);
-
-    // Return the number of deleted records
-    return deleteResult.affected || 0;
   }
 }

@@ -28,13 +28,12 @@ export default function ConfirmOrderPage() {
   const cartItems = getCartItems()
 
   return (
-    <div className="flex h-full flex-row gap-2">
+    <div className="flex flex-row h-full gap-2">
       <div
-        className={`flex flex-col ${
-          isCartOpen && !isMobile ? 'w-full md:w-[70%]' : 'w-full'
-        } ${isCollapsed ? 'pl-2' : ''}`}
+        className={`flex flex-col ${isCartOpen && !isMobile ? 'w-full md:w-[70%]' : 'w-full'
+          } ${isCollapsed ? 'pl-2' : ''}`}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-end gap-2 bg-white py-3 pr-4">
+        <div className="sticky top-0 z-10 flex items-center justify-end gap-2 py-3 pr-4 bg-white">
           {!isMobile && (
             <CartToggleButton
               isCartOpen={isCartOpen}
@@ -43,8 +42,8 @@ export default function ConfirmOrderPage() {
           )}
           {isMobile && <CheckoutCartDrawer />}
         </div>
-        <ScrollArea className="flex-1 pb-4">
-          <div className="grid grid-cols-7 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
+        <ScrollArea className="flex flex-col gap-2 pb-4">
+          <div className="grid grid-cols-7 px-4 py-3 mb-4 text-sm font-thin rounded-md bg-muted/60">
             <span className="col-span-2">{t('order.product')}</span>
             <span className="col-span-2 text-center">
               {t('order.quantity')}
@@ -52,38 +51,38 @@ export default function ConfirmOrderPage() {
             <span className="col-span-2 text-center">
               {t('order.grandTotal')}
             </span>
-            <span className="col-span-1 flex justify-center">
+            <span className="flex justify-center col-span-1">
               <Trash2 size={18} />
             </span>
           </div>
 
           {/* Danh sách sản phẩm */}
-          <div className="flex flex-col rounded-md border">
+          <div className="flex flex-col border rounded-md">
             {cartItems?.orderItems.map((item) => (
               <div
                 key={item.slug}
-                className="grid w-full items-center gap-4 rounded-md p-4 pb-4"
+                className="grid items-center w-full gap-4 p-4 pb-4 rounded-md"
               >
                 <div
                   key={`${item.slug}`}
-                  className="grid w-full grid-cols-7 flex-row items-center"
+                  className="grid flex-row items-center w-full grid-cols-7"
                 >
-                  <div className="col-span-2 flex w-full gap-2">
+                  <div className="flex w-full col-span-2 gap-2">
                     <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
                       <img
                         src={`${publicFileURL}/${item.image}`}
                         alt={item.name}
-                        className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                        className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                       />
                       <div className="flex flex-col">
-                        <span className="truncate font-bold">{item.name}</span>
+                        <span className="font-bold truncate">{item.name}</span>
                         <span className="text-sm text-muted-foreground">
                           {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="col-span-2 flex justify-center">
+                  <div className="flex justify-center col-span-2">
                     <QuantitySelector cartItem={item} />
                   </div>
                   <div className="col-span-2 text-center">
@@ -91,23 +90,22 @@ export default function ConfirmOrderPage() {
                       {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
                     </span>
                   </div>
-                  <div className="col-span-1 flex justify-center">
+                  <div className="flex justify-center col-span-1">
                     <DeleteCartItemDialog cartItem={item} />
                   </div>
                 </div>
                 <CartNoteInput cartItem={item} />
               </div>
             ))}
-            <TableSelect />
           </div>
+          <TableSelect />
         </ScrollArea>
       </div>
 
       {/* Cart Section - Fixed */}
       <div
-        className={`fixed right-0 h-[calc(100vh-6.5rem)] border-l bg-background transition-all duration-300 ease-in-out ${
-          isCartOpen && !isMobile ? 'w-[25%]' : 'w-0 opacity-0'
-        }`}
+        className={`fixed right-0 h-[calc(100vh-6.5rem)] border-l bg-background transition-all duration-300 ease-in-out ${isCartOpen && !isMobile ? 'w-[25%]' : 'w-0 opacity-0'
+          }`}
       >
         {isCartOpen && !isMobile && <CheckoutCart />}
       </div>

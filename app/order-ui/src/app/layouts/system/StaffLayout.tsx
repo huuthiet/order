@@ -4,13 +4,16 @@ import { AppSidebar, AppHeader } from '@/components/app'
 import { BreadcrumbComponent } from '@/components/app/breadcrumb'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib'
+import { DownloadProgress } from '@/components/app/progress'
+import { useDownloadStore } from '@/stores'
 
 export default function StaffLayout() {
   const isMobile = useIsMobile()
+  const { progress, fileName, isDownloading } = useDownloadStore()
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <div className="box-border flex min-h-screen flex-1">
+      <div className="box-border flex flex-1 min-h-screen">
         {/* Sidebar - Hidden on mobile by default */}
         <AppSidebar />
 
@@ -40,6 +43,7 @@ export default function StaffLayout() {
               )}
             >
               <Outlet />
+              {isDownloading && <DownloadProgress progress={progress} fileName={fileName} />}
             </main>
           </ScrollArea>
         </div>

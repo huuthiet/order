@@ -1,5 +1,6 @@
 export * from './auth.store'
 export * from './cart.store'
+export * from './download.store'
 export * from './loading.store'
 export * from './menu.store'
 export * from './menu-item.store'

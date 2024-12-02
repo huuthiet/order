@@ -7,8 +7,12 @@ import {
   IUpdateTableStatusRequest,
 } from '@/types'
 
-export async function getAllTables(): Promise<IApiResponse<ITable[]>> {
-  const response = await http.get<IApiResponse<ITable[]>>('/tables')
+export async function getAllTables(
+  branch?: string,
+): Promise<IApiResponse<ITable[]>> {
+  const response = await http.get<IApiResponse<ITable[]>>('/tables', {
+    params: { branch }, // Fix: wrap branch in an object
+  })
   return response.data
 }
 
@@ -40,9 +44,10 @@ export async function deleteTable(slug: string): Promise<IApiResponse<null>> {
 export async function updateTableStatus(
   params: IUpdateTableStatusRequest,
 ): Promise<IApiResponse<ITable>> {
+  console.log(params)
   const response = await http.patch<IApiResponse<ITable>>(
     `/tables/${params.slug}/status`,
-    params.status,
+    { status: params.status },
   )
   return response.data
 }

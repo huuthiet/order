@@ -12,10 +12,10 @@ import {
 } from '@/types'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-export const useTables = () => {
+export const useTables = (branch?: string) => {
   return useQuery({
-    queryKey: ['tables'],
-    queryFn: async () => getAllTables(),
+    queryKey: ['tables', branch],
+    queryFn: async () => getAllTables(branch as string),
   })
 }
 
