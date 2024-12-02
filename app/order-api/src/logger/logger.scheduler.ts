@@ -15,7 +15,7 @@ export class LoggerScheduler {
     private readonly logger: NestLogger,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_11PM)
   async handleDeleteLogs() {
     const context = `${LoggerScheduler.name}.${this.handleDeleteLogs.name}`;
     const dateOfLastWeek = moment().subtract(1, 'weeks').toDate();
