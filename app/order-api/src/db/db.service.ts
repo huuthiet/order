@@ -37,7 +37,7 @@ export class DbService {
     );
 
     // Clean up the temporary file
-    // await this.cleanUp(dumpFilePath);
+    await this.cleanUp(dumpFilePath);
 
     return fileId;
   }
