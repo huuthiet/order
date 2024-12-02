@@ -17,6 +17,7 @@ import { MAPPER_MODULE_PROVIDER } from "src/app/app.constants";
 import { mapperMockFactory } from "src/test-utils/mapper-mock.factory";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { SchedulerRegistry } from "@nestjs/schedule";
+import { TrackingScheduler } from "./tracking.scheduler";
 
 describe('TrackingService', () => {
   let service: TrackingService;
@@ -50,6 +51,7 @@ describe('TrackingService', () => {
         TrackingService,
         RobotConnectorClient,
         SchedulerRegistry,
+        TrackingScheduler,
         HttpService,
         {
           provide: ConfigService,
