@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../config/configuration';
 import { validate } from './env.validation';
-import { DatabaseModule } from 'src/database/database.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
@@ -52,7 +51,6 @@ import { DbModule } from 'src/db/db.module';
     }),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    DatabaseModule,
     AuthModule,
     FileModule,
     HealthModule,

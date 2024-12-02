@@ -1,20 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { createReadStream } from 'fs';
-import { drive_v2, google } from 'googleapis';
+import { drive_v3, google } from 'googleapis';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as path from 'path';
 
 @Injectable()
 export class GoogleDriveService {
-  //   private readonly clientEmail = this.configService.get<string>(
-  //     'GOOGLE_CLIENT_EMAIL',
-  //   );
-  //   private readonly privateKey =
-  //     this.configService.get<string>('GOOGLE_PRIVATE_KEY');
+  private drive: drive_v3.Drive;
 
-  private drive: drive_v2.Drive;
-
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+  ) {
     this.authorize();
   }
 
@@ -23,25 +24,33 @@ export class GoogleDriveService {
    *
    */
   async authorize() {
-    const keyPath = path.resolve('public/json/credentials.json'); // Path to your JSON credentials
+    const keyPath = path.resolve('public/json/credentials.json');
     const auth = new google.auth.GoogleAuth({
       keyFile: keyPath,
-      scopes: ['https://www.googleapis.com/auth/drive.file'],
+      scopes: ['https://www.googleapis.com/auth/drive'],
     });
 
-    this.drive = google.drive({ version: 'v2', auth });
+    this.drive = google.drive({ version: 'v3', auth });
   }
 
   async uploadFile(filename: string, mimeType: string) {
-    const file = await this.drive.files.insert({
-      media: {
-        body: createReadStream(filename),
-        mimeType: mimeType,
-      },
-      fields: 'id',
-      requestBody: {},
-    });
-
-    return file.data.id;
+    try {
+      const file = await this.drive.files.create({
+        media: {
+          body: createReadStream(filename),
+          mimeType: mimeType,
+        },
+        fields: 'id',
+        requestBody: {
+          name: path.basename(filename),
+          parents: ['1PQRLjknvtPAYsY8nBScIBnXKkZfytEp-'],
+        },
+      });
+      this.logger.log(`File uploaded: ${path.basename(filename)}`);
+      return file.data.id;
+    } catch (err) {
+      this.logger.error(`Error uploading file: ${JSON.stringify(err)}`);
+      throw new BadRequestException('Error uploading file');
+    }
   }
 }
