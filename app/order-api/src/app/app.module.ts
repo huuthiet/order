@@ -38,6 +38,7 @@ import { InvoiceItemModule } from 'src/invoice-item/invoice-item.module';
 import { WorkflowModule } from 'src/workflow/workflow.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { resolve } from 'path';
+import { DbModule } from 'src/db/db.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { resolve } from 'path';
     InvoiceModule,
     InvoiceItemModule,
     WorkflowModule,
+    DbModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
