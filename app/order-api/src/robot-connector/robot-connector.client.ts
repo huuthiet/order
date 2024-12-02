@@ -85,7 +85,7 @@ export class RobotConnectorClient {
           this.logger.error(
             `Get all Workflows from ROBOT API failed: ${error.message}`,
           );
-          throw error;
+          throw new BadRequestException('Get all Workflows from ROBOT API failed');
         }),
       ),
     );
