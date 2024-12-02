@@ -64,6 +64,9 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   ROBOT_API_URL: string;
+
+  @IsNotEmpty()
+  ROBOT_ID: string;
 }
 
 export function validate(config: Record<string, unknown>) {
