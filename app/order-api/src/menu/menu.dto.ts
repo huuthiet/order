@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { INVALID_BRANCH_SLUG, INVALID_DAY } from './menu.validation';
 import { Type } from 'class-transformer';
 import { MenuItemResponseDto } from 'src/menu-item/menu-item.dto';
@@ -16,22 +16,31 @@ export class CreateMenuDto {
   @ApiProperty({ description: 'The name of catalog', example: '6c661e85' })
   @IsNotEmpty({ message: INVALID_BRANCH_SLUG })
   branchSlug: string;
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'Determine the menu template',
+    default: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  isTemplate: boolean;
 }
 
 export class UpdateMenuDto extends CreateMenuDto {}
 
 export class GetMenuRequestDto {
   @AutoMap()
-  @ApiProperty()
+  @ApiProperty({ required: false })
   slug?: string;
 
   @AutoMap()
-  @ApiProperty()
+  @ApiProperty({ required: false, example: '2024-11-20' })
   @Type(() => Date)
   date?: Date;
 
   @AutoMap()
-  @ApiProperty()
+  @ApiProperty({ required: false })
   branch?: string;
 }
 
@@ -42,4 +51,12 @@ export class MenuResponseDto {
 
   @AutoMap(() => MenuItemResponseDto)
   menuItems: MenuItemResponseDto[];
+
+  @AutoMap()
+  @ApiProperty()
+  dayIndex: number;
+
+  @AutoMap()
+  @ApiProperty()
+  isTemplate: boolean;
 }

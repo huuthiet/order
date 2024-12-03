@@ -15,6 +15,8 @@ import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as _ from 'lodash';
+import * as moment from 'moment';
+import { getDayIndex } from 'src/helper';
 
 @Injectable()
 export class MenuService {
@@ -115,6 +117,21 @@ export class MenuService {
       throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
     }
 
+    // Check if template menu already exist
+    if (requestData.isTemplate) {
+      const dayIndex = getDayIndex(requestData.date);
+      const isExsitTemplate = await this.menuRepository.findOne({
+        where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
+      });
+      if (isExsitTemplate) {
+        this.logger.warn(
+          `Template menu for ${requestData.date} already exist`,
+          context,
+        );
+        throw new MenuException(MenuValidation.TEMPLATE_EXIST);
+      }
+    }
+
     Object.assign(menu, { ...requestData, branch });
     const updatedMenu = await this.menuRepository.save(menu);
     this.logger.log(`Menu ${slug} updated`, context);
@@ -136,6 +153,21 @@ export class MenuService {
     if (!branch) {
       this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
       throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
+    }
+
+    // Check if template menu already exist
+    if (requestData.isTemplate) {
+      const dayIndex = getDayIndex(requestData.date);
+      const isExsitTemplate = await this.menuRepository.findOne({
+        where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
+      });
+      if (isExsitTemplate) {
+        this.logger.warn(
+          `Template menu for ${requestData.date} already exist`,
+          context,
+        );
+        throw new MenuException(MenuValidation.TEMPLATE_EXIST);
+      }
     }
 
     const menu = this.mapper.map(requestData, CreateMenuDto, Menu);

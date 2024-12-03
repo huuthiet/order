@@ -64,7 +64,6 @@ describe('MenuService', () => {
 
       // Mock output
       const menu = {
-        day: 'Monday',
         branch: {
           name: 'Mock branch name',
           address: 'Mock address',
@@ -135,6 +134,7 @@ describe('MenuService', () => {
       const mockMenu = {
         date: new Date(),
         branchSlug: '',
+        isTemplate: false,
       };
 
       // Mock implementation
@@ -149,11 +149,11 @@ describe('MenuService', () => {
       const mockMenu = {
         date: new Date(),
         branchSlug: 'mock-branch-slug',
+        isTemplate: false,
       };
 
       // Mock output
       const menu = {
-        day: 'Monday',
         branch: {
           name: 'Mock branch name',
           address: 'Mock address',
@@ -232,7 +232,6 @@ describe('MenuService', () => {
 
       // Mock output
       const menuMock = {
-        day: 'Monday',
         branch: {
           name: 'Mock branch name',
           address: 'Mock address',

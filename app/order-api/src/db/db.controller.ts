@@ -1,10 +1,11 @@
 import { Controller, Post, HttpStatus } from '@nestjs/common';
 import { DbService } from './db.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppResponseDto } from 'src/app/app.dto';
 
 @Controller('db')
 @ApiTags('Database')
+@ApiBearerAuth()
 export class DbController {
   constructor(private readonly dbService: DbService) {}
 
