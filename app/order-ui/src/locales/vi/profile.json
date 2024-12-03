@@ -2,6 +2,9 @@
   "profile": {
     "title": "Trang cá nhân",
     "profile": "Thông tin cá nhân",
+
+    "generalInfo": "Thông tin chung",
+    "passwordAndAuthentication": "Mật khẩu và xác thực",
     "firstName": "Tên",
     "enterFirstName": "Nhập tên",
     "lastName": "Họ",
@@ -17,6 +20,15 @@
 
     "update": "Cập nhật",
     "updateProfile": "Cập nhật thông tin cá nhân",
-    "updateProfileDescription": "thay đổi các thông tin bên dưới để cập nhật thông tin cá nhân của bạn"
+    "updateProfileDescription": "thay đổi các thông tin bên dưới để cập nhật thông tin cá nhân của bạn",
+
+    "updatePassword": "Cập nhật mật khẩu",
+    "updatePasswordDescription": "Vui lòng nhập mật khẩu hiện tại và mật khẩu mới để cập nhật mật khẩu của bạn",
+    "oldPassword": "Mật khẩu hiện tại",
+    "enterOldPassword": "Nhập mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "enterNewPassword": "Nhập mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu mới",
+    "enterConfirmPassword": "Nhập lại mật khẩu mới"
   }
 }

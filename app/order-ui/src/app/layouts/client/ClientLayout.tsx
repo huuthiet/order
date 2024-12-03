@@ -13,7 +13,7 @@ export default function ClientLayout() {
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <div className="box-border flex min-h-screen flex-1">
+      <div className="box-border flex flex-1 min-h-screen">
         {/* Sidebar - Hidden on mobile by default */}
         <AppSidebar />
 
@@ -43,9 +43,11 @@ export default function ClientLayout() {
               )}
             >
               <Outlet />
+              <DownloadProgress progress={progress} fileName={fileName} />
               {isDownloading && (
                 <DownloadProgress progress={progress} fileName={fileName} />
               )}
+              <DownloadProgress progress={progress} fileName={fileName} />
             </main>
           </ScrollArea>
         </div>

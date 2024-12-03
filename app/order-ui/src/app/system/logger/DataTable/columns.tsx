@@ -3,7 +3,8 @@ import { ColumnDef } from '@tanstack/react-table'
 import { useTranslation } from 'react-i18next'
 
 import { DataTableColumnHeader } from '@/components/ui'
-import { ILogger } from '@/types'
+import { ILogger, TLoggerLevel } from '@/types'
+import { LoggerLevel } from '@/constants'
 import { LogLevelBadge } from '@/components/app/badge/index'
 
 export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
@@ -16,9 +17,11 @@ export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
       ),
       cell: ({ row }) => {
         const timestamp = row.getValue('timestamp')
-        return timestamp
-          ? moment(timestamp as string).format('HH:mm DD/MM/YYYY')
-          : ''
+        return (<div>
+          {timestamp
+            ? moment(timestamp as string).format('HH:mm DD/MM/YYYY')
+            : ''}
+        </div>)
       },
     },
     {
@@ -38,20 +41,45 @@ export const useLoggerColumns = (): ColumnDef<ILogger>[] => {
       ),
       cell: ({ row }) => {
         const message = row.getValue('message') as string
+        const level = row.getValue('level') as TLoggerLevel
+
         if (!message) return ''
+
+        // Hàm xác định lớp CSS dựa trên nhiều điều kiện
+        const getClassesByLevel = (level: TLoggerLevel) => {
+          if (level === LoggerLevel.INFO) {
+            return 'text-green-700'
+          } else if (level === LoggerLevel.WARN) {
+            return 'text-yellow-600'
+          } else if (level === LoggerLevel.ERROR) {
+            return 'text-red-700'
+          }
+          return 'text-gray-700'
+        }
+
         return (
-          <div className="max-w-[28rem] whitespace-pre-wrap break-words py-2">
+          <div
+            className={`max-w-[20rem] whitespace-pre-wrap break-words py-2 ${getClassesByLevel(
+              level
+            )}`}
+          >
             {message}
           </div>
         )
-      },
+      }
+
     },
     {
       accessorKey: 'context',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('log.context')} />
       ),
-      cell: ({ row }) => row.getValue('context'),
+      cell: ({ row }) => {
+        const context = row.getValue('context') as string
+        return (<div>
+          <span className='text-sm whitespace-pre-wrap break-words w-[18rem]'>{context}</span>
+        </div>)
+      },
     },
     {
       accessorKey: 'pid',

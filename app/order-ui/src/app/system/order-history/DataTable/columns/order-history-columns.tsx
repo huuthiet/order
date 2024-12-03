@@ -18,16 +18,22 @@ import { useCreateOrderInvoice, useExportOrderInvoice } from '@/hooks'
 import { showToast } from '@/utils'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
+import { useQueryClient } from '@tanstack/react-query'
 
 export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
+  const queryClient = useQueryClient()
   const { t } = useTranslation(['menu'])
+  const { t: tToast } = useTranslation(['toast'])
   const { t: tCommon } = useTranslation(['common'])
   const { mutate: createOrderInvoice } = useCreateOrderInvoice()
   const { mutate: exportOrderInvoice } = useExportOrderInvoice()
   const handleCreateOrderInvoice = (slug: string) => {
     createOrderInvoice(slug, {
       onSuccess: () => {
-        showToast('Create order invoice successfully')
+        queryClient.invalidateQueries({
+          queryKey: ['orders'],
+        })
+        showToast(tToast('toast.createInvoiceSuccess'))
       },
       onError: (error) => {
         console.log('Create order invoice error', error)
@@ -36,9 +42,10 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
   }
 
   const handleExportOrderInvoice = (slug: string) => {
+    // console.log('exportOrderInvoice', order)
     exportOrderInvoice(slug, {
       onSuccess: () => {
-        showToast('Export order invoice successfully')
+        showToast(tToast('toast.exportInvoiceSuccess'))
       },
       onError: (error) => {
         console.log('Create order invoice error', error)
@@ -202,12 +209,12 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                     </Button>
                   </NavLink>
                 )}
-                {!order.payment && (
+                {!order.invoice && (
                   <Button onClick={() => handleCreateOrderInvoice(order.slug)} variant="ghost" className='flex justify-start w-full px-2'>
                     {t('order.createInvoice')}
                   </Button>
                 )}
-                <Button onClick={() => handleExportOrderInvoice(order?.invoice ? order?.invoice.slug : '')} variant="ghost" className='flex justify-start w-full px-2'>
+                <Button onClick={() => handleExportOrderInvoice(order.invoice ? order.invoice.slug : '')} variant="ghost" className='flex justify-start w-full px-2'>
                   {t('order.exportInvoice')}
                 </Button>
                 {/* <UpdateMenuDialog menu={menu} /> */}

@@ -40,8 +40,8 @@ export default function UpdateProfileDialog({
           {t('profile.updateProfile')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[56rem]">
-        <DialogHeader>
+      <DialogContent className="max-w-[20rem] px-0 rounded-md sm:max-w-[56rem]">
+        <DialogHeader className='px-6'>
           <DialogTitle>{t('profile.updateProfile')}</DialogTitle>
           <DialogDescription>
             {t('profile.updateProfileDescription')}

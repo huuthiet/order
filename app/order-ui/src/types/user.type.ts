@@ -21,3 +21,8 @@ export interface IUpdateProfileRequest {
   address: string
   branch: string
 }
+
+export interface IUpdatePasswordRequest {
+  oldPassword: string
+  newPassword: string
+}

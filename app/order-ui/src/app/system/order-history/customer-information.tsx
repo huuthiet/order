@@ -16,7 +16,7 @@ export default function CustomerInformation({
     <div className="grid grid-cols-3 gap-2 pb-6 border-b-2">
 
       <div className='flex flex-col col-span-1 gap-2'>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm font-semibold text-muted-foreground">
           {t('order.customerInformation').toLocaleUpperCase()}
         </span>
         <div className="flex flex-col gap-1 min-h-[6rem] p-2 border rounded-md text-muted-foreground">
@@ -48,7 +48,7 @@ export default function CustomerInformation({
         </div>
       </div>
       <div className='flex flex-col col-span-1 gap-2'>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm font-semibold text-muted-foreground">
           {t('order.deliveryMethod').toLocaleUpperCase()}
         </span>
         <div className="flex flex-col min-h-[6rem] gap-1 p-2 border rounded-md text-muted-foreground">
@@ -73,7 +73,7 @@ export default function CustomerInformation({
         </div>
       </div>
       <div className='flex flex-col gap-2'>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm font-semibold text-muted-foreground">
           {t('order.paymentMethod').toLocaleUpperCase()}
         </span>
         <div className="col-span-1 flex flex-col gap-1 p-2 min-h-[6rem] border rounded-md text-muted-foreground">

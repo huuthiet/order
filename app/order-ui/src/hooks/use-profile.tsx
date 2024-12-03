@@ -1,5 +1,5 @@
-import { getProfile, updateProfile } from '@/api'
-import { IUpdateProfileRequest } from '@/types'
+import { getProfile, updateProfile, updatePassword } from '@/api'
+import { IUpdateProfileRequest, IUpdatePasswordRequest } from '@/types'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useProfile = () => {
@@ -16,3 +16,13 @@ export const useUpdateProfile = () => {
     },
   })
 }
+
+export const useUpdatePassword = () => {
+  return useMutation({
+    mutationFn: async (data: IUpdatePasswordRequest) => {
+      return updatePassword(data)
+    },
+  })
+}
+
+

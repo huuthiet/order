@@ -68,8 +68,8 @@ export const useGetOrderInvoice = (params: IGetOrderInvoiceRequest) => {
 
 export const useCreateOrderInvoice = () => {
   return useMutation({
-    mutationFn: async (orderSlug: string) => {
-      return createOrderInvoice(orderSlug)
+    mutationFn: async (order: string) => {
+      return createOrderInvoice(order)
     },
   })
 }

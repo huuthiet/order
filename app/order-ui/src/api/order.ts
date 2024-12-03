@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from 'axios'
+import moment from 'moment'
 import { saveAs } from 'file-saver'
 
 import { http } from '@/utils'
@@ -16,7 +18,6 @@ import {
   IOrdersQuery,
 } from '@/types'
 import { useDownloadStore } from '@/stores'
-import { AxiosRequestConfig } from 'axios'
 
 export async function getAllOrders(
   params: IOrdersQuery,
@@ -87,10 +88,10 @@ export async function getOrderInvoice(
 }
 
 export async function createOrderInvoice(
-  orderSlug: string,
+  order: string,
 ): Promise<IApiResponse<IOrderInvoice>> {
   const response = await http.post<IApiResponse<IOrderInvoice>>(`/invoice`, {
-    orderSlug,
+    order,
   })
   return response.data
 }
@@ -100,11 +101,12 @@ export async function exportOrderInvoice(
 ): Promise<IApiResponse<string>> {
   const { setProgress, setFileName, setIsDownloading, reset } =
     useDownloadStore.getState()
-  setFileName(`${slug}.pdf`)
+  const currentDate = moment(new Date()).format('DD/MM/YYYY')
+  setFileName(`TREND Coffee Invoice-${currentDate}.pdf`)
   setIsDownloading(true)
 
   try {
-    const response = await http.get(`/invoice${slug}/export`, {
+    const response = await http.get(`/invoice/${slug}/export`, {
       responseType: 'blob',
       headers: {
         Accept: 'application/pdf',
@@ -117,8 +119,9 @@ export async function exportOrderInvoice(
       },
       doNotShowLoading: true,
     } as AxiosRequestConfig)
+    console.log('response', response)
     const blob = new Blob([response.data], { type: 'application/pdf' })
-    saveAs(blob, `${slug}.pdf`)
+    saveAs(blob, `TREND Coffee Invoice-${currentDate}.pdf`)
     return response.data
   } finally {
     setIsDownloading(false)

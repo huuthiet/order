@@ -44,3 +44,5 @@ export * from './update-menu-item-form'
 export * from './create-order-tracking-by-staff-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './create-order-tracking-by-robot-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './update-password-form'
