@@ -43,7 +43,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
       email: userProfile?.email || '',
       dob: userProfile?.dob || '',
       address: userProfile?.address || '',
-      branch: userProfile?.branch?.name || '',
+      branch: userProfile?.branch?.slug || '',
     },
   })
 
@@ -51,7 +51,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
     createProductVariant(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['userInfo'],
+          queryKey: ['profile'],
         })
         onSubmit(false)
         form.reset()
@@ -165,7 +165,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <ScrollArea className="h-[22rem] flex-1">
+          <ScrollArea className="h-[22rem] px-6 flex-1">
             <div className="grid grid-cols-1 gap-2">
               {Object.keys(formFields).map((key) => (
                 <React.Fragment key={key}>
@@ -174,7 +174,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
               ))}
             </div>
           </ScrollArea>
-          <div className="flex justify-end">
+          <div className="flex justify-end px-6">
             <Button className="flex justify-end" type="submit">
               {t('profile.update')}
             </Button>

@@ -1,0 +1,9 @@
+{
+  "progress": {
+    "pending": "Pending",
+    "paid": "Paid",
+    "shipping": "Shipping",
+    "completed": "Completed",
+    "cancel": "Cancelled"
+  }
+}

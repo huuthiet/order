@@ -78,7 +78,7 @@ export default function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className='overflow-y-auto'>
         <SidebarGroup>
           <SidebarMenu>
             {translatedRoutes.map((item) => (

@@ -6,8 +6,13 @@ export async function logger(
 ): Promise<IApiResponse<IPaginationResponse<ILogger>>> {
   const response = await http.get<IApiResponse<IPaginationResponse<ILogger>>>(
     '/logger',
-    { params },
+    {
+      // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
+      doNotShowLoading: true,
+      params,
+    },
     // logLevel ? { params: { logLevel } } : undefined,
   )
+  // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
   return response.data
 }

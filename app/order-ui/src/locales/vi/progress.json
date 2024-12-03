@@ -1,0 +1,10 @@
+{
+  "progress": {
+    "downloading": "Đang tải xuống",
+    "pending": "Chưa thanh toán",
+    "paid": "Đã thanh toán",
+    "shipping": "Đang giao hàng",
+    "completed": "Đã hoàn tất",
+    "cancel": "Đã hủy"
+  }
+}

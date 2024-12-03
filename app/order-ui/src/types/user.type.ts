@@ -1,6 +1,6 @@
 export interface IUserInfo {
   slug: string
-  avatar?: string
+  image?: string
   phonenumber: string
   firstName: string
   lastName: string
@@ -20,4 +20,9 @@ export interface IUpdateProfileRequest {
   dob: string
   address: string
   branch: string
+}
+
+export interface IUpdatePasswordRequest {
+  oldPassword: string
+  newPassword: string
 }
