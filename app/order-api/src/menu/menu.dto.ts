@@ -51,4 +51,12 @@ export class MenuResponseDto {
 
   @AutoMap(() => MenuItemResponseDto)
   menuItems: MenuItemResponseDto[];
+
+  @AutoMap()
+  @ApiProperty()
+  dayIndex: number;
+
+  @AutoMap()
+  @ApiProperty()
+  isTemplate: boolean;
 }
