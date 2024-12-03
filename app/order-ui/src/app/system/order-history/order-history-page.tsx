@@ -32,7 +32,7 @@ export default function OrderHistoryPage() {
                     columns={useOrderHistoryColumns()}
                     data={data?.result.items || []}
                     isLoading={isLoading}
-                    pages={1}
+                    pages={data?.result.totalPages || 0}
                     onPageChange={handlePageChange}
                     onPageSizeChange={handlePageSizeChange}
                 />

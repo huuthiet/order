@@ -111,7 +111,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: ROUTE.ORDER_SUCCESS,
+    path: `${ROUTE.ORDER_SUCCESS}/:slug`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />

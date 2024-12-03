@@ -51,6 +51,8 @@
     "updateBranchSuccess": "Cập nhật chi nhánh thành công",
     "deleteBranchSuccess": "Xóa chi nhánh thành công",
 
-    "createOrderSuccess": "Tạo đơn hàng thành công"
+    "createOrderSuccess": "Tạo đơn hàng thành công",
+
+    "createOrderTrackingSuccess": "Phân robot giao hàng thành công"
   }
 }

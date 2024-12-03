@@ -17,21 +17,20 @@ export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
   const [selectedOrderSlug, setSelectedOrderSlug] = useState<string>('')
+  const [selectedRow, setSelectedRow] = useState<string>('')
   const { userInfo } = useUserStore()
   const { addOrder } = useOrderStore()
   const { clearSelectedItems, getSelectedItems } = useOrderTrackingStore()
   const { data: orderDetail, refetch } = useOrderBySlug(selectedOrderSlug)
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
 
-  const { data } = useOrders({
+  const { data, refetch: allOrderRefetch } = useOrders({
     page: pagination.pageIndex,
     pageSize: pagination.pageSize,
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
   })
-
-  const orders = data?.result.items || []
 
   useEffect(() => {
     if (orderDetail?.result) {
@@ -41,6 +40,7 @@ export default function OrderManagementPage() {
 
   const handleOrderClick = (order: IOrder) => {
     setSelectedOrderSlug(order.slug)
+    setSelectedRow(order.slug)
     clearSelectedItems()
   }
 
@@ -48,9 +48,10 @@ export default function OrderManagementPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       refetch()
+      allOrderRefetch()
     }, 5000)
     return () => clearInterval(interval)
-  }, [refetch])
+  }, [refetch, allOrderRefetch])
 
   const orderDetailData = orderDetail?.result
   return (
@@ -66,7 +67,7 @@ export default function OrderManagementPage() {
           <div className="grid h-full grid-cols-1 gap-2 sm:grid-cols-9">
             <div className="flex flex-col col-span-4 gap-2">
               <div className="grid grid-cols-2 gap-2">
-                <TotalOrders orders={orders} />
+                <TotalOrders orderTotal={data?.result.total} />
                 <OrderWaitListCounting />
               </div>
 
@@ -75,58 +76,19 @@ export default function OrderManagementPage() {
                 isLoading={false}
                 data={data?.result.items || []}
                 columns={usePendingOrdersColumns()}
-                pages={data?.result?.page || 1}
+                pages={data?.result?.totalPages || 1}
                 onRowClick={handleOrderClick}
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
+                rowClassName={(row) =>
+                  row.slug === selectedRow ? 'bg-primary/20 border border-primary' : ''
+                }
               />
-
-              {/* <div className="flex flex-1 py-4 border rounded-md">
-                <div className="flex flex-col w-full gap-2">
-                  <span className="px-6 text-lg font-semibold text-muted-foreground">
-                    {t('order.orderList')}
-                  </span>
-                  <ScrollArea className="max-h-[28rem] w-full flex-1 px-3">
-                    <div className="flex flex-col gap-1">
-                      {sortedPendingOrders.map((pendingOrder) => (
-                        <div
-                          onClick={() => handleOrderClick(pendingOrder)}
-                          key={pendingOrder.slug}
-                          className={`grid cursor-pointer grid-cols-4 ${currentOrders?.slug === pendingOrder.slug ? 'border border-primary bg-primary/10' : ''} flex-row items-center rounded-md px-2 py-3 transition-colors duration-200 hover:bg-primary/10`}
-                        >
-                          <div className="flex justify-start col-span-2 gap-4">
-                            <div className="flex items-center justify-start rounded-lg bg-primary p-2.5">
-                              <ShoppingCartIcon className="text-white icon" />
-                            </div>
-                            <div className="flex flex-col justify-start text-sm">
-                              <span>
-                                {pendingOrder.owner.firstName}{' '}
-                                {pendingOrder.owner.lastName}
-                              </span>
-                              <div className="flex flex-row gap-1 text-xs text-muted-foreground/50">
-                                <span>{pendingOrder.orderItems.length}</span>
-                                {t('order.item')}
-                              </div>
-                            </div>
-                          </div>
-                          <span className="flex flex-row items-center justify-start gap-1 text-[0.5rem] text-muted-foreground/60">
-                            <Clock size={12} />
-                            {moment(pendingOrder.createdAt).format(
-                              'hh:mm DD/MM/YYYY',
-                            )}
-                          </span>
-                          <OrderStatusBadge status={pendingOrder.status} />
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </div>
-              </div> */}
             </div>
 
             {/* Order Information */}
             <div className="flex flex-col col-span-5 gap-1 py-4 border rounded-md">
-              <span className="px-4 text-lg font-medium">
+              <span className="px-4 text-lg font-semibold">
                 {t('order.orderInformation')}
               </span>
               <div>

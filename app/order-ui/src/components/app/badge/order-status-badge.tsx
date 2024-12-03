@@ -15,7 +15,7 @@ export default function OrderStatusBadge({ status }: IOrderStatusBadgeProps) {
         return 'border-yellow-500 bg-yellow-50 border text-yellow-500 font-semibold'
       case OrderStatus.COMPLETED:
         return 'border-green-500 bg-green-50 border text-green-500 font-semibold'
-      case OrderStatus.FAILED:
+      case OrderStatus.CANCEL:
         return 'border-destructive bg-destructive/20 border text-destructive'
     }
   }
@@ -26,7 +26,7 @@ export default function OrderStatusBadge({ status }: IOrderStatusBadgeProps) {
         return t('order.pending')
       case OrderStatus.COMPLETED:
         return t('order.completed')
-      case OrderStatus.FAILED:
+      case OrderStatus.CANCEL:
         return t('order.failed')
     }
   }

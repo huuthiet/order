@@ -105,9 +105,10 @@ export interface ITrackingOrderItems extends IBase {
 
 export enum OrderStatus {
   PENDING = 'pending',
-  RUNNING = 'running',
-  FAILED = 'failed',
+  SHIPPING = 'shipping',
+  CANCEL = 'cancel',
   COMPLETED = 'completed',
+  PAID = 'paid',
 }
 
 export enum OrderItemStatus {
@@ -160,12 +161,12 @@ export interface ICreateOrderRequest {
   }[]
 }
 
-export interface IInitiateQrCodeRequest {
+export interface IInitiatePaymentRequest {
   paymentMethod: string
   orderSlug: string
 }
 
-export interface IInitiateQrCodeResponse {
+export interface IInitiatePaymentResponse {
   requestTrace: string
   qrCode: string
 }

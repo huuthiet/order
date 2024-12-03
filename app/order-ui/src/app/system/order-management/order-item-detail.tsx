@@ -13,7 +13,6 @@ interface OrderItemDetailProps {
 }
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
-  console.log('OrderItemDetail', order)
   const { t } = useTranslation(['menu'])
   const [showDetails, setShowDetails] = useState(false)
   const { addSelectedItem, removeSelectedItem, isItemSelected } =
@@ -51,7 +50,6 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   }
 
   const renderOrderItem = (orderItem: IOrderDetail) => {
-    console.log('renderOrderItem', orderItem.status)
     const totalProcessedItems =
       orderItem.status.RUNNING + orderItem.status.COMPLETED
 
@@ -62,7 +60,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
           return { status: OrderStatus.COMPLETED, index }
         }
         if (index < orderItem.status.COMPLETED + orderItem.status.RUNNING) {
-          return { status: OrderStatus.RUNNING, index }
+          return { status: OrderStatus.SHIPPING, index }
         }
         return { status: OrderStatus.PENDING, index }
       })
@@ -101,7 +99,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                   <div
                     className={`h-3 w-3 rounded-full ${item.status === OrderStatus.COMPLETED
                       ? 'bg-green-500'
-                      : item.status === OrderStatus.RUNNING
+                      : item.status === OrderStatus.SHIPPING
                         ? 'bg-blue-500'
                         : 'bg-gray-300'
                       }`}

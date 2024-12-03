@@ -88,7 +88,9 @@
     "totalPayment": "Tổng tiền thanh toán",
     "confirmPaid": "Xác nhận đã thanh toán",
     "complete": "Hoàn tất",
+    "orderSuccess": "Đặt hàng thành công",
 
+    "paymentStatus": "Thanh toán",
     "pending": "Đang chuẩn bị",
     "completed": "Đã hoàn tất",
     "running": "Đang giao hàng",
@@ -115,6 +117,7 @@
 
     "customerInformation": "Thông tin khách hàng",
     "paymentMethod": "Phương thức thanh toán",
+    "status": "Trạng thái",
     "slug": "Mã đơn hàng",
     "orderType": "Loại đơn hàng",
     "owner": "Người đặt",

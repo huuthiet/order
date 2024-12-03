@@ -15,7 +15,7 @@ export default function OrderItemList({
   const { t } = useTranslation(['menu'])
   return (
     <div className="flex flex-col gap-1">
-      <span className="px-4 py-1 text-lg font-medium">
+      <span className="px-4 py-1 text-lg font-semibold">
         {t('order.orderDetail')}
       </span>
       <div className="flex flex-col w-full gap-2">
