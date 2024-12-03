@@ -1,4 +1,4 @@
-import { getProfile, updateProfile, updatePassword } from '@/api'
+import { getProfile, updateProfile, updatePassword, uploadProfilePicture } from '@/api'
 import { IUpdateProfileRequest, IUpdatePasswordRequest } from '@/types'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
@@ -21,6 +21,14 @@ export const useUpdatePassword = () => {
   return useMutation({
     mutationFn: async (data: IUpdatePasswordRequest) => {
       return updatePassword(data)
+    },
+  })
+}
+
+export const useUploadProfilePicture = () => {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      return uploadProfilePicture(file)
     },
   })
 }

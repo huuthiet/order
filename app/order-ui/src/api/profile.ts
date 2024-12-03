@@ -30,3 +30,13 @@ export async function updatePassword(
   )
   return response.data
 }
+
+export async function uploadProfilePicture(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  const response = await http.patch<IApiResponse<IUserInfo>>(
+    `/auth/upload`,
+    formData,
+  )
+  return response.data
+}

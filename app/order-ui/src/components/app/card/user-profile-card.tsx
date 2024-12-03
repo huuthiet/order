@@ -2,13 +2,26 @@ import { useTranslation } from 'react-i18next'
 
 import { Input, Card, CardContent } from '@/components/ui'
 import { ProfilePicture } from '@/components/app/avatar'
-import { useProfile } from '@/hooks'
+import { useProfile, useUploadProfilePicture } from '@/hooks'
 import { publicFileURL } from '@/constants'
 import { UpdatePasswordDialog, UpdateProfileDialog } from '@/components/app/dialog'
+import { showToast } from '@/utils'
+import { useUserStore } from '@/stores'
 
 export default function UserProfileCard() {
-  const { t } = useTranslation(['profile'])
+  const { t } = useTranslation(['profile', 'toast'])
   const { data } = useProfile()
+  const { userInfo, setUserInfo } = useUserStore()
+  const { mutate: uploadProfilePicture } = useUploadProfilePicture()
+
+  const handleUploadProfilePicture = (file: File) => {
+    uploadProfilePicture(file, {
+      onSuccess: (data) => {
+        showToast(t('toast.uploadProfilePictureSuccess'))
+        setUserInfo(data.result)
+      }
+    })
+  }
 
   const userProfile = data?.result
   const formFields = {
@@ -98,11 +111,11 @@ export default function UserProfileCard() {
               height={80}
               width={80}
               src={
-                userProfile?.avatar
-                  ? `${publicFileURL}/${userProfile.avatar}`
+                userProfile?.image
+                  ? `${publicFileURL}/${userInfo?.image}`
                   : 'https://github.com/shadcn.png'
               }
-            //   onUpload={handleUploadProfilePicture}
+              onUpload={handleUploadProfilePicture}
             />
             <div className="flex flex-col justify-center ml-4">
               <span className="font-semibold text-md font-beVietNam">

@@ -1,6 +1,6 @@
 export interface IUserInfo {
   slug: string
-  avatar?: string
+  image?: string
   phonenumber: string
   firstName: string
   lastName: string

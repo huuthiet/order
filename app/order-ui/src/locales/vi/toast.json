@@ -34,6 +34,8 @@
     "updateProfileSuccess": "Cập nhật thông tin cá nhân thành công",
     "deleteProfileSuccess": "Xóa thông tin cá nhân thành công",
 
+    "updateProfilePictureSuccess": "Cập nhật ảnh đại diện thành công",
+
     "createMenuSuccess": "Tạo thực đơn thành công",
     "updateMenuSuccess": "Cập nhật thực đơn thành công",
     "deleteMenuSuccess": "Xóa thực đơn thành công",
