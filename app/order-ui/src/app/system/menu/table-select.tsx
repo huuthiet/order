@@ -39,15 +39,20 @@ export default function TableSelect() {
       <div className="p-4 bg-muted/60">
         <span className="font-medium text-md">{t('table.title')}</span>
       </div>
-      <div className="relative h-[300px]">
-        <div className='flex flex-row gap-4 px-4 py-2'>
-          <div className='flex flex-row items-center gap-2'>
-            <div className='w-4 h-4 bg-green-100 border border-green-500 rounded-sm' />
-            <span className='text-sm'>{t('table.available')}</span>
+      <div className="relative flex flex-col min-h-[350px]">
+        {/* Table status */}
+        <div className="flex flex-row gap-4 p-4 ">
+          <div className="flex flex-row items-center gap-2">
+            <div className="w-4 h-4 border rounded-sm bg-muted-foreground/10" />
+            <span className="text-sm">{t('table.available')}</span>
           </div>
-          <div className='flex flex-row items-center gap-2'>
-            <div className='w-4 h-4 bg-red-100 border border-red-500 rounded-sm' />
-            <span className='text-sm'>{t('table.reserved')}</span>
+          <div className="flex flex-row items-center gap-2">
+            <div className="w-4 h-4 bg-red-100 border border-red-500 rounded-sm" />
+            <span className="text-sm">{t('table.reserved')}</span>
+          </div>
+          <div className="flex flex-row items-center gap-2">
+            <div className="w-4 h-4 border-2 rounded-sm border-primary bg-muted-foreground/10" />
+            <span className="text-sm">{t('table.selected')}</span>
           </div>
         </div>
         {tables?.result.map((table) => (
@@ -58,6 +63,7 @@ export default function TableSelect() {
             onContextMenu={(e) => e.preventDefault()}
             onClick={() => handleTableClick(table)}
           />
+
         ))}
       </div>
     </div>

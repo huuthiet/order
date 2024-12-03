@@ -6,7 +6,7 @@ interface IPaymentStatusBadgeProps {
     status?: paymentStatus
 }
 
-export default function OrderStatusBadge({ status }: IPaymentStatusBadgeProps) {
+export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps) {
     const { t } = useTranslation(['menu'])
 
     const getBadgeColor = (status: paymentStatus) => {
@@ -33,7 +33,7 @@ export default function OrderStatusBadge({ status }: IPaymentStatusBadgeProps) {
     // Ensure the component returns valid JSX
     return (
         <span
-            className={`inline-block min-w-[4.5rem] px-4 py-1 text-center font-beVietNam text-[0.5rem] ${getBadgeColor(
+            className={`inline-block min-w-[4.5rem] px-3 py-0.5 text-center font-beVietNam text-[0.5rem] ${getBadgeColor(
                 status || paymentStatus.PENDING
             )} rounded-full`}
         >

@@ -5,9 +5,9 @@ import {
   IApiResponse,
   IOrder,
   ICreateOrderRequest,
-  IInitiateQrCodeRequest,
+  IInitiatePaymentRequest,
   ICreateOrderResponse,
-  IInitiateQrCodeResponse,
+  IInitiatePaymentResponse,
   ICreateOrderTrackingRequest,
   IOrderTracking,
   IOrderInvoice,
@@ -23,17 +23,25 @@ export async function getAllOrders(
 ): Promise<IApiResponse<IPaginationResponse<IOrder>>> {
   const response = await http.get<IApiResponse<IPaginationResponse<IOrder>>>(
     '/orders',
+
     {
+      // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
+      doNotShowLoading: true,
       params,
     },
   )
+  // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
   return response.data
 }
 
 export async function getOrderBySlug(
   slug: string,
 ): Promise<IApiResponse<IOrder>> {
-  const response = await http.get<IApiResponse<IOrder>>(`/orders/${slug}`)
+  const response = await http.get<IApiResponse<IOrder>>(`/orders/${slug}`, {
+    // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
+    doNotShowLoading: true,
+  })
+  // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
   return response.data
 }
 
@@ -47,10 +55,10 @@ export async function createOrder(
   return response.data
 }
 
-export async function initializeQrCode(
-  params: IInitiateQrCodeRequest,
-): Promise<IApiResponse<IInitiateQrCodeResponse>> {
-  const response = await http.post<IApiResponse<IInitiateQrCodeResponse>>(
+export async function initiatePayment(
+  params: IInitiatePaymentRequest,
+): Promise<IApiResponse<IInitiatePaymentResponse>> {
+  const response = await http.post<IApiResponse<IInitiatePaymentResponse>>(
     `/payment/initiate`,
     params,
   )

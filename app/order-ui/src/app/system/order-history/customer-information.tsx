@@ -82,11 +82,15 @@ export default function CustomerInformation({
               {t('paymentMethod.title')}
             </span>
             <span className="text-xs">
-              {orderDetailData?.invoice.paymentMethod === 'bank-transfer' && (
-                <span>{t('paymentMethod.bankTransfer')}</span>
-              )}
-              {orderDetailData?.invoice.paymentMethod === 'cash' && (
-                <span>{t('paymentMethod.cash')}</span>
+              {orderDetailData?.invoice?.paymentMethod && (
+                <>
+                  {orderDetailData.invoice.paymentMethod === 'bank-transfer' && (
+                    <span>{t('paymentMethod.bankTransfer')}</span>
+                  )}
+                  {orderDetailData.invoice.paymentMethod === 'cash' && (
+                    <span>{t('paymentMethod.cash')}</span>
+                  )}
+                </>
               )}
             </span>
           </div>
@@ -95,7 +99,9 @@ export default function CustomerInformation({
               {t('paymentMethod.status')}
             </span>
             <span className="col-span-1 text-xs">
-              <PaymentStatusBadge status={orderDetailData?.invoice.status} />
+              {orderDetailData?.invoice?.status && (
+                <PaymentStatusBadge status={orderDetailData?.invoice.status} />
+              )}
             </span>
           </div>
         </div>

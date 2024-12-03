@@ -30,4 +30,5 @@ export interface IOrdersQuery {
   page: number | 1
   pageSize: number | 10
   order: 'ASC' | 'DESC'
+  status?: string
 }

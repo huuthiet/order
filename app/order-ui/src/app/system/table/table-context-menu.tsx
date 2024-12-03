@@ -1,12 +1,12 @@
-import { DeleteTableDialog } from "@/components/app/dialog"
+import { DeleteTableDialog } from '@/components/app/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu'
 import { TableStatus } from '@/constants'
-import { ITable } from "@/types"
+import { ITable } from '@/types'
 
 interface TableContextMenuProps {
   open: boolean
@@ -15,7 +15,6 @@ interface TableContextMenuProps {
   table: ITable | null
   onOpenChange: (open: boolean) => void
   onStatusChange: (tableId: string, status: TableStatus) => void
-  onDelete: (tableId: string) => void
 }
 
 export default function TableContextMenu({
@@ -25,8 +24,14 @@ export default function TableContextMenu({
   table,
   onOpenChange,
   onStatusChange,
-  // onDelete,
 }: TableContextMenuProps) {
+  const handleStatusChange = (status: TableStatus) => {
+    if (table) {
+      onStatusChange(table.slug, status)
+      onOpenChange(false)
+    }
+  }
+
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuContent
@@ -37,17 +42,20 @@ export default function TableContextMenu({
           top: y,
         }}
       >
-        <DropdownMenuItem onClick={() => table && onStatusChange(table.slug, TableStatus.AVAILABLE)}>
+        <DropdownMenuItem
+          onClick={() => handleStatusChange(TableStatus.AVAILABLE)}
+        >
           Đánh dấu trống
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => table && onStatusChange(table.slug, TableStatus.RESERVED)}>
+        <DropdownMenuItem
+          onClick={() => handleStatusChange(TableStatus.RESERVED)}
+        >
           Đánh dấu đã đặt
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DeleteTableDialog
           table={table}
           onContextOpen={() => onOpenChange(false)}
-        // onDialogOpen={() => onOpenChange(false)}
         />
       </DropdownMenuContent>
     </DropdownMenu>

@@ -21,6 +21,13 @@ export interface ITable extends IBase {
   yPosition?: number
 }
 
+export interface ITableLocation {
+  id: string
+  name: string
+  qr_code: string
+  createdAt: string
+}
+
 export interface TableContextMenu {
   x: number
   y: number

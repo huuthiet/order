@@ -22,6 +22,8 @@ import { useCreateTable } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { TableStatus } from '@/constants'
+import TableLocationSelect from '../select/table-location-select'
+import { useUserStore } from '@/stores'
 // import { IsEmptySwitch } from '../switch'
 
 interface IFormCreateTableProps {
@@ -33,7 +35,9 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
 }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['table'])
+  const { userInfo } = useUserStore()
   const { mutate: createTable } = useCreateTable()
+  // const {data: tableLocations} = useGetTableLocations()
   const form = useForm<TCreateTableSchema>({
     resolver: zodResolver(createTableSchema),
     defaultValues: {
@@ -51,7 +55,7 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
     createTable(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['tables'],
+          queryKey: ['tables', userInfo?.branch.slug],
         })
         onSubmit(false)
         form.reset()
@@ -99,7 +103,8 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
           <FormItem>
             <FormLabel>{t('table.location')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('table.enterLocation')} />
+              {/* <Input {...field} placeholder={t('table.enterLocation')} /> */}
+              <TableLocationSelect {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -143,7 +148,12 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
           <FormItem>
             <FormLabel>{t('table.xPosition')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('table.enterXPosition')} />
+              <Input {...field} placeholder={t('table.enterXPosition')}
+                onChange={(e) => {
+                  const valueAsNumber =
+                    e.target.value === '' ? '' : Number(e.target.value)
+                  field.onChange(valueAsNumber)
+                }} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -158,7 +168,12 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
           <FormItem>
             <FormLabel>{t('table.yPosition')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('table.enterYPosition')} />
+              <Input {...field} placeholder={t('table.enterYPosition')}
+                onChange={(e) => {
+                  const valueAsNumber =
+                    e.target.value === '' ? '' : Number(e.target.value)
+                  field.onChange(valueAsNumber)
+                }} />
             </FormControl>
             <FormMessage />
           </FormItem>

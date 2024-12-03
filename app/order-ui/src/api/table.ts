@@ -5,6 +5,7 @@ import {
   ITable,
   IUpdateTableRequest,
   IUpdateTableStatusRequest,
+  ITableLocation,
 } from '@/types'
 
 export async function getAllTables(
@@ -49,5 +50,13 @@ export async function updateTableStatus(
     `/tables/${params.slug}/status`,
     { status: params.status },
   )
+  return response.data
+}
+
+export async function getAllLocations(): Promise<
+  IApiResponse<ITableLocation[]>
+> {
+  const response =
+    await http.get<IApiResponse<ITableLocation[]>>('/tables/locations')
   return response.data
 }
