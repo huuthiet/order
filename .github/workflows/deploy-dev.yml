@@ -27,6 +27,7 @@ jobs:
           GOOGLE_API_CREDENTIALS: ${{ secrets.GOOGLE_API_CREDENTIALS }}
           FE_ENV_DEV: ${{ secrets.FE_ENV_DEV }}
         run: |
+          mkdir -p app/order-api/public/json
           echo "$ENV_DEV" > .deploy/dev/.env
           echo "$GOOGLE_API_CREDENTIALS" > app/order-api/public/json/credentials.json
           echo "$FE_ENV_DEV" > app/order-ui/.env
