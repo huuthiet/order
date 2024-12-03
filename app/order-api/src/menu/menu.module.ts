@@ -6,10 +6,11 @@ import { Menu } from './menu.entity';
 import { Branch } from 'src/branch/branch.entity';
 import { MenuProfile } from './menu.mapper';
 import { MenuScheduler } from './menu.scheduler';
+import { MenuSubscriber } from './menu.subscriber';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Menu, Branch])],
   controllers: [MenuController],
-  providers: [MenuService, MenuProfile, MenuScheduler],
+  providers: [MenuService, MenuProfile, MenuScheduler, MenuSubscriber],
 })
 export class MenuModule {}

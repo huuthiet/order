@@ -117,6 +117,21 @@ export class MenuService {
       throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
     }
 
+    // Check if template menu already exist
+    if (requestData.isTemplate) {
+      const dayIndex = getDayIndex(requestData.date);
+      const isExsitTemplate = await this.menuRepository.findOne({
+        where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
+      });
+      if (isExsitTemplate) {
+        this.logger.warn(
+          `Template menu for ${requestData.date} already exist`,
+          context,
+        );
+        throw new MenuException(MenuValidation.TEMPLATE_EXIST);
+      }
+    }
+
     Object.assign(menu, { ...requestData, branch });
     const updatedMenu = await this.menuRepository.save(menu);
     this.logger.log(`Menu ${slug} updated`, context);
@@ -144,7 +159,7 @@ export class MenuService {
     if (requestData.isTemplate) {
       const dayIndex = getDayIndex(requestData.date);
       const isExsitTemplate = await this.menuRepository.findOne({
-        where: { branch, dayIndex, isTemplate: true },
+        where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
       });
       if (isExsitTemplate) {
         this.logger.warn(

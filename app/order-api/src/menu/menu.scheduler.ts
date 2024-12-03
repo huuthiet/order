@@ -17,7 +17,7 @@ export class MenuScheduler {
     private readonly branchRepository: Repository<Branch>,
   ) {}
 
-  //   @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async generateMenu() {
     const context = `${MenuScheduler.name}.${this.generateMenu.name}`;
     const today = new Date();
@@ -32,9 +32,6 @@ export class MenuScheduler {
 
     const newMenus = templateMenus.map((menu) => {
       const newMenu = _.cloneDeep(menu);
-      newMenu.date = today;
-      newMenu.isTemplate = false;
-      newMenu.id = undefined;
       Object.assign(newMenu, {
         date: today,
         isTemplate: false,
@@ -44,39 +41,52 @@ export class MenuScheduler {
           const newItem = _.cloneDeep(item);
           newItem.id = undefined;
           newItem.currentStock = newItem.defaultStock;
+          newItem.product = newItem.product;
           return newItem;
         }),
       });
       return newMenu;
     });
+
     this.menuRepository.manager.transaction(async (manager) => {
       await manager.save(newMenus);
+      this.logger.log(
+        `Menu generated ${newMenus.map((item) => `${item.slug}, `)}`,
+        context,
+      );
     });
   }
 
+  /**
+   * Get template menus for the day
+   * @param {Branch[]} branches
+   * @param {number} dayIndex
+   * @returns {Promise<Menu[]>} Template menus for the day
+   */
   async getTemplateMenus(branches: Branch[], dayIndex: number) {
     const templateMenus = await Promise.all(
       branches
         .map(async (branch) => {
           const menu = await this.menuRepository.findOne({
-            where: { branch: { id: branch.id }, dayIndex: 2, isTemplate: true },
+            where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
+            relations: ['menuItems.product', 'branch'],
           });
           return menu;
         })
         .filter(async (menu) => !!(await menu)),
     );
-    console.log({ templateMenus });
     return templateMenus;
   }
 
-  //   @Cron(CronExpression.EVERY_30_SECONDS)
+  // @Cron(CronExpression.EVERY_30_SECONDS)
   async updateDayIndex() {
     const context = `${MenuScheduler.name}.${this.updateDayIndex.name}`;
     this.logger.log(`Updating day index for menus without day index`, context);
 
-    const menusWithoutDayIndex = await this.menuRepository.find({
-      where: { dayIndex: null },
-    });
+    const menusWithoutDayIndex = await this.menuRepository
+      .createQueryBuilder('menu')
+      .where('menu.dayIndex IS NULL')
+      .getMany();
     this.logger.log(
       `Menu without day index count = ${menusWithoutDayIndex.length}`,
       context,
