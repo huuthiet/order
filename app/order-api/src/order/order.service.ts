@@ -264,7 +264,6 @@ export class OrderService {
     });
 
     const ordersDto = this.mapper.mapArray(orders, Order, OrderResponseDto);
-    this.logger.log(`Get all orders successfully`, context);
 
     // Calculate total pages
     const totalPages = Math.ceil(total / options.size);
@@ -309,9 +308,6 @@ export class OrderService {
     }
 
     const orderDto = this.getStatusEachOrderItemInOrder(order);
-    // const updatedStatus: string = await this.checkAndUpdateStatusOrder(order);
-    // Object.assign(orderDto, { status: updatedStatus });
-    this.logger.log(`Get order by slug ${slug} successfully`, context);
     return orderDto;
   }
 
@@ -320,9 +316,7 @@ export class OrderService {
    * @param {Order} order The order data relates to tracking
    * @returns {Promise<OrderResponseDto>} The order data with order item have status synthesis
    */
-  getStatusEachOrderItemInOrder(
-    order: Order
-  ): OrderResponseDto {
+  getStatusEachOrderItemInOrder(order: Order): OrderResponseDto {
     const orderItems = order.orderItems.map((item) => {
       const statusQuantities = item.trackingOrderItems.reduce(
         (acc, trackingItem) => {
@@ -367,17 +361,17 @@ export class OrderService {
   //       ),
   //     ),
   //   );
-    
+
   //   // if a query fail, it skip, not interrupt
   //   await Promise.all(
   //     uniqueWorkflowExecutionIds.map(async (id) => {
   //       try {
   //         const workflow = await this.robotConnectorClient.retrieveWorkflowExecution(id);
-          
+
   //         const tracking = await this.trackingRepository.findOne({
   //           where: { workflowExecution: id },
   //         });
-    
+
   //         Object.assign(tracking, { status: workflow.status });
   //         await this.trackingRepository.save(tracking);
   //       } catch (error) {
@@ -413,7 +407,7 @@ export class OrderService {
   //         },
   //         {} as Record<WorkflowStatus, number>,
   //       );
-    
+
   //       Object.keys(itemQuantities).forEach((status) => {
   //         totals[status as WorkflowStatus] =
   //           (totals[status as WorkflowStatus] || 0) +
