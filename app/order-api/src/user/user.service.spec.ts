@@ -8,6 +8,7 @@ import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MailService } from 'src/mail/mail.service';
 import { ConfigService } from '@nestjs/config';
+import { MailerService } from '@nestjs-modules/mailer';
 
 describe('UserService', () => {
   let service: UserService;
@@ -17,6 +18,7 @@ describe('UserService', () => {
       providers: [
         UserService,
         MailService,
+        { provide: MailerService, useValue: {} },
         {
           provide: getRepositoryToken(User),
           useValue: repositoryMockFactory,

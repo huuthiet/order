@@ -9,6 +9,7 @@ import { User } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from 'src/mail/mail.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -19,6 +20,7 @@ describe('UserController', () => {
       providers: [
         UserService,
         MailService,
+        { provide: MailerService, useValue: {} },
         {
           provide: getRepositoryToken(User),
           useValue: repositoryMockFactory,

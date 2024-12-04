@@ -21,12 +21,13 @@ import {
 } from '@nestjs/swagger';
 import {
   CreateMenuDto,
+  GetAllMenuQueryRequestDto,
   GetMenuRequestDto,
   MenuResponseDto,
   UpdateMenuDto,
 } from './menu.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
-import { AppResponseDto } from 'src/app/app.dto';
+import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Menu')
 @Controller('menu')
@@ -45,7 +46,8 @@ export class MenuController {
     isArray: true,
   })
   async getAllMenus(
-    @Query(new ValidationPipe({ transform: true })) query: any,
+    @Query(new ValidationPipe({ transform: true }))
+    query: GetAllMenuQueryRequestDto,
   ) {
     const result = await this.menuService.getAllMenus(query);
     return {
@@ -53,7 +55,7 @@ export class MenuController {
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<MenuResponseDto[]>;
+    } as AppResponseDto<AppPaginatedResponseDto<MenuResponseDto>>;
   }
 
   @Get('specific')

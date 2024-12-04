@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from './mail.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { MailerService } from '@nestjs-modules/mailer';
 
 describe('MailService', () => {
   let service: MailService;
@@ -13,6 +14,11 @@ describe('MailService', () => {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console, // Mock logger (or a custom mock)
         },
+        {
+          provide: 'MAILER_OPTIONS',
+          useValue: {},
+        },
+        { provide: MailerService, useValue: {} },
       ],
     }).compile();
 
