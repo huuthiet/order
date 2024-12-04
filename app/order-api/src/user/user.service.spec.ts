@@ -6,6 +6,8 @@ import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { MailService } from 'src/mail/mail.service';
+import { ConfigService } from '@nestjs/config';
 
 describe('UserService', () => {
   let service: UserService;
@@ -14,6 +16,7 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        MailService,
         {
           provide: getRepositoryToken(User),
           useValue: repositoryMockFactory,
@@ -25,6 +28,17 @@ describe('UserService', () => {
         {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'SALT_ROUNDS') {
+                return 10;
+              }
+              return null;
+            }),
+          },
         },
       ],
     }).compile();

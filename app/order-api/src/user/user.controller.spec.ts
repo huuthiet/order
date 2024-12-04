@@ -7,6 +7,8 @@ import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { User } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { MailService } from 'src/mail/mail.service';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -16,6 +18,7 @@ describe('UserController', () => {
       controllers: [UserController],
       providers: [
         UserService,
+        MailService,
         {
           provide: getRepositoryToken(User),
           useValue: repositoryMockFactory,
@@ -27,6 +30,17 @@ describe('UserController', () => {
         {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'SALT_ROUNDS') {
+                return 10;
+              }
+              return null;
+            }),
+          },
         },
       ],
     }).compile();
