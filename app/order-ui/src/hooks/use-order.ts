@@ -8,11 +8,11 @@ import {
   getAllOrders,
   getOrderBySlug,
   getOrderInvoice,
-  initializeQrCode,
+  initiatePayment,
 } from '@/api'
 import {
   ICreateOrderRequest,
-  IInitiateQrCodeRequest,
+  IInitiatePaymentRequest,
   ICreateOrderTrackingRequest,
   IGetOrderInvoiceRequest,
   IOrdersQuery,
@@ -42,10 +42,10 @@ export const useCreateOrder = () => {
   })
 }
 
-export const useInitiateQrCode = () => {
+export const useInitiatePayment = () => {
   return useMutation({
-    mutationFn: async (data: IInitiateQrCodeRequest) => {
-      return initializeQrCode(data)
+    mutationFn: async (data: IInitiatePaymentRequest) => {
+      return initiatePayment(data)
     },
   })
 }
@@ -68,8 +68,8 @@ export const useGetOrderInvoice = (params: IGetOrderInvoiceRequest) => {
 
 export const useCreateOrderInvoice = () => {
   return useMutation({
-    mutationFn: async (orderSlug: string) => {
-      return createOrderInvoice(orderSlug)
+    mutationFn: async (order: string) => {
+      return createOrderInvoice(order)
     },
   })
 }

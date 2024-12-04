@@ -5,11 +5,13 @@
     "checkout-order": "Xác nhận đơn hàng",
     "order-payment": "Thanh toán",
     "order-management": "Quản lý đơn hàng",
+    "order-history": "Lịch sử đơn hàng",
     "table-management": "Quản lý bàn",
     "product-management": "Quản lý món",
     "menu-management": "Quản lý thực đơn",
     "menu-detail": "Chi tiết thực đơn",
     "product": "Món",
+    "profile": "Trang cá nhân",
     "product-detail": "Chi tiết món",
     "log-management": "Quản lý log",
     "bank-config": "Cấu hình ngân hàng"

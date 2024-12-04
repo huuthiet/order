@@ -88,9 +88,12 @@
     "totalPayment": "Tổng tiền thanh toán",
     "confirmPaid": "Xác nhận đã thanh toán",
     "complete": "Hoàn tất",
+    "orderSuccess": "Đặt hàng thành công",
 
+    "paymentStatus": "Thanh toán",
     "pending": "Đang chuẩn bị",
     "completed": "Đã hoàn tất",
+    "running": "Đang giao hàng",
     "failed": "Thất bại",
 
     "deleteItem": "Xóa sản phẩm",
@@ -114,6 +117,7 @@
 
     "customerInformation": "Thông tin khách hàng",
     "paymentMethod": "Phương thức thanh toán",
+    "status": "Trạng thái",
     "slug": "Mã đơn hàng",
     "orderType": "Loại đơn hàng",
     "owner": "Người đặt",
@@ -128,6 +132,7 @@
     "orderDetail": "Chi tiết đơn hàng",
     "createOrderTrackingByStaff": "Nhân viên giao",
     "confirmOrderTrackingByStaff": "Xác nhận giao hàng",
+    "confirmOrderTrackingByRobot": "Xác nhận giao hàng bằng robot",
     "createOrderTrackingByStaffDescription": "Nhân viên sẽ giao hàng tới vị trí bàn của khách hàng",
     "productName": "Tên món",
     "confirmCreateOrderTracking": "Xác nhận giao hàng",

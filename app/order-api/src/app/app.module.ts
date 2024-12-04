@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../config/configuration';
 import { validate } from './env.validation';
-import { DatabaseModule } from 'src/database/database.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
@@ -38,6 +37,7 @@ import { InvoiceItemModule } from 'src/invoice-item/invoice-item.module';
 import { WorkflowModule } from 'src/workflow/workflow.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { resolve } from 'path';
+import { DbModule } from 'src/db/db.module';
 
 @Module({
   imports: [
@@ -51,7 +51,6 @@ import { resolve } from 'path';
     }),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    DatabaseModule,
     AuthModule,
     FileModule,
     HealthModule,
@@ -76,6 +75,7 @@ import { resolve } from 'path';
     InvoiceModule,
     InvoiceItemModule,
     WorkflowModule,
+    DbModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),

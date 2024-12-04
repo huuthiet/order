@@ -21,13 +21,13 @@ import {
 } from '@nestjs/swagger';
 import {
   CreateMenuDto,
+  GetAllMenuQueryRequestDto,
   GetMenuRequestDto,
   MenuResponseDto,
   UpdateMenuDto,
 } from './menu.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
-import { AppResponseDto } from 'src/app/app.dto';
-import * as moment from 'moment';
+import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
 
 @ApiTags('Menu')
 @Controller('menu')
@@ -45,15 +45,17 @@ export class MenuController {
     type: MenuResponseDto,
     isArray: true,
   })
-  async getAllMenus(@Query() query: any) {
-    // console.log(moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'));
+  async getAllMenus(
+    @Query(new ValidationPipe({ transform: true }))
+    query: GetAllMenuQueryRequestDto,
+  ) {
     const result = await this.menuService.getAllMenus(query);
     return {
       message: 'All menus have been retrieved successfully',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<MenuResponseDto[]>;
+    } as AppResponseDto<AppPaginatedResponseDto<MenuResponseDto>>;
   }
 
   @Get('specific')
@@ -64,19 +66,6 @@ export class MenuController {
     status: HttpStatus.OK,
     description: 'The specific menu was retrieved successfully',
     type: MenuResponseDto,
-  })
-  @ApiQuery({ name: 'slug', required: false, type: String })
-  @ApiQuery({
-    name: 'date',
-    required: false,
-    type: String,
-    example: '2024-11-20',
-  })
-  @ApiQuery({
-    name: 'branch',
-    required: false,
-    type: String,
-    example: 'kzA5ivhVy',
   })
   async getMenu(
     @Query(new ValidationPipe({ transform: true })) query: GetMenuRequestDto,

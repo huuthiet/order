@@ -31,14 +31,14 @@ export default function HeaderDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="h-9 px-0">
+          <DropdownMenuItem className="px-0 h-9">
             <NavLink
               to={`${ROUTE.PROFILE}`}
-              className="flex h-9 w-full justify-start"
+              className="flex justify-start w-full h-9"
             >
               <Button
                 variant="ghost"
-                className="flex h-9 w-full justify-start gap-1 text-sm"
+                className="flex justify-start w-full gap-1 text-sm"
               >
                 <User className="icon" />
                 {t('header.profile')}

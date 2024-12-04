@@ -9,4 +9,16 @@ export const updateProfileSchema = z.object({
   branch: z.string().min(1, 'Chi nhánh không được để trống'),
 })
 
+export const updatePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(1, 'Mật khẩu cũ không hợp lệ'),
+    newPassword: z.string().min(1, 'Mật khẩu mới không hợp lệ'),
+    confirmPassword: z.string().min(1, 'Mật khẩu xác nhận không hợp lệ'),
+  })
+  .refine((data) => data.newPassword !== data.oldPassword, {
+    message: 'Mật khẩu mới phải khác mật khẩu cũ',
+    path: ['newPassword'],
+  })
+
 export type TUpdateProfileSchema = z.infer<typeof updateProfileSchema>
+export type TUpdatePasswordSchema = z.infer<typeof updatePasswordSchema>

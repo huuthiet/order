@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
+import { DbService } from './db.service';
+import { DbController } from './db.controller';
+import { GoogleDriveService } from './google-drive.service';
+import { DbScheduler } from './db.scheduler';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from 'src/config/database.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -17,5 +21,7 @@ import databaseConfig from 'src/config/database.config';
       },
     }),
   ],
+  controllers: [DbController],
+  providers: [DbService, GoogleDriveService, DbScheduler],
 })
-export class DatabaseModule {}
+export class DbModule {}

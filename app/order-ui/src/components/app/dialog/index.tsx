@@ -42,3 +42,8 @@ export { default as UpdateMenuItemDialog } from './update-menu-item-dialog'
 export { default as DeleteMenuItemDialog } from './delete-menu-item-dialog'
 
 export { default as CreateOrderTrackingByStaffDialog } from './create-order-tracking-by-staff-dialog'
+export { default as CreateOrderTrackingByRobotDialog } from './create-order-tracking-by-robot-dialog'
+
+export { default as UpdatePasswordDialog } from './update-password-dialog'
+
+export { default as UserInfoDialog } from './user-info-dialog'

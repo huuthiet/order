@@ -1,23 +1,46 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
 import { Button, ScrollArea } from '@/components/ui'
-import { useInitiateQrCode, useOrderBySlug } from '@/hooks'
+import { useInitiatePayment, useOrderBySlug } from '@/hooks'
+import { PaymentMethod, ROUTE } from '@/constants'
 import { PaymentMethodSelect } from '@/app/system/payment'
 import { QrCodeDialog } from '@/components/app/dialog'
 
 export default function PaymentPage() {
   const { t } = useTranslation(['menu'])
   const { slug } = useParams()
+  const navigate = useNavigate()
   const [paymentMethod, setPaymentMethod] = useState<string>('')
-  const { data: order } = useOrderBySlug(slug as string)
-  const { mutate: initiateQrCode } = useInitiateQrCode()
+  const { data: order, refetch: refetchOrder } = useOrderBySlug(slug as string)
+  const { mutate: initiatePayment } = useInitiatePayment()
   const [qrCode, setQrCode] = useState<string>('')
+  const [isPolling, setIsPolling] = useState<boolean>(false)
 
   // Tạo biến để kiểm tra trạng thái nút xác nhận
   const isDisabled = !paymentMethod || !slug
+
+  // Xử lý xác nhận thanh toán
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (isPolling) {
+      interval = setInterval(async () => {
+        const updatedOrder = await refetchOrder()
+        const paymentStatus = updatedOrder.data?.result?.payment?.statusCode
+        if (paymentStatus === 'paid') {
+          clearInterval(interval!)
+          navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
+        }
+      }, 3000) // Gọi API mỗi 3 giây
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isPolling, refetchOrder, navigate, slug])
 
   // Xử lý chọn phương thức thanh toán
   const handleSelectPaymentMethod = (selectedPaymentMethod: string) => {
@@ -28,29 +51,39 @@ export default function PaymentPage() {
   const handleConfirmPayment = () => {
     if (!slug || !paymentMethod) return
 
-    setQrCode('')
-
-    initiateQrCode(
-      { orderSlug: slug, paymentMethod },
-      {
-        onSuccess: (data) => {
-          setQrCode(data.result.qrCode)
+    if (paymentMethod === PaymentMethod.BANK_TRANSFER) {
+      initiatePayment(
+        { orderSlug: slug, paymentMethod },
+        {
+          onSuccess: (data) => {
+            setQrCode(data.result.qrCode)
+            setIsPolling(true) // Bắt đầu polling khi thanh toán qua chuyển khoản ngân hàng
+          },
         },
-      },
-    )
+      )
+    } else if (paymentMethod === PaymentMethod.CASH) {
+      initiatePayment(
+        { orderSlug: slug, paymentMethod },
+        {
+          onSuccess: () => {
+            navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
+          },
+        },
+      )
+    }
   }
 
   return (
-    <div className="flex h-full flex-row gap-2">
+    <div className="flex flex-row h-full gap-2">
       <ScrollArea className="flex-1">
         <div className={`transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pb-4">
-            <div className="flex w-full flex-col gap-3">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
+            <div className="flex flex-col w-full gap-3">
               {order && (
                 <div className="w-full space-y-2">
                   {/* Thông tin khách hàng */}
-                  <div className="grid grid-cols-1 items-center justify-between rounded-sm border p-4 sm:grid-cols-2">
-                    <div className="col-span-1 flex flex-col gap-1 border-r sm:px-4">
+                  <div className="grid items-center justify-between grid-cols-1 p-4 border rounded-sm sm:grid-cols-2">
+                    <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
                       <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.customerName')}
@@ -77,15 +110,15 @@ export default function PaymentPage() {
                       </div>
                     </div>
                     {/* Thông tin vận chuyển */}
-                    <div className="col-span-1 flex flex-col gap-1 border-r sm:px-4">
+                    <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
                       <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.deliveryMethod')}
                         </h3>
                         <p className="col-span-1 text-sm font-semibold">
                           {order.result.type === 'at-table'
-                            ? 'Tại quán'
-                            : 'Giao hàng'}
+                            ? t('order.dineIn')
+                            : t('order.takeAway')}
                         </p>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -100,7 +133,7 @@ export default function PaymentPage() {
                   </div>
                   {/* Thông tin đơn hàng */}
                   <div>
-                    <div className="grid w-full grid-cols-4 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
+                    <div className="grid w-full grid-cols-4 px-4 py-3 text-sm font-thin rounded-md bg-muted/60">
                       <span className="col-span-1">{t('order.product')}</span>
                       <span className="col-span-1">{t('order.unitPrice')}</span>
                       <span className="col-span-1 text-center">
@@ -111,14 +144,14 @@ export default function PaymentPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex w-full flex-col rounded-md border">
+                  <div className="flex flex-col w-full border rounded-md">
                     {order?.result.orderItems.map((item) => (
                       <div
                         key={item.slug}
-                        className="grid w-full items-center gap-4 rounded-t-md border-b p-4 pb-4"
+                        className="grid items-center w-full gap-4 p-4 pb-4 border-b rounded-t-md"
                       >
-                        <div className="grid w-full grid-cols-4 flex-row items-center">
-                          <div className="col-span-1 flex w-full gap-2">
+                        <div className="grid flex-row items-center w-full grid-cols-4">
+                          <div className="flex w-full col-span-1 gap-2">
                             <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
                               {/* <img
                                 src={`${publicFileURL}/${item.variant.product.image}`}
@@ -126,18 +159,18 @@ export default function PaymentPage() {
                                 className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                               /> */}
                               <div className="flex flex-col">
-                                <span className="truncate font-bold">
+                                <span className="font-bold truncate">
                                   {item.variant.product.name}
                                 </span>
                               </div>
                             </div>
                           </div>
-                          <div className="col-span-1 flex items-center">
+                          <div className="flex items-center col-span-1">
                             <span className="text-sm">
                               {`${(item.variant.price || 0).toLocaleString('vi-VN')}đ`}
                             </span>
                           </div>
-                          <div className="col-span-1 flex justify-center">
+                          <div className="flex justify-center col-span-1">
                             <span className="text-sm">
                               {item.quantity || 0}
                             </span>
@@ -150,9 +183,9 @@ export default function PaymentPage() {
                         </div>
                       </div>
                     ))}
-                    <div className="flex w-full flex-col items-start justify-center gap-2 p-4 sm:items-end sm:justify-end">
+                    <div className="flex flex-col items-start justify-center w-full gap-2 p-4 sm:items-end sm:justify-end">
                       <div className="flex w-[20rem] flex-col justify-start gap-2">
-                        <div className="flex w-full justify-between border-b pb-4">
+                        <div className="flex justify-between w-full pb-4 border-b">
                           <h3 className="text-sm font-medium">
                             {t('order.total')}
                           </h3>
@@ -161,8 +194,8 @@ export default function PaymentPage() {
                           </p>
                         </div>
                         <div className="flex flex-col justify-start">
-                          <div className="flex w-full justify-between">
-                            <h3 className="text-md font-semibold">
+                          <div className="flex justify-between w-full">
+                            <h3 className="font-semibold text-md">
                               {t('order.totalPayment')}
                             </h3>
                             <p className="text-lg font-semibold text-primary">
@@ -181,7 +214,7 @@ export default function PaymentPage() {
                 </div>
               )}
               <div className="flex justify-end">
-                {paymentMethod === 'bank-transfer' && (
+                {(paymentMethod === PaymentMethod.BANK_TRANSFER || paymentMethod === PaymentMethod.CASH) && (
                   <Button
                     disabled={isDisabled}
                     className="w-fit"
@@ -190,6 +223,7 @@ export default function PaymentPage() {
                     {t('paymentMethod.confirmPayment')}
                   </Button>
                 )}
+
               </div>
               {qrCode && <QrCodeDialog qrCode={qrCode} />}
             </div>

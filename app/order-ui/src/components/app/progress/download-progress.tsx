@@ -9,13 +9,13 @@ interface IDownloadProgressProps {
 }
 
 export default function DownloadProgress({ progress, fileName }: IDownloadProgressProps) {
-  const { t } = useTranslation('warehouse')
+  const { t } = useTranslation('progress')
   return (
-    <div className="fixed z-50 rounded-lg shadow-lg right-4 bottom-4 w-72">
+    <div className="fixed bg-white rounded-lg shadow-lg right-4 bottom-4 w-72">
       <div className="flex flex-col justify-start px-3 py-4 rounded-t-md bg-muted">
-        <h3 className="text-sm font-semibold">{t('warehouse.downloading')}</h3>
+        <h3 className="text-sm font-semibold">{t('progress.downloading')}</h3>
       </div>
-      <div className="flex flex-row items-center justify-start px-3 py-2">
+      <div className="flex flex-row items-center justify-start px-3 py-2 ">
         <FileIcon className="w-3 h-3 mr-1 text-muted-foreground" />
         <span className="text-xs text-gray-500">{fileName}</span>
       </div>

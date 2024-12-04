@@ -27,6 +27,8 @@ export interface IUpdateMenuRequest {
 export interface ISpecificMenu extends IBase {
   date: string
   menuItems: IMenuItem[]
+  dayIndex: number
+  isTemplate: boolean
 }
 
 export interface IMenuItem extends IBase {

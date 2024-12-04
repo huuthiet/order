@@ -13,6 +13,7 @@ import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { GetAllMenuQueryRequestDto } from './menu.dto';
 
 describe('MenuService', () => {
   let service: MenuService;
@@ -60,11 +61,10 @@ describe('MenuService', () => {
   describe('Get all menus', () => {
     it('should return all menus', async () => {
       // Mock input
-      const mockOptions = {};
+      const mockOptions = { page: 1, size: 10 } as GetAllMenuQueryRequestDto;
 
       // Mock output
       const menu = {
-        day: 'Monday',
         branch: {
           name: 'Mock branch name',
           address: 'Mock address',
@@ -77,14 +77,14 @@ describe('MenuService', () => {
       const menus = [menu];
 
       // Mock implementation
-      menuRepositoryMock.find.mockReturnValue(menus);
+      menuRepositoryMock.findAndCount.mockReturnValue([menus, 1]);
       mapperMock.mapArray.mockReturnValue(menus);
 
       // Actual call
       const result = await service.getAllMenus(mockOptions);
 
       // Assertions
-      expect(result).toEqual(menus);
+      expect(result.items).toEqual(menus);
     });
   });
 
@@ -135,6 +135,7 @@ describe('MenuService', () => {
       const mockMenu = {
         date: new Date(),
         branchSlug: '',
+        isTemplate: false,
       };
 
       // Mock implementation
@@ -149,11 +150,11 @@ describe('MenuService', () => {
       const mockMenu = {
         date: new Date(),
         branchSlug: 'mock-branch-slug',
+        isTemplate: false,
       };
 
       // Mock output
       const menu = {
-        day: 'Monday',
         branch: {
           name: 'Mock branch name',
           address: 'Mock address',
@@ -232,7 +233,6 @@ describe('MenuService', () => {
 
       // Mock output
       const menuMock = {
-        day: 'Monday',
         branch: {
           name: 'Mock branch name',
           address: 'Mock address',

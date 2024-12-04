@@ -4,6 +4,7 @@ import { VariantProps, cva } from 'class-variance-authority'
 import { PanelLeft } from 'lucide-react'
 
 import { useIsMobile } from '@/hooks/use-mobile'
+import { SidebarContext, useSidebar } from './sidebar-utils'
 import { cn } from '@/lib/utils'
 import {
   Button,
@@ -25,26 +26,26 @@ const SIDEBAR_WIDTH_MOBILE = '18rem'
 const SIDEBAR_WIDTH_ICON = '3rem'
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 
-type SidebarContext = {
-  state: 'expanded' | 'collapsed'
-  open: boolean
-  setOpen: (open: boolean) => void
-  openMobile: boolean
-  setOpenMobile: (open: boolean) => void
-  isMobile: boolean
-  toggleSidebar: () => void
-}
+// type SidebarContext = {
+//   state: 'expanded' | 'collapsed'
+//   open: boolean
+//   setOpen: (open: boolean) => void
+//   openMobile: boolean
+//   setOpenMobile: (open: boolean) => void
+//   isMobile: boolean
+//   toggleSidebar: () => void
+// }
 
-const SidebarContext = React.createContext<SidebarContext | null>(null)
+// const SidebarContext = React.createContext<SidebarContext | null>(null)
 
-function useSidebar() {
-  const context = React.useContext(SidebarContext)
-  if (!context) {
-    throw new Error('useSidebar must be used within a SidebarProvider.')
-  }
+// function useSidebar() {
+//   const context = React.useContext(SidebarContext)
+//   if (!context) {
+//     throw new Error('useSidebar must be used within a SidebarProvider.')
+//   }
 
-  return context
-}
+//   return context
+// }
 
 const SidebarProvider = React.forwardRef<
   HTMLDivElement,
@@ -210,7 +211,7 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <div className="flex flex-col w-full h-full">{children}</div>
           </SheetContent>
         </Sheet>
       )
@@ -219,7 +220,7 @@ const Sidebar = React.forwardRef<
     return (
       <div
         ref={ref}
-        className="group peer hidden text-sidebar-foreground md:block"
+        className="hidden group peer text-sidebar-foreground md:block"
         data-state={state}
         data-collapsible={state === 'collapsed' ? collapsible : ''}
         data-variant={variant}
@@ -630,7 +631,7 @@ const SidebarMenuAction = React.forwardRef<
         'peer-data-[size=lg]/menu-button:top-2.5',
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
-          'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0',
+        'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0',
         className,
       )}
       {...props}
@@ -680,7 +681,7 @@ const SidebarMenuSkeleton = React.forwardRef<
     >
       {showIcon && (
         <Skeleton
-          className="size-4 rounded-md"
+          className="rounded-md size-4"
           data-sidebar="menu-skeleton-icon"
         />
       )}
@@ -775,5 +776,4 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
 }

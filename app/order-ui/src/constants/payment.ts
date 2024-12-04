@@ -1,5 +1,5 @@
-export enum paymentMethod {
-  BANK_TRANSFER = 'bank_transfer',
+export enum PaymentMethod {
+  BANK_TRANSFER = 'bank-transfer',
   CASH = 'cash',
 }
 

@@ -142,13 +142,15 @@ describe('TrackingService', () => {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
         },
-      ]
+      ],
     }).compile();
 
     service = module.get<TrackingService>(TrackingService);
     orderRepositoryMock = module.get(getRepositoryToken(Order));
     trackingRepositoryMock = module.get(getRepositoryToken(Tracking));
-    trackingOrderItemRepositoryMock = module.get(getRepositoryToken(TrackingOrderItem));
+    trackingOrderItemRepositoryMock = module.get(
+      getRepositoryToken(TrackingOrderItem),
+    );
     orderItemRepositoryMock = module.get(getRepositoryToken(OrderItem));
     tableRepositoryMock = module.get(getRepositoryToken(Table));
     workflowRepositoryMock = module.get(getRepositoryToken(Workflow));

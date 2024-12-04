@@ -107,6 +107,13 @@ export const ProductDetailPage = React.lazy(() =>
   })),
 )
 
+//User list page
+export const UserListPage = React.lazy(() =>
+  import('@/app/system/users').then((module) => ({
+    default: module.UserListPage,
+  })),
+)
+
 //Log page
 export const LoggerPage = React.lazy(() =>
   import('@/app/system/logger').then((module) => ({

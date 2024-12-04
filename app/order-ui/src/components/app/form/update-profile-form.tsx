@@ -22,6 +22,7 @@ import { useUpdateProfile } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { DatePicker } from '@/components/app/picker'
+import { useUserStore } from '@/stores'
 
 interface IFormUpdateProfileProps {
   userProfile?: IUserInfo
@@ -34,6 +35,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
 }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['profile'])
+  const { setUserInfo } = useUserStore()
   const { mutate: createProductVariant } = useUpdateProfile()
   const form = useForm<TUpdateProfileSchema>({
     resolver: zodResolver(updateProfileSchema),
@@ -43,16 +45,17 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
       email: userProfile?.email || '',
       dob: userProfile?.dob || '',
       address: userProfile?.address || '',
-      branch: userProfile?.branch?.name || '',
+      branch: userProfile?.branch?.slug || '',
     },
   })
 
   const handleSubmit = (data: IUpdateProfileRequest) => {
     createProductVariant(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries({
-          queryKey: ['userInfo'],
+          queryKey: ['profile'],
         })
+        setUserInfo(data.result)
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateProfileSuccess'))
@@ -165,7 +168,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <ScrollArea className="h-[22rem] flex-1">
+          <ScrollArea className="h-[22rem] px-6 flex-1">
             <div className="grid grid-cols-1 gap-2">
               {Object.keys(formFields).map((key) => (
                 <React.Fragment key={key}>
@@ -174,7 +177,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
               ))}
             </div>
           </ScrollArea>
-          <div className="flex justify-end">
+          <div className="flex justify-end px-6">
             <Button className="flex justify-end" type="submit">
               {t('profile.update')}
             </Button>

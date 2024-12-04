@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from 'axios'
+import moment from 'moment'
 import { saveAs } from 'file-saver'
 
 import { http } from '@/utils'
@@ -5,9 +7,9 @@ import {
   IApiResponse,
   IOrder,
   ICreateOrderRequest,
-  IInitiateQrCodeRequest,
+  IInitiatePaymentRequest,
   ICreateOrderResponse,
-  IInitiateQrCodeResponse,
+  IInitiatePaymentResponse,
   ICreateOrderTrackingRequest,
   IOrderTracking,
   IOrderInvoice,
@@ -16,24 +18,31 @@ import {
   IOrdersQuery,
 } from '@/types'
 import { useDownloadStore } from '@/stores'
-import { AxiosRequestConfig } from 'axios'
 
 export async function getAllOrders(
   params: IOrdersQuery,
 ): Promise<IApiResponse<IPaginationResponse<IOrder>>> {
   const response = await http.get<IApiResponse<IPaginationResponse<IOrder>>>(
     '/orders',
+
     {
+      // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
+      doNotShowLoading: true,
       params,
     },
   )
+  // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
   return response.data
 }
 
 export async function getOrderBySlug(
   slug: string,
 ): Promise<IApiResponse<IOrder>> {
-  const response = await http.get<IApiResponse<IOrder>>(`/orders/${slug}`)
+  const response = await http.get<IApiResponse<IOrder>>(`/orders/${slug}`, {
+    // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
+    doNotShowLoading: true,
+  })
+  // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
   return response.data
 }
 
@@ -47,10 +56,10 @@ export async function createOrder(
   return response.data
 }
 
-export async function initializeQrCode(
-  params: IInitiateQrCodeRequest,
-): Promise<IApiResponse<IInitiateQrCodeResponse>> {
-  const response = await http.post<IApiResponse<IInitiateQrCodeResponse>>(
+export async function initiatePayment(
+  params: IInitiatePaymentRequest,
+): Promise<IApiResponse<IInitiatePaymentResponse>> {
+  const response = await http.post<IApiResponse<IInitiatePaymentResponse>>(
     `/payment/initiate`,
     params,
   )
@@ -79,10 +88,10 @@ export async function getOrderInvoice(
 }
 
 export async function createOrderInvoice(
-  orderSlug: string,
+  order: string,
 ): Promise<IApiResponse<IOrderInvoice>> {
   const response = await http.post<IApiResponse<IOrderInvoice>>(`/invoice`, {
-    orderSlug,
+    order,
   })
   return response.data
 }
@@ -92,11 +101,12 @@ export async function exportOrderInvoice(
 ): Promise<IApiResponse<string>> {
   const { setProgress, setFileName, setIsDownloading, reset } =
     useDownloadStore.getState()
-  setFileName(`${slug}.pdf`)
+  const currentDate = moment(new Date()).format('DD/MM/YYYY')
+  setFileName(`TREND Coffee Invoice-${currentDate}.pdf`)
   setIsDownloading(true)
 
   try {
-    const response = await http.get(`/invoice${slug}/export`, {
+    const response = await http.get(`/invoice/${slug}/export`, {
       responseType: 'blob',
       headers: {
         Accept: 'application/pdf',
@@ -109,8 +119,9 @@ export async function exportOrderInvoice(
       },
       doNotShowLoading: true,
     } as AxiosRequestConfig)
+    console.log('response', response)
     const blob = new Blob([response.data], { type: 'application/pdf' })
-    saveAs(blob, `${slug}.pdf`)
+    saveAs(blob, `TREND Coffee Invoice-${currentDate}.pdf`)
     return response.data
   } finally {
     setIsDownloading(false)

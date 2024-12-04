@@ -15,7 +15,7 @@ export default function OrderStatusBadge({ status }: IOrderStatusBadgeProps) {
         return 'border-yellow-500 bg-yellow-50 border text-yellow-500 font-semibold'
       case OrderStatus.COMPLETED:
         return 'border-green-500 bg-green-50 border text-green-500 font-semibold'
-      case OrderStatus.FAILED:
+      case OrderStatus.CANCEL:
         return 'border-destructive bg-destructive/20 border text-destructive'
     }
   }
@@ -26,14 +26,14 @@ export default function OrderStatusBadge({ status }: IOrderStatusBadgeProps) {
         return t('order.pending')
       case OrderStatus.COMPLETED:
         return t('order.completed')
-      case OrderStatus.FAILED:
+      case OrderStatus.CANCEL:
         return t('order.failed')
     }
   }
   // Ensure the component returns valid JSX
   return (
     <span
-      className={`inline-block min-w-[4.5rem] px-4 py-1 text-center font-beVietNam text-[0.5rem] ${getBadgeColor(
+      className={`inline-block min-w-[4.5rem] px-3 py-0.5 text-center font-beVietNam text-[0.5rem] ${getBadgeColor(
         status,
       )} rounded-full`}
     >
