@@ -13,9 +13,12 @@
 
 <body>
   <div class="p-5">
-    <p class="uppercase font-bold text-2xl text-center mb-5">TREND Coffee</p>
+    <p class="uppercase font-bold text-2xl text-center mb-2">TREND Coffee</p>
+    <p class="flex items-center justify-center">
+      <img src="<%= qrcode %>" alt="qrcode" class="w-40"/>
+    </p>
     <p class="uppercase font-bold text-2xl text-center mb-5">HÓA ĐƠN BÁN HÀNG</p>
-    <p class="uppercase font-bold text-center">Bàn: <% tableName %>
+    <p class="uppercase font-bold text-center">Bàn: <%= tableName %>
     </p>
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between">
