@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import {
-  CreateInvoiceDto,
+  ExportInvoiceDto,
   GetSpecificInvoiceRequestDto,
   InvoiceResponseDto,
 } from './invoice.dto';
@@ -21,6 +21,7 @@ import { OrderValidation } from 'src/order/order.validation';
 import { InvoiceItem } from 'src/invoice-item/invoice-item.entity';
 import * as _ from 'lodash';
 import { PdfService } from 'src/pdf/pdf.service';
+import { QrCodeService } from 'src/qr-code/qr-code.service';
 
 @Injectable()
 export class InvoiceService {
@@ -32,26 +33,23 @@ export class InvoiceService {
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     private readonly pdfService: PdfService,
+    private readonly qrCodeService: QrCodeService,
   ) {}
 
-  async exportInvoice(slug: string): Promise<Buffer> {
+  async exportInvoice(requestData: ExportInvoiceDto): Promise<Buffer> {
     const context = `${InvoiceService.name}.${this.exportInvoice.name}`;
-    const invoice = await this.invoiceRepository.findOne({
-      where: { slug },
-      relations: ['invoiceItems'],
-    });
-    if (!invoice) throw new BadRequestException('Invoice not found');
+    const invoice = await this.create(requestData.order);
 
     const data = await this.pdfService.generatePdf('invoice', invoice);
-    this.logger.log(`Invoice ${slug} exported`, context);
+    this.logger.log(`Invoice ${invoice.slug} exported`, context);
 
     return data;
   }
 
-  async create(createInvoiceDto: CreateInvoiceDto) {
+  private async create(orderSlug: string) {
     const context = `${InvoiceService.name}.${this.create.name}`;
     const order = await this.orderRepository.findOne({
-      where: { slug: createInvoiceDto.order },
+      where: { slug: orderSlug },
       relations: [
         'invoice.invoiceItems',
         'payment',
@@ -63,17 +61,17 @@ export class InvoiceService {
       ],
     });
     if (!order) {
-      this.logger.warn(`Order ${createInvoiceDto.order} not found`, context);
+      this.logger.warn(`Order ${orderSlug} not found`, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
     // invoice exists
     if (order.invoice) {
       this.logger.warn(
-        `Invoice for order ${createInvoiceDto.order} already exists`,
+        `Invoice for order ${orderSlug} already exists`,
         context,
       );
-      return this.mapper.map(order.invoice, Invoice, InvoiceResponseDto);
+      return order.invoice;
     }
 
     const invoiceItems = order.orderItems.map((item) => {
@@ -89,6 +87,7 @@ export class InvoiceService {
     });
 
     const invoice = new Invoice();
+    const qrcode = await this.qrCodeService.generateQRCode(order.slug);
     Object.assign(invoice, {
       order,
       logo: 'https://i.imgur',
@@ -100,6 +99,7 @@ export class InvoiceService {
       branchAddress: order.branch.address,
       cashier: `${order.approvalBy?.firstName} ${order.approvalBy?.lastName}`,
       invoiceItems,
+      qrcode,
     });
 
     await this.invoiceRepository.manager.transaction(async (manager) => {
@@ -115,7 +115,7 @@ export class InvoiceService {
       context,
     );
 
-    return this.mapper.map(invoice, Invoice, InvoiceResponseDto);
+    return invoice;
   }
 
   async getSpecificInvoice(query: GetSpecificInvoiceRequestDto) {

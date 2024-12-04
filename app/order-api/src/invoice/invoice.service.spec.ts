@@ -8,6 +8,7 @@ import { Invoice } from './invoice.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Order } from 'src/order/order.entity';
 import { PdfService } from 'src/pdf/pdf.service';
+import { QrCodeService } from 'src/qr-code/qr-code.service';
 
 describe('InvoiceService', () => {
   let service: InvoiceService;
@@ -17,6 +18,7 @@ describe('InvoiceService', () => {
       providers: [
         InvoiceService,
         PdfService,
+        QrCodeService,
         {
           provide: getRepositoryToken(Invoice),
           useFactory: repositoryMockFactory,

@@ -3,12 +3,11 @@ import {
   Post,
   Body,
   HttpStatus,
-  HttpCode,
   Get,
   Query,
   ValidationPipe,
-  Param,
   StreamableFile,
+  HttpCode,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import {
@@ -19,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import {
-  CreateInvoiceDto,
+  ExportInvoiceDto,
   GetSpecificInvoiceRequestDto,
   InvoiceResponseDto,
 } from './invoice.dto';
@@ -31,25 +30,8 @@ import { AppResponseDto } from 'src/app/app.dto';
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Invoice created successfully' })
-  @ApiResponseWithType({
-    status: HttpStatus.CREATED,
-    description: 'Invoice created successfully',
-    type: InvoiceResponseDto,
-  })
-  async create(@Body() createInvoiceDto: CreateInvoiceDto) {
-    const result = await this.invoiceService.create(createInvoiceDto);
-    return {
-      result,
-      message: 'Invoice created successfully',
-      statusCode: HttpStatus.CREATED,
-      timestamp: new Date().toISOString(),
-    } as AppResponseDto<InvoiceResponseDto>;
-  }
-
   @Get('specific')
+  @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'order', required: false })
   @ApiQuery({ name: 'slug', required: false })
   @ApiOperation({ summary: 'Get specific invoice' })
@@ -71,10 +53,14 @@ export class InvoiceController {
     } as AppResponseDto<InvoiceResponseDto>;
   }
 
-  @Get(':slug/export')
+  @Post('export')
   @ApiOperation({ summary: 'Export invoice' })
-  async exportInvoice(@Param('slug') slug: string): Promise<StreamableFile> {
-    const result = await this.invoiceService.exportInvoice(slug);
+  @HttpCode(HttpStatus.OK)
+  async exportInvoice(
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: ExportInvoiceDto,
+  ): Promise<StreamableFile> {
+    const result = await this.invoiceService.exportInvoice(requestData);
     return new StreamableFile(result, {
       type: 'application/pdf',
       length: result.length,
