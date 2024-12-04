@@ -23,6 +23,7 @@ export const ROUTE = {
   STAFF_DELIVERY_MANAGEMENT: '/delivery-management',
   STAFF_WALLET_MANAGEMENT: '/wallet-management',
   STAFF_LOG_MANAGEMENT: '/log',
+  STAFF_USER_MANAGEMENT: '/user-management',
   STAFF_BANK_CONFIG: '/bank-config',
 
   // Admin Routes

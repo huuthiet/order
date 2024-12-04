@@ -45,3 +45,5 @@ export { default as CreateOrderTrackingByStaffDialog } from './create-order-trac
 export { default as CreateOrderTrackingByRobotDialog } from './create-order-tracking-by-robot-dialog'
 
 export { default as UpdatePasswordDialog } from './update-password-dialog'
+
+export { default as UserInfoDialog } from './user-info-dialog'

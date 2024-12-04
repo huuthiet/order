@@ -6,14 +6,25 @@ import { CartToggleButton } from '@/components/app/button'
 import { CurrentDateInput } from '@/components/app/input'
 import { useSidebar } from '@/components/ui'
 import { ScrollArea } from '@/components/ui'
-import { useIsMobile } from '@/hooks'
+import { useIsMobile, useSpecificMenu } from '@/hooks'
 import { CartDrawer } from '@/components/app/drawer'
+import { useUserStore } from '@/stores'
+import moment from 'moment'
 
 export default function MenuPage() {
   const [isCartOpen, setIsCartOpen] = useState(true)
   const { state } = useSidebar()
   const isMobile = useIsMobile()
   const isCollapsed = state === 'collapsed'
+
+  const { userInfo } = useUserStore()
+  function getCurrentDate() {
+    return moment().format('YYYY-MM-DD')
+  }
+  const { data: specificMenu, isLoading } = useSpecificMenu({
+    date: getCurrentDate(),
+    branch: userInfo?.branch.slug,
+  })
 
   return (
     <div className="flex flex-row h-full gap-2">
@@ -22,7 +33,7 @@ export default function MenuPage() {
       >
         {/* Fixed Header Section */}
         <div className="sticky top-0 z-10 flex flex-row items-center justify-between gap-2 py-3 pr-4 bg-background">
-          <CurrentDateInput />
+          <CurrentDateInput menu={specificMenu?.result} />
           {/* <MenuCategorySelect /> */}
           {!isMobile && (
             <CartToggleButton
@@ -36,7 +47,7 @@ export default function MenuPage() {
 
         {/* Scrollable Content Section */}
         <ScrollArea className="flex-1 mt-2">
-          <MenuList isCartOpen={isCartOpen} />
+          <MenuList menu={specificMenu?.result} isLoading={isLoading} isCartOpen={isCartOpen} />
         </ScrollArea>
       </div>
 

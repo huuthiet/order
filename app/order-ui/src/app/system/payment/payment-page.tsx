@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
@@ -14,12 +14,33 @@ export default function PaymentPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
   const [paymentMethod, setPaymentMethod] = useState<string>('')
-  const { data: order } = useOrderBySlug(slug as string)
+  const { data: order, refetch: refetchOrder } = useOrderBySlug(slug as string)
   const { mutate: initiatePayment } = useInitiatePayment()
   const [qrCode, setQrCode] = useState<string>('')
+  const [isPolling, setIsPolling] = useState<boolean>(false)
 
   // Tạo biến để kiểm tra trạng thái nút xác nhận
   const isDisabled = !paymentMethod || !slug
+
+  // Xử lý xác nhận thanh toán
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (isPolling) {
+      interval = setInterval(async () => {
+        const updatedOrder = await refetchOrder()
+        const paymentStatus = updatedOrder.data?.result?.payment?.statusCode
+        if (paymentStatus === 'paid') {
+          clearInterval(interval!)
+          navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
+        }
+      }, 3000) // Gọi API mỗi 3 giây
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isPolling, refetchOrder, navigate, slug])
 
   // Xử lý chọn phương thức thanh toán
   const handleSelectPaymentMethod = (selectedPaymentMethod: string) => {
@@ -31,12 +52,12 @@ export default function PaymentPage() {
     if (!slug || !paymentMethod) return
 
     if (paymentMethod === PaymentMethod.BANK_TRANSFER) {
-      console.log(paymentMethod)
       initiatePayment(
         { orderSlug: slug, paymentMethod },
         {
           onSuccess: (data) => {
             setQrCode(data.result.qrCode)
+            setIsPolling(true) // Bắt đầu polling khi thanh toán qua chuyển khoản ngân hàng
           },
         },
       )

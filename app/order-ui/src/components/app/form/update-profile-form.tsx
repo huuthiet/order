@@ -22,6 +22,7 @@ import { useUpdateProfile } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { DatePicker } from '@/components/app/picker'
+import { useUserStore } from '@/stores'
 
 interface IFormUpdateProfileProps {
   userProfile?: IUserInfo
@@ -34,6 +35,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
 }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['profile'])
+  const { setUserInfo } = useUserStore()
   const { mutate: createProductVariant } = useUpdateProfile()
   const form = useForm<TUpdateProfileSchema>({
     resolver: zodResolver(updateProfileSchema),
@@ -49,10 +51,11 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
 
   const handleSubmit = (data: IUpdateProfileRequest) => {
     createProductVariant(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries({
           queryKey: ['profile'],
         })
+        setUserInfo(data.result)
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateProfileSuccess'))

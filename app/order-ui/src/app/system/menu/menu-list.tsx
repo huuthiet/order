@@ -1,26 +1,21 @@
 import { useTranslation } from 'react-i18next'
-import moment from 'moment'
 
 import { SkeletonMenuList } from '@/components/app/skeleton'
-import { useSpecificMenu } from '@/hooks'
-import { IProduct } from '@/types'
+import { IProduct, ISpecificMenu } from '@/types'
 import { publicFileURL } from '@/constants'
 import { AddToCartDialog } from '@/components/app/dialog'
 
 interface IMenuProps {
+  menu: ISpecificMenu | undefined
+  isLoading: boolean
   isCartOpen: boolean
 }
 
-export default function MenuList({ isCartOpen }: IMenuProps) {
+export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
   const { t } = useTranslation('menu')
-  function getCurrentDate() {
-    return moment().format('YYYY-MM-DD')
-  }
-  const { data: specificMenu, isLoading } = useSpecificMenu({
-    date: getCurrentDate(),
-  })
 
-  const menuItems = specificMenu?.result.menuItems
+
+  const menuItems = menu?.menuItems
 
   const getPriceRange = (variants: IProduct['variants']) => {
     if (!variants || variants.length === 0) return null
@@ -59,7 +54,7 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
       {menuItems.map((item) => (
         <div
           key={item.slug}
-          className="flex flex-col rounded-xl border backdrop-blur-md"
+          className="flex flex-col border rounded-xl backdrop-blur-md"
         >
           {/* Image Section with Discount Tag */}
           <div className="relative">
@@ -67,10 +62,10 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
               <img
                 src={`${publicFileURL}/${item.product.image}`}
                 alt={item.product.name}
-                className="h-24 w-full rounded-t-md object-cover"
+                className="object-cover w-full h-24 rounded-t-md"
               />
             ) : (
-              <div className="h-24 w-full rounded-t-md bg-muted/60" />
+              <div className="w-full h-24 rounded-t-md bg-muted/60" />
             )}
 
             {/* Discount Tag */}
@@ -85,10 +80,10 @@ export default function MenuList({ isCartOpen }: IMenuProps) {
 
           {/* Content Section - More compact */}
           <div className="flex flex-1 flex-col space-y-1.5 p-2">
-            <h3 className="line-clamp-1 text-sm font-bold">
+            <h3 className="text-sm font-bold line-clamp-1">
               {item.product.name}
             </h3>
-            <p className="line-clamp-2 text-xs text-gray-500">
+            <p className="text-xs text-gray-500 line-clamp-2">
               {item.product.description}
             </p>
 

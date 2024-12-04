@@ -1,0 +1,9 @@
+{
+  "users": {
+    "title": "User management",
+    "name": "Name",
+    "email": "Email",
+    "phoneNumber": "Phone number",
+    "address": "Address"
+  }
+}

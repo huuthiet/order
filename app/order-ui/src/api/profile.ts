@@ -13,8 +13,8 @@ export async function getProfile(): Promise<IApiResponse<IUserInfo>> {
 
 export async function updateProfile(
   data: IUpdateProfileRequest,
-): Promise<IApiResponse<IUpdateProfileRequest>> {
-  const response = await http.patch<IApiResponse<IUpdateProfileRequest>>(
+): Promise<IApiResponse<IUserInfo>> {
+  const response = await http.patch<IApiResponse<IUserInfo>>(
     '/auth/profile',
     data,
   )
