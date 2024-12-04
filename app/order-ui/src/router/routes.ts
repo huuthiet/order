@@ -7,6 +7,7 @@ import {
   Grid2x2,
   LayoutGrid,
   SquareTerminal,
+  Users,
   Wallet,
 } from 'lucide-react'
 import type { ISidebarRoute } from '@/types'
@@ -52,6 +53,11 @@ export const sidebarRoutes: ISidebarRoute[] = [
     title: 'sidebar.dishManagement',
     path: ROUTE.STAFF_PRODUCT_MANAGEMENT,
     icon: CookingPot,
+  },
+  {
+    title: 'sidebar.userManagement',
+    path: ROUTE.STAFF_USER_MANAGEMENT,
+    icon: Users,
   },
   {
     title: 'sidebar.logManagement',

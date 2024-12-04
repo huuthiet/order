@@ -1,0 +1,18 @@
+{
+  "users": {
+    "title": "Quản lý người dùng",
+
+    "viewDetail": "Xem chi tiết",
+    "detailInfo": "Thông tin chi tiết",
+    "detailInfoDescription": "Xem thông tin chi tiết của người dùng",
+    "createdAt": "Ngày tạo",
+    "slug": "Mã người dùng",
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "dob": "Ngày sinh",
+    "name": "Tên",
+    "email": "Email",
+    "phoneNumber": "Số điện thoại",
+    "address": "Địa chỉ"
+  }
+}
