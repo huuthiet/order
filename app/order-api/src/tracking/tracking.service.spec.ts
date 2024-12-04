@@ -1,23 +1,26 @@
-import { MockType, repositoryMockFactory } from "src/test-utils/repository-mock.factory";
-import { TrackingService } from "./tracking.service";
-import { DataSource, Repository } from "typeorm";
-import { Tracking } from "./tracking.entity";
-import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
-import { Order } from "src/order/order.entity";
-import { OrderItem } from "src/order-item/order-item.entity";
-import { Table } from "src/table/table.entity";
-import { Workflow } from "src/workflow/workflow.entity";
-import { Mapper } from "@automapper/core";
-import { RobotConnectorClient } from "src/robot-connector/robot-connector.client";
-import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { Test, TestingModule } from "@nestjs/testing";
-import { MAPPER_MODULE_PROVIDER } from "src/app/app.constants";
-import { mapperMockFactory } from "src/test-utils/mapper-mock.factory";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { SchedulerRegistry } from "@nestjs/schedule";
-import { TrackingScheduler } from "./tracking.scheduler";
+import {
+  MockType,
+  repositoryMockFactory,
+} from 'src/test-utils/repository-mock.factory';
+import { TrackingService } from './tracking.service';
+import { DataSource, Repository } from 'typeorm';
+import { Tracking } from './tracking.entity';
+import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
+import { Order } from 'src/order/order.entity';
+import { OrderItem } from 'src/order-item/order-item.entity';
+import { Table } from 'src/table/table.entity';
+import { Workflow } from 'src/workflow/workflow.entity';
+import { Mapper } from '@automapper/core';
+import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { TrackingScheduler } from './tracking.scheduler';
 
 describe('TrackingService', () => {
   let service: TrackingService;
@@ -29,6 +32,7 @@ describe('TrackingService', () => {
   let workflowRepositoryMock: MockType<Repository<Workflow>>;
   let mapperMock: MockType<Mapper>;
   let schedulerRegistry: SchedulerRegistry;
+  let module: TestingModule;
 
   const mockQueryRunner = {
     connect: jest.fn(),
@@ -46,7 +50,7 @@ describe('TrackingService', () => {
   };
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         TrackingService,
         RobotConnectorClient,
@@ -71,9 +75,9 @@ describe('TrackingService', () => {
             post: jest.fn(),
           },
         },
-        { 
-          provide: DataSource, 
-          useValue: mockDataSource 
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
         {
           provide: getRepositoryToken(Tracking),
@@ -107,13 +111,15 @@ describe('TrackingService', () => {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
         },
-      ]
+      ],
     }).compile();
 
     service = module.get<TrackingService>(TrackingService);
     orderRepositoryMock = module.get(getRepositoryToken(Order));
     trackingRepositoryMock = module.get(getRepositoryToken(Tracking));
-    trackingOrderItemRepositoryMock = module.get(getRepositoryToken(TrackingOrderItem));
+    trackingOrderItemRepositoryMock = module.get(
+      getRepositoryToken(TrackingOrderItem),
+    );
     orderItemRepositoryMock = module.get(getRepositoryToken(OrderItem));
     tableRepositoryMock = module.get(getRepositoryToken(Table));
     workflowRepositoryMock = module.get(getRepositoryToken(Workflow));
@@ -125,4 +131,11 @@ describe('TrackingService', () => {
     expect(service).toBeDefined();
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(async () => {
+    await module.close();
+  });
 });

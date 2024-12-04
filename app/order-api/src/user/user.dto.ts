@@ -5,6 +5,12 @@ import { IsOptional, Min } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 import { BranchResponseDto } from 'src/branch/branch.dto';
 
+export class ResetPasswordRequestDto {
+  @AutoMap()
+  @ApiProperty()
+  readonly user: string;
+}
+
 export class UserResponseDto extends BaseResponseDto {
   @ApiProperty()
   @AutoMap()

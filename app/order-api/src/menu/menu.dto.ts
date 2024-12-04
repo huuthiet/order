@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { INVALID_BRANCH_SLUG, INVALID_DAY } from './menu.validation';
 import { Type } from 'class-transformer';
 import { MenuItemResponseDto } from 'src/menu-item/menu-item.dto';
@@ -28,6 +28,34 @@ export class CreateMenuDto {
 }
 
 export class UpdateMenuDto extends CreateMenuDto {}
+
+export class GetAllMenuQueryRequestDto {
+  @AutoMap()
+  @ApiProperty({ required: false })
+  branch?: string;
+
+  @AutoMap()
+  @ApiProperty({
+    example: 1,
+    description: 'Page number',
+    required: false,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @Min(1)
+  page: number = 1;
+
+  @AutoMap()
+  @ApiProperty({
+    example: 10,
+    description: 'Number of items per page',
+    required: false,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @Min(1)
+  size: number = 10;
+}
 
 export class GetMenuRequestDto {
   @AutoMap()
