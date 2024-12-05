@@ -18,7 +18,7 @@ export const OrderValidation: TOrderErrorCode = {
   ORDER_NOT_FOUND: createErrorCode(1023, 'Order not found'),
   ORDER_STATUS_INVALID: createErrorCode(1027, 'Order status invalid'),
   REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY: createErrorCode(
-    1043, 
+    1045, 
     'Request quantity excess current quantity'
   ),
 };

@@ -30,7 +30,7 @@ const ProductValidation: TProductErrorCode = {
     'The active of product is required',
   ),
   PRODUCT_NOT_FOUND_IN_TODAY_MENU: createErrorCode(
-    1042,
+    1044,
     'The product not found in today menu',
   ),
 };
