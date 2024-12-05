@@ -15,13 +15,14 @@ import {
   ISpecificMenuRequest,
   IUpdateMenuRequest,
   IUpdateMenuItemRequest,
+  IAllMenuRequest,
 } from '@/types'
 import { useQuery, useMutation } from '@tanstack/react-query'
 
-export const useAllMenus = () => {
+export const useAllMenus = (q: IAllMenuRequest) => {
   return useQuery({
-    queryKey: ['menus'],
-    queryFn: async () => getAllMenus(),
+    queryKey: ['menus', JSON.stringify(q)],
+    queryFn: async () => getAllMenus(q),
   })
 }
 

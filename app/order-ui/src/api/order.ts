@@ -87,15 +87,6 @@ export async function getOrderInvoice(
   return response.data
 }
 
-export async function createOrderInvoice(
-  order: string,
-): Promise<IApiResponse<IOrderInvoice>> {
-  const response = await http.post<IApiResponse<IOrderInvoice>>(`/invoice`, {
-    order,
-  })
-  return response.data
-}
-
 export async function exportOrderInvoice(
   slug: string,
 ): Promise<IApiResponse<string>> {

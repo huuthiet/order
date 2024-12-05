@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import moment from 'moment'
 
 import MenuList from './menu-list'
 import { CartContent } from '@/router/loadable'
@@ -9,7 +10,6 @@ import { ScrollArea } from '@/components/ui'
 import { useIsMobile, useSpecificMenu } from '@/hooks'
 import { CartDrawer } from '@/components/app/drawer'
 import { useUserStore } from '@/stores'
-import moment from 'moment'
 
 export default function MenuPage() {
   const [isCartOpen, setIsCartOpen] = useState(true)

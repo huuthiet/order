@@ -9,10 +9,19 @@ import {
   IUpdateMenuRequest,
   IMenuItem,
   IUpdateMenuItemRequest,
+  IAllMenuRequest,
+  IPaginationResponse,
 } from '@/types'
 
-export async function getAllMenus(): Promise<IApiResponse<IMenu[]>> {
-  const response = await http.get<IApiResponse<IMenu[]>>('/menu')
+export async function getAllMenus(
+  q: IAllMenuRequest,
+): Promise<IApiResponse<IPaginationResponse<IMenu>>> {
+  const response = await http.get<IApiResponse<IPaginationResponse<IMenu>>>(
+    '/menu',
+    {
+      params: q,
+    },
+  )
   return response.data
 }
 

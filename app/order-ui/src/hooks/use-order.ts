@@ -2,7 +2,6 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 
 import {
   createOrder,
-  createOrderInvoice,
   createOrderTracking,
   exportOrderInvoice,
   getAllOrders,
@@ -63,14 +62,6 @@ export const useGetOrderInvoice = (params: IGetOrderInvoiceRequest) => {
     queryKey: ['order-invoice', params],
     queryFn: () => getOrderInvoice(params),
     placeholderData: keepPreviousData,
-  })
-}
-
-export const useCreateOrderInvoice = () => {
-  return useMutation({
-    mutationFn: async (order: string) => {
-      return createOrderInvoice(order)
-    },
   })
 }
 

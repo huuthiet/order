@@ -13,33 +13,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui'
 import { IOrder } from '@/types'
-import { ROUTE } from '@/constants'
-import { useCreateOrderInvoice, useExportOrderInvoice } from '@/hooks'
+import { PaymentMethod, ROUTE } from '@/constants'
+import { useExportOrderInvoice } from '@/hooks'
 import { showToast } from '@/utils'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
-import { useQueryClient } from '@tanstack/react-query'
 
 export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
-  const queryClient = useQueryClient()
   const { t } = useTranslation(['menu'])
   const { t: tToast } = useTranslation(['toast'])
   const { t: tCommon } = useTranslation(['common'])
-  const { mutate: createOrderInvoice } = useCreateOrderInvoice()
   const { mutate: exportOrderInvoice } = useExportOrderInvoice()
-  const handleCreateOrderInvoice = (slug: string) => {
-    createOrderInvoice(slug, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ['orders'],
-        })
-        showToast(tToast('toast.createInvoiceSuccess'))
-      },
-      onError: (error) => {
-        console.log('Create order invoice error', error)
-      }
-    })
-  }
 
   const handleExportOrderInvoice = (slug: string) => {
     // console.log('exportOrderInvoice', order)
@@ -104,10 +88,15 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
       cell: ({ row }) => {
         const order = row.original
         return (
-          <PaymentStatusBadge
-            status={order?.invoice?.status}
-          />
 
+          <div className='flex flex-col'>
+            <span className='text-sm'>
+              {order?.payment && order?.payment.paymentMethod === PaymentMethod.CASH ? t('order.cash') : t('order.bankTransfer')}
+            </span>
+            <PaymentStatusBadge
+              status={order?.invoice?.status}
+            />
+          </div>
         )
       },
     },
@@ -139,32 +128,6 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
         )
       },
     },
-    // {
-    //   accessorKey: 'orderItems',
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title={t('order.orderItemCount')} />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const order = row.original
-    //     return <div className='text-sm'>
-    //       {order?.orderItems.length} {t('order.item').toLocaleLowerCase()}
-    //     </div>
-    //   },
-    // },
-    // {
-    //   accessorKey: 'table',
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title={t('order.tableNumber')} />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const order = row.original
-    //     return (
-    //       <div className='text-sm'>
-    //         {order?.tableName}
-    //       </div>
-    //     )
-    //   },
-    // },
     {
       id: 'actions',
       header: tCommon('common.action'),
@@ -209,15 +172,9 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                     </Button>
                   </NavLink>
                 )}
-                {!order.invoice && (
-                  <Button onClick={() => handleCreateOrderInvoice(order.slug)} variant="ghost" className='flex justify-start w-full px-2'>
-                    {t('order.createInvoice')}
-                  </Button>
-                )}
-                <Button onClick={() => handleExportOrderInvoice(order.invoice ? order.invoice.slug : '')} variant="ghost" className='flex justify-start w-full px-2'>
+                <Button onClick={() => handleExportOrderInvoice(order.invoice ? order.slug : '')} variant="ghost" className='flex justify-start w-full px-2'>
                   {t('order.exportInvoice')}
                 </Button>
-                {/* <UpdateMenuDialog menu={menu} /> */}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

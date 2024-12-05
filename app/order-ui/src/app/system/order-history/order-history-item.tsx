@@ -1,12 +1,13 @@
 import moment from 'moment'
+import { NavLink } from 'react-router-dom'
 import { Clock, ShoppingCartIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+
 import { IOrder } from '@/types'
 import { Button } from '@/components/ui'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-import { NavLink } from 'react-router-dom'
 import { ROUTE } from '@/constants'
-import { useCreateOrderInvoice, useExportOrderInvoice } from '@/hooks'
+import { useExportOrderInvoice } from '@/hooks'
 import { showToast } from '@/utils'
 
 interface OrderItemDetailProps {
@@ -15,24 +16,13 @@ interface OrderItemDetailProps {
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   const { t } = useTranslation(['menu'])
-  const { mutate: createOrderInvoice } = useCreateOrderInvoice()
   const { mutate: exportInvoice } = useExportOrderInvoice()
-
-  const handleCreateOrderInvoice = () => {
-    createOrderInvoice(order.slug, {
-      onSuccess: () => {
-        showToast('Create order invoice successfully')
-        // After creating invoice, export it
-        handleExportInvoice()
-      },
-      onError: (error) => {
-        console.log('Create order invoice error', error)
-      }
-    })
-  }
 
   const handleExportInvoice = () => {
     exportInvoice(order.slug, {
+      onSuccess: () => {
+        showToast(t('toast.exportInvoiceSuccess'))
+      },
       onError: (error) => {
         console.log('Export invoice error', error)
       }
@@ -79,14 +69,14 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         <OrderStatusBadge status={order.status} />
       </div>
       <div className="flex justify-end col-span-1 gap-2">
-        <Button onClick={handleCreateOrderInvoice} variant="outline" className='text-xs border-primary text-primary hover:text-primary hover:bg-primary/10'>
-          {t('order.createInvoice')}
-        </Button>
         <NavLink to={`${ROUTE.STAFF_ORDER_HISTORY}/${order.slug}`}>
           <Button variant="outline" className='text-xs border-primary text-primary hover:text-primary hover:bg-primary/10'>
             {t('order.viewDetail')}
           </Button>
         </NavLink>
+        <Button onClick={handleExportInvoice} variant="outline" className='text-xs border-primary text-primary hover:text-primary hover:bg-primary/10'>
+          {t('order.exportInvoice')}
+        </Button>
         {/* {order} */}
       </div>
     </div>

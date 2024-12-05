@@ -12,6 +12,13 @@ export interface ICreateMenuRequest {
   branchSlug: string
 }
 
+export interface IAllMenuRequest {
+  page: number | 1
+  pageSize: number | 10
+  order: 'ASC' | 'DESC'
+  branch?: string
+}
+
 export interface ISpecificMenuRequest {
   slug?: string // This is the slug of the menu
   date?: string
