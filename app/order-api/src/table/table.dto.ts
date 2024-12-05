@@ -11,17 +11,15 @@ export class CreateTableRequestDto {
   name: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of branch', example: 'branch-slug' })
+  @ApiProperty({ description: 'The slug of branch', example: '' })
   @IsNotEmpty()
   branch: string;
 
   @AutoMap()
   @ApiProperty({
     description: 'The location of table',
-    example: 'table-location-Qerf',
   })
-  @IsOptional()
-  location?: string;
+  location: string;
 
   @AutoMap()
   @ApiProperty({ description: 'The x position of table', example: 1 })
@@ -49,7 +47,7 @@ export class UpdateTableRequestDto {
     description: 'The real location of table',
   })
   @IsNotEmpty()
-  location?: string;
+  location: string;
 
   @AutoMap()
   @ApiProperty({ description: 'The x position of table', example: 1 })

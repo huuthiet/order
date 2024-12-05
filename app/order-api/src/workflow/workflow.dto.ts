@@ -1,6 +1,6 @@
-import { AutoMap } from "@automapper/classes";
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateWorkflowRequestDto {
   @AutoMap()
@@ -9,7 +9,7 @@ export class CreateWorkflowRequestDto {
   workflowId: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The slug of branch', example: 'branch-slug' })
+  @ApiProperty({ description: 'The slug of branch', example: '' })
   @IsNotEmpty({ message: 'Invalid slug of branch' })
   branch: string;
 }
