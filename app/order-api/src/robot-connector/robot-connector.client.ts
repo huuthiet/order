@@ -16,12 +16,10 @@ import {
   UpdateQRLocationRequestDto,
   GetWorkflowExecutionResponseDto,
   CreateWorkflowRequestDto,
-  RobotResponseDto
-} from "./robot-connector.dto";
-import { catchError, firstValueFrom, retry } from "rxjs";
-import { AxiosError } from "axios";
-import { CreateTableRequestDto, TableResponseDto } from "src/table/table.dto";
-import { CreateSizeRequestDto } from "src/size/size.dto";
+  RobotResponseDto,
+} from './robot-connector.dto';
+import { catchError, firstValueFrom, retry } from 'rxjs';
+import { AxiosError } from 'axios';
 
 @Injectable()
 export class RobotConnectorClient {
@@ -36,30 +34,26 @@ export class RobotConnectorClient {
   ) {}
 
   /* RAYBOTS */
-  async getRobotById(
-    id: string
-  ): Promise<RobotResponseDto> {
+  async getRobotById(id: string): Promise<RobotResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.getRobotById.name}`;
     const requestUrl = `${this.robotApiUrl}/raybots/${id}`;
     const { data } = await firstValueFrom(
-      this.httpService
-        .get<RobotResponseDto>(requestUrl)
-        .pipe(
-          catchError((error: AxiosError) => {
-            this.logger.error(
-              `Get robot ${id} data from ROBOT API failed: ${error.message}`, 
-              context
-            );
-            throw new BadRequestException(`Get robot data failed`);
-          }),
-        ),
+      this.httpService.get<RobotResponseDto>(requestUrl).pipe(
+        catchError((error: AxiosError) => {
+          this.logger.error(
+            `Get robot ${id} data from ROBOT API failed: ${error.message}`,
+            context,
+          );
+          throw new BadRequestException(`Get robot data failed`);
+        }),
+      ),
     );
     return data;
   }
 
   /* WORK FLOWS */
   async createWorkflow(
-    requestData: CreateWorkflowRequestDto
+    requestData: CreateWorkflowRequestDto,
   ): Promise<WorkflowResponseDto> {
     const requestUrl = `${this.robotApiUrl}/workflows`;
     const { data } = await firstValueFrom(
@@ -85,7 +79,9 @@ export class RobotConnectorClient {
           this.logger.error(
             `Get all Workflows from ROBOT API failed: ${error.message}`,
           );
-          throw new BadRequestException('Get all Workflows from ROBOT API failed');
+          throw new BadRequestException(
+            'Get all Workflows from ROBOT API failed',
+          );
         }),
       ),
     );
@@ -100,30 +96,28 @@ export class RobotConnectorClient {
     const requestUrl = `${this.robotApiUrl}/workflows/${workflowId}/run`;
     const { data } = await firstValueFrom(
       this.httpService
-      .post<WorkflowExecutionResponseDto>(requestUrl, requestData)
-      .pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(
-            `Run workflow from ROBOT API ${workflowId} failed: ${error.message}`, 
-            context
-          );
-          throw new BadRequestException(`Run workflow failed`);
-        }),
-      )
+        .post<WorkflowExecutionResponseDto>(requestUrl, requestData)
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(
+              `Run workflow from ROBOT API ${workflowId} failed: ${error.message}`,
+              context,
+            );
+            throw new BadRequestException(`Run workflow failed`);
+          }),
+        ),
     );
     return data;
   }
 
   /* WORKFLOW EXECUTIONS */
   async retrieveWorkflowExecution(
-    workflowExecutionId: string
+    workflowExecutionId: string,
   ): Promise<GetWorkflowExecutionResponseDto> {
-    console.log({workflowExecutionId})
+    console.log({ workflowExecutionId });
     const requestUrl = `${this.robotApiUrl}/workflow-executions/${workflowExecutionId}`;
     const { data } = await firstValueFrom(
-      this.httpService
-      .get<GetWorkflowExecutionResponseDto>(requestUrl)
-      .pipe(
+      this.httpService.get<GetWorkflowExecutionResponseDto>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get Workflow Execution from ROBOT API failed: ${error.message}`,
@@ -135,12 +129,12 @@ export class RobotConnectorClient {
     return data;
   }
 
-  async retrieveAllWorkflowExecutions(): Promise<GetWorkflowExecutionResponseDto[]> {
+  async retrieveAllWorkflowExecutions(): Promise<
+    GetWorkflowExecutionResponseDto[]
+  > {
     const requestUrl = `${this.robotApiUrl}/workflow-executions`;
     const { data } = await firstValueFrom(
-      this.httpService
-      .get<GetWorkflowExecutionResponseDto[]>(requestUrl)
-      .pipe(
+      this.httpService.get<GetWorkflowExecutionResponseDto[]>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get all Workflow Executions from ROBOT API failed: ${error.message}`,
@@ -192,14 +186,18 @@ export class RobotConnectorClient {
   }
 
   async getQRLocationById(id: string): Promise<QRLocationResponseDto> {
+    const context = `${RobotConnectorClient.name}.${this.getQRLocationById.name}`;
     const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
     const { data } = await firstValueFrom(
       this.httpService.get<QRLocationResponseDto>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get QR location by ID from ROBOT API failed: ${error.message}`,
+            context,
           );
-          throw error;
+          throw new BadRequestException(
+            `Get QR location failed ${error.message}`,
+          );
         }),
       ),
     );
@@ -210,14 +208,19 @@ export class RobotConnectorClient {
     id: string,
     requestData: UpdateQRLocationRequestDto,
   ): Promise<QRLocationResponseDto> {
+    const context = `${RobotConnectorClient.name}.${this.updateQRLocation.name}`;
     const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
+
     const { data } = await firstValueFrom(
       this.httpService.put<QRLocationResponseDto>(requestUrl, requestData).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Update QR location by ID from ROBOT API failed: ${error.message}`,
+            context,
           );
-          throw error;
+          throw new BadRequestException(
+            `Update QR location failed ${error.message}`,
+          );
         }),
       ),
     );

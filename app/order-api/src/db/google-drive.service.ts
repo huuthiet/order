@@ -36,8 +36,8 @@ export class GoogleDriveService {
   async uploadFile(filename: string, mimeType: string) {
     const context = `${GoogleDriveService.name}.${this.uploadFile.name}`;
     const keyPath = path.resolve('public/json/credentials.json');
-    const file = require(keyPath);
-    console.log({ file });
+    // const file = require(keyPath);
+    // console.log({ file });
     try {
       const file = await this.drive.files.create({
         media: {
@@ -57,7 +57,7 @@ export class GoogleDriveService {
         `Error uploading file: ${JSON.stringify(err)}`,
         context,
       );
-      throw new BadRequestException('Error uploading file');
+      throw new BadRequestException(`Error uploading file: ${err.message}`);
     }
   }
 }

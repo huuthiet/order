@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   CreateTableRequestDto,
   TableResponseDto,
@@ -22,6 +17,7 @@ import { BranchException } from 'src/branch/branch.exception';
 import { BranchValidation } from 'src/branch/branch.validation';
 import { TableException } from './table.exception';
 import { TableValidation } from './table.validation';
+import * as _ from 'lodash';
 
 @Injectable()
 export class TableService {
@@ -36,7 +32,11 @@ export class TableService {
   ) {}
 
   async getLocations() {
-    return this.robotConnectorClient.retrieveAllQRLocations();
+    const locations = await this.robotConnectorClient.retrieveAllQRLocations();
+    return locations.filter((location) => {
+      const isAssigned = location.metadata?.isAssigned;
+      return isAssigned === undefined || isAssigned === false;
+    });
   }
 
   /**
@@ -57,6 +57,9 @@ export class TableService {
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
+    // Validate location
+    await this.validateTableLocation(createTableDto.location);
+
     const tableData = this.mapper.map(
       createTableDto,
       CreateTableRequestDto,
@@ -65,7 +68,7 @@ export class TableService {
     const existedTable = await this.tableRepository.findOne({
       where: {
         branch: {
-          slug: createTableDto.branch,
+          id: branch.id,
         },
         name: tableData.name,
       },
@@ -81,10 +84,7 @@ export class TableService {
     Object.assign(tableData, { branch });
     const table = this.tableRepository.create(tableData);
     const createdTable = await this.tableRepository.save(table);
-    this.logger.log(
-      `Table ${createTableDto.name} created successfully`,
-      context,
-    );
+    this.logger.log(`Table ${createdTable.name} created successfully`, context);
     const tableDto = this.mapper.map(createdTable, Table, TableResponseDto);
     return tableDto;
   }
@@ -161,34 +161,24 @@ export class TableService {
       throw new TableException(TableValidation.TABLE_NOT_FOUND);
     }
 
-    // const isExist = await this.tableRepository.findOne({
-    //   where: {
-    //     name: updateTableDto.name,
-    //     location: updateTableDto.location,
-    //     branch: {
-    //       id: table.branch.id,
-    //     },
-    //   },
-    // });
-
-    // if (isExist) {
-    //   this.logger.warn(
-    //     `Table with ${updateTableDto.name} and ${updateTableDto.location} location already exist`,
-    //     context,
-    //   );
-    //   throw new TableException(TableValidation.TABLE_NAME_EXIST);
-    // }
-
-    const tableData = this.mapper.map(
+    const requestData = this.mapper.map(
       updateTableDto,
       UpdateTableRequestDto,
       Table,
     );
 
-    Object.assign(table, tableData);
+    // Validate location if new location is different from old location
+    if (requestData.location !== table.location)
+      await this.validateTableLocation(requestData.location);
+
+    // update table
+    Object.assign(table, {
+      ...requestData,
+    });
     const updatedTable = await this.tableRepository.save(table);
     this.logger.log(`Table ${slug} updated successfully`, context);
     const tableDto = this.mapper.map(updatedTable, Table, TableResponseDto);
+
     return tableDto;
   }
 
@@ -207,5 +197,20 @@ export class TableService {
     const deleted = await this.tableRepository.softDelete({ slug });
     this.logger.log(`Table ${slug} deleted successfully`, context);
     return deleted.affected || 0;
+  }
+
+  private async validateTableLocation(locationId: string) {
+    const context = `${TableService.name}.${this.validateTableLocation.name}`;
+    const location =
+      await this.robotConnectorClient.getQRLocationById(locationId);
+    if (!location) {
+      this.logger.warn(`Location ${locationId} not found`, context);
+      throw new TableException(TableValidation.LOCATION_NOT_FOUND);
+    }
+
+    if (location.metadata?.isAssigned) {
+      this.logger.warn(`Location ${locationId} is already assigned`, context);
+      throw new TableException(TableValidation.LOCATION_ASSIGNED);
+    }
   }
 }
