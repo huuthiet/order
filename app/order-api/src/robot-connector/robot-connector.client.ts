@@ -150,7 +150,6 @@ export class RobotConnectorClient {
   async retrieveAllQRLocations(): Promise<QRLocationResponseDto[]> {
     const context = `${RobotConnectorClient.name}.${this.retrieveAllQRLocations.name}`;
     const requestUrl = `${this.robotApiUrl}/qr-locations`;
-    console.log({ requestUrl });
     const { data } = await firstValueFrom(
       this.httpService.get<QRLocationResponseDto[]>(requestUrl).pipe(
         retry(3),
