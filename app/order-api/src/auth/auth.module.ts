@@ -15,6 +15,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthProfile } from './auth.mapper';
 import { Branch } from 'src/branch/branch.entity';
 import { FileModule } from 'src/file/file.module';
+import { MailModule } from 'src/mail/mail.module';
+import { ForgotPasswordToken } from './forgot-password-token.entity';
 
 @Module({
   imports: [
@@ -23,9 +25,10 @@ import { FileModule } from 'src/file/file.module';
     JwtModule.register({
       secret: jwtConstants.secret,
     }),
-    TypeOrmModule.forFeature([User, Branch]),
+    TypeOrmModule.forFeature([User, Branch, ForgotPasswordToken]),
     ConfigModule,
     FileModule,
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [

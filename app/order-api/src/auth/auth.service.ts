@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   Logger,
@@ -9,6 +10,8 @@ import {
   AuthChangePasswordRequestDto,
   AuthProfileResponseDto,
   AuthRefreshRequestDto,
+  ForgotPasswordRequestDto,
+  ForgotPasswordTokenRequestDto,
   LoginAuthRequestDto,
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
@@ -17,7 +20,7 @@ import {
 } from './auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { InjectMapper } from '@automapper/nestjs';
@@ -32,12 +35,15 @@ import { BranchValidation } from 'src/branch/branch.validation';
 import { BranchException } from 'src/branch/branch.exception';
 import { UserRequest } from './user.decorator';
 import { FileService } from 'src/file/file.service';
+import { MailService } from 'src/mail/mail.service';
+import { ForgotPasswordToken } from './forgot-password-token.entity';
 
 @Injectable()
 export class AuthService {
   private saltOfRounds: number;
   private duration: number;
   private refeshableDuration: number;
+  private frontedUrl: string;
 
   constructor(
     private readonly jwtService: JwtService,
@@ -49,13 +55,68 @@ export class AuthService {
     @InjectMapper()
     private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+    @InjectRepository(ForgotPasswordToken)
+    private readonly forgotPasswordRepository: Repository<ForgotPasswordToken>,
     private readonly fileService: FileService,
+    private readonly mailService: MailService,
   ) {
     this.saltOfRounds = this.configService.get<number>('SALT_ROUNDS');
     this.duration = this.configService.get<number>('DURATION');
     this.refeshableDuration = this.configService.get<number>(
       'REFRESHABLE_DURATION',
     );
+    this.frontedUrl = this.configService.get<string>('FRONTEND_URL');
+  }
+
+  async forgotPassword(requestData: ForgotPasswordRequestDto) {
+    throw new Error('Method not implemented.');
+  }
+
+  async createForgotPasswordToken(requestData: ForgotPasswordTokenRequestDto) {
+    const context = `${AuthService.name}.${this.createForgotPasswordToken.name}`;
+    const user = await this.userRepository.findOne({
+      where: {
+        email: requestData.email,
+      },
+    });
+    if (!user) {
+      this.logger.warn(`User ${requestData.email} not found`, context);
+      throw new AuthException(AuthValidation.USER_NOT_FOUND);
+    }
+
+    const existingToken = await this.forgotPasswordRepository.findOne({
+      where: {
+        user: {
+          id: user.id,
+        },
+        expiresAt: MoreThan(new Date()),
+      },
+    });
+
+    console.log({ existingToken });
+
+    if (existingToken) {
+      this.logger.warn(`User ${user.id} already has a valid token`, context);
+      throw new BadRequestException('A valid token already exists.');
+    }
+
+    const payload = { sub: user.id, jti: uuidv4() };
+    const token = this.jwtService.sign(payload, {
+      expiresIn: this.duration,
+    });
+
+    const forgotPasswordToken = new ForgotPasswordToken();
+    Object.assign(forgotPasswordToken, {
+      expiresAt: moment().add(this.duration, 'seconds').toDate(),
+      token,
+      user,
+    } as ForgotPasswordToken);
+    await this.forgotPasswordRepository.save(forgotPasswordToken);
+
+    const url = `${this.frontedUrl}/reset-password?token=${token}`;
+    await this.mailService.sendForgotPasswordToken(user, url);
+    this.logger.log(`User ${user.id} created forgot password token`, context);
+    return url;
   }
 
   async uploadAvatar(user: UserRequest, file: Express.Multer.File) {
