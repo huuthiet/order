@@ -15,7 +15,7 @@ export class InvoiceScheduler {
     private readonly qrCodeService: QrCodeService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async updateQrCode() {
     const context = `${InvoiceScheduler.name}.${this.updateQrCode.name}`;
     this.logger.log('Updating QR code for invoices', context);
