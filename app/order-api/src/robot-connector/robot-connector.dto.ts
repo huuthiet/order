@@ -12,9 +12,16 @@ export class WorkflowResponseDto {
 }
 
 export class RunWorkflowRequestDto {
-  order_code: string;
-  location: string;
+  runtime_config: {
+    raybot_id: string,
+    location: string,
+    order_code: string
+  }
 }
+// export class RunWorkflowRequestDto {
+//   order_code: string;
+//   location: string;
+// }
 
 export class WorkflowExecutionResponseDto {
   workflow_execution_id: string;

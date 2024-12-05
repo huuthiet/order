@@ -21,6 +21,16 @@ import { RobotStatus } from "src/robot-connector/robot-connector.constants";
 import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import * as _ from 'lodash';
 import { TrackingScheduler } from "./tracking.scheduler";
+import { TrackingException } from "./tracking.exception";
+import { TrackingValidation } from "./tracking.validation";
+import { OrderItemException } from "src/order-item/order-item.exception";
+import { OrderItemValidation } from "src/order-item/order-item.validation";
+import { TableException } from "src/table/table.exception";
+import { TableValidation } from "src/table/table.validation";
+import { WorkflowException } from "src/workflow/workflow.exception";
+import { WorkflowValidation } from "src/workflow/workflow.validation";
+import { RobotConnectorException } from "src/robot-connector/robot-connector.exception";
+import { RobotConnectorValidation } from "src/robot-connector/robot-connector.validation";
 
 @Injectable()
 export class TrackingService {
@@ -57,77 +67,45 @@ export class TrackingService {
     requestData: CreateTrackingRequestDto
   ): Promise<TrackingResponseDto> {
     const context = `${TrackingService.name}.${this.createTracking.name}`;
-    const trackings = await this.trackingRepository.find({
-      where: {
-        status: In([WorkflowStatus.PENDING, WorkflowStatus.RUNNING])
-      }
-    });
-    if(trackings.length > 0) {
-      this.logger.warn('Please wait for current shipment completed', context);
-      throw new BadRequestException('Please wait for current shipment completed');
-    }
-    const checkDefinedAndQuantityOrderItemResult = await this.validateDefinedAndQuantityOrderItem(
+
+    await this.checkCurrentShipment();
+
+    const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
       requestData.trackingOrderItems
     );
-    if(!checkDefinedAndQuantityOrderItemResult.isValid) {
-      this.logger.warn('Invalid order item data', context);
-      throw new BadRequestException('Invalid order item data');
-    }
     const orderResult = await this.validateOrderItemInOneOrder(requestData.trackingOrderItems);
-    if(!orderResult) {
-      this.logger.warn('All request order items must belong to one order', context);
-      throw new BadRequestException('All request order items must belong to one order');
-    }
 
     let savedTrackingId: string = '';
-    const orderItemsData = checkDefinedAndQuantityOrderItemResult.orderItemsData;
     if(requestData.type === TrackingType.BY_ROBOT) {
       if(orderResult.type === OrderType.TAKE_OUT) {
-        this.logger.warn(`This order ${orderResult.slug} for take out, can not use robot`, context);
-        throw new BadRequestException('This order for take out, can not use robot');
-      }
-
-      const robotData: RobotResponseDto = 
-        await this.robotConnectorClient.getRobotById(this.robotId);
-
-      console.log({h: robotData.status})
-      if(robotData.status !== RobotStatus.IDLE) {
-        this.logger.warn(`Robot ${this.robotId} is busy`, context);
-        throw new BadRequestException('Robot is busy'); 
+        this.logger.warn(`${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT} ${orderResult.slug}`, context);
+        throw new TrackingException(TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT);
       }
 
       const tableLocation: string = await this.getLocationTableByOrder(orderResult);
-      if(!tableLocation) {
-        this.logger.warn(`Can not find table location in order ${orderResult.slug} , please check table information`, context);
-        throw new BadRequestException('Can not find table location, please check table information');
-      }
-      const workflowData = await this.workflowRepository.findOne({
-        where: {
-          branch: {
-            orders: {
-              slug: orderResult.slug
-            }
-          }
-        }
-      });
-      if(!workflowData) {
-        this.logger.warn(`Must add work flow for this branch ${orderResult.branch.slug}`, context);
-        throw new BadRequestException('Must add work flow for this branch');
-      }
+      
+      const workflowId: string = await this.getWorkflowIdByOrder(orderResult);
+
+      await this.checkRobotStatusBeforeCall();
+
       const requestData: RunWorkflowRequestDto = {
-        order_code: orderResult.slug,
-        location: tableLocation
+        runtime_config: {
+          raybot_id: this.robotId,
+          location: tableLocation,
+          order_code: orderResult.slug
+        }
       }
+      // const requestData: RunWorkflowRequestDto = {
+      //   order_code: orderResult.slug,
+      //   location: tableLocation
+      // }
       const workflowRobot: WorkflowExecutionResponseDto = 
-        await this.robotConnectorClient.runWorkflow(workflowData.workflowId, requestData);
+        await this.robotConnectorClient.runWorkflow(workflowId, requestData);
 
       const tracking = new Tracking();
       Object.assign(tracking, {
         workflowExecution: workflowRobot.workflow_execution_id
       });
-      // Object.assign(tracking, {
-      //   workflowExecution: 'WFTESThaah'
-      // });
 
       savedTrackingId = await this.createTrackingAndTrackingOrderItem(
         tracking,
@@ -161,13 +139,37 @@ export class TrackingService {
   }
 
   /**
+   * Check current shipment
+   * @throws {TrackingException} If there are shipments running or pending
+   */
+  async checkCurrentShipment(): Promise<void> {
+    const context = `${TrackingService.name}.${this.checkCurrentShipment.name}`;
+    const trackings = await this.trackingRepository.find({
+      where: {
+        status: In([WorkflowStatus.PENDING, WorkflowStatus.RUNNING])
+      }
+    });
+    if(!_.isEmpty(trackings)) {
+      this.logger.warn(
+        TrackingValidation.WAIT_FOR_CURRENT_SHIPMENT_COMPLETED, 
+        context
+      );
+      throw new TrackingException(TrackingValidation.WAIT_FOR_CURRENT_SHIPMENT_COMPLETED);
+    }
+  }
+
+  /**
    * Validate the order item about the definition and request quantity
    * @param {CreateTrackingOrderItemRequestDto[]} orderItems The array of data to create many order item
-   * @returns {Promise<ValidateDefinedAndQuantityOrderItem>} The result of validation
+   * @returns {Promise<CreateTrackingOrderItemWithQuantityAndOrderItemEntity[]>} The result of validation
+   * @throws {OrderItemException} If order item not found
+   * @throws {OrderItemException} If order item not belong to any order
+   * @throws {OrderItemException} If request order item greater order item quantity
    */
   async validateDefinedAndQuantityOrderItem (
     orderItems: CreateTrackingOrderItemRequestDto[]
-  ): Promise<ValidateDefinedAndQuantityOrderItem> {
+  ): Promise<CreateTrackingOrderItemWithQuantityAndOrderItemEntity[]> {
+    const context = `${TrackingService.name}.${this.validateDefinedAndQuantityOrderItem.name}`;
     const orderItemsData: CreateTrackingOrderItemWithQuantityAndOrderItemEntity[] = [];
     for(let i = 0; i < orderItems.length; i++) {
       // check defined
@@ -180,9 +182,14 @@ export class TrackingService {
           'trackingOrderItems.tracking'
         ]
       });
-      if(!orderItem) return { isValid: false };
-      if(!orderItem.order) return  { isValid: false };
-
+      if(!orderItem) {
+        this.logger.warn(OrderItemValidation.ORDER_ITEM_NOT_FOUND, context);
+        throw new OrderItemException(OrderItemValidation.ORDER_ITEM_NOT_FOUND);
+      };
+      if(!orderItem.order) {
+        this.logger.warn(OrderItemValidation.ORDER_ITEM_NOT_BELONG_TO_ANY_ORDER, context);
+        throw new OrderItemException(OrderItemValidation.ORDER_ITEM_NOT_BELONG_TO_ANY_ORDER);
+      };
       orderItemsData.push({
         quantity: orderItems[i].quantity,
         orderItem
@@ -191,34 +198,37 @@ export class TrackingService {
       // check quantity
 
       // order item have not tracking order item
-      if(!orderItem.trackingOrderItems) {
-        if(orderItems[i].quantity > orderItem.quantity) return { isValid: false };
+      if(_.isEmpty(orderItem.trackingOrderItems)) {
+        if(orderItems[i].quantity > orderItem.quantity) {
+          this.logger.warn(OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY, context);
+          throw new OrderItemException(OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY);  
+        }
         else continue;
       }
         
-      if(orderItem.trackingOrderItems.length < 1) {
-        if(orderItems[i].quantity > orderItem.quantity) return { isValid: false };
-        else continue;
-      };
-
       // order item have tracking order item
       const totalCompleted = orderItem.trackingOrderItems.reduce((total, item) => {
         return item.tracking.status ===WorkflowStatus.COMPLETED ? total + item.quantity : total;
       }, 0);
-      if((totalCompleted + orderItems[i].quantity) > orderItem.quantity) return  { isValid: false };
+      if((totalCompleted + orderItems[i].quantity) > orderItem.quantity) {
+        this.logger.warn(OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY, context);
+        throw new OrderItemException(OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY);  
+    };
     }
     
-    return  { isValid: true, orderItemsData };
+    return  orderItemsData;
   }
 
   /**
    * Validate order items belong to a order or not
    * @param {CreateTrackingOrderItemRequestDto} orderItems The array of order item slug 
-   * @returns {Promise<Order | null>} The order of order item array
+   * @returns {Promise<Order>} The order of order item array
+   * @throws {OrderItemException} If all order item not belong to a order
    */
   async validateOrderItemInOneOrder (
     orderItems: CreateTrackingOrderItemRequestDto[]
-  ): Promise<Order | null> {
+  ): Promise<Order> {
+    const context = `${TrackingService.name}.${this.validateOrderItemInOneOrder.name}`;
     const orderItemSlugs = orderItems.map((item) => item.orderItem);
     const orders = await this.orderRepository.find({
       where: {
@@ -233,17 +243,21 @@ export class TrackingService {
     if(orders.length === 1)
       if(orders[0].branch) return orders[0];
 
-    return null;
+    this.logger.warn(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER, context);
+    throw new OrderItemException(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER);
   }
 
   /**
    * Get location of table
    * @param {Order} order The data of order have branch data
-   * @returns {Promise<string | null>} The location of table
+   * @returns {Promise<string>} The location of table
+   * @throws {TableException} If table not found
+   * @throws {TableException} If table does not have location
    */
   async getLocationTableByOrder (
     order: Order
-  ): Promise<string | null> {
+  ): Promise<string> {
+    const context = `${TrackingService.name}.${this.getLocationTableByOrder.name}`;
     const table = await this.tableRepository.findOne({
       where: {
         name: order.tableName,
@@ -252,9 +266,56 @@ export class TrackingService {
         }
       }
     });
-    if(!table) return null;
+    if(!table) {
+      this.logger.warn(TableValidation.TABLE_NOT_FOUND, context);
+      throw new TableException(TableValidation.TABLE_NOT_FOUND); 
+    };
+    if(!table.location) {
+      this.logger.warn(TableValidation.TABLE_DO_NOT_HAVE_LOCATION, context);
+      throw new TableException(TableValidation.TABLE_DO_NOT_HAVE_LOCATION); 
+    };
 
     return table.location;
+  }
+
+  /**
+   * 
+   * @param {Order} order The order data relate to branch
+   * @returns {Promise<string>} The workflow id from ROBOT API
+   * @throws {WorkflowException} If branch does not have workflow
+   */
+  async getWorkflowIdByOrder(
+    order: Order
+  ): Promise<string>{
+    const context = `${TrackingService.name}.${this.getWorkflowIdByOrder.name}`;
+    const workflowData = await this.workflowRepository.findOne({
+      where: {
+        branch: {
+          orders: {
+            slug: order.slug
+          }
+        }
+      }
+    });
+    if(!workflowData) {
+      this.logger.warn(`${WorkflowValidation.MUST_ADD_WORKFLOW_FOR_BRANCH} ${order.branch.slug}`, context);
+      throw new WorkflowException(WorkflowValidation.MUST_ADD_WORKFLOW_FOR_BRANCH);
+    }
+    return workflowData.workflowId;
+  }
+
+  /**
+   * @throws {RobotConnectorException} If robot is busy
+   */
+  async checkRobotStatusBeforeCall(): Promise<void> {
+    const context = `${TrackingService.name}.${this.checkRobotStatusBeforeCall.name}`;
+    const robotData: RobotResponseDto = 
+        await this.robotConnectorClient.getRobotById(this.robotId);
+
+    if(robotData.status !== RobotStatus.IDLE) {
+      this.logger.warn(`${RobotConnectorValidation.ROBOT_BUSY} ${this.robotId}`, context);
+      throw new RobotConnectorException(RobotConnectorValidation.ROBOT_BUSY); 
+    }
   }
 
   /**
@@ -262,6 +323,7 @@ export class TrackingService {
    * @param {Tracking} tracking The new instance of Tracking 
    * @param {CreateTrackingOrderItemWithQuantityAndOrderItemEntity} orderItemsData The array of order item data with each request quantity
    * @returns {Promise<string>} The id of create tracking
+   * @throws {TrackingException} If create tracking failed
    */
   async createTrackingAndTrackingOrderItem(
     tracking: Tracking,
@@ -277,6 +339,7 @@ export class TrackingService {
       const createdTracking = await queryRunner.manager.save(tracking);
 
       // create tracking order item
+      const trackingOrderItems: TrackingOrderItem[] = [];
       for(let i = 0; i < orderItemsData.length; i++) {
         let trackingOrderItem = new TrackingOrderItem();
         Object.assign(trackingOrderItem, {
@@ -285,17 +348,18 @@ export class TrackingService {
           tracking: createdTracking
         });
 
-        await queryRunner.manager.save(trackingOrderItem);
+        trackingOrderItems.push(trackingOrderItem);
       }
+      await queryRunner.manager.save(trackingOrderItems);
       await queryRunner.commitTransaction();
       return createdTracking.id;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       this.logger.warn(
-        `Create tracking and tracking order item failed`,
+        TrackingValidation.CREATE_TRACKING_FAILED,
         context,
       );
-      throw new BadRequestException('Create tracking adn tracking order item failed')
+      throw new TrackingException(TrackingValidation.CREATE_TRACKING_FAILED)
     } finally {
       await queryRunner.release();
     }
