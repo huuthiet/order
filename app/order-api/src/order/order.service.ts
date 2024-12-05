@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
+import { Between, DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
 import {
   CheckDataCreateOrderItemResponseDto,
   CreateOrderRequestDto,
@@ -37,6 +37,12 @@ import { Tracking } from 'src/tracking/tracking.entity';
 import { PaymentAction, PaymentStatus } from 'src/payment/payment.constants';
 import { BranchException } from 'src/branch/branch.exception';
 import { AppPaginatedResponseDto } from 'src/app/app.dto';
+import { Menu } from 'src/menu/menu.entity';
+import { MenuValidation } from 'src/menu/menu.validation';
+import { MenuException } from 'src/menu/menu.exception';
+import { MenuItem } from 'src/menu-item/menu-item.entity';
+import ProductValidation from 'src/product/product.validation';
+import { ProductException } from 'src/product/product.exception';
 
 @Injectable()
 export class OrderService {
@@ -53,6 +59,10 @@ export class OrderService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Tracking)
     private readonly trackingRepository: Repository<Tracking>,
+    @InjectRepository(Menu)
+    private readonly menuRepository: Repository<Menu>,
+    @InjectRepository(MenuItem)
+    private readonly menuItemRepository: Repository<MenuItem>,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     private readonly robotConnectorClient: RobotConnectorClient,
@@ -100,6 +110,7 @@ export class OrderService {
     const mappedOrder: Order = await this.validateCreatedOrderData(requestData);
 
     const checkValidOrderItemData = await this.validateCreatedOrderItemData(
+      requestData.branch,
       requestData.orderItems,
     );
 
@@ -113,9 +124,16 @@ export class OrderService {
         orderItems: checkValidOrderItemData.mappedOrderItems,
         subtotal: checkValidOrderItemData.subtotal,
       });
+      const subtractedQuantityMenuItems = checkValidOrderItemData.subtractedQuantityMenuItems;
       const newOrder = this.orderRepository.create(mappedOrder);
 
       createdOrder = await queryRunner.manager.save(newOrder);
+
+      // update menu item quantity
+      for (const menuItem of subtractedQuantityMenuItems) {
+        await queryRunner.manager.save(menuItem);
+      }
+
       await queryRunner.commitTransaction();
       this.logger.log(
         `Create new order ${createdOrder.slug} successfully`,
@@ -192,15 +210,31 @@ export class OrderService {
    * @returns {Promise<CheckDataCreateOrderItemResponseDto>} The result of checking
    */
   async validateCreatedOrderItemData(
+    branch: string,
     data: CreateOrderItemRequestDto[],
   ): Promise<CheckDataCreateOrderItemResponseDto> {
     const context = `${OrderService.name}.${this.validateCreatedOrderItemData.name}`;
+    const now = new Date();
+    const dateQuery = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0, 0);
+    const menu = await this.menuRepository.findOne({
+      where: {
+        branch: {
+          slug: branch
+        },
+        date: dateQuery
+      }
+    });
+    if(!menu) {
+      this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
+      throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    }
 
     let subtotal: number = 0;
     const mappedOrderItems: OrderItem[] = [];
+    const subtractedQuantityMenuItems: MenuItem[] = [];
     for (let i = 0; i < data.length; i++) {
       let variant = await this.variantRepository.findOneBy({
-        slug: data[i].variant,
+        slug: data[i].variant
       });
       if (!variant) {
         this.logger.warn(
@@ -208,6 +242,24 @@ export class OrderService {
           context,
         );
         throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
+      }
+
+      const menuItem = await this.menuItemRepository.findOne({
+        where: {
+          menu: { slug: menu.slug },
+          product: {
+            variants: { slug: variant.slug }
+          }
+        }
+      });
+      if(!menuItem) {
+        this.logger.warn(ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU, context);
+        throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU);
+      }
+
+      if(data[i].quantity > menuItem.currentStock) {
+        this.logger.warn(OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY, context);
+        throw new OrderException(OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY);
       }
 
       subtotal += variant.price * data[i].quantity;
@@ -221,9 +273,12 @@ export class OrderService {
         subtotal: variant.price * data[i].quantity,
       });
       mappedOrderItems.push(mappedOrderItem);
+      const restQuantity: number = menuItem.currentStock - data[i].quantity;
+      Object.assign(menuItem, { currentStock: restQuantity })
+      subtractedQuantityMenuItems.push(menuItem);
     }
 
-    return { mappedOrderItems, subtotal };
+    return { mappedOrderItems, subtotal, subtractedQuantityMenuItems };
   }
 
   /**

@@ -34,6 +34,10 @@ import { BranchValidation } from "src/branch/branch.validation";
 import { VariantValidation } from "src/variant/variant.validation";
 import { WorkflowStatus } from "src/tracking/tracking.constants";
 import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
+import { MenuItem } from "src/menu-item/menu-item.entity";
+import { Menu } from "src/menu/menu.entity";
+import { MenuException } from "src/menu/menu.exception";
+import { ProductException } from "src/product/product.exception";
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -43,6 +47,8 @@ describe('OrderService', () => {
   let userRepositoryMock: MockType<Repository<User>>;
   let variantRepositoryMock: MockType<Repository<Variant>>;
   let trackingRepositoryMock: MockType<Repository<Tracking>>;
+  let menuRepositoryMock: MockType<Repository<Menu>>;
+  let menuItemRepositoryMock: MockType<Repository<MenuItem>>;
   let mapperMock: MockType<Mapper>;
 
   const mockQueryRunner = {
@@ -113,6 +119,14 @@ describe('OrderService', () => {
           useFactory: repositoryMockFactory,
         },
         {
+          provide: getRepositoryToken(Menu),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(MenuItem),
+          useFactory: repositoryMockFactory,
+        },
+        {
           provide: MAPPER_MODULE_PROVIDER,
           useFactory: mapperMockFactory,
         },
@@ -130,6 +144,8 @@ describe('OrderService', () => {
     tableRepositoryMock = module.get(getRepositoryToken(Table));
     userRepositoryMock = module.get(getRepositoryToken(User));
     trackingRepositoryMock = module.get(getRepositoryToken(Tracking));
+    menuRepositoryMock = module.get(getRepositoryToken(Menu));
+    menuItemRepositoryMock = module.get(getRepositoryToken(MenuItem));
     mapperMock = module.get(MAPPER_MODULE_PROVIDER);
   });
 
@@ -312,27 +328,57 @@ describe('OrderService', () => {
       jest.clearAllMocks();
     });
 
-    it('should return invalid result when a variant of data not found', async () => {
+    it('should throw exception when not found menu today', async () => {
       const createOrderItem: CreateOrderItemRequestDto = {
         quantity: 0,
         note: "mock-note",
         variant: "mock-variant-slug"
       };
+      const branch: string = 'mock-branch-slug';
       const mockInput = [createOrderItem];
-      (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
+      (menuRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.validateCreatedOrderItemData(mockInput)).rejects.toThrow(VariantException);
+      await expect(service.validateCreatedOrderItemData(branch, mockInput)).rejects.toThrow(MenuException);
     });
 
-    it('should return valid result', async () => {
+    it('should throw exception when a variant of data not found', async () => {
+      const createOrderItem: CreateOrderItemRequestDto = {
+        quantity: 0,
+        note: "mock-note",
+        variant: "mock-variant-slug"
+      };
+      const branch: string = 'mock-branch-slug';
+      const mockInput = [createOrderItem];
+      const menu = {
+        isTemplate: false,
+        date: new Date(),
+        menuItems: [],
+        id: "",
+        slug: "",
+      } as Menu;
+
+      (menuRepositoryMock.findOne as jest.Mock).mockResolvedValue(menu);
+      (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.validateCreatedOrderItemData(branch,mockInput)).rejects.toThrow(VariantException);
+    });
+
+    it('should throw exception when menu item not found from order item', async () => {
       const createOrderItem: CreateOrderItemRequestDto = {
         quantity: 1,
         note: "mock-note",
         variant: "mock-variant-slug"
       };
+      const branch: string = 'mock-branch-slug';
       const mockInput = [createOrderItem, createOrderItem];
-
-      const variant1 = {
+      const menu = {
+        isTemplate: false,
+        date: new Date(),
+        menuItems: [],
+        id: "",
+        slug: "",
+      } as Menu;
+      const variant = {
         price: 100,
         size: new Size(),
         product: new Product(),
@@ -341,36 +387,99 @@ describe('OrderService', () => {
         createdAt: new Date(),
         updatedAt: new Date()
       } as Variant;
-      const variant2 = {
-        price: 200,
+
+      (menuRepositoryMock.findOne as jest.Mock).mockResolvedValue(menu);
+      (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(variant);
+      (menuItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.validateCreatedOrderItemData(branch, mockInput)).rejects.toThrow(ProductException);
+    });
+
+    it('should throw exception when request quantity excess current stock of menu item', async () => {
+      const createOrderItem: CreateOrderItemRequestDto = {
+        quantity: 6,
+        note: "mock-note",
+        variant: "mock-variant-slug"
+      };
+      const branch: string = 'mock-branch-slug';
+      const mockInput = [createOrderItem];
+      const menu = {
+        isTemplate: false,
+        date: new Date(),
+        id: "",
+        slug: "",
+      } as Menu;
+      const variant = {
+        price: 100,
         size: new Size(),
         product: new Product(),
         id: "",
         slug: "",
-        createdAt: new Date(),
-        updatedAt: new Date()
       } as Variant;
 
+      const menuItem = {
+        defaultStock: 20,
+        currentStock: 5, // 6 > 5
+        id: "",
+        slug: "",
+      } as MenuItem;
+
+      (menuRepositoryMock.findOne as jest.Mock).mockResolvedValue(menu);
+      (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(variant);
+      (menuItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(menuItem);
+
+
+      await expect(service.validateCreatedOrderItemData(branch, mockInput)).rejects.toThrow(OrderException);
+    });
+
+    it('should return valid result', async () => {
+      const createOrderItem: CreateOrderItemRequestDto = {
+        quantity: 3,
+        note: "mock-note",
+        variant: "mock-variant-slug"
+      };
+      const branch: string = 'mock-branch-slug';
+      const mockInput = [createOrderItem];
+      const menu = {
+        isTemplate: false,
+        date: new Date(),
+        id: "",
+        slug: "",
+      } as Menu;
+      const variant = {
+        price: 100,
+        size: new Size(),
+        product: new Product(),
+        id: "",
+        slug: "",
+      } as Variant;
+
+      const menuItem = {
+        defaultStock: 20,
+        currentStock: 5, // 3 < 5
+        id: "",
+        slug: "",
+      } as MenuItem;
+
       const orderItem = {
-        quantity: 1,
-        subtotal: 100,
+        quantity: 3,
+        subtotal: 300,
         order: new Order(),
         variant: new Variant(),
         trackingOrderItems: [],
         id: "",
         slug: "",
-        createdAt: undefined,
-        updatedAt: undefined
       } as OrderItem;
-      const mappedOrderItems = [orderItem, orderItem];
-      const mockOutput = { mappedOrderItems, subtotal: 300 };
+      const mappedOrderItems = [orderItem];
+      const subtractedQuantityMenuItems = [menuItem];
+      const mockOutput = { mappedOrderItems, subtotal: 300, subtractedQuantityMenuItems};
 
-      (variantRepositoryMock.findOneBy as jest.Mock).mockImplementationOnce(() => variant1);
-      (variantRepositoryMock.findOneBy as jest.Mock).mockImplementationOnce(() => variant2);
-      (mapperMock.map as jest.Mock).mockImplementationOnce(() => orderItem);
-      (mapperMock.map as jest.Mock).mockImplementationOnce(() => orderItem);
+      (menuRepositoryMock.findOne as jest.Mock).mockResolvedValue(menu);
+      (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(variant);
+      (menuItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(menuItem);
+      (mapperMock.map as jest.Mock).mockReturnValue(orderItem);
 
-      expect(await service.validateCreatedOrderItemData(mockInput)).toEqual(mockOutput);
+      expect(await service.validateCreatedOrderItemData(branch, mockInput)).toEqual(mockOutput);
     });
   });
 
@@ -455,9 +564,16 @@ describe('OrderService', () => {
         createdAt: new Date(),
         updatedAt: new Date()
       } as OrderItem;
+      const menuItem = {
+        defaultStock: 0,
+        currentStock: 0,
+        id: "",
+        slug: "",
+      } as MenuItem;
       const validateCreatedOrderItemDataResultMock: CheckDataCreateOrderItemResponseDto = {
         mappedOrderItems: [orderItem],
-        subtotal: 0
+        subtotal: 0,
+        subtractedQuantityMenuItems: [menuItem]
       };
       const mockOutput = {
         subtotal: 100,

@@ -19,6 +19,7 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { OrderItem } from 'src/order-item/order-item.entity';
 import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
+import { MenuItem } from 'src/menu-item/menu-item.entity';
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -195,4 +196,5 @@ export class GetOrderRequestDto {
 export class CheckDataCreateOrderItemResponseDto {
   mappedOrderItems: OrderItem[];
   subtotal: number;
+  subtractedQuantityMenuItems: MenuItem[];
 }

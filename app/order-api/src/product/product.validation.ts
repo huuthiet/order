@@ -5,13 +5,15 @@ export const PRODUCT_NAME_EXIST = 'PRODUCT_NAME_EXIST';
 export const PRODUCT_NAME_REQUIRED = 'PRODUCT_NAME_REQUIRED';
 export const PRODUCT_LIMIT_REQUIRED = 'PRODUCT_LIMIT_REQUIRED';
 export const PRODUCT_ACTIVE_REQUIRED = 'PRODUCT_ACTIVE_REQUIRED';
+export const PRODUCT_NOT_FOUND_IN_TODAY_MENU = 'PRODUCT_NOT_FOUND_IN_TODAY_MENU';
 
 export type TProductErrorCodeKey =
   | typeof PRODUCT_NOT_FOUND
   | typeof PRODUCT_NAME_EXIST
   | typeof PRODUCT_LIMIT_REQUIRED
   | typeof PRODUCT_ACTIVE_REQUIRED
-  | typeof PRODUCT_NAME_REQUIRED;
+  | typeof PRODUCT_NAME_REQUIRED
+  | typeof PRODUCT_NOT_FOUND_IN_TODAY_MENU
 
 export type TProductErrorCode = Record<TProductErrorCodeKey, TErrorCodeValue>;
 
@@ -26,6 +28,10 @@ const ProductValidation: TProductErrorCode = {
   PRODUCT_ACTIVE_REQUIRED: createErrorCode(
     1017,
     'The active of product is required',
+  ),
+  PRODUCT_NOT_FOUND_IN_TODAY_MENU: createErrorCode(
+    1042,
+    'The product not found in today menu',
   ),
 };
 
