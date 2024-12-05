@@ -1,9 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   CreateMenuDto,
+  GetAllMenuQueryRequestDto,
   GetMenuRequestDto,
   MenuResponseDto,
   UpdateMenuDto,
@@ -15,8 +16,8 @@ import { Mapper } from '@automapper/core';
 import { MenuException } from './menu.exception';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as _ from 'lodash';
-import * as moment from 'moment';
 import { getDayIndex } from 'src/helper';
+import { AppPaginatedResponseDto } from 'src/app/app.dto';
 
 @Injectable()
 export class MenuService {
@@ -185,11 +186,31 @@ export class MenuService {
    * @param {any} query
    * @returns {Promise<MenuResponseDto[]>} All menus retrieved successfully
    */
-  async getAllMenus(query: any): Promise<MenuResponseDto[]> {
-    const menus = await this.menuRepository.find({
+  async getAllMenus(
+    query: GetAllMenuQueryRequestDto,
+  ): Promise<AppPaginatedResponseDto<MenuResponseDto>> {
+    const [menus, total] = await this.menuRepository.findAndCount({
+      where: { branch: { slug: query.branch } },
       order: { createdAt: 'DESC' },
       relations: ['menuItems.product.variants.size'],
+      skip: (query.page - 1) * query.size,
+      take: query.size,
     });
-    return this.mapper.mapArray(menus, Menu, MenuResponseDto);
+
+    // Calculate total pages
+    const totalPages = Math.ceil(total / query.size);
+    // Determine hasNext and hasPrevious
+    const hasNext = query.page < totalPages;
+    const hasPrevious = query.page > 1;
+
+    return {
+      hasNext: hasNext,
+      hasPrevios: hasPrevious,
+      items: this.mapper.mapArray(menus, Menu, MenuResponseDto),
+      total,
+      page: query.page,
+      pageSize: query.size,
+      totalPages,
+    } as AppPaginatedResponseDto<MenuResponseDto>;
   }
 }

@@ -78,7 +78,7 @@ export class MenuScheduler {
     return templateMenus;
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async updateDayIndex() {
     const context = `${MenuScheduler.name}.${this.updateDayIndex.name}`;
     this.logger.log(`Updating day index for menus without day index`, context);

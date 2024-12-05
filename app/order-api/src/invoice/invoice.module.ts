@@ -6,9 +6,14 @@ import { Invoice } from './invoice.entity';
 import { Order } from 'src/order/order.entity';
 import { InvoiceProfile } from './invoice.mapper';
 import { PdfModule } from 'src/pdf/pdf.module';
+import { QrCodeModule } from 'src/qr-code/qr-code.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Invoice, Order]), PdfModule],
+  imports: [
+    TypeOrmModule.forFeature([Invoice, Order]),
+    PdfModule,
+    QrCodeModule,
+  ],
   controllers: [InvoiceController],
   providers: [InvoiceService, InvoiceProfile],
 })

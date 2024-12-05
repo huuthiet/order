@@ -22,6 +22,8 @@ import { catchError, firstValueFrom, retry } from "rxjs";
 import { AxiosError } from "axios";
 import { CreateTableRequestDto, TableResponseDto } from "src/table/table.dto";
 import { CreateSizeRequestDto } from "src/size/size.dto";
+import { RobotConnectorException } from './robot-connector.exception';
+import { RobotConnectorValidation } from './robot-connector.validation';
 
 @Injectable()
 export class RobotConnectorClient {
@@ -50,7 +52,7 @@ export class RobotConnectorClient {
               `Get robot ${id} data from ROBOT API failed: ${error.message}`, 
               context
             );
-            throw new BadRequestException(`Get robot data failed`);
+            throw new RobotConnectorException(RobotConnectorValidation.GET_ROBOT_DATA_FAILED);
           }),
         ),
     );
@@ -104,10 +106,10 @@ export class RobotConnectorClient {
       .pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
-            `Run workflow from ROBOT API ${workflowId} failed: ${error.message}`, 
+            `${RobotConnectorValidation.RUN_WORKFLOW_FROM_ROBOT_API_FAILED} ${workflowId}: ${error.message}`, 
             context
           );
-          throw new BadRequestException(`Run workflow failed`);
+          throw new RobotConnectorException(RobotConnectorValidation.RUN_WORKFLOW_FROM_ROBOT_API_FAILED);
         }),
       )
     );
@@ -118,7 +120,7 @@ export class RobotConnectorClient {
   async retrieveWorkflowExecution(
     workflowExecutionId: string
   ): Promise<GetWorkflowExecutionResponseDto> {
-    console.log({workflowExecutionId})
+    const context = `${RobotConnectorClient.name}.${this.retrieveWorkflowExecution.name}`;
     const requestUrl = `${this.robotApiUrl}/workflow-executions/${workflowExecutionId}`;
     const { data } = await firstValueFrom(
       this.httpService
@@ -127,6 +129,7 @@ export class RobotConnectorClient {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get Workflow Execution from ROBOT API failed: ${error.message}`,
+            context
           );
           throw error;
         }),

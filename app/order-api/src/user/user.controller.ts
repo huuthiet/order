@@ -3,13 +3,18 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Post,
   Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
-import { GetAllUserQueryRequestDto, UserResponseDto } from './user.dto';
+import {
+  GetAllUserQueryRequestDto,
+  ResetPasswordRequestDto,
+  UserResponseDto,
+} from './user.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 
 @Controller('user')
@@ -38,5 +43,25 @@ export class UserController {
       timestamp: new Date().toISOString(),
       result,
     } as AppResponseDto<AppPaginatedResponseDto<UserResponseDto>>;
+  }
+
+  @Post('/reset-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset pwd' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'User password has been reset successfully',
+    type: UserResponseDto,
+  })
+  async resetPassword(
+    @Query(new ValidationPipe({ transform: true }))
+    requestData: ResetPasswordRequestDto,
+  ): Promise<AppResponseDto<UserResponseDto>> {
+    const result = await this.userService.resetPassword(requestData);
+    return {
+      message: 'User password has been reset successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+    } as AppResponseDto<UserResponseDto>;
   }
 }

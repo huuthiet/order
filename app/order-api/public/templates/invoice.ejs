@@ -5,43 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invoice</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-
-    .invoice {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      border: 1px solid #ddd;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .items {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .items th,
-    .items td {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-
-    .items th {
-      background-color: #f2f2f2;
-    }
-
-    .total {
-      text-align: right;
-      font-weight: bold;
-    }
-  </style>
   <% var dir=process.cwd() %>
     <style>
       <%- include(dir + '/public/css/tailwind.min.css') %>
@@ -50,9 +13,12 @@
 
 <body>
   <div class="p-5">
-    <p class="uppercase font-bold text-2xl text-center mb-5">TREND Coffee</p>
+    <p class="uppercase font-bold text-2xl text-center mb-2">TREND Coffee</p>
+    <p class="flex items-center justify-center">
+      <img src="<%= qrcode %>" alt="qrcode" class="w-40"/>
+    </p>
     <p class="uppercase font-bold text-2xl text-center mb-5">HÓA ĐƠN BÁN HÀNG</p>
-    <p class="uppercase font-bold text-center">Bàn: <% tableName %>
+    <p class="uppercase font-bold text-center">Bàn: <%= tableName %>
     </p>
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between">
