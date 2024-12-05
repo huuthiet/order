@@ -12,12 +12,12 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
+import { UpdateMenuForm } from '@/components/app/form'
+import { IMenu } from '@/types'
+
 interface IUpdateMenuDialogProps {
   menu: IMenu
 }
-
-import { UpdateMenuForm } from '@/components/app/form'
-import { IMenu } from '@/types'
 
 export default function UpdateMenuDialog({ menu }: IUpdateMenuDialogProps) {
   const { t } = useTranslation(['menu'])

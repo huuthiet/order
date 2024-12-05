@@ -58,6 +58,9 @@
     "createOrderTrackingSuccess": "Phân robot giao hàng thành công",
 
     "createInvoiceSuccess": "Tạo hóa đơn thành công",
-    "exportInvoiceSuccess": "Xuất hóa đơn thành công"
+    "exportInvoiceSuccess": "Xuất hóa đơn thành công",
+
+    "updatePasswordSuccess": "Cập nhật mật khẩu thành công",
+    "resetPasswordSuccess": "Đặt lại mật khẩu thành công"
   }
 }

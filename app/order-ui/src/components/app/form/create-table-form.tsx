@@ -45,7 +45,6 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
       branch: '',
       location: '',
       status: TableStatus.AVAILABLE,
-      // isEmpty: false,
       xPosition: 0,
       yPosition: 0,
     },
@@ -119,67 +118,53 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
           <FormItem>
             <FormLabel>{t('table.status')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('table.enterStatus')} />
+              <Input {...field} value={t(`table.${field.value}`)} placeholder={t('table.enterStatus')} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
     ),
-    // isEmpty: (
+    // xPosition: (
     //   <FormField
     //     control={form.control}
-    //     name="isEmpty"
+    //     name="xPosition"
     //     render={({ field }) => (
     //       <FormItem>
+    //         <FormLabel>{t('table.xPosition')}</FormLabel>
     //         <FormControl>
-    //           <IsEmptySwitch defaultValue={false} {...field} />
+    //           <Input {...field} placeholder={t('table.enterXPosition')}
+    //             onChange={(e) => {
+    //               const valueAsNumber =
+    //                 e.target.value === '' ? '' : Number(e.target.value)
+    //               field.onChange(valueAsNumber)
+    //             }} />
     //         </FormControl>
     //         <FormMessage />
     //       </FormItem>
     //     )}
     //   />
     // ),
-    xPosition: (
-      <FormField
-        control={form.control}
-        name="xPosition"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t('table.xPosition')}</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder={t('table.enterXPosition')}
-                onChange={(e) => {
-                  const valueAsNumber =
-                    e.target.value === '' ? '' : Number(e.target.value)
-                  field.onChange(valueAsNumber)
-                }} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    ),
-    yPosition: (
-      <FormField
-        control={form.control}
-        name="yPosition"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t('table.yPosition')}</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder={t('table.enterYPosition')}
-                onChange={(e) => {
-                  const valueAsNumber =
-                    e.target.value === '' ? '' : Number(e.target.value)
-                  field.onChange(valueAsNumber)
-                }} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    ),
+    // yPosition: (
+    //   <FormField
+    //     control={form.control}
+    //     name="yPosition"
+    //     render={({ field }) => (
+    //       <FormItem>
+    //         <FormLabel>{t('table.yPosition')}</FormLabel>
+    //         <FormControl>
+    //           <Input {...field} placeholder={t('table.enterYPosition')}
+    //             onChange={(e) => {
+    //               const valueAsNumber =
+    //                 e.target.value === '' ? '' : Number(e.target.value)
+    //               field.onChange(valueAsNumber)
+    //             }} />
+    //         </FormControl>
+    //         <FormMessage />
+    //       </FormItem>
+    //     )}
+    //   />
+    // ),
   }
 
   return (

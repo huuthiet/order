@@ -10,6 +10,7 @@
     "close": "Đóng",
     "back": "Quay lại",
     "viewDetail": "Xem chi tiết",
+    "confirm": "Xác nhận",
     "confirmDelete": "Tôi đã hiểu, xác nhận xóa",
 
     "noData": "Không có dữ liệu",
@@ -34,12 +35,12 @@
     "debug": "Debug"
   },
   "dayOfWeek": {
-    "0": "Chủ nhật",
-    "1": "Thứ hai",
-    "2": "Thứ ba",
-    "3": "Thứ tư",
-    "4": "Thứ năm",
-    "5": "Thứ sáu",
-    "6": "Thứ bảy"
+    "0": "Thứ hai",
+    "1": "Thứ ba",
+    "2": "Thứ tư",
+    "3": "Thứ năm",
+    "4": "Thứ sáu",
+    "5": "Thứ bảy",
+    "6": "Chủ nhật"
   }
 }

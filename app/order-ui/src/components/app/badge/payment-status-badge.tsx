@@ -12,11 +12,11 @@ export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps)
     const getBadgeColor = (status: paymentStatus) => {
         switch (status) {
             case paymentStatus.PENDING:
-                return 'border-yellow-500 bg-yellow-50 border text-yellow-500 font-semibold'
+                return 'text-yellow-500 italic'
             case paymentStatus.PAID:
-                return 'border-green-500 bg-green-50 border text-green-500 font-semibold'
+                return 'text-green-500 italic'
             case paymentStatus.CANCELLED:
-                return 'border-destructive bg-destructive/20 border text-destructive'
+                return 'text-destructive italic'
         }
     }
 
@@ -33,9 +33,9 @@ export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps)
     // Ensure the component returns valid JSX
     return (
         <span
-            className={`inline-block min-w-[4.5rem] px-3 py-0.5 text-center font-beVietNam text-[0.5rem] ${getBadgeColor(
+            className={`inline-block w-fit text-center text-[0.5rem] ${getBadgeColor(
                 status || paymentStatus.PENDING
-            )} rounded-full`}
+            )}`}
         >
             {getBadgeText(status || paymentStatus.PENDING)}
         </span>

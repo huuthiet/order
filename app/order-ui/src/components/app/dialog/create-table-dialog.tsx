@@ -30,7 +30,7 @@ export default function CreateTableDialog() {
           {t('table.create')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[20rem] rounded-md sm:max-w-[36rem]">
+      <DialogContent className="max-w-[20rem] px-6 pb-6 rounded-md sm:max-w-[36rem]">
         <DialogHeader>
           <DialogTitle>{t('table.create')}</DialogTitle>
           <DialogDescription>
