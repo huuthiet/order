@@ -21,6 +21,8 @@ import { useUpdateMenu } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { cn } from '@/lib'
+import { useUserStore } from '@/stores'
+import moment from 'moment'
 
 interface IFormUpdateMenuProps {
   menu: IMenu
@@ -33,6 +35,7 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
 }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['menu'])
+  const { userInfo } = useUserStore()
   const { mutate: updateMenu } = useUpdateMenu()
   // const { data } = useAllMenus()
   const form = useForm<TUpdateMenuSchema>({
@@ -40,7 +43,7 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
     defaultValues: {
       slug: menu.slug,
       date: menu.date,
-      branchSlug: menu.branchSlug,
+      branchSlug: userInfo?.branch.slug,
     },
   })
 
@@ -48,7 +51,9 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
     updateMenu(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
+          // queryKey: ['menus', { branchSlug: userInfo?.branch.slug }],
           queryKey: ['menus'],
+
         })
         onSubmit(false)
         form.reset()
@@ -68,7 +73,7 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
             <FormControl>
               <Input
                 {...field}
-                value={field.value || ''}
+                value={moment(field.value).format("DD/MM/YYYY") || ''}
                 className={cn(
                   'w-full justify-start text-left font-normal',
                   !field.value && 'text-muted-foreground',
@@ -129,7 +134,7 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
             <FormLabel>{t('menu.branchSlug')}</FormLabel>
             <FormControl>
               <BranchSelect
-                defaultValue={menu.branchSlug} // Giá trị mặc định
+                defaultValue={userInfo?.branch.slug} // Giá trị mặc định
                 onChange={field.onChange} // Cập nhật giá trị
               />
             </FormControl>

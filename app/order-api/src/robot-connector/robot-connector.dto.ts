@@ -1,5 +1,5 @@
 export class RobotResponseDto {
-  status: string
+  status: string;
 }
 
 export class CreateWorkflowRequestDto {
@@ -35,12 +35,22 @@ export class CreateQRLocationRequestDto {
   qr_code: string;
 }
 
+export class UpdateQRLocationMetadataRequestDto {
+  isAssigned: boolean;
+}
+
 export class UpdateQRLocationRequestDto {
   name: string;
   qr_code: string;
+  metadata: UpdateQRLocationMetadataRequestDto;
 }
 export class QRLocationResponseDto {
   id: string;
   name: string;
   qr_code: string;
+  metadata: QRLocationMetadataResponseDto;
+}
+
+export class QRLocationMetadataResponseDto {
+  isAssigned: boolean;
 }

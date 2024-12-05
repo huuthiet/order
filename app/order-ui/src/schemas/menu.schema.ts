@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const createMenuSchema = z.object({
   date: z.string(),
   branchSlug: z.string(),
+  isTemplate: z.boolean(),
 })
 
 export const updateMenuSchema = z.object({

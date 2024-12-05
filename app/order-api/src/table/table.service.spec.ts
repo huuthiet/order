@@ -18,12 +18,14 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { BranchException } from 'src/branch/branch.exception';
 import { TableException } from './table.exception';
+import { QRLocationResponseDto } from 'src/robot-connector/robot-connector.dto';
 
 describe('TableService', () => {
   let service: TableService;
   let tableRepositoryMock: MockType<Repository<Table>>;
   let branchRepositoryMock: MockType<Repository<Branch>>;
   let mapperMock: MockType<Mapper>;
+  let robotConnectorClient: RobotConnectorClient;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -72,6 +74,8 @@ describe('TableService', () => {
     tableRepositoryMock = module.get(getRepositoryToken(Table));
     branchRepositoryMock = module.get(getRepositoryToken(Branch));
     mapperMock = module.get(MAPPER_MODULE_PROVIDER);
+    robotConnectorClient =
+      module.get<RobotConnectorClient>(RobotConnectorClient);
   });
 
   it('should be defined', () => {
@@ -120,6 +124,11 @@ describe('TableService', () => {
       (branchRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(branch);
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
+      jest.spyOn(robotConnectorClient, 'getQRLocationById').mockResolvedValue({
+        id: 'mock-location-id',
+        name: 'mock-location-name',
+        qr_code: 'mock-location-code',
+      } as QRLocationResponseDto);
 
       await expect(service.create(mockInput)).rejects.toThrow(TableException);
     });
@@ -153,6 +162,11 @@ describe('TableService', () => {
       (tableRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (tableRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
+      jest.spyOn(robotConnectorClient, 'getQRLocationById').mockResolvedValue({
+        id: 'mock-location-abfA',
+        name: 'mock-location-name',
+        qr_code: 'mock-location-code',
+      } as QRLocationResponseDto);
 
       const result = await service.create(mockInput);
       expect(result).toEqual(mockOutput);

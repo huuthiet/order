@@ -4,7 +4,6 @@ import moment from 'moment'
 import { CalendarIcon } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { useAllMenus } from '@/hooks'
 
 import {
   FormField,
@@ -19,14 +18,16 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui'
+import { useAllMenus, usePagination, useCreateMenu } from '@/hooks'
 import { createMenuSchema, TCreateMenuSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ICreateMenuRequest } from '@/types'
-import { useCreateMenu } from '@/hooks'
 import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { cn } from '@/lib'
+import { IsTemplateSwitch } from '@/components/app/switch'
+import { useUserStore } from '@/stores'
 
 interface IFormCreateMenuProps {
   onSubmit: (isOpen: boolean) => void
@@ -37,20 +38,29 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
 }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(['menu'])
+  const { userInfo } = useUserStore()
   const { mutate: createMenu } = useCreateMenu()
+  const { pagination } = usePagination()
+  const { data: menuData } = useAllMenus(
+    {
+      order: 'DESC',
+      page: pagination.pageIndex,
+      pageSize: pagination.pageSize,
+    }
+  )
   const [date, setDate] = useState<Date | undefined>(undefined)
   const form = useForm<TCreateMenuSchema>({
     resolver: zodResolver(createMenuSchema),
     defaultValues: {
       date: '',
-      branchSlug: '',
+      branchSlug: userInfo?.branch.slug,
+      isTemplate: false,
     },
   })
-  const { data: menuData } = useAllMenus()
 
   // Get existing menu dates
   const existingMenuDates =
-    menuData?.result.map((menu) => moment(menu.date).format('YYYY-MM-DD')) || []
+    menuData?.result.items.map((menu) => moment(menu.date).format('YYYY-MM-DD')) || []
 
   // Function to disable dates
   const disabledDays = [
@@ -67,7 +77,7 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
     createMenu(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['menus'],
+          queryKey: ['menus', userInfo?.branch.slug],
         })
         onSubmit(false)
         form.reset()
@@ -95,7 +105,7 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
                         !field.value && 'text-muted-foreground',
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="w-4 h-4 mr-2" />
                       {field.value ? (
                         field.value
                       ) : (
@@ -141,6 +151,20 @@ export const CreateMenuForm: React.FC<IFormCreateMenuProps> = ({
             <FormLabel>{t('menu.branchSlug')}</FormLabel>
             <FormControl>
               <BranchSelect {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    ),
+    isTemplate: (
+      <FormField
+        control={form.control}
+        name="isTemplate"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <IsTemplateSwitch defaultValue={false} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

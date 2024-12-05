@@ -6,10 +6,11 @@ import { Table } from './table.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Branch } from 'src/branch/branch.entity';
 import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module';
+import { TableSubscriber } from './table.subscriber';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Table, Branch]), RobotConnectorModule],
   controllers: [TableController],
-  providers: [TableService, TableProfile],
+  providers: [TableService, TableProfile, TableSubscriber],
 })
 export class TableModule {}

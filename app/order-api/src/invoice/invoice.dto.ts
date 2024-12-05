@@ -3,9 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 import { InvoiceItemResponseDto } from 'src/invoice-item/invoice-item.dto';
-import { InvoiceItem } from 'src/invoice-item/invoice-item.entity';
 
-export class CreateInvoiceDto {
+export class ExportInvoiceDto {
   @AutoMap()
   @ApiProperty()
   order: string;

@@ -50,4 +50,8 @@ export class Invoice extends Base {
   // One to one with order
   @OneToOne(() => Order, (order) => order.invoice)
   order: Order;
+
+  @AutoMap()
+  @Column({ name: 'qrcode_column', type: 'text' })
+  qrcode: string;
 }
