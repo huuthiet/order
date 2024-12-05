@@ -7,6 +7,7 @@ import { Order } from 'src/order/order.entity';
 import { InvoiceProfile } from './invoice.mapper';
 import { PdfModule } from 'src/pdf/pdf.module';
 import { QrCodeModule } from 'src/qr-code/qr-code.module';
+import { InvoiceScheduler } from './invoice.scheduler';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { QrCodeModule } from 'src/qr-code/qr-code.module';
     QrCodeModule,
   ],
   controllers: [InvoiceController],
-  providers: [InvoiceService, InvoiceProfile],
+  providers: [InvoiceService, InvoiceProfile, InvoiceScheduler],
 })
 export class InvoiceModule {}
