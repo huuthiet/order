@@ -59,9 +59,9 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
           <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
+                <Button variant="ghost" className="w-8 h-8 p-0">
                   <span className="sr-only">{tCommon('common.action')}</span>
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -70,11 +70,11 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
                 </DropdownMenuLabel>
                 <NavLink
                   to={`${ROUTE.STAFF_MENU_DETAIL}/${menu.slug}`}
-                  className="flex w-full items-center justify-start"
+                  className="flex items-center justify-start w-full"
                 >
                   <Button
                     variant="ghost"
-                    className="flex w-full justify-start gap-1 px-2 text-sm"
+                    className="flex justify-start w-full gap-1 px-2 text-sm"
                   >
                     <SquareMousePointer className="icon" />
                     {tCommon('common.viewDetail')}

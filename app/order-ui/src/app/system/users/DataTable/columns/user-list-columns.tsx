@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui'
 import { IUserInfo } from '@/types'
-import { UserInfoDialog } from '@/components/app/dialog'
+import { ResetPasswordDialog, UserInfoDialog } from '@/components/app/dialog'
 
 export const useUserListColumns = (): ColumnDef<IUserInfo>[] => {
   const { t } = useTranslation(['user', 'common'])
@@ -107,6 +107,7 @@ export const useUserListColumns = (): ColumnDef<IUserInfo>[] => {
                   {tCommon('common.action')}
                 </DropdownMenuLabel>
                 <UserInfoDialog user={user} />
+                <ResetPasswordDialog user={user} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

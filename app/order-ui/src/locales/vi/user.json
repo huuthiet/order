@@ -13,6 +13,13 @@
     "name": "Tên",
     "email": "Email",
     "phoneNumber": "Số điện thoại",
-    "address": "Địa chỉ"
+    "address": "Địa chỉ",
+
+    "resetPassword": "Đặt lại mật khẩu",
+    "resetPasswordDescription": "Đặt lại mật khẩu cho người dùng",
+    "resetPasswordContent": "Bạn có chắc muốn đặt lại mật khẩu cho người dùng ",
+    "resetPasswordContent2": " không?",
+    "userEmailNotFound": "Không tìm thấy email của người dùng",
+    "resetPasswordNotAvailable": "Chức năng đặt lại mật khẩu không khả dụng"
   }
 }

@@ -483,37 +483,37 @@ describe('OrderService', () => {
     });
   });
 
-  // describe('getAllOrders - get all order by options(branch, owner', () => {
-  //   beforeEach(() => {
-  //     jest.clearAllMocks();
-  //   });
+  describe('getAllOrders - get all order by options(branch, owner', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
 
-  //   it('should return all order when retrieve success', async () => {
-  //     const mockInput = {
-  //       page: 0,
-  //       size: 0,
-  //       status: []
-  //     } as GetOrderRequestDto;
-  //     const order = {
-  //       subtotal: 100,
-  //       status: "",
-  //       type: "",
-  //       branch: new Branch(),
-  //       owner: new User(),
-  //       orderItems: [],
-  //       id: "mock-order-id",
-  //       slug: "mock-order-slug",
-  //       createdAt: new Date(),
-  //       updatedAt: new Date()
-  //     } as Order;
-  //     const mockOutput = [order];
+    it('should return all order when retrieve success', async () => {
+      const mockInput = {
+        page: 0,
+        size: 0,
+        status: []
+      } as GetOrderRequestDto;
+      const order = {
+        subtotal: 100,
+        status: "",
+        type: "",
+        branch: new Branch(),
+        owner: new User(),
+        orderItems: [],
+        id: "mock-order-id",
+        slug: "mock-order-slug",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as Order;
+      const orders = [order];
       
-  //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(mockOutput);
-  //     (mapperMock.mapArray as jest.Mock).mockReturnValue(mockOutput);
+      (orderRepositoryMock.findAndCount as jest.Mock).mockResolvedValue([orders, 1]);
+      (mapperMock.mapArray as jest.Mock).mockReturnValue(orders);
 
-  //     expect(await service.getAllOrders(mockInput)).toEqual(mockOutput);
-  //   });
-  // });
+      expect((await service.getAllOrders(mockInput)).items).toEqual(orders);
+    });
+  });
 
   describe('getOrderBySlug - retrieve a order by slug', () => {
     beforeEach(() => {

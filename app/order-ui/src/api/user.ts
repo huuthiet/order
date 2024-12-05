@@ -12,3 +12,11 @@ export async function getUsers(
   )
   return response.data
 }
+
+export async function resetPassword(user: string): Promise<IApiResponse<null>> {
+  const response = await http.post<IApiResponse<null>>(
+    '/user/reset-password',
+    user,
+  )
+  return response.data
+}

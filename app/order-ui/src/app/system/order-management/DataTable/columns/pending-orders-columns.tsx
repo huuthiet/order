@@ -8,6 +8,8 @@ import {
 } from '@/components/ui'
 import { IOrder } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
+import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
+import { PaymentMethod } from '@/constants'
 
 export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
   const { t } = useTranslation(['menu'])
@@ -68,6 +70,26 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
             status={order?.status}
           />
 
+        )
+      },
+    },
+    {
+      accessorKey: 'paymentMethod',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('order.paymentMethod')} />
+      ),
+      cell: ({ row }) => {
+        const order = row.original
+        return (
+
+          <div className='flex flex-col'>
+            <span className='text-xs'>
+              {order?.payment && order?.payment.paymentMethod === PaymentMethod.CASH ? t('order.cash') : t('order.bankTransfer')}
+            </span>
+            <PaymentStatusBadge
+              status={order?.invoice?.status}
+            />
+          </div>
         )
       },
     },

@@ -35,6 +35,7 @@
     "createMenuDescription": "Điền đầy đủ thông tin để tạo thực đơn mới",
     "chooseDate": "Chọn ngày",
     "branchSlug": "Chi nhánh",
+    "isTemplate": "Là mẫu thực đơn",
 
     "update": "Chỉnh sửa thực đơn",
     "updateMenuDescription": "Thay đổi thông tin để cập nhật thực đơn",
@@ -91,6 +92,8 @@
     "orderSuccess": "Đặt hàng thành công",
 
     "paymentStatus": "Thanh toán",
+    "cash": "Tiền mặt",
+    "bankTransfer": "Chuyển khoản ngân hàng",
     "pending": "Đang chuẩn bị",
     "completed": "Đã hoàn tất",
     "running": "Đang giao hàng",
@@ -106,7 +109,6 @@
 
     "viewDetail": "Xem chi tiết",
     "updatePayment": "Cập nhật thanh toán",
-    "createInvoice": "Tạo hóa đơn",
     "exportInvoice": "Xuất hóa đơn",
     "backToMenu": "Quay lại menu",
 

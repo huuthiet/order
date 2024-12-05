@@ -2,31 +2,41 @@ import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 
 import { DataTable, ScrollArea } from '@/components/ui'
-import { useAllMenus } from '@/hooks'
+import { useAllMenus, usePagination } from '@/hooks'
 import { useMenusColumns } from './DataTable/columns'
 import { MenusActionOptions } from './DataTable/actions'
+import { useUserStore } from '@/stores'
 
 export default function MenuManagementPage() {
   const { t } = useTranslation(['menu'])
-  const { data, isLoading } = useAllMenus()
+  const { userInfo } = useUserStore()
+  const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
+  const { data, isLoading } = useAllMenus(
+    {
+      order: 'DESC',
+      page: pagination.pageIndex,
+      pageSize: pagination.pageSize,
+      branch: userInfo?.branch.slug,
+    }
+  )
 
   return (
-    <div className="flex h-full flex-row gap-2">
+    <div className="flex flex-row h-full gap-2">
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
         <div className={`pl-4 transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pb-4 pr-4">
-            <span className="flex w-full items-center justify-start gap-1 text-lg">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 pr-4 bg-background">
+            <span className="flex items-center justify-start w-full gap-1 text-lg">
               <SquareMenu />
               {t('menu.title')}
             </span>
             <DataTable
               columns={useMenusColumns()}
-              data={data?.result || []}
+              data={data?.result.items || []}
               isLoading={isLoading}
-              pages={1}
-              onPageChange={() => {}}
-              onPageSizeChange={() => {}}
+              pages={data?.result?.totalPages || 0}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
               // onRowClick={handleRowClick}
               actionOptions={MenusActionOptions}
             />
