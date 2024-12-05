@@ -64,7 +64,6 @@ export class TrackingScheduler {
       trackingIds.map(async (id) => {
         try {
           await this.updateStatusOrder(id);
-          console.log("updated order")
         } catch (error) {
           this.logger.warn(`Error updating status for order`, context);
         }

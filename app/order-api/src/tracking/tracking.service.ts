@@ -89,9 +89,16 @@ export class TrackingService {
       await this.checkRobotStatusBeforeCall();
 
       const requestData: RunWorkflowRequestDto = {
-        order_code: orderResult.slug,
-        location: tableLocation
+        runtime_config: {
+          raybot_id: this.robotId,
+          location: tableLocation,
+          order_code: orderResult.slug
+        }
       }
+      // const requestData: RunWorkflowRequestDto = {
+      //   order_code: orderResult.slug,
+      //   location: tableLocation
+      // }
       const workflowRobot: WorkflowExecutionResponseDto = 
         await this.robotConnectorClient.runWorkflow(workflowId, requestData);
 
