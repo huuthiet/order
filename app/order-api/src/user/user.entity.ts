@@ -3,6 +3,7 @@ import { Base } from 'src/app/base.entity';
 import { AutoMap } from '@automapper/classes';
 import { Branch } from 'src/branch/branch.entity';
 import { Order } from 'src/order/order.entity';
+import { ForgotPasswordToken } from 'src/auth/forgot-password-token.entity';
 
 @Entity('user_tbl')
 export class User extends Base {
@@ -54,4 +55,7 @@ export class User extends Base {
   // One to many with approval order
   @OneToMany(() => Order, (order) => order.approvalBy)
   approvalOrders: Order[];
+
+  @OneToMany(() => ForgotPasswordToken, (token) => token.user)
+  forgotPasswordTokens: ForgotPasswordToken[];
 }

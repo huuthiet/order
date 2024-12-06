@@ -67,11 +67,30 @@ export class AuthRefreshRequestDto {
   refreshToken: string;
 }
 
+export class ForgotPasswordTokenRequestDto {
+  @ApiProperty()
+  @AutoMap()
+  @IsNotEmpty()
+  email: string;
+}
+
 export class AuthChangePasswordRequestDto {
   @ApiProperty()
   @AutoMap()
   @IsString()
   oldPassword: string;
+
+  @ApiProperty()
+  @AutoMap()
+  @IsString()
+  newPassword: string;
+}
+
+export class ForgotPasswordRequestDto {
+  @ApiProperty()
+  @AutoMap()
+  @IsString()
+  token: string;
 
   @ApiProperty()
   @AutoMap()
@@ -162,4 +181,10 @@ export class RegisterAuthResponseDto {
   @ApiProperty()
   @AutoMap()
   lastName: string;
+}
+
+export class AuthJwtPayload {
+  sub: string;
+  jti: string;
+  scope: string;
 }
