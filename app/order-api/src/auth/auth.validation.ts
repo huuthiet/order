@@ -8,6 +8,7 @@ export const INVALID_LASTNAME = 'INVALID_LASTNAME';
 export const USER_EXISTS = 'USER_EXISTS';
 export const USER_NOT_FOUND = 'USER_NOT_FOUND';
 export const INVALID_OLD_PASSWORD = 'INVALID_OLD_PASSWORD';
+export const FORGOT_TOKEN_EXPIRED = 'FORGOT_TOKEN_EXPIRED';
 
 export type TAuthErrorCodeKey =
   | typeof INVALID_PHONENUMBER
@@ -17,11 +18,12 @@ export type TAuthErrorCodeKey =
   | typeof USER_EXISTS
   | typeof USER_NOT_FOUND
   | typeof INVALID_OLD_PASSWORD
+  | typeof FORGOT_TOKEN_EXPIRED
   | typeof INVALID_FIRSTNAME;
 
 export type TAuthErrorCode = Record<TAuthErrorCodeKey, TErrorCodeValue>;
 
-const AuthValidation: TAuthErrorCode = {
+export const AuthValidation: TAuthErrorCode = {
   INVALID_PHONENUMBER: createErrorCode(1004, 'Phone number is required'),
   INVALID_PASSWORD: createErrorCode(1005, 'Password is required'),
   INVALID_FIRSTNAME: createErrorCode(1007, 'Full name is required'),
@@ -30,6 +32,5 @@ const AuthValidation: TAuthErrorCode = {
   USER_EXISTS: createErrorCode(1010, 'User exist'),
   USER_NOT_FOUND: createErrorCode(1011, 'User not found'),
   INVALID_OLD_PASSWORD: createErrorCode(1026, 'Invalid old password'),
+  FORGOT_TOKEN_EXPIRED: createErrorCode(1044, 'Forgot token is expired'),
 };
-
-export default AuthValidation;

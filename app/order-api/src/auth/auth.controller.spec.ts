@@ -14,6 +14,9 @@ import { Logger } from 'src/logger/logger.entity';
 import { Branch } from 'src/branch/branch.entity';
 import { FileService } from 'src/file/file.service';
 import { File } from 'src/file/file.entity';
+import { MailService } from 'src/mail/mail.service';
+import { MailerService } from '@nestjs-modules/mailer';
+import { ForgotPasswordToken } from './forgot-password-token.entity';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -65,6 +68,13 @@ describe('AuthController', () => {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console, // Mock logger (or a custom mock)
         },
+        LoggerService,
+        {
+          provide: getRepositoryToken(ForgotPasswordToken),
+          useFactory: repositoryMockFactory,
+        },
+        MailService,
+        { provide: MailerService, useValue: {} },
         LoggerService,
       ],
     }).compile();
