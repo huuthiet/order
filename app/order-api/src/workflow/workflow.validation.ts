@@ -10,5 +10,5 @@ export type TWorkflowErrorCode = Record<TWorkflowErrorCodeKey, TErrorCodeValue>;
 
 export const WorkflowValidation: TWorkflowErrorCode = {
   MUST_ADD_WORKFLOW_FOR_BRANCH: createErrorCode(1036, 'Must add workflow for branch'),
-  WORKFLOW_NOT_FOUND: createErrorCode(1046, 'Workflow not found'),
+  WORKFLOW_NOT_FOUND: createErrorCode(1047, 'Workflow not found'),
 };
