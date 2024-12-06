@@ -1,4 +1,4 @@
-import { IApiResponse, ILoginResponse } from '@/types'
+import { IApiResponse, ILoginResponse, IForgotPasswordRequest } from '@/types'
 import { http } from '@/utils'
 
 export async function login(params: {
@@ -15,6 +15,19 @@ export async function register(params: {
   firstName: string
   lastName: string
 }): Promise<IApiResponse<ILoginResponse>> {
-  const response = await http.post<IApiResponse<ILoginResponse>>('/auth/register', params)
+  const response = await http.post<IApiResponse<ILoginResponse>>(
+    '/auth/register',
+    params,
+  )
+  return response.data
+}
+
+export async function forgotPassword(
+  email: IForgotPasswordRequest,
+): Promise<IApiResponse<ILoginResponse>> {
+  const response = await http.post<IApiResponse<ILoginResponse>>(
+    '/auth/forgot-password',
+    email,
+  )
   return response.data
 }

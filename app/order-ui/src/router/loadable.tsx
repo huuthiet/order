@@ -20,6 +20,12 @@ export const RegisterPage = React.lazy(() =>
   })),
 )
 
+export const ForgotPasswordPage = React.lazy(() =>
+  import('@/app/auth').then((module) => ({
+    default: module.ForgotPasswordPage,
+  })),
+)
+
 //Views
 
 //Home page

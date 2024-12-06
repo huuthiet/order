@@ -18,7 +18,7 @@ import { CheckoutCartDrawer } from '@/components/app/drawer'
 
 export default function ConfirmOrderPage() {
   const { t } = useTranslation('menu')
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(true)
   const { getCartItems } = useCartItemStore()
   const { state } = useSidebar()
   const isMobile = useIsMobile()

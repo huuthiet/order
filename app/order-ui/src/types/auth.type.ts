@@ -23,6 +23,10 @@ export interface IRegisterRequest {
   lastName: string
 }
 
+export interface IForgotPasswordRequest {
+  email: string
+}
+
 export interface IRefreshTokenResponse {
   expireTime: string
   expireTimeRefreshToken: string

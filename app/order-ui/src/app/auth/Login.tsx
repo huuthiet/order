@@ -96,12 +96,12 @@ export default function Login() {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center">
+    <div className="relative flex items-center justify-center min-h-screen">
       <img
         src={LoginBackground}
-        className="absolute left-0 top-0 h-full w-full sm:object-fill"
+        className="absolute top-0 left-0 w-full h-full sm:object-fill"
       />
-      <div className="relative z-10 flex h-full w-full items-center justify-center">
+      <div className="relative z-10 flex items-center justify-center w-full h-full">
         <Card className="mx-auto border border-muted-foreground bg-white bg-opacity-10 shadow-xl backdrop-blur-xl sm:min-w-[24rem]">
           <CardHeader>
             <CardTitle className={cn('text-center text-2xl text-white')}>
@@ -116,10 +116,15 @@ export default function Login() {
           <CardContent>
             <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
           </CardContent>
-          <CardFooter className="flex gap-1 text-white">
-            <span>{t('login.noAccount')}</span>
-            <NavLink to={ROUTE.REGISTER} className="text-center text-primary">
-              {t('login.register')}
+          <CardFooter className="flex justify-between gap-1 text-white">
+            <div className='flex gap-1'>
+              <span className='text-sm'>{t('login.noAccount')}</span>
+              <NavLink to={ROUTE.REGISTER} className="text-sm text-center text-primary">
+                {t('login.register')}
+              </NavLink>
+            </div>
+            <NavLink to={ROUTE.FORGOT_PASSWORD} className="text-sm text-primary">
+              {t('login.forgotPassword')}
             </NavLink>
           </CardFooter>
         </Card>
