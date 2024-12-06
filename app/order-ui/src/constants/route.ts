@@ -4,6 +4,7 @@ export const ROUTE = {
   ADMIN: '/admin',
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
+  FORGOT_PASSWORD: '/auth/forgot-password',
   ORDER_SUCCESS: '/order-success',
   PROFILE: '/profile',
 

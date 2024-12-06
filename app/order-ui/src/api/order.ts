@@ -88,7 +88,7 @@ export async function getOrderInvoice(
 }
 
 export async function exportOrderInvoice(
-  slug: string,
+  order: string,
 ): Promise<IApiResponse<string>> {
   const { setProgress, setFileName, setIsDownloading, reset } =
     useDownloadStore.getState()
@@ -97,19 +97,23 @@ export async function exportOrderInvoice(
   setIsDownloading(true)
 
   try {
-    const response = await http.get(`/invoice/${slug}/export`, {
-      responseType: 'blob',
-      headers: {
-        Accept: 'application/pdf',
-      },
-      onDownloadProgress: (progressEvent) => {
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / (progressEvent.total ?? 1),
-        )
-        setProgress(percentCompleted)
-      },
-      doNotShowLoading: true,
-    } as AxiosRequestConfig)
+    const response = await http.post(
+      `/invoice/export`, // Đổi từ GET sang POST
+      { order }, // Truyền slug trong payload
+      {
+        responseType: 'blob',
+        headers: {
+          Accept: 'application/pdf',
+        },
+        onDownloadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / (progressEvent.total ?? 1),
+          )
+          setProgress(percentCompleted)
+        },
+        doNotShowLoading: true,
+      } as AxiosRequestConfig,
+    )
     console.log('response', response)
     const blob = new Blob([response.data], { type: 'application/pdf' })
     saveAs(blob, `TREND Coffee Invoice-${currentDate}.pdf`)

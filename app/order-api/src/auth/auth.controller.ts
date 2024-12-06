@@ -17,6 +17,8 @@ import {
   AuthChangePasswordRequestDto,
   AuthProfileResponseDto,
   AuthRefreshRequestDto,
+  ForgotPasswordRequestDto,
+  ForgotPasswordTokenRequestDto,
   LoginAuthRequestDto,
   LoginAuthResponseDto,
   RegisterAuthRequestDto,
@@ -181,6 +183,50 @@ export class AuthController {
       timestamp: new Date().toISOString(),
       result,
     } as AppResponseDto<AuthProfileResponseDto>;
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'Forgot password' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiResponseWithType({
+    type: AuthProfileResponseDto,
+    description: 'Password changed successfully',
+  })
+  async forgotPassword(
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: ForgotPasswordRequestDto,
+  ) {
+    const result = await this.authService.forgotPassword(requestData);
+    return {
+      message: 'Password changed successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+    } as AppResponseDto<void>;
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('forgot-password/token')
+  @ApiOperation({ summary: 'Create forgot password token' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiResponseWithType({
+    type: AuthProfileResponseDto,
+    description: 'Token created successfully',
+  })
+  async createForgotPasswordToken(
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: ForgotPasswordTokenRequestDto,
+  ) {
+    const result =
+      await this.authService.createForgotPasswordToken(requestData);
+    return {
+      message: 'Token created successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<string>;
   }
 
   @Patch('/upload')

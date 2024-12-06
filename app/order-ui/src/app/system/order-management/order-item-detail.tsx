@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { CheckedState } from '@radix-ui/react-checkbox'
@@ -15,11 +15,28 @@ interface OrderItemDetailProps {
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   const { t } = useTranslation(['menu'])
   const [showDetails, setShowDetails] = useState(false)
-  const { addSelectedItem, removeSelectedItem, isItemSelected } =
-    useOrderTrackingStore()
+  const {
+    addSelectedItem,
+    removeSelectedItem,
+    getSelectedItems,
+  } = useOrderTrackingStore()
   const [selectedIndexes, setSelectedIndexes] = useState<{
     [key: string]: boolean
   }>({})
+
+  // Sync selectedIndexes with store
+  useEffect(() => {
+    const selectedItems = getSelectedItems()
+    const newSelectedIndexes: { [key: string]: boolean } = {}
+
+    selectedItems.forEach((item) => {
+      for (let i = 0; i < item.quantity; i++) {
+        const key = `${item.slug}-${i}`
+        newSelectedIndexes[key] = false
+      }
+    })
+    setSelectedIndexes(newSelectedIndexes)
+  }, [getSelectedItems])
 
   const handleSelectOrderItem = (
     checked: CheckedState,
@@ -27,6 +44,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
     itemIndex: number,
   ) => {
     const key = `${orderItem.slug}-${itemIndex}`
+    console.log('check checked:', checked, key)
 
     if (checked === true) {
       setSelectedIndexes((prev) => ({ ...prev, [key]: true }))
@@ -35,18 +53,27 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         quantity: 1,
         subtotal: orderItem.variant.price,
         slug: orderItem.slug,
+        index: itemIndex, // Add index to track specific item
       }
       addSelectedItem(singleItem)
     } else {
-      console.log('remove', key)
-      setSelectedIndexes((prev) => ({ ...prev, [key]: false }))
+      // Xóa trạng thái khi bỏ chọn
+      setSelectedIndexes((prev) => {
+        const updated = { ...prev }
+        delete updated[key]
+        return updated
+      })
+
+      // Xóa item khỏi store
+      // removeSelectedItem(key)
       removeSelectedItem(`${orderItem.slug}-${itemIndex}`)
     }
   }
 
   const isChecked = (orderItem: IOrderDetail, index: number) => {
     const key = `${orderItem.slug}-${index}`
-    return selectedIndexes[key] || isItemSelected(orderItem.slug, index)
+    // Kiểm tra trạng thái dựa trên `selectedIndexes`
+    return !!selectedIndexes[key]
   }
 
   const renderOrderItem = (orderItem: IOrderDetail) => {
@@ -68,7 +95,8 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
     return (
       <div key={orderItem.id} className="space-y-2">
         <div className="font-medium">
-          {orderItem.variant.product.name} {orderItem.note && `(${orderItem.note})`}
+          {orderItem.variant.product.name}{' '}
+          {orderItem.note && `(${orderItem.note})`}
           <span className="ml-2 text-sm text-gray-500">
             ({totalProcessedItems}/{orderItem.quantity})
           </span>
@@ -133,9 +161,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         onClick={() => setShowDetails(!showDetails)}
         className="justify-between w-fit"
       >
-        <span className="text-sm font-medium">
-          {t('order.orderDetail')}
-        </span>
+        <span className="text-sm font-medium">{t('order.orderDetail')}</span>
         {showDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
       </Button>
 

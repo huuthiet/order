@@ -11,6 +11,7 @@ export class AppException extends HttpException {
     message?: string,
     statusCode?: number,
   ) {
+    // If error code value is TErrorCodeValue
     if (typeof errorCodeValue === 'object' && _.has(errorCodeValue, 'code')) {
       const { code, message: defaultMessage } =
         errorCodeValue as TErrorCodeValue;
@@ -21,6 +22,8 @@ export class AppException extends HttpException {
       };
       return;
     }
+
+    // If error code value is HttpStatus
     if (typeof errorCodeValue === 'number') {
       const statusCode = errorCodeValue as HttpStatus;
       const reasonPhraseMessage = getReasonPhrase(statusCode);

@@ -27,6 +27,9 @@ import { AuthException } from './auth.exception';
 import { Branch } from 'src/branch/branch.entity';
 import { FileService } from 'src/file/file.service';
 import { File } from 'src/file/file.entity';
+import { ForgotPasswordToken } from './forgot-password-token.entity';
+import { MailService } from 'src/mail/mail.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -50,6 +53,10 @@ describe('AuthService', () => {
         },
         {
           provide: getRepositoryToken(User),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(ForgotPasswordToken),
           useFactory: repositoryMockFactory,
         },
         {
@@ -79,6 +86,8 @@ describe('AuthService', () => {
           provide: getRepositoryToken(Logger),
           useFactory: repositoryMockFactory,
         },
+        MailService,
+        { provide: MailerService, useValue: {} },
         LoggerService,
       ],
     }).compile();

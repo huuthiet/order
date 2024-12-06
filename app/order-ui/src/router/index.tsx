@@ -26,6 +26,7 @@ import {
   OrderHistoryPage,
   OrderDetailPage,
   UserListPage,
+  ForgotPasswordPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
   {
     path: ROUTE.REGISTER,
     element: <SuspenseElement component={RegisterPage} />,
+  },
+  {
+    path: ROUTE.FORGOT_PASSWORD,
+    element: <SuspenseElement component={ForgotPasswordPage} />,
   },
   {
     path: ROUTE.STAFF_HOME,
