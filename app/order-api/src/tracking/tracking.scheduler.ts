@@ -10,6 +10,7 @@ import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client
 import * as _ from 'lodash';
 import { OrderStatus } from 'src/order/order.contants';
 import { Order } from 'src/order/order.entity';
+import { OrderItem } from 'src/order-item/order-item.entity';
 
 @Injectable()
 export class TrackingScheduler {
@@ -57,7 +58,6 @@ export class TrackingScheduler {
       })
     );
     
-
     // update order status
     const trackingIds = trackings.map((item) => item.id);
     await Promise.all(
@@ -69,7 +69,6 @@ export class TrackingScheduler {
         }
       })
     );
-    
   }
 
   /**
@@ -101,9 +100,31 @@ export class TrackingScheduler {
     });
     // check by total quantity each order item
     const totalBase = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalQuantities = order.orderItems.reduce(
+    const totalQuantity = this.calculateTotalQuantity(order.orderItems);
+
+    if (totalBase > totalQuantity[WorkflowStatus.COMPLETED]) {
+      if (totalQuantity[WorkflowStatus.RUNNING] > 0) {
+        Object.assign(order, { status: OrderStatus.SHIPPING });
+        await this.orderRepository.save(order);
+      }
+    } else if (totalBase === totalQuantity[WorkflowStatus.COMPLETED]) {
+      Object.assign(order, { status: OrderStatus.COMPLETED });
+      await this.orderRepository.save(order);
+    }
+    this.logger.log(`Order status ${order.slug} has been updated`, context);
+  }
+
+  /**
+   * Get quantity of running and completed tracking
+   * @param {OrderItem[]} orderItems The array of order item relate to tracking
+   * @returns {Record<WorkflowStatus, number>} The result for RUNNING and COMPLETED tracking with quantity
+   */
+  public calculateTotalQuantity(
+    orderItems: OrderItem[]
+  ): Record<WorkflowStatus, number> {
+    const totalQuantity = orderItems.reduce(
       (totals, item) => {
-        const itemQuantities = item.trackingOrderItems.reduce(
+        const itemQuantity = item.trackingOrderItems.reduce(
           (statusSums, trackingItem) => {
             const status = trackingItem.tracking.status;
             if (
@@ -118,39 +139,27 @@ export class TrackingScheduler {
           {} as Record<WorkflowStatus, number>,
         );
     
-        Object.keys(itemQuantities).forEach((status) => {
+        Object.keys(itemQuantity).forEach((status) => {
           totals[status as WorkflowStatus] =
             (totals[status as WorkflowStatus] || 0) +
-            itemQuantities[status as WorkflowStatus];
+            itemQuantity[status as WorkflowStatus];
         });
 
         return totals;
       },
-      {} as Record<WorkflowStatus, number>,
+      {
+        [WorkflowStatus.COMPLETED]: 0,
+        [WorkflowStatus.RUNNING]: 0,
+      } as Record<WorkflowStatus, number>,
     );
-
-    let defaultStatus: string = order.status;
-
-    if (totalBase > totalQuantities[WorkflowStatus.COMPLETED]) {
-      if (totalQuantities[WorkflowStatus.RUNNING] > 0) {
-        Object.assign(order, { status: OrderStatus.SHIPPING });
-        const updatedOrder = await this.orderRepository.save(order);
-        defaultStatus = updatedOrder.status;
-      }
-    } else if (totalBase === totalQuantities[WorkflowStatus.COMPLETED]) {
-      Object.assign(order, { status: OrderStatus.COMPLETED });
-      const updatedOrder = await this.orderRepository.save(order);
-      defaultStatus = updatedOrder.status;
-    }
-    this.logger.log(`Order status ${order.slug} has been updated`, context);
-
+    return totalQuantity;
   }
 
   /**
    * Stop a specific cron function
    * @param {string} name The name of cron function
    */
-  private stopUpdateStatusTracking() {
+  stopUpdateStatusTracking() {
     const context = `${TrackingScheduler.name}.${this.stopUpdateStatusTracking.name}`;
     const job = this.schedulerRegistry.getCronJob(NameCronTracking.UPDATE_STATUS_TRACKING);
     job.stop();

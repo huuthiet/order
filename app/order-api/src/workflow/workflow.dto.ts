@@ -13,6 +13,12 @@ export class CreateWorkflowRequestDto {
   @IsNotEmpty({ message: 'Invalid slug of branch' })
   branch: string;
 }
+export class UpdateWorkflowRequestDto {
+  @AutoMap()
+  @ApiProperty({ description: 'The id of workflow', example: 'workflow-id' })
+  @IsNotEmpty({ message: 'Invalid id of workflow' })
+  workflowId: string;
+}
 
 export class WorkflowResponseDto {
   @AutoMap()

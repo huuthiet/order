@@ -4,9 +4,11 @@ import { Workflow } from "./workflow.entity";
 import { Repository } from "typeorm";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
-import { CreateWorkflowRequestDto, WorkflowResponseDto } from "./workflow.dto";
+import { CreateWorkflowRequestDto, UpdateWorkflowRequestDto, WorkflowResponseDto } from "./workflow.dto";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { Branch } from "src/branch/branch.entity";
+import { WorkflowException } from "./workflow.exception";
+import { WorkflowValidation } from "./workflow.validation";
 
 @Injectable()
 export class WorkflowService {
@@ -74,5 +76,22 @@ export class WorkflowService {
 
     const workflowsDto = this.mapper.mapArray(workflows, Workflow, WorkflowResponseDto);
     return workflowsDto;
+  }
+
+  async updateWorkflow(
+    slug: string,
+    requestData: UpdateWorkflowRequestDto
+  ): Promise<WorkflowResponseDto> {
+    const context = `${WorkflowService.name}.${this.updateWorkflow.name}`;
+
+    const workflow = await this.workflowRepository.findOneBy({ slug });
+    if(!workflow) {
+      this.logger.warn(WorkflowValidation.WORKFLOW_NOT_FOUND, context);
+      throw new WorkflowException(WorkflowValidation.WORKFLOW_NOT_FOUND);
+    }
+    Object.assign(workflow, { workflowId: requestData.workflowId });
+    const updatedWorkflow = await this.workflowRepository.save(workflow);
+    const workflowDto = this.mapper.map(updatedWorkflow, Workflow, WorkflowResponseDto);
+    return workflowDto;
   }
 }
