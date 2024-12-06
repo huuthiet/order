@@ -76,7 +76,25 @@ export interface IOrder {
 }
 
 export interface IOrderDetail extends IBase {
+  index?: number
   id: string
+  note: string
+  quantity: number
+  status: {
+    PENDING: number
+    COMPLETED: number
+    FAILED: number
+    RUNNING: number
+  }
+  subtotal: number
+  variant: IProductVariant
+  size: ISize
+  trackingOrderItems: ITrackingOrderItems[]
+}
+
+export interface IOrderDetailForTracking extends IBase {
+  id: string
+  key: string
   note: string
   quantity: number
   status: {

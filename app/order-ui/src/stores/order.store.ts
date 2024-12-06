@@ -10,8 +10,6 @@ export const useOrderStore = create<IOrderStore>()(
       getOrder: () => get().order,
 
       addOrder: (orderInfo: IOrder) => {
-        console.log('Updating order in store:', orderInfo)
-
         set((state) => ({
           ...state,
           order: orderInfo,
@@ -35,18 +33,7 @@ export const useOrderTrackingStore = create<IOrderTrackingStore>()(
   persist(
     (set, get) => ({
       selectedItems: [],
-
       getSelectedItems: () => get().selectedItems,
-
-      isItemSelected: (orderId: string, itemIndex: number) => {
-        const selectedItems = get().selectedItems
-        const selectedItem = selectedItems.find((item) => item.slug === orderId)
-
-        if (!selectedItem) return false
-
-        return itemIndex < selectedItem.quantity
-      },
-
       addSelectedItem: (item: IOrderDetail) => {
         const currentItems = get().selectedItems
         const existingItem = currentItems.find(
@@ -80,11 +67,20 @@ export const useOrderTrackingStore = create<IOrderTrackingStore>()(
         }
       },
 
+      isItemSelected: (orderId: string, itemIndex: number) => {
+        const selectedItems = get().selectedItems
+        return selectedItems.some(
+          (item) => item.slug === orderId && item.index === itemIndex,
+        )
+      },
+
       removeSelectedItem: (itemId: string) => {
         console.log('Removing item:', itemId)
         const currentItems = get().selectedItems
         console.log('Current items:', currentItems)
-        const [orderId] = itemId.split('-')
+        const parts = itemId.split('-') // Tách chuỗi thành các phần
+        const orderId = parts.slice(0, -1).join('-')
+        // const [orderId] = itemId.split('-')
         console.log('Order ID:', orderId)
 
         set({
@@ -93,6 +89,7 @@ export const useOrderTrackingStore = create<IOrderTrackingStore>()(
               if (item.slug === orderId) {
                 console.log('Found item:', item)
                 const newQuantity = item.quantity - 1
+                console.log('New quantity:', newQuantity)
                 if (newQuantity === 0) return null
                 return {
                   ...item,
@@ -105,7 +102,6 @@ export const useOrderTrackingStore = create<IOrderTrackingStore>()(
             .filter((item): item is IOrderDetail => item !== null),
         })
       },
-
       clearSelectedItems: () => {
         set({ selectedItems: [] })
       },

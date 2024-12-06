@@ -81,7 +81,7 @@ export default function OrderDetailPage() {
                                     </div>
 
                                     {item.note && (
-                                        <div className='flex flex-row items-center'>
+                                        <div className='flex flex-row items-center gap-2'>
                                             <NotepadText className="text-muted-foreground" />
                                             <Input value={item.note} />
                                         </div>

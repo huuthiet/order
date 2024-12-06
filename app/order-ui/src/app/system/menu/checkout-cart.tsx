@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Input, Label, ScrollArea } from '@/components/ui'
+import { Button, Label, ScrollArea } from '@/components/ui'
 import { CartNoteInput, PromotionInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
 import { publicFileURL } from '@/constants'
@@ -46,7 +46,7 @@ export default function CheckoutCart() {
         <div className="flex flex-col flex-1 gap-4 px-4 pb-8">
           <div className="flex flex-col gap-4 py-2 space-y-2">
             {/* Customer Information */}
-            <div className="flex flex-col gap-4 pb-6 mt-6 border-b">
+            {/* <div className="flex flex-col gap-4 pb-6 mt-6 border-b">
               <div className="flex flex-col gap-2">
                 <Label>{t('order.customerName')}</Label>
                 <Input placeholder={t('order.enterCustomerName')} />
@@ -55,7 +55,7 @@ export default function CheckoutCart() {
                 <Label>{t('order.phoneNumber')}</Label>
                 <Input placeholder={t('order.enterPhoneNumber')} />
               </div>
-            </div>
+            </div> */}
 
             {/* Table Information */}
             <div className="flex flex-col gap-4 pb-6 mt-5 border-b">
