@@ -185,6 +185,7 @@ export class AuthController {
     } as AppResponseDto<AuthProfileResponseDto>;
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('forgot-password')
   @ApiOperation({ summary: 'Forgot password' })

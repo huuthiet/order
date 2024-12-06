@@ -182,3 +182,9 @@ export class RegisterAuthResponseDto {
   @AutoMap()
   lastName: string;
 }
+
+export class AuthJwtPayload {
+  sub: string;
+  jti: string;
+  scope: string;
+}

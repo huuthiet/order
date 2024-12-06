@@ -8,6 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import {
   AuthChangePasswordRequestDto,
+  AuthJwtPayload,
   AuthProfileResponseDto,
   AuthRefreshRequestDto,
   ForgotPasswordRequestDto,
@@ -27,7 +28,11 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthException } from './auth.exception';
-import AuthValidation from './auth.validation';
+import {
+  AuthValidation,
+  FORGOT_TOKEN_EXPIRED,
+  INVALID_OLD_PASSWORD,
+} from './auth.validation';
 import * as moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { Branch } from 'src/branch/branch.entity';
@@ -37,6 +42,7 @@ import { UserRequest } from './user.decorator';
 import { FileService } from 'src/file/file.service';
 import { MailService } from 'src/mail/mail.service';
 import { ForgotPasswordToken } from './forgot-password-token.entity';
+import { USER_NOT_FOUND } from './auth.validation1';
 
 @Injectable()
 export class AuthService {
@@ -69,7 +75,63 @@ export class AuthService {
   }
 
   async forgotPassword(requestData: ForgotPasswordRequestDto) {
-    throw new Error('Method not implemented.');
+    const context = `${AuthService.name}.${this.forgotPassword.name}`;
+    const existToken = await this.forgotPasswordRepository.findOne({
+      where: {
+        token: requestData.token,
+        expiresAt: MoreThan(new Date()),
+      },
+    });
+    if (!existToken) {
+      this.logger.warn(`Forgot token is not exsited`, context);
+      throw new AuthException(
+        AuthValidation.FORGOT_TOKEN_EXPIRED,
+        FORGOT_TOKEN_EXPIRED,
+      );
+    }
+
+    // Verify token
+    let isExpiredToken = false;
+    try {
+      this.jwtService.verify(requestData.token);
+    } catch (error) {
+      isExpiredToken = true;
+    }
+    if (isExpiredToken) {
+      this.logger.warn(`Forgot token is expired`, context);
+      throw new AuthException(
+        AuthValidation.FORGOT_TOKEN_EXPIRED,
+        FORGOT_TOKEN_EXPIRED,
+      );
+    }
+
+    // Get payload
+    const payload: AuthJwtPayload = this.jwtService.decode(requestData.token);
+    this.logger.log(`Payload: ${JSON.stringify(payload)}`);
+
+    const user = await this.userRepository.findOne({
+      where: {
+        id: payload.sub,
+      },
+    });
+    if (!user)
+      throw new AuthException(AuthValidation.USER_NOT_FOUND, USER_NOT_FOUND);
+
+    const hashedPass = await bcrypt.hash(
+      requestData.newPassword,
+      this.saltOfRounds,
+    );
+
+    user.password = hashedPass;
+    await this.userRepository.save(user);
+    this.logger.log(`User ${user.id} has been updated password`, context);
+
+    // Set token expired after forgot password successfully
+    existToken.expiresAt = new Date(Date.now() - 1000); // Set expiry time to the past
+    await this.forgotPasswordRepository.save(existToken);
+    this.logger.log(`Token ${existToken.token} is expired`, context);
+
+    return 0;
   }
 
   async createForgotPasswordToken(requestData: ForgotPasswordTokenRequestDto) {
@@ -81,7 +143,7 @@ export class AuthService {
     });
     if (!user) {
       this.logger.warn(`User ${requestData.email} not found`, context);
-      throw new AuthException(AuthValidation.USER_NOT_FOUND);
+      throw new AuthException(AuthValidation.USER_NOT_FOUND, USER_NOT_FOUND);
     }
 
     const existingToken = await this.forgotPasswordRepository.findOne({
@@ -93,21 +155,20 @@ export class AuthService {
       },
     });
 
-    console.log({ existingToken });
-
     if (existingToken) {
       this.logger.warn(`User ${user.id} already has a valid token`, context);
       throw new BadRequestException('A valid token already exists.');
     }
 
     const payload = { sub: user.id, jti: uuidv4() };
+    const expiresIn = 120; // 2 minutes
     const token = this.jwtService.sign(payload, {
-      expiresIn: this.duration,
+      expiresIn: expiresIn,
     });
 
     const forgotPasswordToken = new ForgotPasswordToken();
     Object.assign(forgotPasswordToken, {
-      expiresAt: moment().add(this.duration, 'seconds').toDate(),
+      expiresAt: moment().add(expiresIn, 'seconds').toDate(),
       token,
       user,
     } as ForgotPasswordToken);
@@ -147,7 +208,7 @@ export class AuthService {
     });
     if (!userEntity) {
       this.logger.warn(`User ${user.userId} not found`, context);
-      throw new AuthException(AuthValidation.USER_NOT_FOUND);
+      throw new AuthException(AuthValidation.USER_NOT_FOUND, USER_NOT_FOUND);
     }
 
     // Validate same old password
@@ -160,7 +221,10 @@ export class AuthService {
         `User ${user.userId} provided invalid old password`,
         context,
       );
-      throw new AuthException(AuthValidation.INVALID_OLD_PASSWORD);
+      throw new AuthException(
+        AuthValidation.INVALID_OLD_PASSWORD,
+        INVALID_OLD_PASSWORD,
+      );
     }
 
     const hashedPass = await bcrypt.hash(
@@ -201,7 +265,7 @@ export class AuthService {
     });
     if (!user) {
       this.logger.warn(`User ${user.id} not found`, context);
-      throw new AuthException(AuthValidation.USER_NOT_FOUND);
+      throw new AuthException(AuthValidation.USER_NOT_FOUND, USER_NOT_FOUND);
     }
 
     Object.assign(user, {
@@ -238,7 +302,9 @@ export class AuthService {
     return user;
   }
 
-  private async generateToken(payload: any): Promise<LoginAuthResponseDto> {
+  private async generateToken(
+    payload: AuthJwtPayload,
+  ): Promise<LoginAuthResponseDto> {
     return {
       accessToken: this.jwtService.sign(payload),
       expireTime: moment().add(this.duration, 'seconds').toString(),
@@ -268,7 +334,11 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { sub: user.id, jti: uuidv4(), scope: '[]' };
+    const payload: AuthJwtPayload = {
+      sub: user.id,
+      jti: uuidv4(),
+      scope: '[]',
+    };
     this.logger.log(
       `User ${user.phonenumber} logged in`,
       `${AuthService.name}.${this.login.name}`,

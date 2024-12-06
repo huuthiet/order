@@ -9,6 +9,7 @@ import { Request, Response } from 'express';
 import { has } from 'lodash';
 import { AppExceptionResponseDto } from './app.dto';
 import { AppValidation } from './app.validation';
+import { AuthValidation } from 'src/auth/auth.validation';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -29,7 +30,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message = Array.isArray(messages) ? messages[0] : messages; // Get the first error message if it's an array
     }
 
-    const errorCode = AppValidation[message];
+    const errorCode = AppValidation[message] || AuthValidation[message];
     if (errorCode) {
       statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
       code = errorCode.code;
