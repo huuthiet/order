@@ -32,5 +32,5 @@ export const AuthValidation: TAuthErrorCode = {
   USER_EXISTS: createErrorCode(1010, 'User exist'),
   USER_NOT_FOUND: createErrorCode(1011, 'User not found'),
   INVALID_OLD_PASSWORD: createErrorCode(1026, 'Invalid old password'),
-  FORGOT_TOKEN_EXPIRED: createErrorCode(1044, 'Forgot token is expired'),
+  FORGOT_TOKEN_EXPIRED: createErrorCode(1046, 'Forgot token is expired'),
 };
