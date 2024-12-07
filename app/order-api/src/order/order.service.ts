@@ -43,6 +43,7 @@ import { MenuException } from 'src/menu/menu.exception';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
 import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
+import * as moment from 'moment';
 
 @Injectable()
 export class OrderService {
@@ -216,6 +217,7 @@ export class OrderService {
     const context = `${OrderService.name}.${this.validateCreatedOrderItemData.name}`;
     const now = new Date();
     const dateQuery = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0, 0);
+    console.log({dateQuery})
     const menu = await this.menuRepository.findOne({
       where: {
         branch: {
