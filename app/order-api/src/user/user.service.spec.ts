@@ -9,6 +9,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MailService } from 'src/mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
+import { Role } from 'src/role/role.entity';
 
 describe('UserService', () => {
   let service: UserService;
@@ -21,6 +22,10 @@ describe('UserService', () => {
         { provide: MailerService, useValue: {} },
         {
           provide: getRepositoryToken(User),
+          useValue: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Role),
           useValue: repositoryMockFactory,
         },
         {
