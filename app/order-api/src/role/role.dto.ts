@@ -9,5 +9,5 @@ export class RoleResponseDto extends Base {
 
   @AutoMap()
   @ApiProperty()
-  desciption: string;
+  description: string;
 }
