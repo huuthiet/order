@@ -62,7 +62,7 @@ export class UserScheduler {
     const context = `${UserScheduler.name}.${this.initSuperAdmin.name}`;
     this.logger.log(`Initializing super admin...`, context);
 
-    const hasSuperAdmin = this.userRepository.exists({
+    const hasSuperAdmin = await this.userRepository.exists({
       where: {
         phonenumber: 'root',
       },
