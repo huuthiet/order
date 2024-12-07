@@ -17,6 +17,7 @@ import { Branch } from 'src/branch/branch.entity';
 import { FileModule } from 'src/file/file.module';
 import { MailModule } from 'src/mail/mail.module';
 import { ForgotPasswordToken } from './forgot-password-token.entity';
+import { Role } from 'src/role/role.entity';
 
 @Module({
   imports: [
@@ -25,18 +26,12 @@ import { ForgotPasswordToken } from './forgot-password-token.entity';
     JwtModule.register({
       secret: jwtConstants.secret,
     }),
-    TypeOrmModule.forFeature([User, Branch, ForgotPasswordToken]),
+    TypeOrmModule.forFeature([User, Branch, ForgotPasswordToken, Role]),
     ConfigModule,
     FileModule,
     MailModule,
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    LocalStrategy,
-    JwtStrategy,
-    { provide: APP_GUARD, useClass: JwtAuthGuard },
-    AuthProfile,
-  ],
+  providers: [AuthService, LocalStrategy, JwtStrategy, AuthProfile],
 })
 export class AuthModule {}

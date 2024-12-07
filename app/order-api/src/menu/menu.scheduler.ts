@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { getDayIndex } from 'src/helper';
 import { Branch } from 'src/branch/branch.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import * as moment from 'moment';
 
 @Injectable()
 export class MenuScheduler {
@@ -20,7 +21,7 @@ export class MenuScheduler {
   @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async generateMenu() {
     const context = `${MenuScheduler.name}.${this.generateMenu.name}`;
-    const today = new Date();
+    const today = new Date(moment().format('YYYY-MM-DD'));
     const dayIndex = getDayIndex(today);
     this.logger.log(`Generating menu for today = ${today}`, context);
 
@@ -63,7 +64,10 @@ export class MenuScheduler {
    * @param {number} dayIndex
    * @returns {Promise<Menu[]>} Template menus for the day
    */
-  async getTemplateMenus(branches: Branch[], dayIndex: number) {
+  async getTemplateMenus(
+    branches: Branch[],
+    dayIndex: number,
+  ): Promise<Menu[]> {
     const templateMenus = await Promise.all(
       branches
         .map(async (branch) => {
