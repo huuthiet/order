@@ -1,9 +1,18 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsOptional, Min } from 'class-validator';
+import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
+import { INVALID_USERID } from 'src/auth/auth.validation';
 import { BranchResponseDto } from 'src/branch/branch.dto';
+
+export class CurrentUserDto {
+  @IsNotEmpty({ message: INVALID_USERID })
+  userId: string;
+
+  @IsOptional()
+  scope?: string;
+}
 
 export class ResetPasswordRequestDto {
   @AutoMap()

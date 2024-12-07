@@ -16,6 +16,8 @@ import {
   UserResponseDto,
 } from './user.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
+import { HasRoles } from 'src/role/roles.decorator';
+import { RoleEnum } from 'src/role/role.enum';
 
 @Controller('user')
 @ApiTags('User')
@@ -24,6 +26,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @HasRoles(RoleEnum.Admin)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Retrieve all user' })
   @ApiResponseWithType({

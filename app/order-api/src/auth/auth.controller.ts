@@ -36,8 +36,9 @@ import {
 } from '@nestjs/swagger';
 import { AppResponseDto } from 'src/app/app.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
-import { User, UserRequest } from './user.decorator';
+import { CurrentUser } from '../user/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CurrentUserDto } from 'src/user/user.dto';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -105,8 +106,8 @@ export class AuthController {
     description: 'Profile retrieved successful',
   })
   async getProfile(
-    @User(new ValidationPipe({ validateCustomDecorators: true }))
-    user: UserRequest,
+    @CurrentUser(new ValidationPipe({ validateCustomDecorators: true }))
+    user: CurrentUserDto,
   ): Promise<AppResponseDto<AuthProfileResponseDto>> {
     const result = await this.authService.getProfile(user);
     return {
@@ -126,8 +127,8 @@ export class AuthController {
     description: 'Profile updated successfully',
   })
   async updateProfile(
-    @User(new ValidationPipe({ validateCustomDecorators: true }))
-    user: UserRequest,
+    @CurrentUser(new ValidationPipe({ validateCustomDecorators: true }))
+    user: CurrentUserDto,
     @Body(new ValidationPipe({ transform: true }))
     requestData: UpdateAuthProfileRequestDto,
   ): Promise<AppResponseDto<AuthProfileResponseDto>> {
@@ -171,8 +172,8 @@ export class AuthController {
     description: 'Password changed successfully',
   })
   async changePassword(
-    @User(new ValidationPipe({ validateCustomDecorators: true }))
-    user: UserRequest,
+    @CurrentUser(new ValidationPipe({ validateCustomDecorators: true }))
+    user: CurrentUserDto,
     @Body(new ValidationPipe({ transform: true }))
     requestData: AuthChangePasswordRequestDto,
   ): Promise<AppResponseDto<AuthProfileResponseDto>> {
@@ -256,8 +257,8 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @UseInterceptors(FileInterceptor('file'))
   async uploadAvatar(
-    @User(new ValidationPipe({ validateCustomDecorators: true }))
-    user: UserRequest,
+    @CurrentUser(new ValidationPipe({ validateCustomDecorators: true }))
+    user: CurrentUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const result = await this.authService.uploadAvatar(user, file);
