@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -13,6 +14,7 @@ import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
 import {
   GetAllUserQueryRequestDto,
   ResetPasswordRequestDto,
+  UpdateUserRoleRequestDto,
   UserResponseDto,
 } from './user.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
@@ -26,7 +28,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @HasRoles(RoleEnum.Admin)
+  @HasRoles(RoleEnum.Admin, RoleEnum.Manager, RoleEnum.SuperAdmin)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Retrieve all user' })
   @ApiResponseWithType({
@@ -49,6 +51,7 @@ export class UserController {
   }
 
   @Post('/reset-password')
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.SuperAdmin)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reset pwd' })
   @ApiResponseWithType({
@@ -65,6 +68,19 @@ export class UserController {
       message: 'User password has been reset successfully',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
+    } as AppResponseDto<UserResponseDto>;
+  }
+
+  async updateUserRole(
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: UpdateUserRoleRequestDto,
+  ) {
+    const result = await this.userService.updateUserRole(requestData);
+    return {
+      message: 'User role has been updated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
     } as AppResponseDto<UserResponseDto>;
   }
 }

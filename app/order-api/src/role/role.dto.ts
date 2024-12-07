@@ -1,8 +1,8 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { Base } from 'src/app/base.entity';
+import { BaseResponseDto } from 'src/app/base.dto';
 
-export class RoleResponseDto extends Base {
+export class RoleResponseDto extends BaseResponseDto {
   @AutoMap()
   @ApiProperty()
   name: string;

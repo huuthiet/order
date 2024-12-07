@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { RoleEnum } from './role.enum';
 import * as _ from 'lodash';
+import { INIT_ROLES_JOB } from './role.constant';
 
 @Injectable()
 export class RoleScheduler {
@@ -16,7 +17,7 @@ export class RoleScheduler {
     private readonly logger: Logger,
   ) {}
 
-  @Timeout(5000) // Called once after 5 seconds
+  @Timeout(INIT_ROLES_JOB, 1000) // Called once after 1 second
   async initRoles() {
     const context = `${RoleScheduler.name}.${this.initRoles.name}`;
     this.logger.log(`Initializing roles...`, context);
