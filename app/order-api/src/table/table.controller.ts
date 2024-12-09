@@ -30,6 +30,8 @@ import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
 import { QRLocationResponseDto } from 'src/robot-connector/robot-connector.dto';
+import { RoleEnum } from 'src/role/role.enum';
+import { HasRoles } from 'src/role/roles.decorator';
 
 @ApiTags('Table')
 @Controller('tables')
@@ -50,6 +52,7 @@ export class TableController {
     description: 'Create a new table successfully',
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin)
   async create(
     @Body(
       new ValidationPipe({
@@ -140,6 +143,7 @@ export class TableController {
     required: true,
     example: '',
   })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin)
   async update(
     @Param('slug') slug: string,
     @Body(
@@ -174,6 +178,7 @@ export class TableController {
     required: true,
     example: '',
   })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin)
   async remove(@Param('slug') slug: string) {
     const result = await this.tableService.remove(slug);
     return {

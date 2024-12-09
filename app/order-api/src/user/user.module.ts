@@ -5,11 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { UserProfile } from './user.mapper';
 import { MailModule } from 'src/mail/mail.module';
+import { UserScheduler } from './user.scheduler';
+import { Role } from 'src/role/role.entity';
+import { Branch } from 'src/branch/branch.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), MailModule],
+  imports: [TypeOrmModule.forFeature([User, Role, Branch]), MailModule],
   controllers: [UserController],
-  providers: [UserService, UserProfile],
+  providers: [UserService, UserProfile, UserScheduler],
   exports: [UserService],
 })
 export class UserModule {}

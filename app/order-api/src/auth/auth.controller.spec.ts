@@ -17,6 +17,7 @@ import { File } from 'src/file/file.entity';
 import { MailService } from 'src/mail/mail.service';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ForgotPasswordToken } from './forgot-password-token.entity';
+import { Role } from 'src/role/role.entity';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -71,6 +72,10 @@ describe('AuthController', () => {
         LoggerService,
         {
           provide: getRepositoryToken(ForgotPasswordToken),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Role),
           useFactory: repositoryMockFactory,
         },
         MailService,

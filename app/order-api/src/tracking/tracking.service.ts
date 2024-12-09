@@ -95,10 +95,6 @@ export class TrackingService {
           order_code: orderResult.slug
         }
       }
-      // const requestData: RunWorkflowRequestDto = {
-      //   order_code: orderResult.slug,
-      //   location: tableLocation
-      // }
       const workflowRobot: WorkflowExecutionResponseDto = 
         await this.robotConnectorClient.runWorkflow(workflowId, requestData);
 

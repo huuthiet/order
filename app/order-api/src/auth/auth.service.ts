@@ -38,11 +38,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { Branch } from 'src/branch/branch.entity';
 import { BranchValidation } from 'src/branch/branch.validation';
 import { BranchException } from 'src/branch/branch.exception';
-import { UserRequest } from './user.decorator';
 import { FileService } from 'src/file/file.service';
 import { MailService } from 'src/mail/mail.service';
 import { ForgotPasswordToken } from './forgot-password-token.entity';
 import { USER_NOT_FOUND } from './auth.validation1';
+import { CurrentUserDto } from 'src/user/user.dto';
+import { Role } from 'src/role/role.entity';
+import { RoleEnum } from 'src/role/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -58,6 +60,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Branch)
     private readonly branchRepository: Repository<Branch>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     @InjectMapper()
     private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
@@ -180,7 +184,7 @@ export class AuthService {
     return url;
   }
 
-  async uploadAvatar(user: UserRequest, file: Express.Multer.File) {
+  async uploadAvatar(user: CurrentUserDto, file: Express.Multer.File) {
     const context = `${AuthService.name}.${this.uploadAvatar.name}`;
     const userEntity = await this.userRepository.findOne({
       where: { id: user.userId },
@@ -199,7 +203,7 @@ export class AuthService {
   }
 
   async changePassword(
-    user: UserRequest,
+    user: CurrentUserDto,
     requestData: AuthChangePasswordRequestDto,
   ) {
     const context = `${AuthService.name}.${this.changePassword.name}`;
@@ -240,14 +244,14 @@ export class AuthService {
 
   /**
    * Update user profile
-   * @param {UserRequest} UserRequest
+   * @param {CurrentUserDto} currentUserDto
    * @param {UpdateAuthProfileRequestDto} requestData
    * @returns {Promise<AuthProfileResponseDto>} Updated user profile
    * @throws {BranchException} Branch not found
    * @throws {AuthException} User not found
    */
   async updateProfile(
-    UserRequest: UserRequest,
+    currentUserDto: CurrentUserDto,
     requestData: UpdateAuthProfileRequestDto,
   ): Promise<AuthProfileResponseDto> {
     const context = `${AuthService.name}.${this.updateProfile.name}`;
@@ -261,7 +265,7 @@ export class AuthService {
     }
 
     const user = await this.userRepository.findOne({
-      where: { id: UserRequest.userId },
+      where: { id: currentUserDto.userId },
     });
     if (!user) {
       this.logger.warn(`User ${user.id} not found`, context);
@@ -356,7 +360,6 @@ export class AuthService {
     requestData: RegisterAuthRequestDto,
   ): Promise<RegisterAuthResponseDto> {
     const context = `${AuthService.name}.${this.register.name}`;
-    console.log({ requestData });
     // Validation
     const branch = await this.branchRepository.findOne({
       where: {
@@ -365,7 +368,7 @@ export class AuthService {
     });
     if (!branch) {
       this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
-      // throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
+      throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
     const userExists = await this.userRepository.findOne({
@@ -381,6 +384,14 @@ export class AuthService {
       throw new AuthException(AuthValidation.USER_EXISTS);
     }
 
+    const role = await this.roleRepository.findOne({
+      where: {
+        name: RoleEnum.Customer,
+      },
+    });
+    if (!role)
+      throw new BadRequestException(`Role ${RoleEnum.Customer} not found`);
+
     const user = this.mapper.map(requestData, RegisterAuthRequestDto, User);
 
     this.logger.warn(`Salt of rounds: ${this.saltOfRounds}`, context);
@@ -389,7 +400,7 @@ export class AuthService {
       this.saltOfRounds,
     );
 
-    Object.assign(user, { branch, password: hashedPass });
+    Object.assign(user, { branch, password: hashedPass, role });
     this.userRepository.create(user);
     const createdUser = await this.userRepository.save(user);
     this.logger.warn(`User ${requestData.phonenumber} registered`, context);

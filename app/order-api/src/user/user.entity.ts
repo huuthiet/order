@@ -4,11 +4,12 @@ import { AutoMap } from '@automapper/classes';
 import { Branch } from 'src/branch/branch.entity';
 import { Order } from 'src/order/order.entity';
 import { ForgotPasswordToken } from 'src/auth/forgot-password-token.entity';
+import { Role } from 'src/role/role.entity';
 
 @Entity('user_tbl')
 export class User extends Base {
   @AutoMap()
-  @Column({ name: 'phonenumber_column' })
+  @Column({ name: 'phonenumber_column', unique: true })
   phonenumber: string;
 
   @Column({ name: 'password_column' })
@@ -31,7 +32,7 @@ export class User extends Base {
   dob?: string;
 
   @AutoMap()
-  @Column({ name: 'email_column', nullable: true })
+  @Column({ name: 'email_column', nullable: true, unique: true })
   email?: string;
 
   @AutoMap()
@@ -58,4 +59,10 @@ export class User extends Base {
 
   @OneToMany(() => ForgotPasswordToken, (token) => token.user)
   forgotPasswordTokens: ForgotPasswordToken[];
+
+  // One to one with role
+  @ManyToOne(() => Role, (role) => role.users)
+  @JoinColumn({ name: 'role_column' })
+  @AutoMap(() => Role)
+  role: Role;
 }
