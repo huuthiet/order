@@ -16,6 +16,7 @@ import { ACBConnectorClient } from 'src/acb-connector/acb-connector.client';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
+import { PdfService } from 'src/pdf/pdf.service';
 
 describe('TransactionService', () => {
   let service: TransactionService;
@@ -30,6 +31,7 @@ describe('TransactionService', () => {
         InternalStrategy,
         ACBConnectorClient,
         HttpService,
+        PdfService,
         {
           provide: ConfigService,
           useValue: {
