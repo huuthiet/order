@@ -44,7 +44,7 @@ export class UserService {
     const context = `${UserService.name}.${this.updateUserRole.name}`;
     const role = await this.roleRepository.findOne({
       where: {
-        name: requestData.role,
+        slug: requestData.role,
       },
     });
     if (!role)
