@@ -421,7 +421,7 @@ export class AuthService {
     const context = `${AuthService.name}.${this.getProfile.name}`;
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['branch'],
+      relations: ['branch', 'role'],
     });
     if (!user) {
       this.logger.error(`User ${userId} not found`, context);
