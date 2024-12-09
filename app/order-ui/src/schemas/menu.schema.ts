@@ -10,6 +10,7 @@ export const updateMenuSchema = z.object({
   slug: z.string(),
   date: z.string(),
   branchSlug: z.string(),
+  isTemplate: z.boolean(),
 })
 
 export const addMenuItemSchema = z.object({

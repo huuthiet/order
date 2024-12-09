@@ -60,6 +60,7 @@ export function TableItem({
 
   const style: CSSProperties = {
     ...(transform ? { transform: CSS.Translate.toString(transform) } : {}),
+    width: 'fit-content',
     left: `${constrainedPosition.x - localSize.width / 2}px`,
     top: `${constrainedPosition.y - localSize.height / 2}px`,
     transitionProperty: 'left, top',
@@ -67,7 +68,7 @@ export function TableItem({
     transitionTimingFunction: 'ease-out',
     ...(transform ? { transition: 'none' } : {}),
     touchAction: 'none',
-    position: 'relative' as const,
+    position: 'absolute',
   }
 
   const getStatusColor = () => {
@@ -87,57 +88,58 @@ export function TableItem({
       {...(isResizing ? {} : listeners)}
       {...(isResizing ? {} : attributes)}
       style={style}
-      className="relative flex flex-row"
       onContextMenu={onContextMenu}
       onClick={onClick}
     >
       <div
-        className={`flex flex-row items-center gap-2 rounded-md bg-transparent p-2 transition-all duration-200 ${isSelected
+        className={`rounded-md bg-transparent transition-all duration-200 ${isSelected
           ? 'z-10 ring-4 scale-110 border-primary bg-primary/10 ring-primary'
           : 'bg-background hover:ring-2 hover:ring-primary/50'
           } `}
       >
-        <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} />
-        <div className="flex flex-col items-center gap-2">
-          <div className={`w-2/3 h-2 rounded-full ${getStatusColor()}`} />
-          <Resizable
-            size={localSize}
-            onResizeStart={() => setIsResizing(true)}
-            onResizeStop={(_e, _direction, _ref, d: ResizeData) => {
-              setIsResizing(false)
-              const newSize = {
-                width: localSize.width + d.width,
-                height: localSize.height + d.height,
-              }
-              setLocalSize(newSize)
-              onResize?.(newSize)
-            }}
-            minWidth={120}
-            minHeight={60}
-            maxWidth={200}
-            maxHeight={200}
-            handleStyles={{
-              bottomRight: {
-                bottom: 0,
-                right: 0,
-                cursor: 'se-resize',
-                width: '20px',
-                height: '10px',
-              },
-            }}
-          >
-            <div
-              className={`flex justify-center items-center rounded-md cursor-pointer ${getStatusColor()}`}
-              style={{ width: '100%', height: '100%' }}
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} />
+          <div className="flex flex-col items-center gap-2">
+            <div className={`w-2/3 h-2 rounded-full ${getStatusColor()}`} />
+            <Resizable
+              size={localSize}
+              onResizeStart={() => setIsResizing(true)}
+              onResizeStop={(_e, _direction, _ref, d: ResizeData) => {
+                setIsResizing(false)
+                const newSize = {
+                  width: localSize.width + d.width,
+                  height: localSize.height + d.height,
+                }
+                setLocalSize(newSize)
+                onResize?.(newSize)
+              }}
+              minWidth={120}
+              minHeight={60}
+              maxWidth={200}
+              maxHeight={200}
+              handleStyles={{
+                bottomRight: {
+                  bottom: 0,
+                  right: 0,
+                  cursor: 'se-resize',
+                  width: '20px',
+                  height: '10px',
+                },
+              }}
             >
-              <span className="flex items-center justify-center p-1 text-sm font-medium bg-white rounded-full w-7 h-7 text-muted-foreground">
-                {table.name}
-              </span>
-            </div>
-          </Resizable>
-          <div className={`w-2/3 h-2 rounded-full ${getStatusColor()}`} />
+              <div
+                className={`flex justify-center items-center rounded-md cursor-pointer ${getStatusColor()}`}
+                style={{ width: '100%', height: '100%' }}
+              >
+                <span className="flex items-center justify-center p-1 text-sm font-medium bg-white rounded-full w-7 h-7 text-muted-foreground">
+                  {table.name}
+                </span>
+              </div>
+            </Resizable>
+            <div className={`w-2/3 h-2 rounded-full ${getStatusColor()}`} />
+          </div>
+          <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} />
         </div>
-        <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} />
       </div>
     </div>
   )

@@ -23,6 +23,7 @@ import { BranchSelect } from '@/components/app/select'
 import { cn } from '@/lib'
 import { useUserStore } from '@/stores'
 import moment from 'moment'
+import { IsTemplateSwitch } from '../switch'
 
 interface IFormUpdateMenuProps {
   menu: IMenu
@@ -43,6 +44,7 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
     defaultValues: {
       slug: menu.slug,
       date: menu.date,
+      isTemplate: menu.isTemplate,
       branchSlug: userInfo?.branch.slug,
     },
   })
@@ -52,7 +54,7 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
       onSuccess: () => {
         queryClient.invalidateQueries({
           // queryKey: ['menus', { branchSlug: userInfo?.branch.slug }],
-          queryKey: ['menus'],
+          queryKey: ['menus', userInfo?.branch.slug],
 
         })
         onSubmit(false)
@@ -137,6 +139,20 @@ export const UpdateMenuForm: React.FC<IFormUpdateMenuProps> = ({
                 defaultValue={userInfo?.branch.slug} // Giá trị mặc định
                 onChange={field.onChange} // Cập nhật giá trị
               />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    ),
+    isTemplate: (
+      <FormField
+        control={form.control}
+        name="isTemplate"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <IsTemplateSwitch defaultValue={menu.isTemplate} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
