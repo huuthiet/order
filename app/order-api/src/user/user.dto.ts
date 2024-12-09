@@ -15,12 +15,6 @@ export class CurrentUserDto {
   scope?: string;
 }
 
-export class ResetPasswordRequestDto {
-  @AutoMap()
-  @ApiProperty()
-  readonly user: string;
-}
-
 export class UserResponseDto extends BaseResponseDto {
   @ApiProperty()
   @AutoMap()
@@ -59,10 +53,6 @@ export class UpdateUserRoleRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   role: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  user: string;
 }
 
 export class GetAllUserQueryRequestDto {
