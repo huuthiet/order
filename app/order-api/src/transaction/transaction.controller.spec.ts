@@ -17,6 +17,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PdfService } from 'src/pdf/pdf.service';
 
 describe('TransactionController', () => {
   let controller: TransactionController;
@@ -32,6 +33,7 @@ describe('TransactionController', () => {
         InternalStrategy,
         ACBConnectorClient,
         HttpService,
+        PdfService,
         {
           provide: 'AXIOS_INSTANCE_TOKEN',
           useValue: {

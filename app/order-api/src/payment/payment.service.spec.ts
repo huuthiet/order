@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
 import { Order } from 'src/order/order.entity';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PdfService } from 'src/pdf/pdf.service';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -28,6 +29,7 @@ describe('PaymentService', () => {
         InternalStrategy,
         ACBConnectorClient,
         HttpService,
+        PdfService,
         {
           provide: ConfigService,
           useValue: {
