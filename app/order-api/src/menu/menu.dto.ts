@@ -2,7 +2,7 @@ import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { INVALID_BRANCH_SLUG, INVALID_DAY } from './menu.validation';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { MenuItemResponseDto } from 'src/menu-item/menu-item.dto';
 
 export class CreateMenuDto {
@@ -23,6 +23,7 @@ export class CreateMenuDto {
     default: false,
     type: Boolean,
   })
+  @Type(() => Boolean)
   @IsOptional()
   isTemplate: boolean;
 }
@@ -55,6 +56,18 @@ export class GetAllMenuQueryRequestDto {
   @Type(() => Number)
   @Min(1)
   size: number = 10;
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'Is template menu',
+    required: false,
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === undefined || value === null) return undefined; // Preserve `undefined`
+    return value === 'true'; // Transform 'true' to `true` and others to `false`
+  })
+  isTemplate: boolean;
 }
 
 export class GetMenuRequestDto {

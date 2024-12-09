@@ -7,6 +7,8 @@ import {
   HttpStatus,
   Query,
   Get,
+  Param,
+  StreamableFile,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import {
@@ -95,5 +97,18 @@ export class PaymentController {
   ) {
     const result = await this.paymentService.callback(requestData);
     return result;
+  }
+
+  @Post(':slug/export')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Export payment' })
+  async exportPayment(@Param('slug') slug: string) {
+    const result = await this.paymentService.exportPayment(slug);
+    return new StreamableFile(result, {
+      type: 'application/pdf',
+      length: result.length,
+      disposition: `attachment; filename="payment-${new Date().toISOString()}.pdf"`,
+    });
   }
 }

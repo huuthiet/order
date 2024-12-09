@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment</title>
+    <% var dir=process.cwd() %>
+    <style>
+      <%- include(dir + '/public/css/tailwind.min.css') %>
+    </style>
+    <style>
+      .text-2s {
+        font-size: 12px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="p-6 mt-10 flex flex-col justify-center items-center">
+      <p class="mb-2 text-center">
+        Mã đơn hàng: <strong><%= order.slug %></strong>
+      </p>
+      <div class="flex justify-center">
+        <img src="<%= qrCode %>" alt="QR Code" class="w-48 h-48" />
+      </div>
+      <p class="mb-4 text-center">
+        Số tiền thanh toán:
+        <strong class="text-xl"><%= formatCurrency(amount) %></strong>
+      </p>
+      <p class="mb-4 text-2s text-center text-red-500">
+        Quý khách vui lòng kiểm tra thông tin thanh toán trước khi thực hiện
+        giao dịch.
+      </p>
+    </div>
+  </body>
+</html>
