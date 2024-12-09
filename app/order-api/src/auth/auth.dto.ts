@@ -9,6 +9,7 @@ import {
 import { AutoMap } from '@automapper/classes';
 import { BranchResponseDto } from 'src/branch/branch.dto';
 import { INVALID_BRANCH_SLUG } from 'src/menu/menu.validation';
+import { RoleResponseDto } from 'src/role/role.dto';
 
 export class LoginAuthRequestDto {
   @ApiProperty({ example: '08123456789' })
@@ -162,6 +163,10 @@ export class AuthProfileResponseDto {
   @AutoMap(() => BranchResponseDto)
   @ApiProperty()
   readonly branch: BranchResponseDto;
+
+  @AutoMap(() => RoleResponseDto)
+  @ApiProperty()
+  role: RoleResponseDto;
 }
 
 // PickType: Get the fields from AuthProfileResponseDto
