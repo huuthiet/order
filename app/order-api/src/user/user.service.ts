@@ -12,7 +12,6 @@ import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   GetAllUserQueryRequestDto,
-  ResetPasswordRequestDto,
   UpdateUserRoleRequestDto,
   UserResponseDto,
 } from './user.dto';
@@ -41,7 +40,7 @@ export class UserService {
     this.saltOfRounds = this.configService.get<number>('SALT_ROUNDS');
   }
 
-  async updateUserRole(requestData: UpdateUserRoleRequestDto) {
+  async updateUserRole(slug: string, requestData: UpdateUserRoleRequestDto) {
     const context = `${UserService.name}.${this.updateUserRole.name}`;
     const role = await this.roleRepository.findOne({
       where: {
@@ -52,7 +51,7 @@ export class UserService {
       throw new BadRequestException(`Role ${requestData.role} not found`);
 
     const user = await this.userRepository.findOne({
-      where: { slug: requestData.user },
+      where: { slug },
       relations: ['role'],
     });
     if (!user) {
@@ -75,10 +74,10 @@ export class UserService {
     return this.mapper.map(user, User, UserResponseDto);
   }
 
-  async resetPassword(requestData: ResetPasswordRequestDto) {
+  async resetPassword(slug: string) {
     const context = `${UserService.name}.${this.resetPassword.name}`;
     const user = await this.userRepository.findOne({
-      where: { slug: requestData.user },
+      where: { slug },
     });
     if (!user) {
       throw new BadRequestException('User not found');

@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
   ValidationPipe,
@@ -13,7 +14,6 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
 import {
   GetAllUserQueryRequestDto,
-  ResetPasswordRequestDto,
   UpdateUserRoleRequestDto,
   UserResponseDto,
 } from './user.dto';
@@ -50,7 +50,7 @@ export class UserController {
     } as AppResponseDto<AppPaginatedResponseDto<UserResponseDto>>;
   }
 
-  @Post('/reset-password')
+  @Post(':slug/reset-password')
   @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.SuperAdmin)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reset pwd' })
@@ -60,10 +60,9 @@ export class UserController {
     type: UserResponseDto,
   })
   async resetPassword(
-    @Query(new ValidationPipe({ transform: true }))
-    requestData: ResetPasswordRequestDto,
+    @Param('slug') slug: string,
   ): Promise<AppResponseDto<UserResponseDto>> {
-    const result = await this.userService.resetPassword(requestData);
+    const result = await this.userService.resetPassword(slug);
     return {
       message: 'User password has been reset successfully',
       statusCode: HttpStatus.OK,
@@ -71,11 +70,21 @@ export class UserController {
     } as AppResponseDto<UserResponseDto>;
   }
 
+  @Post(':slug/role')
+  @HasRoles(RoleEnum.SuperAdmin)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update user role' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'User role have been updated successfully',
+    type: UserResponseDto,
+  })
   async updateUserRole(
+    @Param('slug') slug: string,
     @Body(new ValidationPipe({ transform: true }))
     requestData: UpdateUserRoleRequestDto,
   ) {
-    const result = await this.userService.updateUserRole(requestData);
+    const result = await this.userService.updateUserRole(slug, requestData);
     return {
       message: 'User role has been updated successfully',
       statusCode: HttpStatus.OK,

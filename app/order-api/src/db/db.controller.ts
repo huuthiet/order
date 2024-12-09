@@ -13,7 +13,7 @@ export class DbController {
   constructor(private readonly dbService: DbService) {}
 
   @Post()
-  @HasRoles(RoleEnum.Admin)
+  @HasRoles(RoleEnum.Admin, RoleEnum.SuperAdmin)
   async backup(): Promise<AppResponseDto<string>> {
     const result = await this.dbService.backup();
     return {
