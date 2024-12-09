@@ -1,16 +1,28 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as puppeteer from 'puppeteer';
-import { formatCurrency } from 'src/helper';
+import { formatCurrency, formatDate, formatPaymentMethod } from 'src/helper';
 import * as ejs from 'ejs';
+import * as _ from 'lodash';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class PdfService {
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+  ) {}
+
   private async compileTemplate(
     templateName: string,
     data: any,
   ): Promise<string> {
+    const context = `${PdfService.name}.${this.compileTemplate.name}`;
     const templatePath = path.resolve(
       'public/templates',
       `${templateName}.ejs`,
@@ -21,31 +33,49 @@ export class PdfService {
       );
     }
     const templateSource = fs.readFileSync(templatePath, 'utf8');
-    const template = ejs.render(templateSource, { ...data, formatCurrency });
-    return template;
+    try {
+      const template = ejs.render(templateSource, {
+        ...data,
+        formatCurrency,
+        formatDate,
+        formatPaymentMethod,
+        reslove: path.resolve,
+      });
+      return template;
+    } catch (error) {
+      this.logger.error(
+        `Error when rendering template: ${JSON.stringify(error)}`,
+        context,
+      );
+      throw new BadRequestException(
+        `Error when rendering template: ${error.message}`,
+      );
+    }
   }
 
-  public async generatePdf(templateName: string, data: any): Promise<Buffer> {
+  public async generatePdf(
+    templateName: string,
+    data: any,
+    metadata?: puppeteer.PDFOptions,
+  ): Promise<Buffer> {
     // Compile HTML using the specified template and data
     const htmlContent = await this.compileTemplate(templateName, data);
 
-    // Launch Puppeteer
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
 
-    // Set the HTML content for the page
     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
-    // Generate the PDF
+    if (_.isEmpty(metadata)) metadata.format = 'A4';
+
     const pdfBuffer = await page.pdf({
-      format: 'A4', // You can customize this (e.g., `A5`, custom size)
       printBackground: true,
+      ...metadata,
     });
 
-    // Close the browser
     await browser.close();
 
     return Buffer.from(pdfBuffer);

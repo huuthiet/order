@@ -22,6 +22,8 @@ import { InvoiceItem } from 'src/invoice-item/invoice-item.entity';
 import * as _ from 'lodash';
 import { PdfService } from 'src/pdf/pdf.service';
 import { QrCodeService } from 'src/qr-code/qr-code.service';
+import { resolve } from 'path';
+import { readFileSync } from 'fs';
 
 @Injectable()
 export class InvoiceService {
@@ -40,7 +42,20 @@ export class InvoiceService {
     const context = `${InvoiceService.name}.${this.exportInvoice.name}`;
     const invoice = await this.create(requestData.order);
 
-    const data = await this.pdfService.generatePdf('invoice', invoice);
+    const logoPath = resolve('public/images/logo.png');
+    const logoBuffer = readFileSync(logoPath);
+
+    // Convert the buffer to a Base64 string
+    const logoString = logoBuffer.toString('base64');
+
+    const data = await this.pdfService.generatePdf(
+      'invoice',
+      { ...invoice, logoString },
+      {
+        width: '80mm',
+      },
+    );
+
     this.logger.log(`Invoice ${invoice.slug} exported`, context);
 
     return data;
