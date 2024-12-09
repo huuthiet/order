@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { PaymentMethod } from 'src/payment/payment.constants';
 
 /**
  *  Format moment to yyyy-MM-ddTHH:mm:ss.SSSZ format
@@ -15,7 +16,7 @@ export const formatMoment = (): string =>
  * @returns {string} formatted currency
  */
 export function formatCurrency(number: number): string {
-  return `${number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} VNĐ`;
+  return `${number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`;
 }
 
 /**
@@ -26,4 +27,22 @@ export function formatCurrency(number: number): string {
 export const getDayIndex = (date: Date): number => {
   const startOfWeek = moment(date).startOf('isoWeek'); // Monday of the week for the target date
   return moment(date).diff(startOfWeek, 'days'); // Get the day index (0 = Monday, 1 = Tuesday, etc.)
+};
+
+export const formatDate = (date: Date, format: string) => {
+  return moment(date).format(format);
+};
+
+export const formatPaymentMethod = (method: string) => {
+  switch (method) {
+    case PaymentMethod.BANK_TRANSFER:
+      console.log('');
+      return 'Chuyển khoản';
+    case PaymentMethod.CASH:
+      return 'Tiền mặt';
+    case PaymentMethod.INTERNAL:
+      return 'Ví nội bộ';
+    default:
+      return 'Không tìm thấy PTTT';
+  }
 };

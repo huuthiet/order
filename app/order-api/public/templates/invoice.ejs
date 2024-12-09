@@ -9,76 +9,99 @@
     <style>
       <%- include(dir + '/public/css/tailwind.min.css') %>
     </style>
+    <style>
+      .text-2s {
+        font-size: 12px;
+      }
+    </style>
 </head>
 
 <body>
   <div class="p-5">
-    <p class="uppercase font-bold text-2xl text-center mb-2">TREND Coffee</p>
-    <p class="flex items-center justify-center">
-      <img src="<%= qrcode %>" alt="qrcode" class="w-40"/>
-    </p>
-    <p class="uppercase font-bold text-2xl text-center mb-5">HÓA ĐƠN BÁN HÀNG</p>
-    <p class="uppercase font-bold text-center">Bàn: <%= tableName %>
-    </p>
-    <div class="flex flex-col gap-2">
-      <div class="flex items-center justify-between">
-        <p>Ngày: <%= createdAt %>
-        </p>
-        <p>MHD: <%= slug %>
-        </p>
-      </div>
-      <div class="flex items-center justify-between">
-        <p>Thu ngân: <%= cashier %>
-        </p>
-        <p>Khách hàng: <%= customer %>
-        </p>
-      </div>
+    <!-- Logo -->
+    <div class="flex items-center justify-center">
+      <img src="data:image/png;base64,<%= logoString %>" alt="" class="w-52">
     </div>
-    <table class="min-w-full table-auto border-collapse border border-black mt-4">
+    <p class="text-center text-sm">
+      <%= branchAddress %>
+    </p>
+
+
+    <!-- Invoive info -->
+    <div class="flex flex-col gap-2">
+      <p class="text-2s"><span class="font-bold">Thời gian:</span>
+        <%= formatDate(createdAt, 'HH:mm:ss DD/MM/YYYY' ) %>
+      </p>
+      <p class="text-2s"> <span class="font-bold">
+          Bàn:
+        </span>
+        <span class="capitalize">
+          <%= tableName %>
+        </span>
+      </p>
+      <p class="text-2s"><span class="font-bold">
+          Khách hàng:
+        </span>
+        <%= customer %>
+      </p>
+      <p class="text-2s">
+        <span class="font-bold">
+          Thu ngân:
+        </span>
+        <%= cashier %>
+      </p>
+    </div>
+
+    <!-- Invoice items -->
+    <table class="min-w-full table-auto border-collapse mt-4 text-sm">
       <thead>
-        <tr class="bg-white-100">
-          <th class="px-4 py-2 text-left border border-black">Mặt hàng</th>
-          <th class="px-4 py-2 text-left border border-black">Kích thước</th>
-          <th class="px-4 py-2 text-left border border-black">SL</th>
-          <th class="px-4 py-2 text-left border border-black">Đơn giá</th>
-          <th class="px-4 py-2 text-left border border-black">T.Tiền</th>
+        <tr class="bg-white-100 border-b border-black">
+          <th class="py-2 text-left w-2/3">Món</th>
+          <th class="py-2 text-left px-1">SL</th>
+          <th class="py-2 text-left px-2">Đ.Giá</th>
+          <th class="py-2 text-left px-2">T.Tiền</th>
         </tr>
       </thead>
       <tbody>
         <% invoiceItems.forEach(function(item) { %>
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-2 border border-black">
-              <%= item.productName %>
+          <tr class="hover:bg-gray-50 border-b border-black">
+            <td class="py-2 w-2/3 text-2s">
+              <%= item.productName %> (<%= item.size %>)
             </td>
-            <td class="px-4 py-2 border border-black">
-              <%= item.size %>
-            </td>
-            <td class="px-4 py-2 border border-black">
+            <td class="px-1 py-2 text-2s">
               <%= item.quantity %>
             </td>
-            <td class="px-4 py-2 border border-black">
+            <td class="py-2 px-2 text-2s">
               <%= formatCurrency(item.price) %>
             </td>
-            <td class="px-4 py-2 border border-black">
+            <td class="py-2 px-2 text-2s">
               <%= formatCurrency(item.total) %>
             </td>
           </tr>
           <% }); %>
-          <tr class="font-bold">
-              <td colspan="4" class="px-4 py-2 text-left border border-black">Phương thức thanh toán</td>
-              <td class="px-4 py-2 border border-black" >
-                <%= paymentMethod %>
+            <tr class="border-t border-black">
+              <td class="py-2 text-left">PPTT</td>
+              <td class="py-2 font-bold text-right text-2s" colspan="3">
+                <%= formatPaymentMethod(paymentMethod) %>
               </td>
             </tr>
-            <tr class="font-bold">
-              <td colspan="4" class="px-4 py-2 text-left border border-black">Tổng cộng</td>
-              <td class="px-4 py-2 border border-black" >
+            <tr class="border-t border-black">
+              <td class="py-2 text-left">Tổng cộng</td>
+              <td class="py-2 font-bold text-xl text-right" colspan="3">
                 <%= formatCurrency(amount) %>
               </td>
             </tr>
       </tbody>
     </table>
-    </p>
+
+    <!-- Invoice footer -->
+    <div class="flex items-start">
+      <p class="w-2/3 text-2s mt-2">
+        Giá sản phẩm đã bao gồm VAT 10%. Vui lòng giữ lại hóa đơn, để
+        xác thực đó là đơn hàng của bạn.
+      </p>
+      <img src="<%= qrcode %>" alt="qrcode" class="w-1/3 block mt-0 pt-0" />
+    </div>
   </div>
 </body>
 
