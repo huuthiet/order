@@ -172,7 +172,7 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                     </Button>
                   </NavLink>
                 )}
-                <Button onClick={() => handleExportOrderInvoice(order.invoice ? order.slug : '')} variant="ghost" className='flex justify-start w-full px-2'>
+                <Button onClick={() => handleExportOrderInvoice(order.slug)} variant="ghost" className='flex justify-start w-full px-2'>
                   {t('order.exportInvoice')}
                 </Button>
               </DropdownMenuContent>
