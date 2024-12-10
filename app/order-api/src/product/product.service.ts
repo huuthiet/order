@@ -46,6 +46,7 @@ export class ProductService {
       where: { slug },
       relations: ['catalog', 'variants.size'],
     });
+    console.log({product})
     if (!product) {
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
@@ -79,6 +80,64 @@ export class ProductService {
 
     const image = await this.fileService.uploadFile(file);
     product.image = `${image.name}`;
+    const updatedProduct = await this.productRepository.save(product);
+
+    this.logger.log(
+      `Product image ${image.name} uploaded successfully`,
+      context,
+    );
+
+    return this.mapper.map(updatedProduct, Product, ProductResponseDto);
+  }
+
+  async deleteProductImage(
+    slug: string,
+    name: string,
+  ): Promise<number> {
+    const context = `${ProductService.name}.${this.deleteProductImage.name}`;
+    const product = await this.productRepository.findOne({
+      where: {
+        slug,
+      },
+    });
+    if (!product) {
+      this.logger.error(ProductValidation.PRODUCT_NOT_FOUND.message, context);
+      throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
+    }
+
+    // Remove old image
+    this.fileService.removeFile(name);
+
+    const oldImages = JSON.parse(product.images);
+    const newImages = oldImages.filter((item) => item !== name);
+    product.images = JSON.stringify(newImages);
+    await this.productRepository.save(product);
+    return 1;
+  }
+
+  async uploadMultiProductImages(
+    slug: string,
+    file: Express.Multer.File,
+  ): Promise<ProductResponseDto> {
+    const context = `${ProductService.name}.${this.uploadMultiProductImages.name}`;
+    const product = await this.productRepository.findOne({
+      where: {
+        slug,
+      },
+    });
+    if (!product) {
+      this.logger.error(ProductValidation.PRODUCT_NOT_FOUND.message, context);
+      throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
+    }
+    const image = await this.fileService.uploadFile(file);
+
+    let images: string[] = [];
+    if(product.images) {
+      images = JSON.parse(product.images);
+    }
+    images.push(`${image.name}`);
+    product.images = JSON.stringify(images);
+
     const updatedProduct = await this.productRepository.save(product);
 
     this.logger.log(
