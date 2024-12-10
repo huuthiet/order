@@ -171,7 +171,6 @@ export class ProductController {
   }
 
   @Patch(':slug/upload')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -212,7 +211,6 @@ export class ProductController {
   }
 
   @Patch(':slug/uploads')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -251,8 +249,7 @@ export class ProductController {
     } as AppResponseDto<ProductResponseDto>;
   }
 
-  @Delete(':slug/:name')
-  @Public()
+  @Delete(':slug/images/:name')
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
