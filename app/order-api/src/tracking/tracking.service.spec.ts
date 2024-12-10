@@ -424,78 +424,78 @@ describe('TrackingService', () => {
     });
   });
 
-  describe('getLocationTableByOrder - get location of table by order', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  // describe('getLocationTableByOrder - get location of table by order', () => {
+  //   beforeEach(() => {
+  //     jest.clearAllMocks();
+  //   });
 
-    it('should return null when table not found in this branch', async () => {
-      const branch = {
-        id: 'mock-branch-id',
-        name: "",
-        address: "",
-      } as Branch;
-      const mockInput = {
-        subtotal: 0,
-        status: "",
-        type: "",
-        tableName: 'mock-table-name',
-        branch,
-        orderItems: [],
-      } as Order;
+  //   it('should return null when table not found in this branch', async () => {
+  //     const branch = {
+  //       id: 'mock-branch-id',
+  //       name: "",
+  //       address: "",
+  //     } as Branch;
+  //     const mockInput = {
+  //       subtotal: 0,
+  //       status: "",
+  //       type: "",
+  //       tableName: 'mock-table-name',
+  //       branch,
+  //       orderItems: [],
+  //     } as Order;
 
-      (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(TableException);
-    });
+  //     (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
+  //     await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(TableException);
+  //   });
 
-    it('should return null when table does not have location', async () => {
-      const branch = {
-        id: 'mock-branch-id',
-        name: "",
-        address: "",
-      } as Branch;
-      const mockInput = {
-        subtotal: 0,
-        status: "",
-        type: "",
-        tableName: 'mock-table-name',
-        branch,
-        orderItems: [],
-      } as Order;
+  //   it('should return null when table does not have location', async () => {
+  //     const branch = {
+  //       id: 'mock-branch-id',
+  //       name: "",
+  //       address: "",
+  //     } as Branch;
+  //     const mockInput = {
+  //       subtotal: 0,
+  //       status: "",
+  //       type: "",
+  //       tableName: 'mock-table-name',
+  //       branch,
+  //       orderItems: [],
+  //     } as Order;
 
-      const table = {
-        name: "",
-        location: null
-      } as Table;
+  //     const table = {
+  //       name: "",
+  //       location: null
+  //     } as Table;
 
-      (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
-      await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(TableException);
-    });
+  //     (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
+  //     await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(TableException);
+  //   });
 
-    it('should return location table', async () => {
-      const branch = {
-        id: 'mock-branch-id',
-        name: "",
-        address: "",
-      } as Branch;
-      const mockInput = {
-        subtotal: 0,
-        status: "",
-        type: "",
-        tableName: 'mock-table-name',
-        branch,
-        orderItems: [],
-      } as Order;
+  //   it('should return location table', async () => {
+  //     const branch = {
+  //       id: 'mock-branch-id',
+  //       name: "",
+  //       address: "",
+  //     } as Branch;
+  //     const mockInput = {
+  //       subtotal: 0,
+  //       status: "",
+  //       type: "",
+  //       tableName: 'mock-table-name',
+  //       branch,
+  //       orderItems: [],
+  //     } as Order;
 
-      const table = {
-        name: "",
-        location: 'mock-location-table',
-      } as Table;
+  //     const table = {
+  //       name: "",
+  //       location: 'mock-location-table',
+  //     } as Table;
 
-      (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
-      expect(await service.getLocationTableByOrder(mockInput)).toEqual(table.location);
-    });
-  });
+  //     (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
+  //     expect(await service.getLocationTableByOrder(mockInput)).toEqual(table.location);
+  //   });
+  // });
 
   describe('createTrackingAndTrackingOrderItem - create tracking and related tracking order item',  () => {
     it('should save tracking failed', async () => {

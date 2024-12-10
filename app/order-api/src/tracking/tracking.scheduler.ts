@@ -51,7 +51,6 @@ export class TrackingScheduler {
     
           Object.assign(tracking, { status: workflow.status });
           await this.trackingRepository.save(tracking);
-          console.log("updated tracking")
         } catch (error) {
           this.logger.warn(`Error processing workflow execution ${id}`, context);
         }

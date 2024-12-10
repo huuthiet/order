@@ -166,6 +166,7 @@ export class ProductController {
   }
 
   @Patch(':slug/upload')
+  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -197,11 +198,87 @@ export class ProductController {
   ) {
     const result = await this.productService.uploadProductImage(slug, file);
     return {
-      message: 'Product have been created successfully',
-      statusCode: HttpStatus.CREATED,
+      message: 'Product have been updated successfully',
+      statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
     } as AppResponseDto<ProductResponseDto>;
+  }
+
+  @Patch(':slug/uploads')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Product image have been uploaded successfully',
+    type: ProductResponseDto,
+  })
+  @ApiOperation({ summary: 'Upload multi product images' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product image have been uploaded successfully',
+  })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadMultiProductImages(
+    @Param('slug') slug: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const result = await this.productService.uploadMultiProductImages(slug, file);
+    return {
+      message: 'Product have been updated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<ProductResponseDto>;
+  }
+
+  @Delete(':slug/:name')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Product image retrieved successfully',
+    type: String,
+  })
+  @ApiOperation({ summary: 'Delete product image' })
+  @ApiResponse({ status: 200, description: 'Product image deleted successfully' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @ApiParam({
+    name: 'slug',
+    description: 'The slug of the product to be deleted image',
+    required: true,
+    example: '',
+  })
+  @ApiParam({
+    name: 'name',
+    description: 'The name of the image to be deleted',
+    required: true,
+    example: '',
+  })
+  async deleteProductImage(
+    @Param('slug') slug: string,
+    @Param('name') name: string,
+  ): Promise<AppResponseDto<string>> {
+    const result = await this.productService.deleteProductImage(slug, name);
+    return {
+      message: 'Product image deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result: `${result} records have been deleted successfully`,
+    } as AppResponseDto<string>;
   }
 
   @Get(':slug')

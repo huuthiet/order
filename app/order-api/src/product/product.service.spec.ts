@@ -29,12 +29,20 @@ describe('ProductService', () => {
   let variantRepositoryMock: MockType<Repository<Variant>>;
   let catalogRepositoryMock: MockType<Repository<Catalog>>;
   let mapperMock: MockType<Mapper>;
+  let fileService: FileService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductService,
         FileService,
+        {
+          provide: FileService,
+          useValue: {
+            removeFile: jest.fn(),
+            uploadFile: jest.fn()
+          },
+        },
         {
           provide: getRepositoryToken(Product),
           useFactory: repositoryMockFactory,
@@ -63,6 +71,7 @@ describe('ProductService', () => {
     }).compile();
 
     service = module.get<ProductService>(ProductService);
+    fileService = module.get<FileService>(FileService);
     productRepositoryMock = module.get(getRepositoryToken(Product));
     variantRepositoryMock = module.get(getRepositoryToken(Variant));
     catalogRepositoryMock = module.get(getRepositoryToken(Catalog));
@@ -357,6 +366,58 @@ describe('ProductService', () => {
         undefined,
       );
       expect(variantRepositoryMock.softDelete).toHaveBeenCalled();
+    });
+  });
+
+  describe('deleteProductImage - delete a image of product', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should throw exception when product not found', async () => {
+      (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
+      
+      await expect(service.deleteProductImage(
+        'mock-product-slug', 
+        'mock-name-image'
+      )).rejects.toThrow(ProductException);
+    });
+
+    it('should delete success', async () => {
+      const product = {
+        name: '',
+        images: JSON.stringify(['mock-name-image-1', 'mock-name-image-2'])
+      } as Product;
+
+      (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(product);
+
+      expect(await (service.deleteProductImage(
+        'mock-product-slug', 
+        'mock-name-image-1'
+      ))).toEqual(1);
+    });
+  });
+
+  describe('uploadMultiProductImages - upload a image for images property', () => {
+    it('should throw exception when product not found', async () => {
+      const mockFile = {
+        fieldname: '',
+        originalname: '',
+        encoding: '',
+        mimetype: '',
+        size: 0,
+        destination: '',
+        filename: 'mock-name-image-add',
+        path: '',
+        buffer: undefined
+      } as Express.Multer.File;
+
+      (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.uploadMultiProductImages(
+        'mock-product-slug',
+        mockFile
+      )).rejects.toThrow(ProductException);
     });
   });
 });
