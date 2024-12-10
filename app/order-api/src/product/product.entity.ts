@@ -29,6 +29,10 @@ export class Product extends Base {
   image?: string;
 
   @AutoMap()
+  @Column('text' ,{ name: 'images_column', nullable: true })
+  images?: string;
+
+  @AutoMap()
   @Column({ name: 'rating_column', nullable: true })
   rating?: number;
 

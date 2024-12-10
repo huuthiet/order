@@ -3,6 +3,7 @@ import {
   createMap,
   extend,
   forMember,
+  mapFrom,
   Mapper,
   mapWith,
 } from '@automapper/core';
@@ -33,6 +34,10 @@ export class ProductProfile extends AutomapperProfile {
         mapper,
         Product,
         ProductResponseDto,
+        forMember(
+          (destination) => destination.images,
+          mapFrom((source) => JSON.parse(source.images)),
+        ),
         forMember(
           (destination) => destination.catalog,
           mapWith(CatalogResponseDto, Catalog, (source) => source.catalog),

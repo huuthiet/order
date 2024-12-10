@@ -203,10 +203,12 @@ describe('TrackingScheduler', () => {
   //     jest.clearAllMocks();
   //   });
 
-  //   it('should call stopUpdateStatusTracking', async () => {
-  //     (trackingRepositoryMock.find as jest.Mock).mockResolvedValue([]);
-  //     const result = await trackingScheduler.UpdateStatusTracking();
-  //     expect(trackingScheduler.stopUpdateStatusTracking).toHaveBeenCalled();
-  //   });
+
+    // note: chưa mock được job.stop()
+    // it('should call stopUpdateStatusTracking', async () => {
+    //   (trackingRepositoryMock.find as jest.Mock).mockResolvedValue([]);
+    //   const result = await trackingScheduler.UpdateStatusTracking();
+    //   expect(trackingScheduler.stopUpdateStatusTracking).toHaveBeenCalled();
+    // });
   // });
 });

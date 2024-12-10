@@ -13,12 +13,7 @@ import {
 } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { Public } from 'src/auth/public.decorator';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   CreateMenuDto,
   GetAllMenuQueryRequestDto,

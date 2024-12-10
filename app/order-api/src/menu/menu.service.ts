@@ -190,9 +190,10 @@ export class MenuService {
   async getAllMenus(
     query: GetAllMenuQueryRequestDto,
   ): Promise<AppPaginatedResponseDto<MenuResponseDto>> {
+    console.log({ query });
     const [menus, total] = await this.menuRepository.findAndCount({
-      where: { branch: { slug: query.branch } },
-      order: { createdAt: 'DESC' },
+      where: { branch: { slug: query.branch }, isTemplate: query.isTemplate },
+      order: { date: 'DESC' },
       relations: ['menuItems.product.variants.size'],
       skip: (query.page - 1) * query.size,
       take: query.size,

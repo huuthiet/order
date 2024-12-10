@@ -10,11 +10,13 @@ import { Payment } from './payment.entity';
 import { ACBConnectorModule } from 'src/acb-connector/acb-connector.module';
 import { Order } from 'src/order/order.entity';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
+import { PdfModule } from 'src/pdf/pdf.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Payment, Order, ACBConnectorConfig]),
     ACBConnectorModule,
+    PdfModule,
   ],
   controllers: [PaymentController],
   providers: [

@@ -14,7 +14,7 @@ import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.e
 import { Table } from 'src/table/table.entity';
 import { OrderStatus, OrderType } from "src/order/order.contants";
 import { RobotConnectorClient } from "src/robot-connector/robot-connector.client";
-import { RobotResponseDto, RunWorkflowRequestDto, WorkflowExecutionResponseDto } from "src/robot-connector/robot-connector.dto";
+import { QRLocationResponseDto, RobotResponseDto, RunWorkflowRequestDto, WorkflowExecutionResponseDto } from "src/robot-connector/robot-connector.dto";
 import { Workflow } from "src/workflow/workflow.entity";
 import { ConfigService } from "@nestjs/config";
 import { RobotStatus } from "src/robot-connector/robot-connector.constants";
@@ -270,8 +270,9 @@ export class TrackingService {
       this.logger.warn(TableValidation.TABLE_DO_NOT_HAVE_LOCATION, context);
       throw new TableException(TableValidation.TABLE_DO_NOT_HAVE_LOCATION); 
     };
+    const locationData: QRLocationResponseDto = await this.robotConnectorClient.getQRLocationById(table.location);
 
-    return table.location;
+    return locationData.qr_code;
   }
 
   /**
@@ -309,7 +310,7 @@ export class TrackingService {
         await this.robotConnectorClient.getRobotById(this.robotId);
 
     if(robotData.status !== RobotStatus.IDLE) {
-      this.logger.warn(`${RobotConnectorValidation.ROBOT_BUSY} ${this.robotId}`, context);
+      this.logger.warn(`${RobotConnectorValidation.ROBOT_BUSY.message} ${this.robotId}`, context);
       throw new RobotConnectorException(RobotConnectorValidation.ROBOT_BUSY); 
     }
   }

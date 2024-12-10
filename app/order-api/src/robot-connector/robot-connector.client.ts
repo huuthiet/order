@@ -203,8 +203,8 @@ export class RobotConnectorClient {
             `Get QR location by ID from ROBOT API failed: ${error.message}`,
             context,
           );
-          throw new BadRequestException(
-            `Get QR location failed ${error.message}`,
+          throw new RobotConnectorException(
+            RobotConnectorValidation.GET_LOCATION_FROM_ROBOT_API_FAILED
           );
         }),
       ),

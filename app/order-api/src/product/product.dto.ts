@@ -83,6 +83,9 @@ export class ProductResponseDto extends BaseResponseDto {
   image?: string;
 
   @AutoMap()
+  images?: string;
+
+  @AutoMap()
   rating?: string;
 
   @AutoMap(() => CatalogResponseDto)
