@@ -117,7 +117,7 @@ export class ProductService {
 
   async uploadMultiProductImages(
     slug: string,
-    file: Express.Multer.File,
+    files: Express.Multer.File[],
   ): Promise<ProductResponseDto> {
     const context = `${ProductService.name}.${this.uploadMultiProductImages.name}`;
     const product = await this.productRepository.findOne({
@@ -129,24 +129,55 @@ export class ProductService {
       this.logger.error(ProductValidation.PRODUCT_NOT_FOUND.message, context);
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
-    const image = await this.fileService.uploadFile(file);
+
+    const handleNameFiles = this.handleDuplicateFilesName(files);
+    const imagesUpload = await this.fileService.uploadFiles(handleNameFiles);
+    const nameImagesUpload = imagesUpload.map((item) => item.name);
 
     let images: string[] = [];
     if(product.images) {
       images = JSON.parse(product.images);
     }
-    images.push(`${image.name}`);
+    images = images.concat(nameImagesUpload);
     product.images = JSON.stringify(images);
 
     const updatedProduct = await this.productRepository.save(product);
 
     this.logger.log(
-      `Product image ${image.name} uploaded successfully`,
+      `Product images uploaded successfully`,
       context,
     );
 
     return this.mapper.map(updatedProduct, Product, ProductResponseDto);
   }
+
+  handleDuplicateFilesName(files: Express.Multer.File[]): Express.Multer.File[] {
+    const fileNameCount: { [key: string]: number } = {};
+    const renamedFiles: Express.Multer.File[] = [];
+  
+    files.forEach((file) => {
+      const fileExtension = file.originalname.split('.').pop();
+      const baseName = file.originalname.replace(/\.[^/.]+$/, ''); 
+  
+      if (fileNameCount[baseName]) {
+        fileNameCount[baseName]++;
+      } else {
+        fileNameCount[baseName] = 1;
+      }
+  
+      const newName = fileNameCount[baseName] === 1
+        ? file.originalname
+        : `${baseName}(${fileNameCount[baseName] - 1}).${fileExtension}`;
+  
+      renamedFiles.push({
+        ...file,
+        originalname: newName,
+      });
+    });
+  
+    return renamedFiles;
+  }
+  
 
   /**
    * Create a new product

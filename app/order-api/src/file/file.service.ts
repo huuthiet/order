@@ -33,6 +33,15 @@ export class FileService {
     return createdFile;
   }
 
+  async uploadFiles(files: Express.Multer.File[]) {
+    const context = `${FileService.name}.${this.uploadFiles.name}`;
+    const uploadedFiles = await Promise.all(
+      files.map((file) => this.saveFile(file))
+    );
+    this.logger.log(`Files uploaded successfully`, context);
+    return uploadedFiles;
+  }
+
   private async saveFile(requestData: Express.Multer.File): Promise<File> {
     if (!requestData) throw new FileException(FileValidation.FILE_NOT_FOUND);
     const file = new File();
