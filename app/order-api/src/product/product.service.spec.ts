@@ -42,6 +42,7 @@ describe('ProductService', () => {
             removeFile: jest.fn(),
             uploadFile: jest.fn(),
             uploadFiles: jest.fn(),
+            handleDuplicateFilesName: jest.fn(),
           },
         },
         {
@@ -450,7 +451,7 @@ describe('ProductService', () => {
       const files = [file];
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(product);
-      jest.spyOn(service, 'handleDuplicateFilesName').mockReturnValue(mockFiles);
+      (fileService.handleDuplicateFilesName as jest.Mock).mockReturnValue(mockFiles);
       (fileService.uploadFiles as jest.Mock).mockResolvedValue(files);
       (productRepositoryMock.save as jest.Mock).mockResolvedValue(product);
       (mapperMock.map as jest.Mock).mockReturnValue(product);

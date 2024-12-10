@@ -130,7 +130,7 @@ export class ProductService {
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
 
-    const handleNameFiles = this.handleDuplicateFilesName(files);
+    const handleNameFiles = this.fileService.handleDuplicateFilesName(files);
     const imagesUpload = await this.fileService.uploadFiles(handleNameFiles);
     const nameImagesUpload = imagesUpload.map((item) => item.name);
 
@@ -149,35 +149,7 @@ export class ProductService {
     );
 
     return this.mapper.map(updatedProduct, Product, ProductResponseDto);
-  }
-
-  handleDuplicateFilesName(files: Express.Multer.File[]): Express.Multer.File[] {
-    const fileNameCount: { [key: string]: number } = {};
-    const renamedFiles: Express.Multer.File[] = [];
-  
-    files.forEach((file) => {
-      const fileExtension = file.originalname.split('.').pop();
-      const baseName = file.originalname.replace(/\.[^/.]+$/, ''); 
-  
-      if (fileNameCount[baseName]) {
-        fileNameCount[baseName]++;
-      } else {
-        fileNameCount[baseName] = 1;
-      }
-  
-      const newName = fileNameCount[baseName] === 1
-        ? file.originalname
-        : `${baseName}(${fileNameCount[baseName] - 1}).${fileExtension}`;
-  
-      renamedFiles.push({
-        ...file,
-        originalname: newName,
-      });
-    });
-  
-    return renamedFiles;
-  }
-  
+  }  
 
   /**
    * Create a new product
