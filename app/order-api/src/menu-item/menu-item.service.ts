@@ -155,7 +155,10 @@ export class MenuItemService {
     });
     if (!menuItem) throw new BadRequestException('Menu item not found');
 
-    Object.assign(menuItem, { ...updateMenuItemDto });
+    Object.assign(menuItem, {
+      ...updateMenuItemDto,
+      currentStock: updateMenuItemDto.defaultStock,
+    } as MenuItem);
     await this.menuItemRepository.save(menuItem);
     this.logger.log(`Menu item updated: ${menuItem.id}`, context);
 
