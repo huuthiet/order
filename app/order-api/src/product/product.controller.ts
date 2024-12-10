@@ -33,6 +33,8 @@ import {
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RoleEnum } from 'src/role/role.enum';
+import { HasRoles } from 'src/role/roles.decorator';
 
 @ApiTags('Product')
 @Controller('products')
@@ -50,6 +52,7 @@ export class ProductController {
   @ApiOperation({ summary: 'Create new product' })
   @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Chef)
   async createProduct(
     @Body(
       new ValidationPipe({
@@ -114,6 +117,7 @@ export class ProductController {
     required: true,
     example: '',
   })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Chef, RoleEnum.Staff)
   async updateProduct(
     @Param('slug') slug: string,
     @Body(
@@ -153,6 +157,7 @@ export class ProductController {
     required: true,
     example: '',
   })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin)
   async deleteProduct(
     @Param('slug') slug: string,
   ): Promise<AppResponseDto<string>> {
@@ -191,6 +196,7 @@ export class ProductController {
     description: 'Product image have been uploaded successfully',
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Chef, RoleEnum.Staff)
   @UseInterceptors(FileInterceptor('file'))
   async uploadProductImage(
     @Param('slug') slug: string,

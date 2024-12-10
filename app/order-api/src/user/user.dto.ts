@@ -1,14 +1,18 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsOptional, Min } from 'class-validator';
+import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
+import { INVALID_USERID } from 'src/auth/auth.validation';
 import { BranchResponseDto } from 'src/branch/branch.dto';
+import { RoleResponseDto } from 'src/role/role.dto';
 
-export class ResetPasswordRequestDto {
-  @AutoMap()
-  @ApiProperty()
-  readonly user: string;
+export class CurrentUserDto {
+  @IsNotEmpty({ message: INVALID_USERID })
+  userId: string;
+
+  @IsOptional()
+  scope?: string;
 }
 
 export class UserResponseDto extends BaseResponseDto {
@@ -39,6 +43,16 @@ export class UserResponseDto extends BaseResponseDto {
   @AutoMap(() => BranchResponseDto)
   @ApiProperty()
   readonly branch: BranchResponseDto;
+
+  @AutoMap(() => RoleResponseDto)
+  @ApiProperty()
+  role: RoleResponseDto;
+}
+
+export class UpdateUserRoleRequestDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  role: string;
 }
 
 export class GetAllUserQueryRequestDto {

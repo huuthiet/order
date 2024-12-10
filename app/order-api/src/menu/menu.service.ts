@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   CreateMenuDto,
   GetAllMenuQueryRequestDto,
@@ -59,6 +59,7 @@ export class MenuService {
    */
   async getMenu(query: GetMenuRequestDto): Promise<MenuResponseDto> {
     const context = `${MenuService.name}.${this.getMenu.name}`;
+    console.log({ query });
     if (_.isEmpty(query)) {
       this.logger.warn(`Query is empty`, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
@@ -189,9 +190,10 @@ export class MenuService {
   async getAllMenus(
     query: GetAllMenuQueryRequestDto,
   ): Promise<AppPaginatedResponseDto<MenuResponseDto>> {
+    console.log({ query });
     const [menus, total] = await this.menuRepository.findAndCount({
-      where: { branch: { slug: query.branch } },
-      order: { createdAt: 'DESC' },
+      where: { branch: { slug: query.branch }, isTemplate: query.isTemplate },
+      order: { date: 'DESC' },
       relations: ['menuItems.product.variants.size'],
       skip: (query.page - 1) * query.size,
       take: query.size,

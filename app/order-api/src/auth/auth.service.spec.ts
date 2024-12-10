@@ -30,6 +30,7 @@ import { File } from 'src/file/file.entity';
 import { ForgotPasswordToken } from './forgot-password-token.entity';
 import { MailService } from 'src/mail/mail.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { Role } from 'src/role/role.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -61,6 +62,10 @@ describe('AuthService', () => {
         },
         {
           provide: getRepositoryToken(Branch),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Role),
           useFactory: repositoryMockFactory,
         },
         {

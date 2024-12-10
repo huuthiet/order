@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { getDayIndex } from 'src/helper';
 import { Branch } from 'src/branch/branch.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import * as moment from 'moment';
 
 @Injectable()
 export class MenuScheduler {
@@ -20,17 +21,21 @@ export class MenuScheduler {
   @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async generateMenu() {
     const context = `${MenuScheduler.name}.${this.generateMenu.name}`;
-    const today = new Date();
-    const dayIndex = getDayIndex(today);
+
+    const today = new Date(moment().format('YYYY-MM-DD'));
     this.logger.log(`Generating menu for today = ${today}`, context);
+
+    const dayIndex = getDayIndex(today);
+    this.logger.log(`Today index: ${dayIndex}`, context);
 
     const branches = await this.branchRepository.find();
     this.logger.log(`Branch count = ${branches.length}`, context);
 
     const templateMenus = await this.getTemplateMenus(branches, dayIndex);
-    this.logger.log(`Template menu count = ${templateMenus.length}`, context);
+    const filteredMenus = templateMenus.filter((menu) => menu !== null);
+    this.logger.log(`Template menu count = ${filteredMenus.length}`, context);
 
-    const newMenus = templateMenus.map((menu) => {
+    const newMenus = filteredMenus.map((menu) => {
       const newMenu = _.cloneDeep(menu);
       Object.assign(newMenu, {
         date: today,
@@ -63,18 +68,20 @@ export class MenuScheduler {
    * @param {number} dayIndex
    * @returns {Promise<Menu[]>} Template menus for the day
    */
-  async getTemplateMenus(branches: Branch[], dayIndex: number) {
+  async getTemplateMenus(
+    branches: Branch[],
+    dayIndex: number,
+  ): Promise<Menu[]> {
     const templateMenus = await Promise.all(
-      branches
-        .map(async (branch) => {
-          const menu = await this.menuRepository.findOne({
-            where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
-            relations: ['menuItems.product', 'branch'],
-          });
-          return menu;
-        })
-        .filter(async (menu) => !!(await menu)),
+      branches.map(async (branch) => {
+        const menu = await this.menuRepository.findOne({
+          where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
+          relations: ['menuItems.product', 'branch'],
+        });
+        return menu;
+      }),
     );
+
     return templateMenus;
   }
 

@@ -23,6 +23,8 @@ import {
 } from './acb-connector.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
+import { HasRoles } from 'src/role/roles.decorator';
+import { RoleEnum } from 'src/role/role.enum';
 
 @ApiTags('ACB Connector')
 @Controller('acb-connector')
@@ -49,6 +51,7 @@ export class ACBConnectorController {
   }
 
   @Post()
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create ACB config' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
@@ -71,6 +74,7 @@ export class ACBConnectorController {
 
   @Put(':slug')
   @HttpCode(HttpStatus.CREATED)
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin)
   @ApiOperation({ summary: 'Update ACB config' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @ApiResponseWithType({

@@ -12,13 +12,14 @@ import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   GetAllUserQueryRequestDto,
-  ResetPasswordRequestDto,
+  UpdateUserRoleRequestDto,
   UserResponseDto,
 } from './user.dto';
 import { AppPaginatedResponseDto } from 'src/app/app.dto';
 import { MailService } from 'src/mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { Role } from 'src/role/role.entity';
 
 @Injectable()
 export class UserService {
@@ -29,6 +30,8 @@ export class UserService {
     private readonly mailService: MailService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     @InjectMapper()
     private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
@@ -37,10 +40,44 @@ export class UserService {
     this.saltOfRounds = this.configService.get<number>('SALT_ROUNDS');
   }
 
-  async resetPassword(requestData: ResetPasswordRequestDto) {
+  async updateUserRole(slug: string, requestData: UpdateUserRoleRequestDto) {
+    const context = `${UserService.name}.${this.updateUserRole.name}`;
+    const role = await this.roleRepository.findOne({
+      where: {
+        slug: requestData.role,
+      },
+    });
+    if (!role)
+      throw new BadRequestException(`Role ${requestData.role} not found`);
+
+    const user = await this.userRepository.findOne({
+      where: { slug },
+      relations: ['role'],
+    });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    Object.assign(user, {
+      role,
+    });
+    try {
+      await this.userRepository.save(user);
+      this.logger.log(`User role has been updated successfully`, context);
+    } catch (error) {
+      this.logger.error(
+        `Error when updating user role: ${error.message}`,
+        context,
+      );
+    }
+
+    return this.mapper.map(user, User, UserResponseDto);
+  }
+
+  async resetPassword(slug: string) {
     const context = `${UserService.name}.${this.resetPassword.name}`;
     const user = await this.userRepository.findOne({
-      where: { slug: requestData.user },
+      where: { slug },
     });
     if (!user) {
       throw new BadRequestException('User not found');
@@ -60,7 +97,7 @@ export class UserService {
     query: GetAllUserQueryRequestDto,
   ): Promise<AppPaginatedResponseDto<UserResponseDto>> {
     const [users, total] = await this.userRepository.findAndCount({
-      relations: ['branch'],
+      relations: ['branch', 'role'],
       where: {
         branch: { slug: query.branch },
       },

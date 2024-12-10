@@ -35,6 +35,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { OrderException } from 'src/order/order.exception';
 import { OrderValidation } from 'src/order/order.validation';
 import { OrderStatus } from 'src/order/order.contants';
+import { PdfService } from 'src/pdf/pdf.service';
 
 @Injectable()
 export class PaymentService {
@@ -49,7 +50,30 @@ export class PaymentService {
     private readonly cashStrategy: CashStrategy,
     private readonly bankTransferStrategy: BankTransferStrategy,
     private readonly eventEmitter: EventEmitter2,
+    private readonly pdfService: PdfService,
   ) {}
+
+  async exportPayment(slug: string) {
+    const context = `${PaymentService.name}.${this.exportPayment.name}`;
+    const payment = await this.paymentRepository.findOne({
+      where: {
+        slug,
+      },
+      relations: ['order'],
+    });
+    if (!payment) {
+      this.logger.warn(`Payment ${slug} not found`, context);
+      throw new PaymentException(PaymentValidation.PAYMENT_NOT_FOUND);
+    }
+
+    const data = await this.pdfService.generatePdf('payment', payment, {
+      width: '80mm',
+    });
+
+    this.logger.log(`Payment ${payment.slug} exported`, context);
+
+    return data;
+  }
 
   /**
    * Get specific payment
