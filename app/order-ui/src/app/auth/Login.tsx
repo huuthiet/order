@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react'
-import { isAxiosError } from 'axios'
+import { useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import _ from 'lodash'
 
-import { loginSchema } from '@/schemas'
 import {
   Card,
   CardContent,
@@ -16,77 +13,16 @@ import {
 } from '@/components/ui'
 import { LoginBackground } from '@/assets/images'
 import { LoginForm } from '@/components/app/form'
-import { useAuthStore, useUserStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 import { ROUTE } from '@/constants'
-import { showErrorToast, showToast } from '@/utils'
 import { cn } from '@/lib/utils'
-import { useLogin, useProfile } from '@/hooks'
 
 export default function Login() {
   const { t } = useTranslation(['auth'])
-  const {
-    setToken,
-    setRefreshToken,
-    setExpireTime,
-    setExpireTimeRefreshToken,
-  } = useAuthStore()
   //   const { getTheme } = useThemeStore()
   const { isAuthenticated } = useAuthStore()
-  const { setUserInfo } = useUserStore()
 
   const navigate = useNavigate()
-  const { mutate: login } = useLogin()
-  const { refetch: refetchProfile } = useProfile()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleSubmit = async (data: z.infer<typeof loginSchema>) => {
-    setIsLoading(true)
-    try {
-      login(data, {
-        onSuccess: async (response) => {
-          setToken(response.result.accessToken)
-          setRefreshToken(response.result.refreshToken)
-          setExpireTime(response.result.expireTime)
-          setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
-
-          // Fetch profile after successful login
-          const profile = await refetchProfile()
-          if (profile.data) {
-            setUserInfo(profile.data.result)
-          }
-
-          navigate(ROUTE.STAFF_MENU, { replace: true })
-          showToast(t('toast.loginSuccess'))
-        },
-        onError: (error) => {
-          if (isAxiosError(error)) {
-            if (error.code === 'ECONNABORTED') {
-              showToast(error.response?.data?.errorCode)
-              return
-            }
-            if (error.code === 'ERR_NETWORK') {
-              showErrorToast(error.response?.data?.errorCode)
-              return
-            }
-            showErrorToast(error.response?.data?.statusCode)
-          }
-        },
-      })
-    } catch (error) {
-      if (isAxiosError(error)) {
-        if (error.code === 'ECONNABORTED') {
-          showToast(error.response?.data?.errorCode)
-          return
-        }
-        if (error.code === 'ERR_NETWORK') {
-          showErrorToast(error.response?.data?.errorCode)
-          return
-        }
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   // Redirect if the user is already authenticated
   useEffect(() => {
@@ -114,7 +50,7 @@ export default function Login() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <LoginForm />
           </CardContent>
           <CardFooter className="flex justify-between gap-1 text-white">
             <div className='flex gap-1'>

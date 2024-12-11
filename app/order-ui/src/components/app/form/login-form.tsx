@@ -1,5 +1,8 @@
-import { z } from 'zod'
+import React from 'react'
+import { isAxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -11,32 +14,71 @@ import {
   Input,
   Form,
   Button,
-  PasswordInput
+  PasswordInput,
 } from '@/components/ui'
 import { loginSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ButtonLoading } from '@/components/app/loading'
-import React from 'react'
-// import { useThemeStore } from '@/stores'
+import { useLogin, useProfile } from '@/hooks'
+import { useAuthStore, useUserStore } from '@/stores'
+import { ROUTE } from '@/constants'
+import { showErrorToast, showToast } from '@/utils'
 
-interface IFormLoginProps {
-  onSubmit: (data: z.infer<typeof loginSchema>) => void
-  isLoading: boolean
-}
-
-export const LoginForm: React.FC<IFormLoginProps> = ({ onSubmit, isLoading }) => {
+export const LoginForm: React.FC = () => {
   const { t } = useTranslation(['auth'])
-  //   const { getTheme } = useThemeStore()
+  const {
+    setToken,
+    setRefreshToken,
+    setExpireTime,
+    setExpireTimeRefreshToken,
+  } = useAuthStore()
+  const navigate = useNavigate()
+  const { setUserInfo } = useUserStore()
+  const { mutate: login, isPending } = useLogin()
+  const { refetch: refetchProfile } = useProfile()
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       phonenumber: '',
-      password: ''
-    }
+      password: '',
+    },
   })
 
-  const handleSubmit = (values: z.infer<typeof loginSchema>) => {
-    onSubmit(values)
+  const handleSubmit = async (data: z.infer<typeof loginSchema>) => {
+    try {
+      login(data, {
+        onSuccess: async (response) => {
+          setToken(response.result.accessToken)
+          setRefreshToken(response.result.refreshToken)
+          setExpireTime(response.result.expireTime)
+          setExpireTimeRefreshToken(response.result.expireTimeRefreshToken)
+
+          const profile = await refetchProfile()
+          if (profile.data) {
+            setUserInfo(profile.data.result)
+          }
+
+          navigate(ROUTE.STAFF_MENU, { replace: true })
+          showToast(t('toast.loginSuccess'))
+        },
+        onError: (error) => {
+          if (isAxiosError(error)) {
+            if (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK') {
+              showErrorToast(error.response?.data?.errorCode)
+              return
+            }
+            showErrorToast(error.response?.data?.statusCode)
+          }
+        },
+      })
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK') {
+          showErrorToast(error.response?.data?.errorCode)
+        }
+      }
+    }
   }
 
   const formFields = {
@@ -63,29 +105,36 @@ export const LoginForm: React.FC<IFormLoginProps> = ({ onSubmit, isLoading }) =>
           <FormItem>
             <FormLabel>{t('login.password')}</FormLabel>
             <FormControl>
-              <PasswordInput placeholder={t('login.enterPassword')} {...field} />
+              <PasswordInput
+                placeholder={t('login.enterPassword')}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-    )
+    ),
   }
 
   return (
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:w-[24rem]  text-white gap-2">
+          <div className="grid grid-cols-1 gap-2 text-white md:w-[24rem]">
             {Object.keys(formFields).map((key) => (
               <React.Fragment key={key}>
                 {formFields[key as keyof typeof formFields]}
               </React.Fragment>
-            ))}{' '}
+            ))}
           </div>
           <div className="flex items-center justify-between w-full">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? <ButtonLoading /> : t('login.title')}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+            >
+              {isPending ? <ButtonLoading /> : t('login.title')}
             </Button>
           </div>
         </form>
