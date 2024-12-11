@@ -75,16 +75,27 @@ export class TrackingService {
     );
     const orderResult = await this.validateOrderItemInOneOrder(requestData.trackingOrderItems);
 
+    const orderItem = await this.orderItemRepository.findOne({
+      where: {
+        slug: requestData.trackingOrderItems[0].orderItem
+      },
+      relations: [
+        'order.branch',
+        'order.orderItems'
+      ]
+    });
+    const order = orderItem.order;
+
     let savedTrackingId: string = '';
     if(requestData.type === TrackingType.BY_ROBOT) {
-      if(orderResult.type === OrderType.TAKE_OUT) {
-        this.logger.warn(`${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT} ${orderResult.slug}`, context);
+      if(order.type === OrderType.TAKE_OUT) {
+        this.logger.warn(`${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT} ${order.slug}`, context);
         throw new TrackingException(TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT);
       }
 
-      const tableLocation: string = await this.getLocationTableByOrder(orderResult);
+      const tableLocation: string = await this.getLocationTableByOrder(order);
       
-      const workflowId: string = await this.getWorkflowIdByOrder(orderResult);
+      const workflowId: string = await this.getWorkflowIdByOrder(order);
 
       await this.checkRobotStatusBeforeCall();
 
@@ -92,7 +103,7 @@ export class TrackingService {
         runtime_config: {
           raybot_id: this.robotId,
           location: tableLocation,
-          order_code: orderResult.slug
+          order_code: order.slug
         }
       }
       const workflowRobot: WorkflowExecutionResponseDto = 
@@ -211,19 +222,18 @@ export class TrackingService {
         throw new OrderItemException(OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY);  
     };
     }
-    
+
     return  orderItemsData;
   }
 
   /**
    * Validate order items belong to a order or not
    * @param {CreateTrackingOrderItemRequestDto} orderItems The array of order item slug 
-   * @returns {Promise<Order>} The order of order item array
    * @throws {OrderItemException} If all order item not belong to a order
    */
   async validateOrderItemInOneOrder (
     orderItems: CreateTrackingOrderItemRequestDto[]
-  ): Promise<Order> {
+  ): Promise<void> {
     const context = `${TrackingService.name}.${this.validateOrderItemInOneOrder.name}`;
     const orderItemSlugs = orderItems.map((item) => item.orderItem);
     const orders = await this.orderRepository.find({
@@ -233,14 +243,20 @@ export class TrackingService {
         }
       },
       relations: [
-        'branch'
+        'branch',
+        'orderItems'
       ]
     });
-    if(orders.length === 1)
-      if(orders[0].branch) return orders[0];
+    if(orders.length !== 1) {
+      this.logger.warn(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER, context);
+      throw new OrderItemException(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER);
+    }
+      
 
-    this.logger.warn(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER, context);
-    throw new OrderItemException(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER);
+    if(!orders[0].branch) {
+      this.logger.warn(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER, context);
+      throw new OrderItemException(OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER);  
+    }
   }
 
   /**
