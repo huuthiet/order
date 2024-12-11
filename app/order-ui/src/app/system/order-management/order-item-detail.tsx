@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+// import { ChevronDown, ChevronUp } from 'lucide-react'
 import { CheckedState } from '@radix-ui/react-checkbox'
 
 import { IOrderDetail, OrderStatus } from '@/types'
-import { Button, Checkbox } from '@/components/ui'
+import { Checkbox } from '@/components/ui'
 import { useOrderTrackingStore } from '@/stores'
 import OrderItemStatusBadge from '@/components/app/badge/order-item-status-badge'
 
@@ -14,7 +14,7 @@ interface OrderItemDetailProps {
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   const { t } = useTranslation(['menu'])
-  const [showDetails, setShowDetails] = useState(false)
+  // const [showDetails, setShowDetails] = useState(false)
   const {
     addSelectedItem,
     removeSelectedItem,
@@ -92,7 +92,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       })
 
     return (
-      <div key={orderItem.id} className="space-y-2">
+      <div key={orderItem.id} className="mt-4 space-y-2">
         <div className="font-medium">
           {orderItem.variant.product.name}{' '}
           {orderItem.note && `(${orderItem.note})`}
@@ -110,6 +110,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
               {item.status === OrderStatus.PENDING ? (
                 <div className="flex flex-row items-center col-span-3 gap-2">
                   <Checkbox
+                    className='w-5 h-5 shadow-none'
                     checked={isChecked(orderItem, item.index)}
                     onCheckedChange={(checked) =>
                       handleSelectOrderItem(checked, orderItem, item.index)
@@ -154,19 +155,20 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   }
 
   return (
-    <div className="w-full rounded-lg">
-      <Button
+    <div className="flex flex-col w-full gap-2 rounded-lg">
+      {/* <Button
         variant="outline"
         onClick={() => setShowDetails(!showDetails)}
         className="justify-between w-fit"
       >
         <span className="text-sm font-medium">{t('order.orderDetail')}</span>
         {showDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </Button>
+      </Button> */}
 
-      {showDetails && (
+      {/* {showDetails && (
         <div className="mt-4 space-y-4">{renderOrderItem(order)}</div>
-      )}
+      )} */}
+      <div className='flex flex-col gap-2'>{renderOrderItem(order)}</div>
     </div>
   )
 }

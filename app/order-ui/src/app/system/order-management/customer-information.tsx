@@ -31,14 +31,14 @@ export default function CustomerInformation({
             {orderDetailData.createdAt ? moment(orderDetailData?.createdAt).format('hh:mm DD/MM/YYYY') : ''}
           </span>
         </div>
-        <div className="grid grid-cols-2">
+        {/* <div className="grid grid-cols-2">
           <span className="col-span-1 text-xs font-semibold">
             {t('order.phoneNumber')}
           </span>
           <span className="col-span-1 text-xs">
             {orderDetailData?.owner?.phonenumber}
           </span>
-        </div>
+        </div> */}
       </div>
       <div className="col-span-1 text-muted-foreground">
         <div className="grid grid-cols-3">

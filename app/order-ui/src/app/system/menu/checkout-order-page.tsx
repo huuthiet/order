@@ -97,7 +97,9 @@ export default function ConfirmOrderPage() {
               </div>
             ))}
           </div>
-          <TableSelect />
+          <div className="grid grid-cols-1">
+            <TableSelect />
+          </div>
         </ScrollArea>
       </div>
 

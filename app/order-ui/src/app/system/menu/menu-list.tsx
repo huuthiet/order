@@ -4,6 +4,7 @@ import { SkeletonMenuList } from '@/components/app/skeleton'
 import { IProduct, ISpecificMenu } from '@/types'
 import { publicFileURL } from '@/constants'
 import { AddToCartDialog } from '@/components/app/dialog'
+import { Button } from '@/components/ui'
 
 interface IMenuProps {
   menu: ISpecificMenu | undefined
@@ -90,15 +91,18 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
             <div className="flex items-center justify-between gap-1">
               <div className="flex flex-col">
                 {item.product.variants.length > 0 ? (
-                  <span className="text-sm font-bold text-primary">
-                    {(() => {
-                      const range = getPriceRange(item.product.variants)
-                      if (!range) return '0đ'
-                      return range.isSinglePrice
-                        ? `${range.min.toLocaleString('vi-VN')}đ`
-                        : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
-                    })()}
-                  </span>
+                  <div className='flex flex-col items-start justify-start gap-1'>
+                    <span className="text-sm font-bold text-primary">
+                      {(() => {
+                        const range = getPriceRange(item.product.variants)
+                        if (!range) return '0đ'
+                        return range.isSinglePrice
+                          ? `${range.min.toLocaleString('vi-VN')}đ`
+                          : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
+                      })()}
+                    </span>
+                    <span className='text-[0.7rem] text-muted-foreground'>{item.currentStock}/{item.defaultStock}</span>
+                  </div>
                 ) : (
                   <span className="text-sm font-bold text-primary">
                     Liên hệ
@@ -106,7 +110,16 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
                 )}
               </div>
             </div>
-            <AddToCartDialog product={item.product} />
+            {item.currentStock > 0 ? (
+              <AddToCartDialog product={item.product} />
+            ) : (
+              <Button
+                className="flex items-center justify-center w-full py-2 text-sm font-semibold text-white bg-red-500 rounded-full"
+                disabled
+              >
+                Hết hàng
+              </Button>
+            )}
           </div>
         </div>
       ))}
