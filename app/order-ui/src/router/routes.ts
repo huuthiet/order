@@ -11,27 +11,31 @@ import {
   Wallet,
 } from 'lucide-react'
 import type { ISidebarRoute } from '@/types'
-import { ROUTE } from '@/constants'
+import { Role, ROUTE } from '@/constants'
 
 export const sidebarRoutes: ISidebarRoute[] = [
   {
     title: 'sidebar.home',
     path: ROUTE.STAFF_HOME,
     icon: SquareTerminal,
+    roles: [Role.ADMIN, Role.CUSTOMER],
   },
   {
     title: 'sidebar.menu',
     path: ROUTE.STAFF_MENU,
     icon: LayoutGrid,
+    roles: [Role.ADMIN, Role.STAFF, Role.CUSTOMER],
   },
   {
     title: 'sidebar.orderManagement',
     path: ROUTE.STAFF_ORDER_MANAGEMENT,
+    roles: [Role.MANAGER, Role.ADMIN],
     icon: FileChartColumnIncreasing,
   },
   {
     title: 'sidebar.orderHistory',
     path: ROUTE.STAFF_ORDER_HISTORY,
+    roles: [Role.MANAGER, Role.ADMIN],
     icon: FileText,
   },
   {
@@ -57,6 +61,7 @@ export const sidebarRoutes: ISidebarRoute[] = [
   {
     title: 'sidebar.userManagement',
     path: ROUTE.STAFF_USER_MANAGEMENT,
+    roles: [Role.ADMIN],
     icon: Users,
   },
   {
