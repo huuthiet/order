@@ -4,7 +4,7 @@ import { ChevronRight, Sparkles } from 'lucide-react'
 import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSidebar } from '@/components/ui'
-import { hasRequiredRole } from '@/utils/auth'
+// import { hasRequiredRole } from '@/utils/auth'
 import { useMemo } from 'react'
 import { useUserStore } from '@/stores'
 import { Role } from '@/constants/role'
@@ -74,7 +74,7 @@ export default function AppSidebar() {
   return (
     <Sidebar
       variant="inset"
-      className="z-50 border-r bg-white"
+      className="z-50 bg-white border-r"
       collapsible="icon"
     >
       <SidebarHeader>
@@ -83,7 +83,7 @@ export default function AppSidebar() {
             <SidebarMenuButton size="lg" asChild>
               <NavLink
                 to="/staff/home"
-                className="flex w-full items-center justify-center"
+                className="flex items-center justify-center w-full"
               >
                 {/* <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0 group-data-[collapsible=icon]:w-full">
                   <Command className="size-4" />

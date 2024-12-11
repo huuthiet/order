@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN, Role.STAFF]}
+            allowedRoles={[Role.ADMIN, Role.STAFF, Role.CUSTOMER]}
             element={<SuspenseElement component={MenuPage} />}
           />
         ),

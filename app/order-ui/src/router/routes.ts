@@ -18,13 +18,13 @@ export const sidebarRoutes: ISidebarRoute[] = [
     title: 'sidebar.home',
     path: ROUTE.STAFF_HOME,
     icon: SquareTerminal,
-    roles: [Role.ADMIN],
+    roles: [Role.ADMIN, Role.CUSTOMER],
   },
   {
     title: 'sidebar.menu',
     path: ROUTE.STAFF_MENU,
     icon: LayoutGrid,
-    roles: [Role.ADMIN, Role.STAFF],
+    roles: [Role.ADMIN, Role.STAFF, Role.CUSTOMER],
   },
   {
     title: 'sidebar.orderManagement',
