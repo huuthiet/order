@@ -85,7 +85,6 @@ export class SizeController {
   }
 
   @Patch(':slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -121,7 +120,6 @@ export class SizeController {
   }
 
   @Delete(':slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponseWithType({
     status: HttpStatus.OK,
