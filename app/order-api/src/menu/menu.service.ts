@@ -59,7 +59,6 @@ export class MenuService {
    */
   async getMenu(query: GetMenuRequestDto): Promise<MenuResponseDto> {
     const context = `${MenuService.name}.${this.getMenu.name}`;
-    console.log({ query });
     if (_.isEmpty(query)) {
       this.logger.warn(`Query is empty`, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
@@ -190,7 +189,6 @@ export class MenuService {
   async getAllMenus(
     query: GetAllMenuQueryRequestDto,
   ): Promise<AppPaginatedResponseDto<MenuResponseDto>> {
-    console.log({ query });
     const [menus, total] = await this.menuRepository.findAndCount({
       where: { branch: { slug: query.branch }, isTemplate: query.isTemplate },
       order: { date: 'DESC' },

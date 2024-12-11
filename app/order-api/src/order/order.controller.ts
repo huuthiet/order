@@ -7,7 +7,6 @@ import {
   Param,
   Post,
   Query,
-  Req,
   ValidationPipe,
 } from '@nestjs/common';
 import {
@@ -78,7 +77,6 @@ export class OrderController {
     @Query(new ValidationPipe({ transform: true, whitelist: true }))
     query: GetOrderRequestDto,
   ) {
-    console.log({ query });
     const result = await this.orderService.getAllOrders(query);
     return {
       message: 'All orders have been retrieved successfully',

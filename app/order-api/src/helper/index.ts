@@ -36,7 +36,6 @@ export const formatDate = (date: Date, format: string) => {
 export const formatPaymentMethod = (method: string) => {
   switch (method) {
     case PaymentMethod.BANK_TRANSFER:
-      console.log('');
       return 'Chuyển khoản';
     case PaymentMethod.CASH:
       return 'Tiền mặt';

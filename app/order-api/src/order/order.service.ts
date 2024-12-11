@@ -6,9 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { Between, DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
 import {
-  CheckDataCreateOrderItemResponseDto,
   CreateOrderRequestDto,
   GetOrderRequestDto,
   OrderResponseDto,
@@ -24,7 +23,6 @@ import { User } from 'src/user/user.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { OrderStatus, OrderType } from './order.contants';
 import { WorkflowStatus } from 'src/tracking/tracking.constants';
-import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
 import { OnEvent } from '@nestjs/event-emitter';
 import { OrderException } from './order.exception';
 import { OrderValidation } from './order.validation';
@@ -33,7 +31,6 @@ import { TableException } from 'src/table/table.exception';
 import { TableValidation } from 'src/table/table.validation';
 import { VariantException } from 'src/variant/variant.exception';
 import { VariantValidation } from 'src/variant/variant.validation';
-import { Tracking } from 'src/tracking/tracking.entity';
 import { PaymentAction, PaymentStatus } from 'src/payment/payment.constants';
 import { BranchException } from 'src/branch/branch.exception';
 import { AppPaginatedResponseDto } from 'src/app/app.dto';
@@ -58,15 +55,12 @@ export class OrderService {
     private readonly variantRepository: Repository<Variant>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Tracking)
-    private readonly trackingRepository: Repository<Tracking>,
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
     @InjectRepository(MenuItem)
     private readonly menuItemRepository: Repository<MenuItem>,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-    private readonly robotConnectorClient: RobotConnectorClient,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -108,41 +102,48 @@ export class OrderService {
   ): Promise<OrderResponseDto> {
     const context = `${OrderService.name}.${this.createOrder.name}`;
 
-    const mappedOrder: Order = await this.validateCreatedOrderData(requestData);
-
-    const checkValidOrderItemData = await this.validateCreatedOrderItemData(
+    const order: Order = await this.constructOrder(requestData);
+    const orderItems = await this.constructOrderItem(
       requestData.branch,
       requestData.orderItems,
     );
+    this.logger.log(`Number of order items: ${orderItems.length}`, context);
 
+    const orderSubtotal = await this.getOrderSubtotal(orderItems);
     let createdOrder: Order;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      Object.assign(mappedOrder, {
-        orderItems: checkValidOrderItemData.mappedOrderItems,
-        subtotal: checkValidOrderItemData.subtotal,
+      Object.assign(order, {
+        orderItems: orderItems,
+        subtotal: orderSubtotal,
       });
-      const subtractedQuantityMenuItems = checkValidOrderItemData.subtractedQuantityMenuItems;
-      const newOrder = this.orderRepository.create(mappedOrder);
 
-      createdOrder = await queryRunner.manager.save(newOrder);
+      // Created order
+      createdOrder = await queryRunner.manager.save(order);
 
-      // update menu item quantity
-      for (const menuItem of subtractedQuantityMenuItems) {
-        await queryRunner.manager.save(menuItem);
-      }
+      // Update current stock of menu items
+      const currentMenuItems = await this.getCurrentMenuItems(createdOrder);
+      await queryRunner.manager.save(currentMenuItems);
 
       await queryRunner.commitTransaction();
+
       this.logger.log(
-        `Create new order ${createdOrder.slug} successfully`,
+        `New order ${createdOrder.slug} created successfully`,
+        context,
+      );
+      this.logger.log(
+        `Number of menu items: ${currentMenuItems.length} updated successfully`,
         context,
       );
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      this.logger.warn(`Create new order failed`, context);
+      this.logger.warn(
+        `Error when creating new order: ${err.message}`,
+        context,
+      );
       throw new BadRequestException('Create new order failed');
     } finally {
       await queryRunner.release();
@@ -157,8 +158,8 @@ export class OrderService {
    * @param {CreateOrderRequestDto} data The data to create order
    * @returns {Promise<Order>} The result of checking
    */
-  async validateCreatedOrderData(data: CreateOrderRequestDto): Promise<Order> {
-    const context = `${OrderService.name}.${this.validateCreatedOrderData.name}`;
+  async constructOrder(data: CreateOrderRequestDto): Promise<Order> {
+    const context = `${OrderService.name}.${this.constructOrder.name}`;
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
     if (!branch) {
       this.logger.warn(
@@ -169,8 +170,9 @@ export class OrderService {
     }
 
     let tableName: string = null; // default for take-out
+    let table: Table;
     if (data.type === OrderType.AT_TABLE) {
-      const table = await this.tableRepository.findOne({
+      table = await this.tableRepository.findOne({
         where: {
           slug: data.table,
           branch: {
@@ -201,86 +203,194 @@ export class OrderService {
       owner: owner,
       branch: branch,
       tableName,
+      table,
     });
     return order;
   }
 
   /**
-   *
-   * @param {CreateOrderItemRequestDto} data The array of data to create order item
-   * @returns {Promise<CheckDataCreateOrderItemResponseDto>} The result of checking
+   * Get list of current menu items
+   * @param {Order} entity
+   * @returns {Promise<MenuItem[]>} List of current menu items
    */
-  async validateCreatedOrderItemData(
-    branch: string,
-    data: CreateOrderItemRequestDto[],
-  ): Promise<CheckDataCreateOrderItemResponseDto> {
-    const context = `${OrderService.name}.${this.validateCreatedOrderItemData.name}`;
-    const now = new Date();
-    const dateQuery = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0, 0);
-    console.log({dateQuery})
+  async getCurrentMenuItems(entity: Order): Promise<MenuItem[]> {
+    const context = `${OrderService.name}.${this.getCurrentMenuItems.name}`;
+    this.logger.log(
+      `Get current of menu items for order: ${entity.slug}`,
+      context,
+    );
+
+    const today = new Date(moment().format('YYYY-MM-DD'));
+    this.logger.log(`Retrieve the menu for today: ${today}`, context);
+
+    // Get current menu
     const menu = await this.menuRepository.findOne({
       where: {
         branch: {
-          slug: branch
+          id: entity.branch?.id,
         },
-        date: dateQuery
-      }
+        date: today,
+      },
     });
-    if(!menu) {
+    if (!menu) {
       this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
 
-    let subtotal: number = 0;
-    const mappedOrderItems: OrderItem[] = [];
-    const subtractedQuantityMenuItems: MenuItem[] = [];
-    for (let i = 0; i < data.length; i++) {
-      let variant = await this.variantRepository.findOneBy({
-        slug: data[i].variant
+    const menuItems = await Promise.all(
+      entity.orderItems.map(async (item) => {
+        // Get variant
+        const variant = await this.variantRepository.findOne({
+          where: {
+            slug: item.variant.slug,
+          },
+          relations: ['product'],
+        });
+        if (!variant) {
+          this.logger.warn(
+            `${VariantValidation.VARIANT_NOT_FOUND} ${item.variant}`,
+            context,
+          );
+          throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
+        }
+
+        // Get menu item
+        const menuItem = await this.menuItemRepository.findOne({
+          where: {
+            menu: { slug: menu.slug },
+            product: {
+              id: variant.product?.id,
+            },
+          },
+        });
+        if (!menuItem) {
+          this.logger.warn(
+            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+            context,
+          );
+          throw new ProductException(
+            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+          );
+        }
+
+        if (item.quantity > menuItem.currentStock) {
+          this.logger.warn(
+            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+            context,
+          );
+          throw new OrderException(
+            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+          );
+        }
+
+        const currentQuantity: number = menuItem.currentStock - item.quantity;
+        menuItem.currentStock = currentQuantity;
+        return menuItem;
+      }),
+    );
+
+    this.logger.log(`Number of menu items: ${menuItems.length}`, context);
+    return menuItems;
+  }
+
+  /**
+   *
+   * @param {CreateOrderItemRequestDto} createOrderItemRequestDto The array of data to create order item
+   * @returns {Promise<ConstructOrderItemResponseDto>} The result of checking
+   */
+  async constructOrderItem(
+    branch: string,
+    createOrderItemRequestDto: CreateOrderItemRequestDto[],
+  ): Promise<OrderItem[]> {
+    const context = `${OrderService.name}.${this.constructOrderItem.name}`;
+    const today = new Date(moment().format('YYYY-MM-DD'));
+    this.logger.log(`Retrieve the menu for today: ${today}`, context);
+
+    // Get current menu
+    const menu = await this.menuRepository.findOne({
+      where: {
+        branch: {
+          slug: branch,
+        },
+        date: today,
+      },
+    });
+    if (!menu) {
+      this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
+      throw new MenuException(MenuValidation.MENU_NOT_FOUND);
+    }
+
+    const orderItems: OrderItem[] = [];
+    for (const item of createOrderItemRequestDto) {
+      // Get variant
+      const variant = await this.variantRepository.findOne({
+        where: {
+          slug: item.variant,
+        },
+        relations: ['product'],
       });
       if (!variant) {
         this.logger.warn(
-          `${VariantValidation.VARIANT_NOT_FOUND} ${data[i].variant}`,
+          `${VariantValidation.VARIANT_NOT_FOUND} ${item.variant}`,
           context,
         );
         throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
       }
 
+      // Get menu item
       const menuItem = await this.menuItemRepository.findOne({
         where: {
           menu: { slug: menu.slug },
           product: {
-            variants: { slug: variant.slug }
-          }
-        }
+            id: variant.product?.id,
+          },
+        },
       });
-      if(!menuItem) {
-        this.logger.warn(ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU, context);
-        throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU);
+      if (!menuItem) {
+        this.logger.warn(
+          ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+          context,
+        );
+        throw new ProductException(
+          ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+        );
       }
 
-      if(data[i].quantity > menuItem.currentStock) {
-        this.logger.warn(OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY, context);
-        throw new OrderException(OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY);
+      if (item.quantity > menuItem.currentStock) {
+        this.logger.warn(
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+          context,
+        );
+        throw new OrderException(
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+        );
       }
 
-      subtotal += variant.price * data[i].quantity;
-      const mappedOrderItem = this.mapper.map(
-        data[i],
+      const orderItem = this.mapper.map(
+        item,
         CreateOrderItemRequestDto,
         OrderItem,
       );
-      Object.assign(mappedOrderItem, {
+      Object.assign(orderItem, {
         variant,
-        subtotal: variant.price * data[i].quantity,
+        subtotal: variant.price * item.quantity,
       });
-      mappedOrderItems.push(mappedOrderItem);
-      const restQuantity: number = menuItem.currentStock - data[i].quantity;
-      Object.assign(menuItem, { currentStock: restQuantity })
-      subtractedQuantityMenuItems.push(menuItem);
+      orderItems.push(orderItem);
     }
 
-    return { mappedOrderItems, subtotal, subtractedQuantityMenuItems };
+    return orderItems;
+  }
+
+  /**
+   * Calculate the subtotal of an order.
+   * @param {OrderItem[]} orderItems Array of order items.
+   * @returns {Promise<number>} The subtotal of order
+   */
+  private async getOrderSubtotal(orderItems: OrderItem[]): Promise<number> {
+    return orderItems.reduce(
+      (previous, current) => previous + current.subtotal,
+      0,
+    );
   }
 
   /**
@@ -291,8 +401,6 @@ export class OrderService {
   async getAllOrders(
     options: GetOrderRequestDto,
   ): Promise<AppPaginatedResponseDto<OrderResponseDto>> {
-    const context = `${OrderService.name}.${this.getAllOrders.name}`;
-
     const findOptionsWhere: FindOptionsWhere<any> = {
       branch: {
         slug: options.branch,

@@ -14,6 +14,7 @@ import {
 import { OrderStatus } from './order.contants';
 import { Payment } from 'src/payment/payment.entity';
 import { Invoice } from 'src/invoice/invoice.entity';
+import { Table } from 'src/table/table.entity';
 
 @Entity('order_tbl')
 export class Order extends Base {
@@ -69,4 +70,8 @@ export class Order extends Base {
   @JoinColumn({ name: 'invoice_column' })
   @AutoMap(() => Invoice)
   invoice: Invoice;
+
+  @ManyToOne(() => Table, (table) => table.orders, { nullable: true })
+  @JoinColumn({ name: 'table_column' })
+  table: Table;
 }

@@ -57,7 +57,6 @@ export class CatalogController {
     )
     requestData: CreateCatalogRequestDto,
   ) {
-    console.log({ requestData });
     const result = await this.catalogService.createCatalog(requestData);
     return {
       message: 'Catalog have been created successfully',
