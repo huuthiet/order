@@ -14,6 +14,5 @@ export class InvoiceSubscriber implements EntitySubscriberInterface<Invoice> {
   //   Insert invoice item
   afterInsert(event: InsertEvent<Invoice>): Promise<any> | void {
     const { entity, manager } = event;
-    console.log(`AFTER ENTITY INSERTED: `, event.entity);
   }
 }

@@ -12,23 +12,24 @@ import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module
 import { Tracking } from 'src/tracking/tracking.entity';
 import { Menu } from 'src/menu/menu.entity';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
+import { OrderSubscriber } from './order.subscriber';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      Order, 
-      Table, 
-      Branch, 
-      User, 
-      Variant, 
-      Tracking, 
-      Menu, 
+      Order,
+      Table,
+      Branch,
+      User,
+      Variant,
+      Tracking,
+      Menu,
       MenuItem,
     ]),
     RobotConnectorModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderProfile],
+  providers: [OrderService, OrderProfile, OrderSubscriber],
   exports: [OrderService],
 })
 export class OrderModule {}
