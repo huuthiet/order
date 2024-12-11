@@ -73,8 +73,11 @@ export class TrackingService {
     const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
       requestData.trackingOrderItems
     );
-    const orderResult = await this.validateOrderItemInOneOrder(requestData.trackingOrderItems);
+    // await this.validateOrderItemInOneOrder(requestData.trackingOrderItems);
+    // validate order item of orders in a table
+    await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
 
+    // send one order code
     const orderItem = await this.orderItemRepository.findOne({
       where: {
         slug: requestData.trackingOrderItems[0].orderItem
@@ -259,6 +262,38 @@ export class TrackingService {
     }
   }
 
+  async validateOrderItemInOneTable(
+    orderItems: CreateTrackingOrderItemRequestDto[]
+  ): Promise<void> {
+    const context = `${TrackingService.name}.${this.validateOrderItemInOneTable.name}`;
+    const orderItemSlugs = orderItems.map((item) => item.orderItem);
+    const orders = await this.orderRepository.find({
+      where: {
+        orderItems: {
+          slug: In(orderItemSlugs)
+        }
+      },
+      relations: [
+        'branch',
+      ]
+    });
+
+    if(orders.length === 0) {
+      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
+      this.logger.warn(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message, context);
+    }
+
+    const firstOrder = orders[0];
+    const checkOneTable = orders.every(
+      (order) => order.branch?.id === firstOrder.branch?.id
+      && order.tableName === firstOrder.tableName
+    );
+    if(!checkOneTable) {
+      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
+      this.logger.warn(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message, context);
+    } 
+  }
+
   /**
    * Get location of table
    * @param {Order} order The data of order have branch data
@@ -352,17 +387,26 @@ export class TrackingService {
       const createdTracking = await queryRunner.manager.save(tracking);
 
       // create tracking order item
-      const trackingOrderItems: TrackingOrderItem[] = [];
-      for(let i = 0; i < orderItemsData.length; i++) {
-        let trackingOrderItem = new TrackingOrderItem();
-        Object.assign(trackingOrderItem, {
-          quantity: orderItemsData[i].quantity,
-          orderItem: orderItemsData[i].orderItem,
-          tracking: createdTracking
-        });
+      // const trackingOrderItems: TrackingOrderItem[] = [];
+      // for(let i = 0; i < orderItemsData.length; i++) {
+      //   let trackingOrderItem = new TrackingOrderItem();
+      //   Object.assign(trackingOrderItem, {
+      //     quantity: orderItemsData[i].quantity,
+      //     orderItem: orderItemsData[i].orderItem,
+      //     tracking: createdTracking
+      //   });
 
-        trackingOrderItems.push(trackingOrderItem);
-      }
+      //   trackingOrderItems.push(trackingOrderItem);
+      // }
+      const trackingOrderItems = orderItemsData.map((item) => {
+        const trackingOrderItem = new TrackingOrderItem();
+        Object.assign(trackingOrderItem, {
+            quantity: item.quantity,
+            orderItem: item.orderItem,
+            tracking: createdTracking
+        });
+        return trackingOrderItem;
+      });
       await queryRunner.manager.save(trackingOrderItems);
       await queryRunner.commitTransaction();
       return createdTracking.id;
