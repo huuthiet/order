@@ -6,9 +6,6 @@ import { DataTable, ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
 import { IOrder } from '@/types'
-import { CreateOrderTrackingByStaffDialog, CreateOrderTrackingByRobotDialog } from '@/components/app/dialog'
-import TotalOrders from './total-orders'
-import OrderWaitListCounting from './order-wait-list-counting'
 import CustomerInformation from './customer-information'
 import OrderItemList from './order-item-list'
 import { usePendingOrdersColumns } from './DataTable/columns'
@@ -20,7 +17,7 @@ export default function OrderManagementPage() {
   const [selectedRow, setSelectedRow] = useState<string>('')
   const { userInfo } = useUserStore()
   const { addOrder } = useOrderStore()
-  const { clearSelectedItems, getSelectedItems } = useOrderTrackingStore()
+  const { clearSelectedItems } = useOrderTrackingStore()
   const { data: orderDetail, refetch } = useOrderBySlug(selectedOrderSlug)
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
 
@@ -66,10 +63,10 @@ export default function OrderManagementPage() {
           </div>
           <div className="grid h-full grid-cols-1 gap-2 sm:grid-cols-9">
             <div className="flex flex-col col-span-4 gap-2">
-              <div className="grid grid-cols-2 gap-2">
+              {/* <div className="grid grid-cols-2 gap-2">
                 <TotalOrders orderTotal={data?.result.total} />
                 <OrderWaitListCounting />
-              </div>
+              </div> */}
 
               {/* Order wait list */}
               <DataTable
@@ -105,12 +102,6 @@ export default function OrderManagementPage() {
                   </p>
                 )}
               </div>
-              {getSelectedItems().length > 0 && (
-                <div className="flex justify-end w-full gap-2">
-                  <CreateOrderTrackingByStaffDialog />
-                  <CreateOrderTrackingByRobotDialog />
-                </div>
-              )}
             </div>
           </div>
         </div>

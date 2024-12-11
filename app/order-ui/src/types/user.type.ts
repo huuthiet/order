@@ -1,3 +1,5 @@
+import { Role } from '@/constants/role'
+
 export interface IUserInfo {
   slug: string
   image?: string
@@ -13,8 +15,8 @@ export interface IUserInfo {
     address: string
   }
   role: {
+    name: Role
     slug: string
-    name: string
     createdAt: string
     description: string
   }

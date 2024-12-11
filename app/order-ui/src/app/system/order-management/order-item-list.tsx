@@ -2,8 +2,10 @@ import { useTranslation } from 'react-i18next'
 
 import { IOrder } from '@/types'
 import OrderItemDetail from './order-item-detail'
-import { publicFileURL } from '@/constants'
+// import { publicFileURL } from '@/constants'
 import { ScrollArea } from '@/components/ui'
+import { CreateOrderTrackingByStaffDialog, CreateOrderTrackingByRobotDialog } from '@/components/app/dialog'
+import { useOrderTrackingStore } from '@/stores'
 
 interface IOrderItemListProps {
   orderDetailData: IOrder
@@ -13,19 +15,27 @@ export default function OrderItemList({
   orderDetailData,
 }: IOrderItemListProps) {
   const { t } = useTranslation(['menu'])
+  const { getSelectedItems } = useOrderTrackingStore()
   return (
     <div className="flex flex-col gap-1">
-      <span className="px-4 py-1 text-lg font-semibold">
+      <span className="flex items-center justify-between px-4 py-1 font-semibold text-md">
         {t('order.orderDetail')}
+        {getSelectedItems().length > 0 && (
+          <div className="flex gap-2">
+            <CreateOrderTrackingByStaffDialog />
+            <CreateOrderTrackingByRobotDialog />
+          </div>
+        )}
       </span>
-      <div className="flex flex-col w-full gap-2">
-        <ScrollArea className="h-[24rem] px-4">
+
+      <div className="flex flex-col w-full">
+        <ScrollArea className="px-4">
           {orderDetailData?.orderItems?.map((item) => (
             <div
               key={item.slug}
-              className="grid items-center w-full gap-4 py-4 border-b-2"
+              className="grid items-center w-full gap-4"
             >
-              <div
+              {/* <div
                 key={`${item.slug}`}
                 className="grid flex-row items-center w-full grid-cols-4"
               >
@@ -58,7 +68,7 @@ export default function OrderItemList({
                     {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
                   </span>
                 </div>
-              </div>
+              </div> */}
               {/* <div className="flex items-center gap-2">
                                 <NotepadText
                                   size={24}

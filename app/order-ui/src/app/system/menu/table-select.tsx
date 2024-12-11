@@ -39,9 +39,9 @@ export default function TableSelect() {
       <div className="p-4 bg-muted/60">
         <span className="font-medium text-md">{t('table.title')}</span>
       </div>
-      <div className="relative flex flex-col min-h-[350px]">
+      <div className="relative flex min-h-[400px] flex-col">
         {/* Table status */}
-        <div className="flex flex-row gap-4 p-4 ">
+        <div className="flex flex-row gap-4 px-4">
           <div className="flex flex-row items-center gap-2">
             <div className="w-4 h-4 border rounded-sm bg-muted-foreground/10" />
             <span className="text-sm">{t('table.available')}</span>
@@ -55,7 +55,18 @@ export default function TableSelect() {
             <span className="text-sm">{t('table.selected')}</span>
           </div>
         </div>
-        {tables?.result.map((table) => (
+        <div className="h-full">
+          {tables?.result.map((table) => (
+            <TableItem
+              key={table.slug}
+              table={table}
+              isSelected={selectedTableId === table.slug}
+              onContextMenu={(e) => e.preventDefault()}
+              onClick={() => handleTableClick(table)}
+            />
+          ))}
+        </div>
+        {/* {tables?.result.map((table) => (
           <TableItem
             key={table.slug}
             table={table}
@@ -64,7 +75,7 @@ export default function TableSelect() {
             onClick={() => handleTableClick(table)}
           />
 
-        ))}
+        ))} */}
       </div>
     </div>
   )

@@ -11,11 +11,7 @@ import { ImageIcon } from '@radix-ui/react-icons'
 
 import { CreateTableDialog } from '@/components/app/dialog'
 import { Button } from '@/components/ui'
-import {
-  useTables,
-  useUpdateTable,
-  useUpdateTableStatus,
-} from '@/hooks'
+import { useTables, useUpdateTable, useUpdateTableStatus } from '@/hooks'
 import { TableItem } from './table-item'
 import { useUserStore } from '@/stores'
 import TableContextMenu from './table-context-menu'
@@ -174,7 +170,7 @@ export default function TablePage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex items-center justify-end gap-2 py-4">
+      <div className="flex gap-2 justify-end items-center py-4">
         <div>
           <label htmlFor="bg-image-upload">
             <Button variant="outline" className="gap-2" asChild>
@@ -195,14 +191,14 @@ export default function TablePage() {
         <CreateTableDialog />
       </div>
 
-      <div className="relative flex-1 border rounded-md">
+      <div className="relative flex-1 rounded-md border">
         <div className="flex flex-row gap-4 p-4">
-          <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 border rounded-sm bg-muted-foreground/10" />
+          <div className="flex flex-row gap-2 items-center">
+            <div className="w-4 h-4 rounded-sm border bg-muted-foreground/10" />
             <span className="text-sm">{t('table.available')}</span>
           </div>
-          <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 bg-red-100 border border-red-500 rounded-sm" />
+          <div className="flex flex-row gap-2 items-center">
+            <div className="w-4 h-4 bg-red-100 rounded-sm border border-red-500" />
             <span className="text-sm">{t('table.reserved')}</span>
           </div>
         </div>
