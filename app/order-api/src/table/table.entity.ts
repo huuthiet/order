@@ -1,7 +1,8 @@
 import { AutoMap } from '@automapper/classes';
 import { Base } from 'src/app/base.entity';
 import { Branch } from 'src/branch/branch.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Order } from 'src/order/order.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity('table_tbl')
 export class Table extends Base {
@@ -28,4 +29,7 @@ export class Table extends Base {
   @AutoMap()
   @Column({ name: 'status_column' })
   status: string;
+
+  @OneToMany(() => Order, (order) => order.table)
+  orders: Order[];
 }

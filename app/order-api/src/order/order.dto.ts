@@ -192,9 +192,3 @@ export class GetOrderRequestDto {
   )
   status: string[] = [];
 }
-
-export class CheckDataCreateOrderItemResponseDto {
-  mappedOrderItems: OrderItem[];
-  subtotal: number;
-  subtractedQuantityMenuItems: MenuItem[];
-}
