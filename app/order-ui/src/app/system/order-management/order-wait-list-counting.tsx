@@ -13,11 +13,11 @@ export default function OrderWaitListCounting() {
 
   const { data, refetch } = useOrders({
     page: pagination.pageIndex,
-    pageSize: pagination.pageSize,
+    size: pagination.pageSize,
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
-    status: OrderStatus.PENDING,
+    status: [OrderStatus.PENDING],
   })
 
   useEffect(() => {

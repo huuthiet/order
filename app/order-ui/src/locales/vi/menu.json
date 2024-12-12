@@ -51,8 +51,8 @@
     "menuSlug": "Slug thực đơn",
     "productName": "Tên món",
     "selectedProducts": "Món đã chọn",
-    "defaultStock": "Số lượng tồn kho",
-    "defaultStockDescription": "Số lượng tồn kho mặc định",
+    "defaultStock": "Số lượng",
+    "defaultStockDescription": "Số lượng mặc định",
 
     "updateMenuItem": "Cập nhật món",
     "updateMenuItemDescription": "Thay đổi thông tin để cập nhật món",
@@ -98,7 +98,7 @@
     "bankTransfer": "Chuyển khoản ngân hàng",
     "pending": "Đang chuẩn bị",
     "completed": "Đã hoàn tất",
-    "running": "Đang giao hàng",
+    "shipping": "Đang giao hàng",
     "failed": "Thất bại",
 
     "deleteItem": "Xóa sản phẩm",
@@ -140,7 +140,7 @@
     "createOrderTrackingByStaffDescription": "Nhân viên sẽ giao hàng tới vị trí bàn của khách hàng",
     "productName": "Tên món",
     "confirmCreateOrderTracking": "Xác nhận giao hàng",
-    "createOrderTrackingByRobot": "Gọi robot giao",
+    "createOrderTrackingByRobot": "Robot giao",
     "createOrderTrackingByRobotDescription": "Robot sẽ giao hàng tới vị trí bàn của khách hàng"
   },
   "table": {
@@ -153,7 +153,7 @@
     "bankTransfer": "Chuyển khoản ngân hàng",
     "internalWallet": "Ví nội bộ",
     "bankTransferProcessing": "Phương thức chuyển khoản ngân hàng có thể mất đến 24 giờ để xử lý.",
-    "confirmPayment": "Lấy mã QR để thanh toán",
+    "confirmPayment": "Thanh toán",
 
     "cusomterInformation": "Thông tin khách hàng",
     "customerName": "Tên khách hàng",

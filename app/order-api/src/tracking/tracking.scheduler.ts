@@ -84,7 +84,7 @@ export class TrackingScheduler {
   async updateStatusOrder(trackingId: string) {
     const context = `${TrackingScheduler.name}.${this.updateStatusOrder.name}`;
 
-    const order = await this.orderRepository.findOne({
+    const ordersTemp = await this.orderRepository.find({
       where: {
         orderItems: {
           trackingOrderItems: {
@@ -102,23 +102,41 @@ export class TrackingScheduler {
         'orderItems.trackingOrderItems.tracking',
       ],
     });
-    // check by total quantity each order item
-    const totalBase = order.orderItems.reduce(
-      (sum, item) => sum + item.quantity,
-      0,
-    );
-    const totalQuantity = this.calculateTotalQuantity(order.orderItems);
 
-    if (totalBase > totalQuantity[WorkflowStatus.COMPLETED]) {
-      if (totalQuantity[WorkflowStatus.RUNNING] > 0) {
-        Object.assign(order, { status: OrderStatus.SHIPPING });
+    const orders: Order[] = await Promise.all(
+      ordersTemp.map(orderTemp => 
+        this.orderRepository.findOne({
+          where: { id: orderTemp.id },
+          relations: [
+            'payment',
+            'owner',
+            'orderItems.variant.size',
+            'orderItems.variant.product',
+            'orderItems.trackingOrderItems.tracking',
+          ],
+        })
+      )
+    );
+    
+    // check by total quantity each order item
+    await Promise.all(orders.map(async (order) => {
+      const totalBase = order.orderItems.reduce(
+        (sum, item) => sum + item.quantity,
+        0,
+      );
+      const totalQuantity = this.calculateTotalQuantity(order.orderItems);
+  
+      if (totalBase > totalQuantity[WorkflowStatus.COMPLETED]) {
+        if (totalQuantity[WorkflowStatus.RUNNING] > 0) {
+          Object.assign(order, { status: OrderStatus.SHIPPING });
+          await this.orderRepository.save(order);
+        }
+      } else if (totalBase === totalQuantity[WorkflowStatus.COMPLETED]) {
+        Object.assign(order, { status: OrderStatus.COMPLETED });
         await this.orderRepository.save(order);
       }
-    } else if (totalBase === totalQuantity[WorkflowStatus.COMPLETED]) {
-      Object.assign(order, { status: OrderStatus.COMPLETED });
-      await this.orderRepository.save(order);
-    }
-    this.logger.log(`Order status ${order.slug} has been updated`, context);
+      this.logger.log(`Order status ${order.slug} has been updated`, context);
+    }))
   }
 
   /**

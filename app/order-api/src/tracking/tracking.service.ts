@@ -30,6 +30,7 @@ import {
   WorkflowExecutionResponseDto,
 } from 'src/robot-connector/robot-connector.dto';
 import { Workflow } from 'src/workflow/workflow.entity';
+import { ConfigService } from '@nestjs/config';
 import { RobotStatus } from 'src/robot-connector/robot-connector.constants';
 import * as _ from 'lodash';
 import { TrackingScheduler } from './tracking.scheduler';
@@ -91,15 +92,24 @@ export class TrackingService implements OnModuleInit {
     const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
       requestData.trackingOrderItems,
     );
-    const orderResult = await this.validateOrderItemInOneOrder(
-      requestData.trackingOrderItems,
-    );
+    // await this.validateOrderItemInOneOrder(requestData.trackingOrderItems);
+    // validate order item of orders in a table
+    await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
+
+    // send one order code
+    const orderItem = await this.orderItemRepository.findOne({
+      where: {
+        slug: requestData.trackingOrderItems[0].orderItem,
+      },
+      relations: ['order.branch', 'order.orderItems'],
+    });
+    const order = orderItem.order;
 
     let savedTrackingId: string = '';
     if (requestData.type === TrackingType.BY_ROBOT) {
-      if (orderResult.type === OrderType.TAKE_OUT) {
+      if (order.type === OrderType.TAKE_OUT) {
         this.logger.warn(
-          `${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT} ${orderResult.slug}`,
+          `${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT} ${order.slug}`,
           context,
         );
         throw new TrackingException(
@@ -107,10 +117,9 @@ export class TrackingService implements OnModuleInit {
         );
       }
 
-      const tableLocation: string =
-        await this.getLocationTableByOrder(orderResult);
+      const tableLocation: string = await this.getLocationTableByOrder(order);
 
-      const workflowId: string = await this.getWorkflowIdByOrder(orderResult);
+      const workflowId: string = await this.getWorkflowIdByOrder(order);
 
       await this.checkRobotStatusBeforeCall();
 
@@ -118,7 +127,7 @@ export class TrackingService implements OnModuleInit {
         runtime_config: {
           raybot_id: this.robotId,
           location: tableLocation,
-          order_code: orderResult.slug,
+          order_code: order.slug,
         },
       };
       const workflowRobot: WorkflowExecutionResponseDto =
@@ -265,13 +274,46 @@ export class TrackingService implements OnModuleInit {
   /**
    * Validate order items belong to a order or not
    * @param {CreateTrackingOrderItemRequestDto} orderItems The array of order item slug
-   * @returns {Promise<Order>} The order of order item array
    * @throws {OrderItemException} If all order item not belong to a order
    */
   async validateOrderItemInOneOrder(
     orderItems: CreateTrackingOrderItemRequestDto[],
-  ): Promise<Order> {
+  ): Promise<void> {
     const context = `${TrackingService.name}.${this.validateOrderItemInOneOrder.name}`;
+    const orderItemSlugs = orderItems.map((item) => item.orderItem);
+    const orders = await this.orderRepository.find({
+      where: {
+        orderItems: {
+          slug: In(orderItemSlugs),
+        },
+      },
+      relations: ['branch', 'orderItems'],
+    });
+    if (orders.length !== 1) {
+      this.logger.warn(
+        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
+        context,
+      );
+      throw new OrderItemException(
+        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
+      );
+    }
+
+    if (!orders[0].branch) {
+      this.logger.warn(
+        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
+        context,
+      );
+      throw new OrderItemException(
+        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
+      );
+    }
+  }
+
+  async validateOrderItemInOneTable(
+    orderItems: CreateTrackingOrderItemRequestDto[],
+  ): Promise<void> {
+    const context = `${TrackingService.name}.${this.validateOrderItemInOneTable.name}`;
     const orderItemSlugs = orderItems.map((item) => item.orderItem);
     const orders = await this.orderRepository.find({
       where: {
@@ -281,15 +323,28 @@ export class TrackingService implements OnModuleInit {
       },
       relations: ['branch'],
     });
-    if (orders.length === 1) if (orders[0].branch) return orders[0];
 
-    this.logger.warn(
-      OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
-      context,
+    if (orders.length === 0) {
+      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
+      this.logger.warn(
+        TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message,
+        context,
+      );
+    }
+
+    const firstOrder = orders[0];
+    const checkOneTable = orders.every(
+      (order) =>
+        order.branch?.id === firstOrder.branch?.id &&
+        order.tableName === firstOrder.tableName,
     );
-    throw new OrderItemException(
-      OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
-    );
+    if (!checkOneTable) {
+      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
+      this.logger.warn(
+        TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message,
+        context,
+      );
+    }
   }
 
   /**
@@ -390,17 +445,26 @@ export class TrackingService implements OnModuleInit {
       const createdTracking = await queryRunner.manager.save(tracking);
 
       // create tracking order item
-      const trackingOrderItems: TrackingOrderItem[] = [];
-      for (let i = 0; i < orderItemsData.length; i++) {
-        let trackingOrderItem = new TrackingOrderItem();
+      // const trackingOrderItems: TrackingOrderItem[] = [];
+      // for(let i = 0; i < orderItemsData.length; i++) {
+      //   let trackingOrderItem = new TrackingOrderItem();
+      //   Object.assign(trackingOrderItem, {
+      //     quantity: orderItemsData[i].quantity,
+      //     orderItem: orderItemsData[i].orderItem,
+      //     tracking: createdTracking
+      //   });
+
+      //   trackingOrderItems.push(trackingOrderItem);
+      // }
+      const trackingOrderItems = orderItemsData.map((item) => {
+        const trackingOrderItem = new TrackingOrderItem();
         Object.assign(trackingOrderItem, {
-          quantity: orderItemsData[i].quantity,
-          orderItem: orderItemsData[i].orderItem,
+          quantity: item.quantity,
+          orderItem: item.orderItem,
           tracking: createdTracking,
         });
-
-        trackingOrderItems.push(trackingOrderItem);
-      }
+        return trackingOrderItem;
+      });
       await queryRunner.manager.save(trackingOrderItems);
       await queryRunner.commitTransaction();
       return createdTracking.id;

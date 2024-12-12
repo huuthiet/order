@@ -6,30 +6,31 @@ import { DataTable, ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
 import { IOrder } from '@/types'
-import { CreateOrderTrackingByStaffDialog, CreateOrderTrackingByRobotDialog } from '@/components/app/dialog'
-import TotalOrders from './total-orders'
-import OrderWaitListCounting from './order-wait-list-counting'
-import CustomerInformation from './customer-information'
-import OrderItemList from './order-item-list'
 import { usePendingOrdersColumns } from './DataTable/columns'
+import { OrderItemDetailSheet } from '@/components/app/sheet'
 
 export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
-  const { t: tCommon } = useTranslation(['common'])
   const [selectedOrderSlug, setSelectedOrderSlug] = useState<string>('')
   const [selectedRow, setSelectedRow] = useState<string>('')
   const { userInfo } = useUserStore()
   const { addOrder } = useOrderStore()
-  const { clearSelectedItems, getSelectedItems } = useOrderTrackingStore()
+  const { clearSelectedItems } = useOrderTrackingStore()
   const { data: orderDetail, refetch } = useOrderBySlug(selectedOrderSlug)
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  const handleCloseSheet = () => {
+    setIsSheetOpen(false)
+  }
 
   const { data, refetch: allOrderRefetch } = useOrders({
     page: pagination.pageIndex,
-    pageSize: pagination.pageSize,
+    size: pagination.pageSize,
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
+    // status: [OrderStatus.PENDING, OrderStatus.SHIPPING, OrderStatus.COMPLETED], // Pass status as an array
   })
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function OrderManagementPage() {
     setSelectedOrderSlug(order.slug)
     setSelectedRow(order.slug)
     clearSelectedItems()
+    setIsSheetOpen(true)
   }
 
   //i want to refetch orderDetail every 1 second
@@ -64,12 +66,12 @@ export default function OrderManagementPage() {
               {t('order.title')}
             </span>
           </div>
-          <div className="grid h-full grid-cols-1 gap-2 sm:grid-cols-9">
+          <div className="grid h-full grid-cols-1 gap-2">
             <div className="flex flex-col col-span-4 gap-2">
-              <div className="grid grid-cols-2 gap-2">
+              {/* <div className="grid grid-cols-2 gap-2">
                 <TotalOrders orderTotal={data?.result.total} />
                 <OrderWaitListCounting />
-              </div>
+              </div> */}
 
               {/* Order wait list */}
               <DataTable
@@ -87,31 +89,7 @@ export default function OrderManagementPage() {
             </div>
 
             {/* Order Information */}
-            <div className="flex flex-col col-span-5 gap-1 py-4 border rounded-md">
-              <span className="px-4 text-lg font-semibold">
-                {t('order.orderInformation')}
-              </span>
-              <div>
-                {orderDetailData ? (
-                  <div className="flex flex-col gap-2">
-                    {/* Customer Information */}
-                    <CustomerInformation orderDetailData={orderDetailData} />
-                    {/* Danh sách sản phẩm */}
-                    <OrderItemList orderDetailData={orderDetailData} />
-                  </div>
-                ) : (
-                  <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
-                    {tCommon('common.noData')}
-                  </p>
-                )}
-              </div>
-              {getSelectedItems().length > 0 && (
-                <div className="flex justify-end w-full gap-2">
-                  <CreateOrderTrackingByStaffDialog />
-                  <CreateOrderTrackingByRobotDialog />
-                </div>
-              )}
-            </div>
+            <OrderItemDetailSheet order={orderDetailData} isOpen={isSheetOpen} onClose={handleCloseSheet} />
           </div>
         </div>
       </ScrollArea>

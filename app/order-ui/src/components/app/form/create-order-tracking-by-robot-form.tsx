@@ -80,7 +80,7 @@ export const CreateOrderTrackingByRobotForm: React.FC<
                     showToast(t('toast.createOrderTrackingSuccess'))
                 } catch (error) {
                     console.error('Error updating order store:', error)
-                    showToast(t('toast.errorUpdatingOrder'))
+                    showToast("Đã có lỗi xảy ra")
                 }
             },
             onError: () => {

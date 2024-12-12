@@ -147,3 +147,10 @@ export const BankConfigPage = React.lazy(() =>
     default: module.BankConfigPage,
   })),
 )
+
+//Config page
+export const ConfigPage = React.lazy(() =>
+  import('@/app/system/config').then((module) => ({
+    default: module.ConfigPage,
+  })),
+)

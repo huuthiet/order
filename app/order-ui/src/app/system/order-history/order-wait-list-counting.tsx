@@ -11,7 +11,7 @@ export default function OrderWaitListCounting() {
 
   const { data } = useOrders({
     page: pagination.pageIndex,
-    pageSize: pagination.pageSize,
+    size: pagination.pageSize,
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,

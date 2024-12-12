@@ -15,6 +15,7 @@
     "product-detail": "Chi tiết món",
     "user-management": "Quản lý người dùng",
     "log-management": "Quản lý log",
-    "bank-config": "Cấu hình ngân hàng"
+    "bank-config": "Cấu hình ngân hàng",
+    "config": "Cấu hình"
   }
 }

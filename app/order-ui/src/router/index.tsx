@@ -4,7 +4,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { Suspense } from 'react'
 import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
-import { Role, ROUTE } from '@/constants'
+import { Role, ROUTE, RoutePermissions } from '@/constants'
 import {
   HomePage,
   MenuPage,
@@ -27,6 +27,7 @@ import {
   OrderDetailPage,
   UserListPage,
   ForgotPasswordPage,
+  ConfigPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 
@@ -42,18 +43,14 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTE.STAFF_HOME,
-    element: (
-      <Suspense fallback={<SkeletonCart />}>
-        <SuspenseElement component={StaffLayout} />
-      </Suspense>
-    ),
+    element: <StaffLayout />,
     children: [
       {
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
-            element={<SuspenseElement component={HomePage} />}
+            allowedRoles={RoutePermissions[ROUTE.STAFF_HOME]}
+            element={<HomePage />}
           />
         ),
       },
@@ -71,7 +68,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.STAFF, Role.CUSTOMER]}
             element={<SuspenseElement component={MenuPage} />}
           />
         ),
@@ -90,7 +87,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.STAFF]}
             element={<SuspenseElement component={ConfirmOrderPage} />}
           />
         ),
@@ -109,7 +106,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.STAFF]}
             element={<SuspenseElement component={OrderPaymentPage} />}
           />
         ),
@@ -128,7 +125,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.STAFF]}
             element={<SuspenseElement component={OrderSuccessPage} />}
           />
         ),
@@ -147,7 +144,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.STAFF, Role.CHEF]}
             element={<SuspenseElement component={OrderManagementPage} />}
           />
         ),
@@ -204,7 +201,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.SUPER_ADMIN]}
             element={<SuspenseElement component={TablePage} />}
           />
         ),
@@ -223,7 +220,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.MANAGER]}
             element={<SuspenseElement component={ProductManagementPage} />}
           />
         ),
@@ -242,7 +239,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.MANAGER]}
             element={<SuspenseElement component={ProductDetailPage} />}
           />
         ),
@@ -261,7 +258,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.MANAGER]}
             element={<SuspenseElement component={MenuManagementPage} />}
           />
         ),
@@ -280,7 +277,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN]}
+            allowedRoles={[Role.ADMIN, Role.MANAGER]}
             element={<SuspenseElement component={MenuDetailPage} />}
           />
         ),
@@ -358,6 +355,25 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={[Role.ADMIN]}
             element={<SuspenseElement component={BankConfigPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.ADMIN_CONFIG}`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.ADMIN]}
+            element={<SuspenseElement component={ConfigPage} />}
           />
         ),
       },

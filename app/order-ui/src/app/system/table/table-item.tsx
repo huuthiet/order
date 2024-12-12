@@ -92,14 +92,15 @@ export function TableItem({
       onClick={onClick}
     >
       <div
-        className={`rounded-md bg-transparent transition-all duration-200 ${isSelected
-          ? 'z-10 ring-4 scale-110 border-primary bg-primary/10 ring-primary'
-          : 'bg-background hover:ring-2 hover:ring-primary/50'
-          } `}
+        className={`rounded-md bg-transparent transition-all duration-200 ${
+          isSelected
+            ? 'z-10 ring-4 scale-110 border-primary bg-primary/10 ring-primary'
+            : 'bg-background hover:ring-2 hover:ring-primary/50'
+        } `}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex gap-2 items-center">
           <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} />
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col gap-2 items-center">
             <div className={`w-2/3 h-2 rounded-full ${getStatusColor()}`} />
             <Resizable
               size={localSize}
@@ -131,7 +132,7 @@ export function TableItem({
                 className={`flex justify-center items-center rounded-md cursor-pointer ${getStatusColor()}`}
                 style={{ width: '100%', height: '100%' }}
               >
-                <span className="flex items-center justify-center p-1 text-sm font-medium bg-white rounded-full w-7 h-7 text-muted-foreground">
+                <span className="flex justify-center items-center p-1 w-7 h-7 text-sm font-medium bg-white rounded-full text-muted-foreground">
                   {table.name}
                 </span>
               </div>

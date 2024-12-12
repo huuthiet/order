@@ -4,46 +4,49 @@ import { useNavigate } from 'react-router-dom'
 import { ROUTE } from '@/constants'
 import { useAuthStore, useUserStore } from '@/stores'
 import { useCallback, useEffect } from 'react'
+import type { ReactNode } from 'react'
+import { Role } from '@/constants/role'
+import { showToast } from '@/utils'
+
+interface ProtectedElementProps {
+  element: ReactNode
+  allowedRoles: Role[] // Keep original array type for roles
+}
 
 export default function ProtectedElement({
   element,
   allowedRoles,
-}: {
-  element: React.ReactNode
-  allowedRoles: string[]
-}) {
+}: ProtectedElementProps) {
   const { isAuthenticated, setLogout } = useAuthStore()
   const { t } = useTranslation('auth')
   const { removeUserInfo, userInfo } = useUserStore()
-  //   const { clearUserRoles, userRoles } = useUserInfoPermissionsStore()
   const navigate = useNavigate()
 
   const handleLogout = useCallback(() => {
     setLogout()
     removeUserInfo()
-    // clearUserRoles()
-    // toast.error(t('sessionExpired'))
     navigate(ROUTE.LOGIN)
   }, [setLogout, removeUserInfo, navigate])
 
   const hasRequiredPermissions = useCallback(() => {
-    if (!userInfo || !allowedRoles) return false;
-    const userRole = userInfo.role?.name;
-    return allowedRoles.includes(userRole);
-  }, [userInfo, allowedRoles]);
+    if (!userInfo?.role?.name || !allowedRoles) return false
 
-  // Check authentication and permissions
+    // Kiểm tra SUPER_ADMIN có quyền truy cập tất cả
+    if (userInfo.role.name === Role.SUPER_ADMIN) return true
+
+    console.log(allowedRoles.includes(userInfo.role.name))
+    return allowedRoles.includes(userInfo.role.name)
+  }, [userInfo, allowedRoles])
+
   useEffect(() => {
     if (!isAuthenticated()) {
       handleLogout()
+      showToast(t('auth:sessionExpired'))
     } else if (!hasRequiredPermissions()) {
-      // toast.error(t('accessDenied')) // Using translation for error message
+      showToast(t('auth:accessDenied'))
       navigate(ROUTE.LOGIN)
     }
-    // Make sure to include necessary dependencies
-  }, [isAuthenticated, navigate, handleLogout, hasRequiredPermissions, t])
+  }, [isAuthenticated, navigate, handleLogout, hasRequiredPermissions])
 
-  const hasAccess = isAuthenticated() && hasRequiredPermissions()
-
-  return hasAccess ? <>{element}</> : null
+  return hasRequiredPermissions() ? <>{element}</> : null
 }

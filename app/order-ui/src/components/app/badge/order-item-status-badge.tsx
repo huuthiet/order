@@ -29,7 +29,7 @@ export default function OrderItemStatusBadge({
       case OrderStatus.PENDING:
         return t('order.pending')
       case OrderStatus.SHIPPING:
-        return t('order.running')
+        return t('order.shipping')
       case OrderStatus.COMPLETED:
         return t('order.completed')
       case OrderStatus.CANCEL:

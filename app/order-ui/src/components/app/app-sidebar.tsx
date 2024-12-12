@@ -4,6 +4,10 @@ import { ChevronRight, Sparkles } from 'lucide-react'
 import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSidebar } from '@/components/ui'
+// import { hasRequiredRole } from '@/utils/auth'
+import { useMemo } from 'react'
+import { useUserStore } from '@/stores'
+import { Role } from '@/constants/role'
 
 import {
   Collapsible,
@@ -35,6 +39,7 @@ import { Logo } from '@/assets/images'
 
 export default function AppSidebar() {
   const { t } = useTranslation('sidebar')
+  const { userInfo } = useUserStore()
   const location = useLocation()
   const { state, toggleSidebar } = useSidebar()
   const isActive = (path: string) => location.pathname === path
@@ -50,6 +55,21 @@ export default function AppSidebar() {
 
   // Translate all sidebar routes
   const translatedRoutes = sidebarRoutes.map(translatedSidebarRoute)
+
+  // Lọc routes theo role của user
+  const filteredRoutes = useMemo(() => {
+    if (!userInfo?.role?.name) return []
+
+    return translatedRoutes.filter((route) => {
+      // SUPER_ADMIN có thể thấy tất cả menu
+      if (userInfo.role.name === Role.SUPER_ADMIN) return true
+
+      // Kiểm tra role cho phép
+      return !route.roles || route.roles.includes(userInfo.role.name)
+    })
+  }, [userInfo])
+
+  console.log(filteredRoutes)
 
   return (
     <Sidebar
@@ -78,10 +98,10 @@ export default function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className='overflow-y-auto'>
+      <SidebarContent className="overflow-y-auto">
         <SidebarGroup>
           <SidebarMenu>
-            {translatedRoutes.map((item) => (
+            {filteredRoutes.map((item) => (
               <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
                 <SidebarMenuItem>
                   <SidebarMenuButton
