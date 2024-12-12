@@ -1,5 +1,6 @@
 import {
   Banknote,
+  Bolt,
   ClipboardList,
   CookingPot,
   FileChartColumnIncreasing,
@@ -73,5 +74,10 @@ export const sidebarRoutes: ISidebarRoute[] = [
     title: 'sidebar.bankConfig',
     path: ROUTE.STAFF_BANK_CONFIG,
     icon: Banknote,
+  },
+  {
+    title: 'sidebar.config',
+    path: ROUTE.ADMIN_CONFIG,
+    icon: Bolt,
   },
 ]
