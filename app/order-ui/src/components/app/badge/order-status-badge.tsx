@@ -13,6 +13,8 @@ export default function OrderStatusBadge({ status }: IOrderStatusBadgeProps) {
     switch (status) {
       case OrderStatus.PENDING:
         return 'border-yellow-500 bg-yellow-50 border text-yellow-500 font-semibold'
+      case OrderStatus.SHIPPING:
+        return 'border-blue-500 bg-blue-50 border text-blue-500 font-semibold'
       case OrderStatus.COMPLETED:
         return 'border-green-500 bg-green-50 border text-green-500 font-semibold'
       case OrderStatus.CANCEL:
@@ -24,6 +26,8 @@ export default function OrderStatusBadge({ status }: IOrderStatusBadgeProps) {
     switch (status) {
       case OrderStatus.PENDING:
         return t('order.pending')
+      case OrderStatus.SHIPPING:
+        return t('order.shipping')
       case OrderStatus.COMPLETED:
         return t('order.completed')
       case OrderStatus.CANCEL:

@@ -98,7 +98,7 @@
     "bankTransfer": "Chuyển khoản ngân hàng",
     "pending": "Đang chuẩn bị",
     "completed": "Đã hoàn tất",
-    "running": "Đang giao hàng",
+    "shipping": "Đang giao hàng",
     "failed": "Thất bại",
 
     "deleteItem": "Xóa sản phẩm",

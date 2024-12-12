@@ -18,7 +18,7 @@ export default function OrderItemList({
   const { getSelectedItems } = useOrderTrackingStore()
   return (
     <div className="flex flex-col gap-1">
-      <span className="flex items-center justify-between px-4 py-1 font-semibold text-md">
+      <span className="flex items-center justify-between py-1 font-semibold text-md">
         {t('order.orderDetail')}
         {getSelectedItems().length > 0 && (
           <div className="flex gap-2">
@@ -29,7 +29,7 @@ export default function OrderItemList({
       </span>
 
       <div className="flex flex-col w-full">
-        <ScrollArea className="px-4">
+        <ScrollArea>
           {orderDetailData?.orderItems?.map((item) => (
             <div
               key={item.slug}
