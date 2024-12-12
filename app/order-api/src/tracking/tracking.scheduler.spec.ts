@@ -102,101 +102,106 @@ describe('TrackingScheduler', () => {
     });
   });
 
-  // describe('updateStatusOrder', () => {
-  //   beforeEach(() => {
-  //     jest.clearAllMocks()
-  //   });
+  describe('updateStatusOrder', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    });
 
-  //   it('should update status SHIPPING for order', async () => {
-  //     const tracking1 = {
-  //       workflowExecution: "",
-  //       status: WorkflowStatus.COMPLETED,
-  //     } as Tracking;
-  //     const trackingOrderItem1 = {
-  //       quantity: 1,
-  //       tracking: tracking1,
-  //     } as TrackingOrderItem;
-  //     const tracking2 = {
-  //       workflowExecution: "",
-  //       status: WorkflowStatus.RUNNING,
-  //     } as Tracking;
-  //     const trackingOrderItem2 = {
-  //       quantity: 2,
-  //       tracking: tracking2,
-  //     } as TrackingOrderItem;
-  //     const orderItem1 = {
-  //       quantity: 5,
-  //       subtotal: 0,
-  //       trackingOrderItems: [trackingOrderItem1],
-  //     } as OrderItem;
-  //     const orderItem2 = {
-  //       quantity: 5,
-  //       subtotal: 0,
-  //       trackingOrderItems: [trackingOrderItem2],
-  //     } as OrderItem;
+    it('should update status SHIPPING for order', async () => {
+      const tracking1 = {
+        workflowExecution: "",
+        status: WorkflowStatus.COMPLETED,
+      } as Tracking;
+      const trackingOrderItem1 = {
+        quantity: 1,
+        tracking: tracking1,
+      } as TrackingOrderItem;
+      const tracking2 = {
+        workflowExecution: "",
+        status: WorkflowStatus.RUNNING,
+      } as Tracking;
+      const trackingOrderItem2 = {
+        quantity: 2,
+        tracking: tracking2,
+      } as TrackingOrderItem;
+      const orderItem1 = {
+        quantity: 5,
+        subtotal: 0,
+        trackingOrderItems: [trackingOrderItem1],
+      } as OrderItem;
+      const orderItem2 = {
+        quantity: 5,
+        subtotal: 0,
+        trackingOrderItems: [trackingOrderItem2],
+      } as OrderItem;
 
-  //     const order = {
-  //       subtotal: 0,
-  //       status: "",
-  //       type: "",
-  //       orderItems: [orderItem1, orderItem2],
-  //     } as Order;
+      const order = {
+        subtotal: 0,
+        status: "",
+        type: "",
+        orderItems: [orderItem1, orderItem2],
+      } as Order;
 
-  //     const mockOutput = {
-  //       ...order,
-  //       status: OrderStatus.SHIPPING
-  //     } as Order;
+      const orders = [order];
 
-  //     (orderRepositoryMock.findOne as jest.Mock).mockResolvedValue(order);
-  //     const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
+      const mockOutput = {
+        ...order,
+        status: OrderStatus.SHIPPING
+      } as Order;
 
-  //     expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
-  //   });
+      (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
+      (orderRepositoryMock.findOne as jest.Mock).mockImplementationOnce(() => order);
+      const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
 
-  //   it('should update status COMPLETED for order', async () => {
-  //     const tracking1 = {
-  //       workflowExecution: "",
-  //       status: WorkflowStatus.COMPLETED,
-  //     } as Tracking;
-  //     const trackingOrderItem1 = {
-  //       quantity: 5,
-  //       tracking: tracking1,
-  //     } as TrackingOrderItem;
-  //     const orderItem1 = {
-  //       quantity: 5,
-  //       trackingOrderItems: [trackingOrderItem1],
-  //     } as OrderItem;
+      expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
+    });
 
-  //     const tracking2 = {
-  //       workflowExecution: "",
-  //       status: WorkflowStatus.COMPLETED,
-  //     } as Tracking;
-  //     const trackingOrderItem2 = {
-  //       quantity: 5,
-  //       tracking: tracking2,
-  //     } as TrackingOrderItem;
-  //     const orderItem2 = {
-  //       quantity: 5,
-  //       trackingOrderItems: [trackingOrderItem2],
-  //     } as OrderItem;
+    it('should update status COMPLETED for order', async () => {
+      const tracking1 = {
+        workflowExecution: "",
+        status: WorkflowStatus.COMPLETED,
+      } as Tracking;
+      const trackingOrderItem1 = {
+        quantity: 5,
+        tracking: tracking1,
+      } as TrackingOrderItem;
+      const orderItem1 = {
+        quantity: 5,
+        trackingOrderItems: [trackingOrderItem1],
+      } as OrderItem;
 
-  //     const order = {
-  //       status: "",
-  //       type: "",
-  //       orderItems: [orderItem1, orderItem2],
-  //     } as Order;
+      const tracking2 = {
+        workflowExecution: "",
+        status: WorkflowStatus.COMPLETED,
+      } as Tracking;
+      const trackingOrderItem2 = {
+        quantity: 5,
+        tracking: tracking2,
+      } as TrackingOrderItem;
+      const orderItem2 = {
+        quantity: 5,
+        trackingOrderItems: [trackingOrderItem2],
+      } as OrderItem;
 
-  //     const mockOutput = {
-  //       ...order,
-  //       status: OrderStatus.COMPLETED
-  //     } as Order;
+      const order = {
+        status: "",
+        type: "",
+        orderItems: [orderItem1, orderItem2],
+      } as Order;
 
-  //     (orderRepositoryMock.findOne as jest.Mock).mockResolvedValue(order);
-  //     const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
+      const orders = [order];
+      const mockOutput = {
+        ...order,
+        status: OrderStatus.COMPLETED
+      } as Order;
 
-  //     expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
-  //   });
-  // });
+      (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
+      (orderRepositoryMock.findOne as jest.Mock).mockImplementationOnce(() => order);
+      const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
+
+      expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
+    });
+  });
 
   // describe('UpdateStatusTracking - test logic', () => {
   //   beforeEach(() => {

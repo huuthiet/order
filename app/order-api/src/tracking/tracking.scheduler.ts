@@ -10,12 +10,17 @@ import * as _ from 'lodash';
 import { OrderStatus } from 'src/order/order.contants';
 import { Order } from 'src/order/order.entity';
 import { OrderItem } from 'src/order-item/order-item.entity';
+import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
 
 @Injectable()
 export class TrackingScheduler {
   constructor(
     @InjectRepository(Tracking)
     private readonly trackingRepository: Repository<Tracking>,
+    @InjectRepository(TrackingOrderItem)
+    private readonly trackingOrderItemRepository: Repository<TrackingOrderItem>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     private readonly robotConnectorClient: RobotConnectorClient,
@@ -84,39 +89,7 @@ export class TrackingScheduler {
   async updateStatusOrder(trackingId: string) {
     const context = `${TrackingScheduler.name}.${this.updateStatusOrder.name}`;
 
-    const ordersTemp = await this.orderRepository.find({
-      where: {
-        orderItems: {
-          trackingOrderItems: {
-            tracking: {
-              id: trackingId,
-            },
-          },
-        },
-      },
-      relations: [
-        'payment',
-        'owner',
-        'orderItems.variant.size',
-        'orderItems.variant.product',
-        'orderItems.trackingOrderItems.tracking',
-      ],
-    });
-
-    const orders: Order[] = await Promise.all(
-      ordersTemp.map(orderTemp => 
-        this.orderRepository.findOne({
-          where: { id: orderTemp.id },
-          relations: [
-            'payment',
-            'owner',
-            'orderItems.variant.size',
-            'orderItems.variant.product',
-            'orderItems.trackingOrderItems.tracking',
-          ],
-        })
-      )
-    );
+    const orders: Order[] = await this.getAllOrdersByTrackingId(trackingId);
     
     // check by total quantity each order item
     await Promise.all(orders.map(async (order) => {
@@ -136,7 +109,46 @@ export class TrackingScheduler {
         await this.orderRepository.save(order);
       }
       this.logger.log(`Order status ${order.slug} has been updated`, context);
-    }))
+    }));
+  }
+
+  async getAllOrdersByTrackingId (
+    trackingId: string
+  ): Promise<Order[]> {
+    const trackingOrderItems = await this.trackingOrderItemRepository.find({
+      where: {
+        tracking: { id: trackingId }
+      }
+    });
+    const orderItems: OrderItem[] = await Promise.all(
+      trackingOrderItems.map(trackingOrderItem => 
+        this.orderItemRepository.findOne({
+          where: {
+            trackingOrderItems: { id: trackingOrderItem.id }
+          },
+        })
+      )
+    );
+    const orderItemIds = orderItems.map((orderItem) => orderItem.id);
+    const orders: Order[] = await this.orderRepository.find({
+      where: {
+        orderItems: { id: In(orderItemIds) }
+      },
+    });
+    console.log({orders})
+
+    const results: Order[] = await Promise.all(
+      orders.map(order => 
+        this.orderRepository.findOne({
+          where: { id: order.id },
+          relations: [
+            'orderItems.trackingOrderItems.tracking',
+          ],
+        })
+      )
+    );
+
+    return results;
   }
 
   /**

@@ -77,18 +77,8 @@ export class TrackingService {
     // validate order item of orders in a table
     await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
 
-    // send one order code
-    const orderItem = await this.orderItemRepository.findOne({
-      where: {
-        slug: requestData.trackingOrderItems[0].orderItem
-      },
-      relations: [
-        'order.branch',
-        'order.orderItems'
-      ]
-    });
-    const order = orderItem.order;
-
+    const order = await this.getOrderByOrderItemSlug(requestData.trackingOrderItems[0]?.orderItem);
+    
     let savedTrackingId: string = '';
     if(requestData.type === TrackingType.BY_ROBOT) {
       if(order.type === OrderType.TAKE_OUT) {
@@ -146,6 +136,22 @@ export class TrackingService {
 
     const TrackingDto = this.mapper.map(trackingData, Tracking, TrackingResponseDto);
     return TrackingDto;
+  }
+
+  async getOrderByOrderItemSlug(
+    orderItemSlug: string
+  ): Promise<Order> {
+    const orderItem = await this.orderItemRepository.findOne({
+      where: {
+        slug: orderItemSlug
+      },
+      relations: [
+        'order.branch',
+        'order.orderItems'
+      ]
+    });
+    const order = orderItem.order;
+    return order;
   }
 
   /**
@@ -426,6 +432,12 @@ export class TrackingService {
     slug: string,
     status: string
   ): Promise<TrackingResponseDto> {
+    const orders = await this.trackingScheduler.getAllOrdersByTrackingId(
+      "3f15f447-c5b7-4ee2-bcb9-c0cd9bcf0325"
+    );
+    
+
+
     const tracking = await this.trackingRepository.findOne({
       where: {
         slug

@@ -317,7 +317,7 @@ export class OrderService {
       },
     });
     if (!menu) {
-      this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
+      this.logger.warn(MenuValidation.MENU_NOT_FOUND.message, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
 
@@ -332,7 +332,7 @@ export class OrderService {
       });
       if (!variant) {
         this.logger.warn(
-          `${VariantValidation.VARIANT_NOT_FOUND} ${item.variant}`,
+          `${VariantValidation.VARIANT_NOT_FOUND.message} ${item.variant}`,
           context,
         );
         throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
@@ -359,7 +359,7 @@ export class OrderService {
 
       if (item.quantity > menuItem.currentStock) {
         this.logger.warn(
-          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
           context,
         );
         throw new OrderException(
