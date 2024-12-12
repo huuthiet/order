@@ -152,6 +152,15 @@ export class GetOrderRequestDto {
 
   @AutoMap()
   @ApiProperty({
+    description: 'The slug of table',
+    example: '',
+    required: false,
+  })
+  @IsOptional()
+  table?: string;
+
+  @AutoMap()
+  @ApiProperty({
     description: 'The slug of owner',
     example: '',
     required: false,
