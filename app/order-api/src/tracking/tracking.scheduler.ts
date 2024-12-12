@@ -102,20 +102,22 @@ export class TrackingScheduler {
         'orderItems.trackingOrderItems.tracking',
       ],
     });
-    const orders: Order[] = [];
-    for(let i = 0; i < ordersTemp.length; i ++) {
-      const order = await this.orderRepository.findOne({
-        where: { id: ordersTemp[i].id },
-        relations: [
-          'payment',
-          'owner',
-          'orderItems.variant.size',
-          'orderItems.variant.product',
-          'orderItems.trackingOrderItems.tracking',
-        ],
-      });
-      orders.push(order);
-    }
+
+    const orders: Order[] = await Promise.all(
+      ordersTemp.map(orderTemp => 
+        this.orderRepository.findOne({
+          where: { id: orderTemp.id },
+          relations: [
+            'payment',
+            'owner',
+            'orderItems.variant.size',
+            'orderItems.variant.product',
+            'orderItems.trackingOrderItems.tracking',
+          ],
+        })
+      )
+    );
+    
     // check by total quantity each order item
     await Promise.all(orders.map(async (order) => {
       const totalBase = order.orderItems.reduce(
