@@ -41,6 +41,7 @@ import { MenuItem } from 'src/menu-item/menu-item.entity';
 import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
 import * as moment from 'moment';
+import { table } from 'console';
 
 @Injectable()
 export class OrderService {
@@ -408,6 +409,9 @@ export class OrderService {
       owner: {
         slug: options.owner,
       },
+      table: {
+        slug: options.table
+      }
     };
 
     if (options.status.length > 0) {
