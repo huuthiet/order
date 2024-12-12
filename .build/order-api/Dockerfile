@@ -31,6 +31,9 @@ COPY . .
 # Build the NestJS application
 RUN npm run build
 
+# Run database migrations
+RUN npm run typeorm:r
+
 # Expose the application port
 EXPOSE 8080
 
