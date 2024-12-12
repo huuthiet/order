@@ -61,12 +61,28 @@ export class SystemConfigService {
   }
 
   async findAll() {
-    const systemConfigs = await this.systemConfigRepository.find();
+    const systemConfigs = await this.systemConfigRepository.find({
+      order: { createdAt: 'DESC' },
+    });
     return this.mapper.mapArray(
       systemConfigs,
       SystemConfig,
       SystemConfigResponseDto,
     );
+  }
+
+  async get(key: string): Promise<string> {
+    const context = `${SystemConfigService.name}.${this.get.name}`;
+    const systemConfig = await this.systemConfigRepository.findOne({
+      where: {
+        key,
+      },
+    });
+    if (!systemConfig) {
+      this.logger.warn(`Value of ${key} is not found`, context);
+      return '';
+    }
+    return systemConfig.value;
   }
 
   async findOne(query: GetSystemConfigQueryDto) {

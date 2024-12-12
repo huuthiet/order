@@ -8,7 +8,7 @@ export class SystemConfig extends Base {
   @AutoMap()
   key: string;
 
-  @Column({ name: 'value_column', unique: true })
+  @Column({ name: 'value_column' })
   @AutoMap()
   value: string;
 

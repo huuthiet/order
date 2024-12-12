@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -22,18 +23,25 @@ import { catchError, firstValueFrom, retry } from 'rxjs';
 import { AxiosError } from 'axios';
 import { RobotConnectorException } from './robot-connector.exception';
 import { RobotConnectorValidation } from './robot-connector.validation';
+import { SystemConfigModule } from 'src/system-config/system-config.module';
+import { SystemConfigService } from 'src/system-config/system-config.service';
 
 @Injectable()
-export class RobotConnectorClient {
-  private readonly robotApiUrl: string =
-    this.configService.get<string>('ROBOT_API_URL');
+export class RobotConnectorClient implements OnModuleInit {
+  private robotApiUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: Logger,
+    private readonly systemConfigService: SystemConfigService,
   ) {}
+
+  async onModuleInit() {
+    const context = `${RobotConnectorClient.name}.${this.onModuleInit.name}`;
+    this.robotApiUrl = await this.systemConfigService.get('ROBOT_API_URL');
+    this.logger.log(`Robot API URL loaded: ${this.robotApiUrl}`, context);
+  }
 
   /* RAYBOTS */
   async getRobotById(id: string): Promise<RobotResponseDto> {
@@ -204,7 +212,7 @@ export class RobotConnectorClient {
             context,
           );
           throw new RobotConnectorException(
-            RobotConnectorValidation.GET_LOCATION_FROM_ROBOT_API_FAILED
+            RobotConnectorValidation.GET_LOCATION_FROM_ROBOT_API_FAILED,
           );
         }),
       ),

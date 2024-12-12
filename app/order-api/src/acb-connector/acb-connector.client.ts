@@ -4,8 +4,8 @@ import {
   Inject,
   Injectable,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   ACBInitiateQRCodeRequestDto,
   ACBInitiateQRCodeResponseDto,
@@ -15,18 +15,23 @@ import {
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { SystemConfigService } from 'src/system-config/system-config.service';
 
 @Injectable()
-export class ACBConnectorClient {
-  private readonly acbApiUrl: string =
-    this.configService.get<string>('ACB_API_URL');
-
+export class ACBConnectorClient implements OnModuleInit {
+  private acbApiUrl: string;
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: Logger,
+    private readonly systemConfigService: SystemConfigService,
   ) {}
+
+  async onModuleInit() {
+    const context = `${ACBConnectorClient.name}.${this.onModuleInit.name}`;
+    this.acbApiUrl = await this.systemConfigService.get('ACB_API_URL');
+    this.logger.log(`ACB API URL loaded: ${this.acbApiUrl}`, context);
+  }
 
   /**
    * Get token from ACB API
