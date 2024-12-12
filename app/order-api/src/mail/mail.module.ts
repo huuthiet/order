@@ -4,17 +4,18 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { resolve } from 'path';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { SystemConfigService } from 'src/system-config/system-config.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      useFactory: async (config: SystemConfigService) => ({
+      useFactory: async (config: ConfigService) => ({
         transport: {
-          host: await config.get('MAIL_HOST'),
+          host: config.get('MAIL_HOST'),
           secure: false,
           auth: {
-            user: await config.get('MAIL_USER'),
-            pass: await config.get('MAIL_PASSWORD'),
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASSWORD'),
           },
         },
         defaults: {
@@ -28,7 +29,7 @@ import { SystemConfigService } from 'src/system-config/system-config.service';
           },
         },
       }),
-      inject: [SystemConfigService],
+      inject: [ConfigService],
     }),
   ],
   providers: [MailService],
