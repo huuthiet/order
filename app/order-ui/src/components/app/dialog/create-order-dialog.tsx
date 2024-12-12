@@ -77,11 +77,11 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex w-full justify-start" asChild>
+      <DialogTrigger className="flex justify-start w-fit" asChild>
         <DialogTrigger asChild>
           <Button
             disabled={disabled}
-            className="items-center justify-center gap-1 rounded-full text-sm"
+            className="items-center justify-center gap-1 text-sm rounded-full"
             onClick={() => setIsOpen(true)}
           >
             <ShoppingCart className="icon" />
@@ -92,9 +92,9 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
 
       <DialogContent className="max-w-[22rem] rounded-md px-6 font-beVietNam sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="border-b pb-4">
+          <DialogTitle className="pb-4 border-b">
             <div className="flex items-center gap-2 text-primary">
-              <ShoppingCart className="h-6 w-6" />
+              <ShoppingCart className="w-6 h-6" />
               {t('order.create')}
             </div>
           </DialogTitle>

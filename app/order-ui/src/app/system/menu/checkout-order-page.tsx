@@ -2,15 +2,15 @@ import { useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { CartToggleButton, QuantitySelector } from '@/components/app/button'
+import { QuantitySelector } from '@/components/app/button'
 import { ScrollArea, useSidebar } from '@/components/ui'
 import {
-  CheckoutCart,
   // PaymentMethodSelect,
   TableSelect,
 } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
+import { CheckoutCartSheet } from '@/components/app/sheet'
 import { DeleteCartItemDialog } from '@/components/app/dialog'
 import { publicFileURL } from '@/constants'
 import { useIsMobile } from '@/hooks'
@@ -18,7 +18,7 @@ import { CheckoutCartDrawer } from '@/components/app/drawer'
 
 export default function ConfirmOrderPage() {
   const { t } = useTranslation('menu')
-  const [isCartOpen, setIsCartOpen] = useState(true)
+  const [isCartOpen] = useState(true)
   const { getCartItems } = useCartItemStore()
   const { state } = useSidebar()
   const isMobile = useIsMobile()
@@ -29,15 +29,16 @@ export default function ConfirmOrderPage() {
   return (
     <div className="flex flex-row h-full gap-2">
       <div
-        className={`flex flex-col ${isCartOpen && !isMobile ? 'w-full md:w-[70%]' : 'w-full'
+        className={`flex flex-col ${isCartOpen && !isMobile ? 'w-full' : 'w-full'
           } ${isCollapsed ? 'pl-2' : ''}`}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-end gap-2 py-3 pr-4 bg-white">
+        <div className="sticky top-0 z-10 flex items-center justify-end gap-2 py-3">
           {!isMobile && (
-            <CartToggleButton
-              isCartOpen={isCartOpen}
-              setIsCartOpen={setIsCartOpen}
-            />
+            // <CartToggleButton
+            //   isCartOpen={isCartOpen}
+            //   setIsCartOpen={setIsCartOpen}
+            // />
+            <CheckoutCartSheet />
           )}
           {isMobile && <CheckoutCartDrawer />}
         </div>
@@ -97,19 +98,18 @@ export default function ConfirmOrderPage() {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-1">
-            <TableSelect />
-          </div>
+          <TableSelect />
         </ScrollArea>
       </div>
 
+
       {/* Cart Section - Fixed */}
-      <div
+      {/* <div
         className={`fixed right-0 h-[calc(100vh-6.5rem)] border-l bg-background transition-all duration-300 ease-in-out ${isCartOpen && !isMobile ? 'w-[25%]' : 'w-0 opacity-0'
           }`}
       >
         {isCartOpen && !isMobile && <CheckoutCart />}
-      </div>
+      </div> */}
     </div>
   )
 }

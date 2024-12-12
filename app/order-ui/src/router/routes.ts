@@ -42,6 +42,7 @@ export const sidebarRoutes: ISidebarRoute[] = [
   {
     title: 'sidebar.tableManagement',
     path: ROUTE.STAFF_TABLE_MANAGEMENT,
+    roles: [Role.MANAGER, Role.ADMIN],
     icon: Grid2x2,
   },
   {

@@ -16,7 +16,7 @@ export interface Table extends IBase {
 export interface ITable extends IBase {
   name: string
   location: string
-  status: string
+  status: TableStatus
   xPosition?: number
   yPosition?: number
 }
