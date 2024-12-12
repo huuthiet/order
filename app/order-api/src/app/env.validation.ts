@@ -54,19 +54,10 @@ class EnvironmentVariables {
   REFRESHABLE_DURATION: number;
 
   @IsNotEmpty()
-  ACB_API_URL: string;
-
-  @IsNotEmpty()
   ACB_CLIENT_ID: string;
 
   @IsNotEmpty()
   ACB_CLIENT_SECRET: string;
-
-  @IsNotEmpty()
-  ROBOT_API_URL: string;
-
-  @IsNotEmpty()
-  ROBOT_ID: string;
 
   @IsNotEmpty()
   MAIL_HOST: string;

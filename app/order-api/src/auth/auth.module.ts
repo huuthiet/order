@@ -7,8 +7,6 @@ import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { ConfigModule } from '@nestjs/config';
@@ -18,6 +16,7 @@ import { FileModule } from 'src/file/file.module';
 import { MailModule } from 'src/mail/mail.module';
 import { ForgotPasswordToken } from './forgot-password-token.entity';
 import { Role } from 'src/role/role.entity';
+import { SystemConfigModule } from 'src/system-config/system-config.module';
 
 @Module({
   imports: [
@@ -30,6 +29,7 @@ import { Role } from 'src/role/role.entity';
     ConfigModule,
     FileModule,
     MailModule,
+    SystemConfigModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthProfile],

@@ -18,6 +18,8 @@ import { ConfigService } from '@nestjs/config';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PdfService } from 'src/pdf/pdf.service';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
 
 describe('TransactionController', () => {
   let controller: TransactionController;
@@ -34,6 +36,7 @@ describe('TransactionController', () => {
         ACBConnectorClient,
         HttpService,
         PdfService,
+        SystemConfigService,
         {
           provide: 'AXIOS_INSTANCE_TOKEN',
           useValue: {
@@ -61,6 +64,10 @@ describe('TransactionController', () => {
         {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useValue: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(ACBConnectorConfig),

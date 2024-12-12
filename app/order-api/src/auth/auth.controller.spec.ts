@@ -18,6 +18,10 @@ import { MailService } from 'src/mail/mail.service';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ForgotPasswordToken } from './forgot-password-token.entity';
 import { Role } from 'src/role/role.entity';
+import { SystemConfig } from 'src/system-config/system-config.entity';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { DataSource } from 'typeorm';
+import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -28,6 +32,12 @@ describe('AuthController', () => {
       providers: [
         AuthService,
         FileService,
+        SystemConfigService,
+        { provide: DataSource, useFactory: dataSourceMockFactory },
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useFactory: repositoryMockFactory,
+        },
         {
           provide: getRepositoryToken(File),
           useFactory: repositoryMockFactory,

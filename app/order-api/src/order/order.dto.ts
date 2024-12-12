@@ -20,6 +20,7 @@ import { Transform, Type } from 'class-transformer';
 import { OrderItem } from 'src/order-item/order-item.entity';
 import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
+import { TableResponseDto } from 'src/table/table.dto';
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -111,6 +112,20 @@ export class OrderPaymentResponseDto extends BaseResponseDto {
   statusMessage: string;
 }
 
+export class OrderTableResponseDto extends BaseResponseDto {
+  @AutoMap()
+  @ApiProperty()
+  name: string;
+
+  @AutoMap()
+  @ApiProperty()
+  location: string;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string;
+}
+
 export class OrderResponseDto extends BaseResponseDto {
   @AutoMap()
   subtotal: number;
@@ -138,6 +153,9 @@ export class OrderResponseDto extends BaseResponseDto {
 
   @AutoMap(() => InvoiceResponseDto)
   invoice: InvoiceResponseDto;
+
+  @AutoMap(() => OrderTableResponseDto)
+  table: OrderTableResponseDto;
 }
 
 export class GetOrderRequestDto {

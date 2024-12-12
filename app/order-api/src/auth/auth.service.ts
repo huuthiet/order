@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   Logger,
+  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -21,7 +22,7 @@ import {
 } from './auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
-import { MoreThan, Repository } from 'typeorm';
+import { DataSource, MoreThan, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { InjectMapper } from '@automapper/nestjs';
@@ -45,9 +46,10 @@ import { USER_NOT_FOUND } from './auth.validation1';
 import { CurrentUserDto } from 'src/user/user.dto';
 import { Role } from 'src/role/role.entity';
 import { RoleEnum } from 'src/role/role.enum';
+import { SystemConfigService } from 'src/system-config/system-config.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   private saltOfRounds: number;
   private duration: number;
   private refeshableDuration: number;
@@ -69,13 +71,20 @@ export class AuthService {
     private readonly forgotPasswordRepository: Repository<ForgotPasswordToken>,
     private readonly fileService: FileService,
     private readonly mailService: MailService,
+    private readonly dataSource: DataSource,
+    private readonly systemConfigService: SystemConfigService,
   ) {
     this.saltOfRounds = this.configService.get<number>('SALT_ROUNDS');
     this.duration = this.configService.get<number>('DURATION');
     this.refeshableDuration = this.configService.get<number>(
       'REFRESHABLE_DURATION',
     );
-    this.frontedUrl = this.configService.get<string>('FRONTEND_URL');
+  }
+
+  async onModuleInit() {
+    const context = `${AuthService.name}.${this.onModuleInit.name}`;
+    this.frontedUrl = await this.systemConfigService.get('FRONTEND_URL');
+    this.logger.log(`Frontend URL loaded: ${this.frontedUrl}`, context);
   }
 
   async forgotPassword(requestData: ForgotPasswordRequestDto) {
@@ -176,12 +185,25 @@ export class AuthService {
       token,
       user,
     } as ForgotPasswordToken);
-    await this.forgotPasswordRepository.save(forgotPasswordToken);
 
     const url = `${this.frontedUrl}/reset-password?token=${token}`;
-    await this.mailService.sendForgotPasswordToken(user, url);
-    this.logger.log(`User ${user.id} created forgot password token`, context);
-    return url;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.save(forgotPasswordToken);
+      await this.mailService.sendForgotPasswordToken(user, url);
+      await queryRunner.commitTransaction();
+      this.logger.log(`User ${user.id} created forgot password token`, context);
+      return url;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async uploadAvatar(user: CurrentUserDto, file: Express.Multer.File) {
