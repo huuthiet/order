@@ -30,7 +30,6 @@ import {
   WorkflowExecutionResponseDto,
 } from 'src/robot-connector/robot-connector.dto';
 import { Workflow } from 'src/workflow/workflow.entity';
-import { ConfigService } from '@nestjs/config';
 import { RobotStatus } from 'src/robot-connector/robot-connector.constants';
 import * as _ from 'lodash';
 import { TrackingScheduler } from './tracking.scheduler';

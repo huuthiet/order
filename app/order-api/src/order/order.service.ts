@@ -410,8 +410,8 @@ export class OrderService {
         slug: options.owner,
       },
       table: {
-        slug: options.table
-      }
+        slug: options.table,
+      },
     };
 
     if (options.status.length > 0) {
@@ -426,6 +426,7 @@ export class OrderService {
         'orderItems.variant.product',
         'payment',
         'invoice',
+        'table',
       ],
       order: { createdAt: 'DESC' },
       skip: (options.page - 1) * options.size,
@@ -468,6 +469,7 @@ export class OrderService {
         'orderItems.variant.product',
         'orderItems.trackingOrderItems.tracking',
         'invoice.invoiceItems',
+        'table',
       ],
     });
 

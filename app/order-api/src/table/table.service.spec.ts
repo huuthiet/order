@@ -19,6 +19,8 @@ import { ConfigService } from '@nestjs/config';
 import { BranchException } from 'src/branch/branch.exception';
 import { TableException } from './table.exception';
 import { QRLocationResponseDto } from 'src/robot-connector/robot-connector.dto';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
 
 describe('TableService', () => {
   let service: TableService;
@@ -33,6 +35,7 @@ describe('TableService', () => {
         TableService,
         RobotConnectorClient,
         HttpService,
+        SystemConfigService,
         {
           provide: 'AXIOS_INSTANCE_TOKEN',
           useValue: {
@@ -53,6 +56,10 @@ describe('TableService', () => {
         },
         {
           provide: getRepositoryToken(Table),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
           useFactory: repositoryMockFactory,
         },
         {
