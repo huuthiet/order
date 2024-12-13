@@ -12,6 +12,7 @@ import { Variant } from "src/variant/variant.entity";
 import { Product } from "src/product/product.entity";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { SizeException } from "./size.exception";
 
 
 describe('SizeService', () => {
@@ -68,7 +69,7 @@ describe('SizeService', () => {
 
       (sizeRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(mockOutput);
 
-      await expect(service.createSize(mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.createSize(mockInput)).rejects.toThrow(SizeException);
     });
 
     it('should create success and return new size', async () => {
@@ -130,7 +131,7 @@ describe('SizeService', () => {
       } as UpdateSizeRequestDto;
 
       (sizeRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
-      await expect(service.updateSize(sizeSlug, mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.updateSize(sizeSlug, mockInput)).rejects.toThrow(SizeException);
     });
 
     it('should throw error when changing size name but that name already exists', async () => {
@@ -151,7 +152,7 @@ describe('SizeService', () => {
       (sizeRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(size);
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockInput);
       jest.spyOn(service, 'isExistUpdatedName').mockResolvedValue(true);
-      await expect(service.updateSize(sizeSlug, mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.updateSize(sizeSlug, mockInput)).rejects.toThrow(SizeException);
     });
 
     it('should update success and return updated data', async () => {
@@ -188,7 +189,7 @@ describe('SizeService', () => {
     it('should throw error when size not found', async () => {
       const sizeSlug = 'size-slug';
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.deleteSize(sizeSlug)).rejects.toThrow(BadRequestException);
+      await expect(service.deleteSize(sizeSlug)).rejects.toThrow(SizeException);
     });
 
     it('should throw error when size relate to variant', async () => {
@@ -213,7 +214,7 @@ describe('SizeService', () => {
 
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(size);
 
-      await expect(service.deleteSize(sizeSlug)).rejects.toThrow(BadRequestException);
+      await expect(service.deleteSize(sizeSlug)).rejects.toThrow(SizeException);
     });
 
     it('should delete success and return number of deleted records', async () => {

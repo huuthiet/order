@@ -106,7 +106,7 @@ export class TrackingService implements OnModuleInit {
     if (requestData.type === TrackingType.BY_ROBOT) {
       if (order.type === OrderType.TAKE_OUT) {
         this.logger.warn(
-          `${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT} ${order.slug}`,
+          `${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT.message} ${order.slug}`,
           context,
         );
         throw new TrackingException(
@@ -197,7 +197,7 @@ export class TrackingService implements OnModuleInit {
     });
     if (!_.isEmpty(trackings)) {
       this.logger.warn(
-        TrackingValidation.WAIT_FOR_CURRENT_SHIPMENT_COMPLETED,
+        TrackingValidation.WAIT_FOR_CURRENT_SHIPMENT_COMPLETED.message,
         context,
       );
       throw new TrackingException(
@@ -229,12 +229,12 @@ export class TrackingService implements OnModuleInit {
         relations: ['order', 'trackingOrderItems.tracking'],
       });
       if (!orderItem) {
-        this.logger.warn(OrderItemValidation.ORDER_ITEM_NOT_FOUND, context);
+        this.logger.warn(OrderItemValidation.ORDER_ITEM_NOT_FOUND.message, context);
         throw new OrderItemException(OrderItemValidation.ORDER_ITEM_NOT_FOUND);
       }
       if (!orderItem.order) {
         this.logger.warn(
-          OrderItemValidation.ORDER_ITEM_NOT_BELONG_TO_ANY_ORDER,
+          OrderItemValidation.ORDER_ITEM_NOT_BELONG_TO_ANY_ORDER.message,
           context,
         );
         throw new OrderItemException(
@@ -252,7 +252,7 @@ export class TrackingService implements OnModuleInit {
       if (_.isEmpty(orderItem.trackingOrderItems)) {
         if (createTrackingOrderItem.quantity > orderItem.quantity) {
           this.logger.warn(
-            OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY,
+            OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY.message,
             context,
           );
           throw new OrderItemException(
@@ -272,7 +272,7 @@ export class TrackingService implements OnModuleInit {
       );
       if (totalCompleted + createTrackingOrderItem.quantity > orderItem.quantity) {
         this.logger.warn(
-          OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY,
+          OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY.message,
           context,
         );
         throw new OrderItemException(
@@ -303,11 +303,11 @@ export class TrackingService implements OnModuleInit {
     });
 
     if (orders.length === 0) {
-      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
       this.logger.warn(
         TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message,
         context,
       );
+      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
     }
 
     const firstOrder = orders[0];
@@ -317,11 +317,11 @@ export class TrackingService implements OnModuleInit {
         order.tableName === firstOrder.tableName,
     );
     if (!checkOneTable) {
-      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
       this.logger.warn(
         TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message,
         context,
       );
+      new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
     }
   }
 
