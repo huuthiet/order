@@ -11,6 +11,8 @@ import {
 } from './size.dto';
 import { Size } from './size.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { SizeException } from './size.exception';
+import { SizeValidation } from './size.validation';
 
 @Injectable()
 export class SizeService {
@@ -25,6 +27,7 @@ export class SizeService {
    * Create a new size 
    * @param  {CreateSizeRequestDto} createSizeDto The data to create a new size
    * @returns {Promise<SizeResponseDto>} The size data is created
+   * @throws {SizeException} If size name does exist
    */
   async createSize(
     createSizeDto: CreateSizeRequestDto,
@@ -36,7 +39,7 @@ export class SizeService {
     });
     if (size) {
       this.logger.warn(`Size name ${createSizeDto.name} does exists`, context);
-      throw new BadRequestException('Size name does exists');
+      throw new SizeException(SizeValidation.SIZE_NAME_DOES_EXIST);
     }
     
     const newSize = this.sizeRepository.create(sizeData);
@@ -64,8 +67,8 @@ export class SizeService {
    * @param {string} slug The slug of size 
    * @param {UpdateSizeRequestDto} requestData The data to update size
    * @returns {Promise<SizeResponseDto>} The updated size
-   * @throws {BadRequestException} If size is not found
-   * @throws {BadRequestException} If the updated name of size that already exists
+   * @throws {SizeException} If size is not found
+   * @throws {SizeException} If the updated name of size that already exists
    */
   async updateSize(
     slug: string,
@@ -75,13 +78,13 @@ export class SizeService {
     const size = await this.sizeRepository.findOneBy({ slug });
     if (!size) {
       this.logger.warn(`Size ${slug} not found`, context);
-      throw new BadRequestException('Size does not exist');
+      throw new SizeException(SizeValidation.SIZE_NOT_FOUND);
     }
     const sizeData = this.mapper.map(requestData, UpdateSizeRequestDto, Size);
     const isExist = await this.isExistUpdatedName(sizeData.name, size.name);
     if(isExist) {
       this.logger.warn(`The updated name ${sizeData.name} does exists`, context);
-      throw new BadRequestException('The updated name does exists');
+      throw new SizeException(SizeValidation.SIZE_NAME_DOES_EXIST);
     }
 
     Object.assign(size, sizeData);
@@ -118,8 +121,8 @@ export class SizeService {
    * Delete size by slug
    * @param {string} slug The slug of size is deleted
    * @returns {Promise<number>} The number of sizes is deleted
-   * @throws {BadRequestException} If the size is not found
-   * @throws {BadRequestException} If the size have related variants
+   * @throws {SizeException} If the size is not found
+   * @throws {SizeException} If the size have related variants
    */
   async deleteSize(slug: string): Promise<number> {
     const context = `${SizeService.name}.${this.deleteSize.name}`;
@@ -130,11 +133,11 @@ export class SizeService {
       relations: ['variants'],
     });
 
-    if (!size) throw new BadRequestException('Size does not exist');
+    if (!size) throw new SizeException(SizeValidation.SIZE_NOT_FOUND);
     if (size.variants.length > 0) {
       this.logger.warn(`Must change size of variants before delete size ${slug}`, context);
-      throw new BadRequestException(
-        'Must change size of variants before delete this size',
+      throw new SizeException(
+        SizeValidation.MUST_CHANGE_SIZE_OF_VARIANTS_BEFORE_DELETE
       );
     }
 

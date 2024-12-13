@@ -169,7 +169,7 @@ export class OrderService {
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
     if (!branch) {
       this.logger.warn(
-        `${BranchValidation.BRANCH_NOT_FOUND} ${data.branch}`,
+        `${BranchValidation.BRANCH_NOT_FOUND.message} ${data.branch}`,
         context,
       );
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
@@ -188,7 +188,7 @@ export class OrderService {
       });
       if (!table) {
         this.logger.warn(
-          `${TableValidation.TABLE_NOT_FOUND} ${data.table}`,
+          `${TableValidation.TABLE_NOT_FOUND.message} ${data.table}`,
           context,
         );
         throw new TableException(TableValidation.TABLE_NOT_FOUND);
@@ -199,7 +199,7 @@ export class OrderService {
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
     if (!owner) {
       this.logger.warn(
-        `${OrderValidation.OWNER_NOT_FOUND} ${data.owner}`,
+        `${OrderValidation.OWNER_NOT_FOUND.message} ${data.owner}`,
         context,
       );
       throw new OrderException(OrderValidation.OWNER_NOT_FOUND);
@@ -239,7 +239,7 @@ export class OrderService {
       },
     });
     if (!menu) {
-      this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
+      this.logger.warn(MenuValidation.MENU_NOT_FOUND.message, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
 
@@ -254,7 +254,7 @@ export class OrderService {
         });
         if (!variant) {
           this.logger.warn(
-            `${VariantValidation.VARIANT_NOT_FOUND} ${item.variant}`,
+            `${VariantValidation.VARIANT_NOT_FOUND.message} ${item.variant}`,
             context,
           );
           throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
@@ -271,7 +271,7 @@ export class OrderService {
         });
         if (!menuItem) {
           this.logger.warn(
-            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU.message,
             context,
           );
           throw new ProductException(
@@ -281,7 +281,7 @@ export class OrderService {
 
         if (item.quantity > menuItem.currentStock) {
           this.logger.warn(
-            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
             context,
           );
           throw new OrderException(
@@ -322,7 +322,7 @@ export class OrderService {
       },
     });
     if (!menu) {
-      this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
+      this.logger.warn(MenuValidation.MENU_NOT_FOUND.message, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
 
@@ -337,7 +337,7 @@ export class OrderService {
       });
       if (!variant) {
         this.logger.warn(
-          `${VariantValidation.VARIANT_NOT_FOUND} ${item.variant}`,
+          `${VariantValidation.VARIANT_NOT_FOUND.message} ${item.variant}`,
           context,
         );
         throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
@@ -354,7 +354,7 @@ export class OrderService {
       });
       if (!menuItem) {
         this.logger.warn(
-          ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+          ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU.message,
           context,
         );
         throw new ProductException(
@@ -364,7 +364,7 @@ export class OrderService {
 
       if (item.quantity > menuItem.currentStock) {
         this.logger.warn(
-          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
           context,
         );
         throw new OrderException(
@@ -490,7 +490,7 @@ export class OrderService {
     });
 
     if (!order) {
-      this.logger.warn(`${OrderValidation.ORDER_NOT_FOUND} ${slug}`, context);
+      this.logger.warn(`${OrderValidation.ORDER_NOT_FOUND.message} ${slug}`, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 

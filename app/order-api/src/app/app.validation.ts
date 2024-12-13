@@ -7,6 +7,7 @@ import { OrderValidation } from 'src/order/order.validation';
 import { PaymentValidation } from 'src/payment/payment.validation';
 import ProductValidation from 'src/product/product.validation';
 import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.validation';
+import { SizeValidation } from 'src/size/size.validation';
 import { TableValidation } from 'src/table/table.validation';
 import { TrackingValidation } from 'src/tracking/tracking.validation';
 import { VariantValidation } from 'src/variant/variant.validation';
@@ -40,6 +41,7 @@ export const AppValidation: TErrorCode = {
   ...OrderItemValidation,
   ...WorkflowValidation,
   ...RobotConnectorValidation,
+  ...SizeValidation,
 };
 
 const errorCodeKeys = Object.keys(AppValidation);
