@@ -14,7 +14,7 @@ export class TrackingController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  @Public()
+  // @Public()
   @ApiResponseWithType({
     status: HttpStatus.CREATED,
     description: 'Create a new tracking successfully',
