@@ -13,23 +13,37 @@ services:
       retries: 10
       start_period: 30s # Give more time for MySQL to become ready
     environment:
+      # General
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      VERSION: ${VERSION}
+
+      # Database
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
-      NODE_ENV: ${NODE_ENV}
-      PORT: ${PORT}
-      VERSION: ${VERSION}
+
+      # Token
       SALT_ROUNDS: ${SALT_ROUNDS}
       DURATION: ${DURATION}
       REFRESHABLE_DURATION: ${REFRESHABLE_DURATION}
+
+      # ACB Banking
       ACB_CLIENT_ID: ${ACB_CLIENT_ID}
       ACB_CLIENT_SECRET: ${ACB_CLIENT_SECRET}
+
+      # Mail
       MAIL_HOST: ${MAIL_HOST}
       MAIL_USER: ${MAIL_USER}
       MAIL_FROM: ${MAIL_FROM}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
+
+      # Redis queue
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+
       TZ: Asia/Ho_Chi_Minh
     depends_on:
       mysql_db:
