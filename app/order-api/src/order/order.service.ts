@@ -6,7 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  Repository,
+} from 'typeorm';
 import {
   CreateOrderRequestDto,
   GetOrderRequestDto,
@@ -41,7 +47,6 @@ import { MenuItem } from 'src/menu-item/menu-item.entity';
 import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
 import * as moment from 'moment';
-import { table } from 'console';
 
 @Injectable()
 export class OrderService {
@@ -402,6 +407,7 @@ export class OrderService {
   async getAllOrders(
     options: GetOrderRequestDto,
   ): Promise<AppPaginatedResponseDto<OrderResponseDto>> {
+    console.log({ options });
     const findOptionsWhere: FindOptionsWhere<any> = {
       branch: {
         slug: options.branch,
@@ -418,7 +424,7 @@ export class OrderService {
       findOptionsWhere.status = In(options.status);
     }
 
-    const [orders, total] = await this.orderRepository.findAndCount({
+    const findManyOptions: FindManyOptions<Order> = {
       where: findOptionsWhere,
       relations: [
         'owner',
@@ -429,25 +435,35 @@ export class OrderService {
         'table',
       ],
       order: { createdAt: 'DESC' },
-      skip: (options.page - 1) * options.size,
-      take: options.size,
-    });
+    };
+
+    if (options.hasPaging) {
+      Object.assign(findManyOptions, {
+        skip: (options.page - 1) * options.size,
+        take: options.size,
+      });
+    }
+
+    const [orders, total] =
+      await this.orderRepository.findAndCount(findManyOptions);
 
     const ordersDto = this.mapper.mapArray(orders, Order, OrderResponseDto);
+    const page = options.hasPaging ? options.page : 1;
+    const pageSize = options.hasPaging ? options.size : total;
 
     // Calculate total pages
-    const totalPages = Math.ceil(total / options.size);
+    const totalPages = Math.ceil(total / pageSize);
     // Determine hasNext and hasPrevious
-    const hasNext = options.page < totalPages;
-    const hasPrevious = options.page > 1;
+    const hasNext = page < totalPages;
+    const hasPrevious = page > 1;
 
     return {
       hasNext: hasNext,
       hasPrevios: hasPrevious,
       items: ordersDto,
       total,
-      page: options.page,
-      pageSize: options.size,
+      page,
+      pageSize,
       totalPages,
     } as AppPaginatedResponseDto<OrderResponseDto>;
   }
