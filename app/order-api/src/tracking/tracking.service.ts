@@ -96,31 +96,23 @@ export class TrackingService implements OnModuleInit {
     const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
       requestData.trackingOrderItems,
     );
+
     // validate order item of orders in a table
     await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
     
-    
-    const order = await this.getOrderByOrderItemSlug(requestData.trackingOrderItems[0].orderItem);
+    const order = await this.getOrderByOrderItemSlug(
+      _.first(requestData.trackingOrderItems).orderItem
+    );
     
     let savedTrackingId: string = '';
     if (requestData.type === TrackingType.BY_ROBOT) {
-      if (order.type === OrderType.TAKE_OUT) {
-        this.logger.warn(
-          `${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT.message} ${order.slug}`,
-          context,
-        );
-        throw new TrackingException(
-          TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT,
-        );
-      }
-
       const tableLocation: string = await this.getLocationTableByOrder(order);
 
       const workflowId: string = await this.getWorkflowIdByBranchId(order.branch?.id);
 
       await this.checkRobotStatusBeforeCall();
 
-      const requestData: RunWorkflowRequestDto = {
+      const runWorkflowData: RunWorkflowRequestDto = {
         runtime_config: {
           raybot_id: this.robotId,
           location: tableLocation,
@@ -128,7 +120,7 @@ export class TrackingService implements OnModuleInit {
         },
       };
       const workflowRobot: WorkflowExecutionResponseDto =
-        await this.robotConnectorClient.runWorkflow(workflowId, requestData);
+        await this.robotConnectorClient.runWorkflow(workflowId, runWorkflowData);
 
       const tracking = new Tracking();
       Object.assign(tracking, {
@@ -299,10 +291,13 @@ export class TrackingService implements OnModuleInit {
           slug: In(orderItemSlugs),
         },
       },
-      relations: ['branch'],
+      relations: [
+        'branch',
+        'table'
+      ],
     });
 
-    if (orders.length === 0) {
+    if (_.isEmpty(orders)) {
       this.logger.warn(
         TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message,
         context,
@@ -310,13 +305,28 @@ export class TrackingService implements OnModuleInit {
       new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
     }
 
-    const firstOrder = orders[0];
-    const checkOneTable = orders.every(
-      (order) =>
-        order.branch?.id === firstOrder.branch?.id &&
-        order.tableName === firstOrder.tableName,
+    const isValidOrderType = orders.every(
+      (order) => order.type === OrderType.AT_TABLE && order.table
     );
-    if (!checkOneTable) {
+    if(!isValidOrderType) {
+      this.logger.warn(
+        `${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT.message}`,
+        context,
+      );
+      throw new TrackingException(
+        TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT,
+      );
+    }
+
+    // const isOrdersOneTable = orders.every(
+    //   (order) => order.table?.id === _.first(orders).table?.id
+    // );
+    const isOrdersOneTable = orders.every(
+      (order) =>
+        order.branch?.id === _.first(orders).branch?.id &&
+        order.tableName === _.first(orders).tableName,
+    );
+    if (!isOrdersOneTable) {
       this.logger.warn(
         TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE.message,
         context,
