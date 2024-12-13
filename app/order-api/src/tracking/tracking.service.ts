@@ -88,9 +88,14 @@ export class TrackingService implements OnModuleInit {
 
     await this.checkCurrentShipment();
 
-    if(_.isEmpty(requestData.trackingOrderItems)) {
-      this.logger.warn(TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM.message, context);
-      throw new TrackingException(TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM);
+    if (_.isEmpty(requestData.trackingOrderItems)) {
+      this.logger.warn(
+        TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM.message,
+        context,
+      );
+      throw new TrackingException(
+        TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM,
+      );
     }
 
     const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
@@ -99,16 +104,18 @@ export class TrackingService implements OnModuleInit {
 
     // validate order item of orders in a table
     await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
-    
+
     const order = await this.getOrderByOrderItemSlug(
-      _.first(requestData.trackingOrderItems).orderItem
+      _.first(requestData.trackingOrderItems).orderItem,
     );
-    
+
     let savedTrackingId: string = '';
     if (requestData.type === TrackingType.BY_ROBOT) {
       const tableLocation: string = await this.getLocationTableByOrder(order);
 
-      const workflowId: string = await this.getWorkflowIdByBranchId(order.branch?.id);
+      const workflowId: string = await this.getWorkflowIdByBranchId(
+        order.branch?.id,
+      );
 
       await this.checkRobotStatusBeforeCall();
 
@@ -120,7 +127,10 @@ export class TrackingService implements OnModuleInit {
         },
       };
       const workflowRobot: WorkflowExecutionResponseDto =
-        await this.robotConnectorClient.runWorkflow(workflowId, runWorkflowData);
+        await this.robotConnectorClient.runWorkflow(
+          workflowId,
+          runWorkflowData,
+        );
 
       const tracking = new Tracking();
       Object.assign(tracking, {
@@ -160,17 +170,12 @@ export class TrackingService implements OnModuleInit {
     return TrackingDto;
   }
 
-  async getOrderByOrderItemSlug(
-    orderItemSlug: string
-  ): Promise<Order> {
+  async getOrderByOrderItemSlug(orderItemSlug: string): Promise<Order> {
     const orderItem = await this.orderItemRepository.findOne({
       where: {
-        slug: orderItemSlug
+        slug: orderItemSlug,
       },
-      relations: [
-        'order.branch',
-        'order.orderItems'
-      ]
+      relations: ['order.branch', 'order.orderItems'],
     });
     const order = orderItem.order;
     return order;
@@ -221,7 +226,10 @@ export class TrackingService implements OnModuleInit {
         relations: ['order', 'trackingOrderItems.tracking'],
       });
       if (!orderItem) {
-        this.logger.warn(OrderItemValidation.ORDER_ITEM_NOT_FOUND.message, context);
+        this.logger.warn(
+          OrderItemValidation.ORDER_ITEM_NOT_FOUND.message,
+          context,
+        );
         throw new OrderItemException(OrderItemValidation.ORDER_ITEM_NOT_FOUND);
       }
       if (!orderItem.order) {
@@ -244,7 +252,8 @@ export class TrackingService implements OnModuleInit {
       if (_.isEmpty(orderItem.trackingOrderItems)) {
         if (createTrackingOrderItem.quantity > orderItem.quantity) {
           this.logger.warn(
-            OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY.message,
+            OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY
+              .message,
             context,
           );
           throw new OrderItemException(
@@ -262,9 +271,13 @@ export class TrackingService implements OnModuleInit {
         },
         0,
       );
-      if (totalCompleted + createTrackingOrderItem.quantity > orderItem.quantity) {
+      if (
+        totalCompleted + createTrackingOrderItem.quantity >
+        orderItem.quantity
+      ) {
         this.logger.warn(
-          OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY.message,
+          OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY
+            .message,
           context,
         );
         throw new OrderItemException(
@@ -277,7 +290,7 @@ export class TrackingService implements OnModuleInit {
   }
 
   /**
-   * 
+   *
    * @param {CreateTrackingOrderItemRequestDto[]} orderItems The data to create tracking order item
    */
   async validateOrderItemInOneTable(
@@ -291,10 +304,7 @@ export class TrackingService implements OnModuleInit {
           slug: In(orderItemSlugs),
         },
       },
-      relations: [
-        'branch',
-        'table'
-      ],
+      relations: ['branch', 'table'],
     });
 
     if (_.isEmpty(orders)) {
@@ -306,9 +316,9 @@ export class TrackingService implements OnModuleInit {
     }
 
     const isValidOrderType = orders.every(
-      (order) => order.type === OrderType.AT_TABLE && order.table
+      (order) => order.type === OrderType.AT_TABLE && order.table,
     );
-    if(!isValidOrderType) {
+    if (!isValidOrderType) {
       this.logger.warn(
         `${TrackingValidation.ORDER_TAKE_OUT_CAN_NOT_USE_ROBOT.message}`,
         context,
@@ -324,7 +334,7 @@ export class TrackingService implements OnModuleInit {
     const isOrdersOneTable = orders.every(
       (order) =>
         order.branch?.id === _.first(orders).branch?.id &&
-        order.tableName === _.first(orders).tableName,
+        order.table.id === _.first(orders).table.id,
     );
     if (!isOrdersOneTable) {
       this.logger.warn(
@@ -346,7 +356,7 @@ export class TrackingService implements OnModuleInit {
     const context = `${TrackingService.name}.${this.getLocationTableByOrder.name}`;
     const table = await this.tableRepository.findOne({
       where: {
-        orders: { id: order?.id }
+        orders: { id: order?.id },
       },
     });
     if (!table) {
@@ -452,9 +462,9 @@ export class TrackingService implements OnModuleInit {
     status: string,
   ): Promise<TrackingResponseDto> {
     const orders = await this.trackingScheduler.getAllOrdersByTrackingId(
-      "3f15f447-c5b7-4ee2-bcb9-c0cd9bcf0325"
+      '3f15f447-c5b7-4ee2-bcb9-c0cd9bcf0325',
     );
-    
+
     const tracking = await this.trackingRepository.findOne({
       where: {
         slug,

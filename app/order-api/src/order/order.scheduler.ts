@@ -17,7 +17,7 @@ export class OrderScheduler {
     private readonly dataSource: DataSource,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  // @Cron(CronExpression.EVERY_5_MINUTES)
   async migrateTableNameToTable() {
     const context = `${OrderScheduler.name}.${this.migrateTableNameToTable.name}`;
     this.logger.log(`Migrating tablename to table...`, context);
@@ -38,7 +38,6 @@ export class OrderScheduler {
             branch: {
               id: item.branch?.id,
             },
-            name: item.tableName,
           },
         });
         if (table) {
