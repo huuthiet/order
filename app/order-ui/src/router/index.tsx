@@ -27,6 +27,7 @@ import {
   OrderDetailPage,
   UserListPage,
   ForgotPasswordPage,
+  ConfigPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 
@@ -200,7 +201,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.SUPER_ADMIN]}
+            allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN, Role.MANAGER]}
             element={<SuspenseElement component={TablePage} />}
           />
         ),
@@ -354,6 +355,25 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={[Role.ADMIN]}
             element={<SuspenseElement component={BankConfigPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.ADMIN_CONFIG}`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.ADMIN]}
+            element={<SuspenseElement component={ConfigPage} />}
           />
         ),
       },

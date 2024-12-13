@@ -101,7 +101,9 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
                           : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
                       })()}
                     </span>
-                    <span className='text-[0.7rem] text-muted-foreground'>{item.currentStock}/{item.defaultStock}</span>
+                    <span className='text-[0.7rem] text-muted-foreground'>
+                      {t('menu.amount')}
+                      {item.currentStock}/{item.defaultStock}</span>
                   </div>
                 ) : (
                   <span className="text-sm font-bold text-primary">

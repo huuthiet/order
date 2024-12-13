@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { useTables } from '@/hooks'
 import { useCartItemStore } from '@/stores'
 import { useUserStore } from '@/stores'
 import { ITable } from '@/types'
 import { TableItem } from '../table/table-item'
+import SelectReservedTableDialog from '@/components/app/dialog/select-reserved-table-dialog'
 
 export default function TableSelect() {
   const { t } = useTranslation(['table'])
@@ -13,9 +15,9 @@ export default function TableSelect() {
   const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
   const { getCartItems, addTable, removeTable } = useCartItemStore()
   const cartItems = getCartItems()
+  const [reservedTable, setReservedTable] = useState<ITable | null>(null)
 
   useEffect(() => {
-    // Khôi phục trạng thái selected từ cart
     const addedTable = cartItems?.table
     if (addedTable) {
       setSelectedTableId(addedTable)
@@ -24,23 +26,29 @@ export default function TableSelect() {
 
   const handleTableClick = (table: ITable) => {
     if (selectedTableId === table.slug) {
-      // Bỏ chọn table
+      // Remove table for any status
       setSelectedTableId(null)
       removeTable()
     } else {
-      // Chọn table
-      setSelectedTableId(table.slug)
-      addTable(table)
+      if (table.status === 'reserved') {
+        setReservedTable(table) // Show confirmation dialog
+      } else if (table.status === 'available') {
+        setSelectedTableId(table.slug)
+        addTable(table)
+      }
     }
   }
 
+  const confirmAddReservedTable = (table: ITable) => {
+    setSelectedTableId(table.slug)
+    addTable(table)
+    setReservedTable(null) // Close the dialog
+  }
+
   return (
-    <div className="flex flex-col w-full gap-2 mt-6 border rounded-md">
-      <div className="p-4 bg-muted/60">
+    <div className="flex flex-col w-full mt-6 border rounded-md">
+      <div className="flex items-center justify-between p-4 bg-muted/60">
         <span className="font-medium text-md">{t('table.title')}</span>
-      </div>
-      <div className="relative flex min-h-[400px] flex-col">
-        {/* Table status */}
         <div className="flex flex-row gap-4 px-4">
           <div className="flex flex-row items-center gap-2">
             <div className="w-4 h-4 border rounded-sm bg-muted-foreground/10" />
@@ -55,18 +63,9 @@ export default function TableSelect() {
             <span className="text-sm">{t('table.selected')}</span>
           </div>
         </div>
-        <div className="h-full">
-          {tables?.result.map((table) => (
-            <TableItem
-              key={table.slug}
-              table={table}
-              isSelected={selectedTableId === table.slug}
-              onContextMenu={(e) => e.preventDefault()}
-              onClick={() => handleTableClick(table)}
-            />
-          ))}
-        </div>
-        {/* {tables?.result.map((table) => (
+      </div>
+      <div className="relative flex min-h-[26rem] flex-col overflow-x-auto">
+        {tables?.result.map((table) => (
           <TableItem
             key={table.slug}
             table={table}
@@ -74,9 +73,16 @@ export default function TableSelect() {
             onContextMenu={(e) => e.preventDefault()}
             onClick={() => handleTableClick(table)}
           />
-
-        ))} */}
+        ))}
       </div>
+      {reservedTable && (
+        <SelectReservedTableDialog
+          table={reservedTable}
+          setSelectedTableId={setSelectedTableId}
+          onConfirm={confirmAddReservedTable}
+          onCancel={() => setReservedTable(null)} // Close dialog on cancel
+        />
+      )}
     </div>
   )
 }

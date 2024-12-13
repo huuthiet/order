@@ -76,7 +76,7 @@ export function TableItem({
       case TableStatus.AVAILABLE:
         return 'bg-muted-foreground/10'
       case TableStatus.RESERVED:
-        return 'border-yellow-500'
+        return 'bg-red-100 border-red-500 border'
       default:
         return 'border-gray-500'
     }
@@ -84,6 +84,7 @@ export function TableItem({
 
   return (
     <div
+      className="mt-14"
       ref={setNodeRef}
       {...(isResizing ? {} : listeners)}
       {...(isResizing ? {} : attributes)}
@@ -92,16 +93,16 @@ export function TableItem({
       onClick={onClick}
     >
       <div
-        className={`rounded-md bg-transparent transition-all duration-200 ${
+        className={`rounded-md bg-transparent p-2 transition-all duration-200 ${
           isSelected
-            ? 'z-10 ring-4 scale-110 border-primary bg-primary/10 ring-primary'
-            : 'bg-background hover:ring-2 hover:ring-primary/50'
+            ? 'z-10 scale-110 border-primary bg-primary/10 ring-4 ring-primary'
+            : 'bg-background hover:scale-105 hover:ring-2 hover:ring-primary/50'
         } `}
       >
-        <div className="flex gap-2 items-center">
-          <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} />
-          <div className="flex flex-col gap-2 items-center">
-            <div className={`w-2/3 h-2 rounded-full ${getStatusColor()}`} />
+        <div className="flex items-center gap-2">
+          {/* <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} /> */}
+          <div className="flex flex-col items-center gap-2">
+            <div className={`h-2 w-2/3 rounded-full ${getStatusColor()}`} />
             <Resizable
               size={localSize}
               onResizeStart={() => setIsResizing(true)}
@@ -114,10 +115,10 @@ export function TableItem({
                 setLocalSize(newSize)
                 onResize?.(newSize)
               }}
-              minWidth={120}
-              minHeight={60}
-              maxWidth={200}
-              maxHeight={200}
+              minWidth={100}
+              minHeight={30}
+              maxWidth={containerBounds?.width || 200} // Giới hạn tối đa theo container
+              maxHeight={containerBounds?.height || 200}
               handleStyles={{
                 bottomRight: {
                   bottom: 0,
@@ -129,17 +130,17 @@ export function TableItem({
               }}
             >
               <div
-                className={`flex justify-center items-center rounded-md cursor-pointer ${getStatusColor()}`}
+                className={`flex cursor-pointer items-center justify-center rounded-md ${getStatusColor()}`}
                 style={{ width: '100%', height: '100%' }}
               >
-                <span className="flex justify-center items-center p-1 w-7 h-7 text-sm font-medium bg-white rounded-full text-muted-foreground">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white p-1 text-sm font-medium text-muted-foreground">
                   {table.name}
                 </span>
               </div>
             </Resizable>
-            <div className={`w-2/3 h-2 rounded-full ${getStatusColor()}`} />
+            <div className={`h-2 w-2/3 rounded-full ${getStatusColor()}`} />
           </div>
-          <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} />
+          {/* <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} /> */}
         </div>
       </div>
     </div>

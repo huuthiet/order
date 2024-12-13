@@ -1,12 +1,18 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { RobotConnectorClient } from "./robot-connector.client";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
-import { RobotResponseDto } from "./robot-connector.dto";
-import { pipe } from "rxjs";
-import { RobotConnectorException } from "./robot-connector.exception";
-import { RobotConnectorValidation } from "./robot-connector.validation";
+import { Test, TestingModule } from '@nestjs/testing';
+import { RobotConnectorClient } from './robot-connector.client';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+import { RobotResponseDto } from './robot-connector.dto';
+import { pipe } from 'rxjs';
+import { RobotConnectorException } from './robot-connector.exception';
+import { RobotConnectorValidation } from './robot-connector.validation';
+import { SystemConfig } from 'src/system-config/system-config.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 
 describe('RobotConnectorClient', () => {
   let robotConnectorClient: RobotConnectorClient;
@@ -16,6 +22,11 @@ describe('RobotConnectorClient', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RobotConnectorClient,
+        SystemConfigService,
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useValue: repositoryMockFactory,
+        },
         {
           provide: ConfigService,
           useValue: {
@@ -29,7 +40,7 @@ describe('RobotConnectorClient', () => {
           provide: HttpService,
           useValue: {
             get: jest.fn(() => ({
-              pipe: jest.fn()
+              pipe: jest.fn(),
             })),
             post: jest.fn(),
           },
@@ -38,10 +49,15 @@ describe('RobotConnectorClient', () => {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
         },
+        {
+          provide: MAPPER_MODULE_PROVIDER,
+          useValue: mapperMockFactory,
+        },
       ],
     }).compile();
 
-    robotConnectorClient = module.get<RobotConnectorClient>(RobotConnectorClient);
+    robotConnectorClient =
+      module.get<RobotConnectorClient>(RobotConnectorClient);
     httpService = module.get<HttpService>(HttpService);
   });
 

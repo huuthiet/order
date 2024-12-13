@@ -16,6 +16,8 @@ import { Order } from 'src/order/order.entity';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PdfService } from 'src/pdf/pdf.service';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -30,6 +32,7 @@ describe('PaymentService', () => {
         ACBConnectorClient,
         HttpService,
         PdfService,
+        SystemConfigService,
         {
           provide: ConfigService,
           useValue: {
@@ -56,6 +59,10 @@ describe('PaymentService', () => {
         },
         {
           provide: getRepositoryToken(Order),
+          useValue: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
           useValue: repositoryMockFactory,
         },
         {

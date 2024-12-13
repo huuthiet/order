@@ -28,15 +28,16 @@ export const ROUTE = {
   STAFF_BANK_CONFIG: '/bank-config',
 
   // Admin Routes
-  ADMIN_DASHBOARD: '/admin/dashboard',
-  ADMIN_MENU_MANAGEMENT: '/admin/menu-management',
-  // ADMIN_ADD_PRODUCT: '/admin/add-product',
-  ADMIN_PRODUCT_DETAIL: '/admin/product',
-  ADMIN_TABLE_MANAGEMENT: '/admin/table-management',
-  ADMIN_ORDER_HISTORY: '/admin/order-history',
-  ADMIN_WALLET_APPROVALS: '/admin/wallet-approvals',
-  ADMIN_USER_MANAGEMENT: '/admin/user-management',
-  ADMIN_FINANCIAL_REPORT: '/admin/financial-report',
+  ADMIN_DASHBOARD: '/dashboard',
+  ADMIN_MENU_MANAGEMENT: '/menu-management',
+  // ADMIN_ADD_PRODUCT: '/add-product',
+  ADMIN_PRODUCT_DETAIL: '/product',
+  ADMIN_TABLE_MANAGEMENT: '/table-management',
+  ADMIN_ORDER_HISTORY: '/order-history',
+  ADMIN_WALLET_APPROVALS: '/wallet-approvals',
+  ADMIN_USER_MANAGEMENT: '/user-management',
+  ADMIN_FINANCIAL_REPORT: '/financial-report',
+  ADMIN_CONFIG: '/config',
 
   // General Routes
   ABOUT: '/about',

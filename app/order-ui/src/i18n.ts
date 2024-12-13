@@ -16,6 +16,7 @@ import enBank from '@/locales/en/bank.json'
 import enRoute from '@/locales/en/route.json'
 import enProgress from '@/locales/en/progress.json'
 import enUser from '@/locales/en/user.json'
+import enConfig from '@/locales/en/config.json'
 
 import viToast from '@/locales/vi/toast.json'
 import viAuth from '@/locales/vi/auth.json'
@@ -31,6 +32,7 @@ import viBank from '@/locales/vi/bank.json'
 import viRoute from '@/locales/vi/route.json'
 import viProgress from '@/locales/vi/progress.json'
 import viUser from '@/locales/vi/user.json'
+import viConfig from '@/locales/vi/config.json'
 
 i18n
   .use(LanguageDetector) // Tự động phát hiện ngôn ngữ
@@ -52,6 +54,7 @@ i18n
         route: enRoute,
         progress: enProgress,
         user: enUser,
+        config: enConfig,
       },
       vi: {
         toast: viToast,
@@ -68,6 +71,7 @@ i18n
         route: viRoute,
         progress: viProgress,
         user: viUser,
+        config: viConfig,
       },
     },
     lng: window.localStorage.getItem('i18nextLng') || 'vi',
@@ -91,6 +95,7 @@ i18n
       'route',
       'progress',
       'user',
+      'config',
     ], //Dùng để phân biệt các phần khác nhau của app
     defaultNS: 'auth', //Ngôn ngữ mặc định
   })

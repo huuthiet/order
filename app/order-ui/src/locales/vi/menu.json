@@ -11,6 +11,11 @@
     "note": "Ghi chú",
     "enterNote": "Nhập ghi chú",
 
+    "tableNote": "Ghi chú bàn",
+    "selectReservedTableWarning": "Bàn ",
+    "selectReservedTableWarning2": " đã được đặt, bạn có chắc vẫn muốn chọn bàn này không?",
+    "confirmSelectTable": "Tôi đã hiểu, xác nhận chọn",
+
     "order": "Đơn hàng",
     "orderDescription": "Vui lòng kiểm tra thông tin đơn hàng",
     "dineIn": "Tại quán",
@@ -30,7 +35,7 @@
     "totalItems": "Tổng số món",
     "dayIndex": "Ngày thứ",
     "noTemplate": "Không phải mẫu thực đơn",
-    "stock": "Tồn kho",
+    "amount": "Số lượng: ",
     "noDescription": "Không có mô tả",
 
     "create": "Tạo thực đơn",
@@ -98,7 +103,7 @@
     "bankTransfer": "Chuyển khoản ngân hàng",
     "pending": "Đang chuẩn bị",
     "completed": "Đã hoàn tất",
-    "running": "Đang giao hàng",
+    "shipping": "Đang giao hàng",
     "failed": "Thất bại",
 
     "deleteItem": "Xóa sản phẩm",

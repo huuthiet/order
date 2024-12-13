@@ -16,7 +16,9 @@ import { OrderStatus } from "src/order/order.contants";
 describe('TrackingScheduler', () => {
   let trackingScheduler: TrackingScheduler;
   let trackingRepositoryMock: MockType<Repository<Tracking>>;
+  let trackingOrderItemRepositoryMock: MockType<Repository<TrackingOrderItem>>;
   let orderRepositoryMock: MockType<Repository<Order>>;
+  let orderItemRepositoryMock: MockType<Repository<OrderItem>>;
   let schedulerRegistryMock: SchedulerRegistry;
   let robotConnectorClientMock: RobotConnectorClient;
 
@@ -48,6 +50,14 @@ describe('TrackingScheduler', () => {
           useFactory: repositoryMockFactory,
         },
         {
+          provide: getRepositoryToken(TrackingOrderItem),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(OrderItem),
+          useFactory: repositoryMockFactory,
+        },
+        {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
         },
@@ -57,6 +67,8 @@ describe('TrackingScheduler', () => {
     trackingScheduler = module.get<TrackingScheduler>(TrackingScheduler);
     orderRepositoryMock = module.get(getRepositoryToken(Order));
     trackingRepositoryMock = module.get(getRepositoryToken(Tracking));
+    orderItemRepositoryMock = module.get(getRepositoryToken(OrderItem));
+    trackingOrderItemRepositoryMock = module.get(getRepositoryToken(TrackingOrderItem));
     schedulerRegistryMock = module.get<SchedulerRegistry>(SchedulerRegistry);
     robotConnectorClientMock = module.get<RobotConnectorClient>(RobotConnectorClient);
   });
@@ -149,8 +161,7 @@ describe('TrackingScheduler', () => {
         status: OrderStatus.SHIPPING
       } as Order;
 
-      (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
-      (orderRepositoryMock.findOne as jest.Mock).mockImplementationOnce(() => order);
+      jest.spyOn(trackingScheduler, "getAllOrdersByTrackingId").mockResolvedValue(orders);
       const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
 
       expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
@@ -195,8 +206,7 @@ describe('TrackingScheduler', () => {
         status: OrderStatus.COMPLETED
       } as Order;
 
-      (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
-      (orderRepositoryMock.findOne as jest.Mock).mockImplementationOnce(() => order);
+      jest.spyOn(trackingScheduler, "getAllOrdersByTrackingId").mockResolvedValue(orders);
       const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
 
       expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);

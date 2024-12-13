@@ -1,41 +1,46 @@
-import { MockType, repositoryMockFactory } from "src/test-utils/repository-mock.factory";
-import { TrackingService } from "./tracking.service";
-import { DataSource, Repository } from "typeorm";
-import { Tracking } from "./tracking.entity";
-import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
-import { Order } from "src/order/order.entity";
-import { OrderItem } from "src/order-item/order-item.entity";
-import { Table } from "src/table/table.entity";
-import { Workflow } from "src/workflow/workflow.entity";
-import { Mapper } from "@automapper/core";
-import { RobotConnectorClient } from "src/robot-connector/robot-connector.client";
-import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { Test, TestingModule } from "@nestjs/testing";
-import { MAPPER_MODULE_PROVIDER } from "src/app/app.constants";
-import { mapperMockFactory } from "src/test-utils/mapper-mock.factory";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { SchedulerRegistry } from "@nestjs/schedule";
-import { TrackingScheduler } from "./tracking.scheduler";
-import { CreateTrackingOrderItemRequestDto, CreateTrackingOrderItemWithQuantityAndOrderItemEntity } from "src/tracking-order-item/tracking-order-item.dto";
-import { Variant } from "src/variant/variant.entity";
-import { TrackingType, WorkflowStatus } from "./tracking.constants";
-import { Branch } from "src/branch/branch.entity";
-import { TrackingException } from "./tracking.exception";
-import { TrackingValidation } from "./tracking.validation";
-import { OrderItemException } from "src/order-item/order-item.exception";
-import { TableException } from "src/table/table.exception";
-import { RobotConnectorException } from "src/robot-connector/robot-connector.exception";
-import { RobotConnectorValidation } from "src/robot-connector/robot-connector.validation";
-import { QRLocationResponseDto, RobotResponseDto, WorkflowExecutionResponseDto } from "src/robot-connector/robot-connector.dto";
-import { RobotStatus } from "src/robot-connector/robot-connector.constants";
-import { WorkflowException } from "src/workflow/workflow.exception";
-import { CreateTrackingRequestDto } from "./tracking.dto";
-import { OrderItemValidation } from "src/order-item/order-item.validation";
-import { OrderType } from "src/order/order.contants";
-import { TableValidation } from "src/table/table.validation";
-import { WorkflowValidation } from "src/workflow/workflow.validation";
+import {
+  MockType,
+  repositoryMockFactory,
+} from 'src/test-utils/repository-mock.factory';
+import { TrackingService } from './tracking.service';
+import { DataSource, Repository } from 'typeorm';
+import { Tracking } from './tracking.entity';
+import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
+import { Order } from 'src/order/order.entity';
+import { OrderItem } from 'src/order-item/order-item.entity';
+import { Table } from 'src/table/table.entity';
+import { Workflow } from 'src/workflow/workflow.entity';
+import { Mapper } from '@automapper/core';
+import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { TrackingScheduler } from './tracking.scheduler';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
+import { TrackingException } from './tracking.exception';
+import { CreateTrackingOrderItemRequestDto, CreateTrackingOrderItemWithQuantityAndOrderItemEntity } from 'src/tracking-order-item/tracking-order-item.dto';
+import { Variant } from 'src/variant/variant.entity';
+import { TrackingType, WorkflowStatus } from './tracking.constants';
+import { Branch } from 'src/branch/branch.entity';
+import { TableException } from 'src/table/table.exception';
+import { RobotConnectorException } from 'src/robot-connector/robot-connector.exception';
+import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.validation';
+import { QRLocationResponseDto, RobotResponseDto, WorkflowExecutionResponseDto } from 'src/robot-connector/robot-connector.dto';
+import { TrackingValidation } from './tracking.validation';
+import { RobotStatus } from 'src/robot-connector/robot-connector.constants';
+import { WorkflowException } from 'src/workflow/workflow.exception';
+import { CreateTrackingRequestDto } from './tracking.dto';
+import { OrderItemException } from 'src/order-item/order-item.exception';
+import { OrderItemValidation } from 'src/order-item/order-item.validation';
+import { OrderType } from 'src/order/order.contants';
+import { TableValidation } from 'src/table/table.validation';
+import { WorkflowValidation } from 'src/workflow/workflow.validation';
 
 describe('TrackingService', () => {
   let service: TrackingService;
@@ -49,7 +54,6 @@ describe('TrackingService', () => {
   let schedulerRegistryMock: SchedulerRegistry;
   let robotConnectorClientMock: RobotConnectorClient;
   let trackingSchedulerMock: TrackingScheduler;
-
 
   const mockQueryRunner = {
     connect: jest.fn(),
@@ -74,6 +78,7 @@ describe('TrackingService', () => {
         SchedulerRegistry,
         TrackingScheduler,
         HttpService,
+        SystemConfigService,
         {
           provide: ConfigService,
           useValue: {
@@ -92,24 +97,28 @@ describe('TrackingService', () => {
             post: jest.fn(),
           },
         },
-        { 
-          provide: TrackingScheduler, 
+        {
+          provide: TrackingScheduler,
           useValue: {
             startUpdateStatusTracking: jest.fn(),
             updateStatusOrder: jest.fn(),
-          } 
+          },
         },
-        { 
-          provide: DataSource, 
-          useValue: mockDataSource 
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
-        { 
-          provide: RobotConnectorClient, 
+        {
+          provide: RobotConnectorClient,
           useValue: {
             getRobotById: jest.fn(),
             runWorkflow: jest.fn(),
             getQRLocationById: jest.fn(),
-          } 
+          },
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useFactory: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(Tracking),
@@ -157,7 +166,8 @@ describe('TrackingService', () => {
     workflowRepositoryMock = module.get(getRepositoryToken(Workflow));
     mapperMock = module.get(MAPPER_MODULE_PROVIDER);
     schedulerRegistryMock = module.get<SchedulerRegistry>(SchedulerRegistry);
-    robotConnectorClientMock = module.get<RobotConnectorClient>(RobotConnectorClient);
+    robotConnectorClientMock =
+      module.get<RobotConnectorClient>(RobotConnectorClient);
     trackingSchedulerMock = module.get<TrackingScheduler>(TrackingScheduler);
   });
 
@@ -1149,7 +1159,6 @@ describe('TrackingService', () => {
     });
   });
 
-  describe()
 
   // describe('validateOrderItemInOneOrder - check order items in a order or not', () => {
   //   beforeEach(() => {
@@ -1162,7 +1171,7 @@ describe('TrackingService', () => {
   //       quantity: 0
   //     }  as CreateTrackingOrderItemRequestDto;
   //     const mockInput = [createTrackingOrderItem];
-      
+
   //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue([]);
   //     await expect(service.validateOrderItemInOneOrder(mockInput)).rejects.toThrow(OrderItemException);
   //   });
@@ -1192,7 +1201,7 @@ describe('TrackingService', () => {
   //       orderItems: [],
   //     } as Order;
   //     const orders  = [order1, order2];
-      
+
   //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
   //     await expect(service.validateOrderItemInOneOrder(mockInput)).rejects.toThrow(OrderItemException);
   //   });
@@ -1211,7 +1220,7 @@ describe('TrackingService', () => {
   //       orderItems: [],
   //     } as Order;
   //     const orders  = [order];
-      
+
   //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
   //     await expect(service.validateOrderItemInOneOrder(mockInput)).rejects.toThrow(OrderItemException);
   //   });
@@ -1235,7 +1244,7 @@ describe('TrackingService', () => {
   //       orderItems: [],
   //     } as Order;
   //     const orders  = [order];
-      
+
   //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
   //     expect(await service.validateOrderItemInOneOrder(mockInput)).toEqual(order);
   //   });

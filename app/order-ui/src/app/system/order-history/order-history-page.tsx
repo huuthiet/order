@@ -13,7 +13,7 @@ export default function OrderHistoryPage() {
 
     const { data, isLoading } = useOrders({
         page: pagination.pageIndex,
-        pageSize: pagination.pageSize,
+        size: pagination.pageSize,
         ownerSlug: userInfo?.slug,
         order: 'DESC',
         branchSlug: userInfo?.branch.slug,

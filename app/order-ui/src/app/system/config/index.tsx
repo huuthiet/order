@@ -1,0 +1,1 @@
+export { default as ConfigPage } from './config-page'

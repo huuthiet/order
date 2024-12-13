@@ -10,6 +10,13 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { SystemConfig } from 'src/system-config/system-config.entity';
+import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 
 describe('TableController', () => {
   let controller: TableController;
@@ -20,6 +27,7 @@ describe('TableController', () => {
       controllers: [TableController],
       providers: [
         TableService,
+        SystemConfigService,
         {
           provide: TableService,
           useValue: {
@@ -29,6 +37,18 @@ describe('TableController', () => {
             update: jest.fn(),
             remove: jest.fn(),
           },
+        },
+        {
+          provide: MAPPER_MODULE_PROVIDER,
+          useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useFactory: repositoryMockFactory,
         },
       ],
     }).compile();

@@ -11,18 +11,20 @@ import { Table } from 'src/table/table.entity';
 import { RobotConnectorModule } from 'src/robot-connector/robot-connector.module';
 import { Workflow } from 'src/workflow/workflow.entity';
 import { TrackingScheduler } from './tracking.scheduler';
+import { SystemConfigModule } from 'src/system-config/system-config.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-    Tracking, 
-    TrackingOrderItem, 
-    OrderItem,
-    Order,
-    Table,
-    Workflow
+      Tracking,
+      TrackingOrderItem,
+      OrderItem,
+      Order,
+      Table,
+      Workflow,
     ]),
-    RobotConnectorModule
+    RobotConnectorModule,
+    SystemConfigModule,
   ],
   controllers: [TrackingController],
   providers: [TrackingService, TrackingProfile, TrackingScheduler],

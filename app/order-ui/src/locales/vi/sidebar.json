@@ -10,7 +10,8 @@
     "dishManagement": "Quản lý món",
     "userManagement": "Quản lý người dùng",
     "logManagement": "Quản lý log",
-    "bankConfig": "Cấu hình ngân hàng"
+    "bankConfig": "Cấu hình ngân hàng",
+    "config": "Cấu hình"
   },
   "header": {
     "search": "Tìm kiếm",

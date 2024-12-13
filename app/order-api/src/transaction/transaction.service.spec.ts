@@ -17,6 +17,8 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ACBConnectorConfig } from 'src/acb-connector/acb-connector.entity';
 import { PdfService } from 'src/pdf/pdf.service';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
 
 describe('TransactionService', () => {
   let service: TransactionService;
@@ -32,6 +34,7 @@ describe('TransactionService', () => {
         ACBConnectorClient,
         HttpService,
         PdfService,
+        SystemConfigService,
         {
           provide: ConfigService,
           useValue: {
@@ -52,6 +55,10 @@ describe('TransactionService', () => {
           useValue: {
             emit: jest.fn(), // Mock the emit method
           },
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useValue: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(Payment),

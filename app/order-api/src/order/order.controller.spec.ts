@@ -1,10 +1,24 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { OrderController } from "./order.controller";
-import { OrderService } from "./order.service";
-import { ApprovalUserResponseDto, CreateOrderRequestDto, GetOrderRequestDto, OrderPaymentResponseDto, OrderResponseDto, OwnerResponseDto } from "./order.dto";
-import { OrderException } from "./order.exception";
-import { BadRequestException } from "@nestjs/common";
-import { InvoiceResponseDto } from "src/invoice/invoice.dto";
+import { Test, TestingModule } from '@nestjs/testing';
+import { OrderController } from './order.controller';
+import { OrderService } from './order.service';
+import {
+  ApprovalUserResponseDto,
+  CreateOrderRequestDto,
+  GetOrderRequestDto,
+  OrderPaymentResponseDto,
+  OrderResponseDto,
+  OwnerResponseDto,
+} from './order.dto';
+import { OrderException } from './order.exception';
+import { BadRequestException } from '@nestjs/common';
+import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { SystemConfig } from 'src/system-config/system-config.entity';
+import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 describe('SizeController', () => {
   let controller: OrderController;
@@ -15,15 +29,28 @@ describe('SizeController', () => {
       controllers: [OrderController],
       providers: [
         OrderService,
+        SystemConfigService,
         {
           provide: OrderService,
           useValue: {
             createOrder: jest.fn(),
             getAllOrders: jest.fn(),
             getOrderBySlug: jest.fn(),
-          }
-        }
-      ]
+          },
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: MAPPER_MODULE_PROVIDER,
+          useFactory: mapperMockFactory,
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
+        },
+      ],
     }).compile();
 
     controller = module.get<OrderController>(OrderController);
@@ -36,49 +63,51 @@ describe('SizeController', () => {
 
   describe('Create order', () => {
     beforeEach(() => {
-      jest.clearAllMocks()
+      jest.clearAllMocks();
     });
 
     it('should throw error if service.createOrder throws', async () => {
       const mockInput = {
-        type: "",
-        table: "",
-        branch: "",
-        owner: "",
-        orderItems: []
-      }  as CreateOrderRequestDto;
+        type: '',
+        table: '',
+        branch: '',
+        owner: '',
+        orderItems: [],
+      } as CreateOrderRequestDto;
       (service.createOrder as jest.Mock).mockRejectedValue(
-        new BadRequestException()
+        new BadRequestException(),
       );
       await expect(controller.createOrder(mockInput)).rejects.toThrow(
-        BadRequestException
+        BadRequestException,
       );
     });
 
     it('should return result when create success', async () => {
       const mockInput = {
-        type: "",
-        table: "",
-        branch: "",
-        owner: "",
-        orderItems: []
+        type: '',
+        table: '',
+        branch: '',
+        owner: '',
+        orderItems: [],
       } as CreateOrderRequestDto;
 
       const mockOutput = {
         subtotal: 0,
-        status: "",
-        type: "",
-        tableName: "",
-        owner: new OwnerResponseDto,
-        approvalBy: new ApprovalUserResponseDto,
+        status: '',
+        type: '',
+        tableName: '',
+        owner: new OwnerResponseDto(),
+        approvalBy: new ApprovalUserResponseDto(),
         orderItems: [],
-        payment: new OrderPaymentResponseDto,
-        createdAt: "",
-        slug: ""
+        payment: new OrderPaymentResponseDto(),
+        createdAt: '',
+        slug: '',
       } as OrderResponseDto;
 
       (service.createOrder as jest.Mock).mockResolvedValue(mockOutput);
-      expect((await controller.createOrder(mockInput)).result).toEqual(mockOutput);
+      expect((await controller.createOrder(mockInput)).result).toEqual(
+        mockOutput,
+      );
     });
   });
 
@@ -93,24 +122,26 @@ describe('SizeController', () => {
         owner: '',
         page: 0,
         size: 0,
-        status: []
+        status: [],
       } as GetOrderRequestDto;
       const order = {
         subtotal: 0,
-        status: "",
-        type: "",
-        tableName: "",
-        owner: new OwnerResponseDto,
-        approvalBy: new ApprovalUserResponseDto,
+        status: '',
+        type: '',
+        tableName: '',
+        owner: new OwnerResponseDto(),
+        approvalBy: new ApprovalUserResponseDto(),
         orderItems: [],
-        payment: new OrderPaymentResponseDto,
-        createdAt: "",
-        slug: "",
-        invoice: new InvoiceResponseDto
+        payment: new OrderPaymentResponseDto(),
+        createdAt: '',
+        slug: '',
+        invoice: new InvoiceResponseDto(),
       } as OrderResponseDto;
       const mockOutput = [order];
       (service.getAllOrders as jest.Mock).mockResolvedValue(mockOutput);
-      expect((await controller.getAllOrders(mockInput)).result).toEqual(mockOutput);
+      expect((await controller.getAllOrders(mockInput)).result).toEqual(
+        mockOutput,
+      );
     });
   });
 
@@ -119,9 +150,11 @@ describe('SizeController', () => {
       const slug: string = '';
 
       (service.getOrderBySlug as jest.Mock).mockRejectedValue(
-        new BadRequestException()
+        new BadRequestException(),
       );
-      await expect(controller.getOrder(slug)).rejects.toThrow(BadRequestException);
+      await expect(controller.getOrder(slug)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should return order data when get success', async () => {
@@ -129,15 +162,15 @@ describe('SizeController', () => {
 
       const mockOutput = {
         subtotal: 0,
-        status: "",
-        type: "",
-        tableName: "",
-        owner: new OwnerResponseDto,
-        approvalBy: new ApprovalUserResponseDto,
+        status: '',
+        type: '',
+        tableName: '',
+        owner: new OwnerResponseDto(),
+        approvalBy: new ApprovalUserResponseDto(),
         orderItems: [],
-        payment: new OrderPaymentResponseDto,
-        createdAt: "",
-        slug: ""
+        payment: new OrderPaymentResponseDto(),
+        createdAt: '',
+        slug: '',
       } as OrderResponseDto;
 
       (service.getOrderBySlug as jest.Mock).mockResolvedValue(mockOutput);
