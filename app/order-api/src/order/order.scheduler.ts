@@ -38,6 +38,7 @@ export class OrderScheduler {
             branch: {
               id: item.branch?.id,
             },
+            name: item.tableName,
           },
         });
         if (table) {
