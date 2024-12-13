@@ -1,12 +1,25 @@
-import { createMap, extend, forMember, Mapper, mapWith } from "@automapper/core";
-import { AutomapperProfile, InjectMapper } from "@automapper/nestjs";
-import { Injectable } from "@nestjs/common";
-import { Order } from "./order.entity";
-import { ApprovalUserResponseDto, CreateOrderRequestDto, OrderResponseDto, OwnerResponseDto } from "./order.dto";
-import { baseMapper } from "src/app/base.mapper";
-import { User } from "src/user/user.entity";
-import { OrderItemResponseDto } from "src/order-item/order-item.dto";
-import { OrderItem } from "src/order-item/order-item.entity";
+import {
+  createMap,
+  extend,
+  forMember,
+  Mapper,
+  mapWith,
+} from '@automapper/core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
+import { Injectable } from '@nestjs/common';
+import { Order } from './order.entity';
+import {
+  ApprovalUserResponseDto,
+  CreateOrderRequestDto,
+  OrderResponseDto,
+  OrderTableResponseDto,
+  OwnerResponseDto,
+} from './order.dto';
+import { baseMapper } from 'src/app/base.mapper';
+import { User } from 'src/user/user.entity';
+import { OrderItemResponseDto } from 'src/order-item/order-item.dto';
+import { OrderItem } from 'src/order-item/order-item.entity';
+import { Table } from 'src/table/table.entity';
 
 @Injectable()
 export class OrderProfile extends AutomapperProfile {
@@ -22,27 +35,29 @@ export class OrderProfile extends AutomapperProfile {
         OrderResponseDto,
         forMember(
           (destination) => destination.owner,
-          mapWith(OwnerResponseDto, User, (source) => source.owner)
+          mapWith(OwnerResponseDto, User, (source) => source.owner),
         ),
         forMember(
           (destination) => destination.approvalBy,
-          mapWith(ApprovalUserResponseDto, User, (source) => source.approvalBy)
+          mapWith(ApprovalUserResponseDto, User, (source) => source.approvalBy),
         ),
         forMember(
           (destination) => destination.orderItems,
           mapWith(
             OrderItemResponseDto,
             OrderItem,
-            (source) => source.orderItems
-          )
+            (source) => source.orderItems,
+          ),
         ),
         extend(baseMapper(mapper)),
       );
 
+      createMap(mapper, User, OwnerResponseDto, extend(baseMapper(mapper)));
+
       createMap(
         mapper,
-        User,
-        OwnerResponseDto,
+        Table,
+        OrderTableResponseDto,
         extend(baseMapper(mapper)),
       );
 
@@ -53,11 +68,7 @@ export class OrderProfile extends AutomapperProfile {
         extend(baseMapper(mapper)),
       );
 
-      createMap(
-        mapper,
-        CreateOrderRequestDto,
-        Order,
-      );
-    }
-  }  
+      createMap(mapper, CreateOrderRequestDto, Order);
+    };
+  }
 }

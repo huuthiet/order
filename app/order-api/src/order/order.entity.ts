@@ -73,5 +73,6 @@ export class Order extends Base {
 
   @ManyToOne(() => Table, (table) => table.orders, { nullable: true })
   @JoinColumn({ name: 'table_column' })
+  @AutoMap()
   table: Table;
 }

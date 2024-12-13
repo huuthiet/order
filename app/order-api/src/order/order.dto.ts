@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -218,4 +219,17 @@ export class GetOrderRequestDto {
     typeof value === 'string' ? value.split(',') : [value],
   )
   status: string[] = [];
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'Enable paging',
+    required: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === undefined || value === null) return true; // Default true
+    return value === 'true'; // Transform 'true' to `true` and others to `false`
+  })
+  hasPaging?: boolean;
 }
