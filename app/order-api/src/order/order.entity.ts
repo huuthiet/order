@@ -30,10 +30,6 @@ export class Order extends Base {
   @Column({ name: 'type_column' })
   type: string;
 
-  @AutoMap()
-  @Column({ name: 'table_name_column', nullable: true })
-  tableName?: string;
-
   // many to one with branch
   @ManyToOne(() => Branch, (branch) => branch.orders)
   @JoinColumn({ name: 'branch_column' })

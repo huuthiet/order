@@ -61,7 +61,7 @@ export class ACBConnectorClient implements OnModuleInit {
 
   async getAcbApiUrl() {
     const context = `${ACBConnectorClient.name}.${this.getAcbApiUrl.name}`;
-    if (!this.authAcbApiUrl) {
+    if (!this.acbApiUrl) {
       this.logger.log(`ACB API URL is not loaded`, context);
       this.setAcbApiUrl();
     }
@@ -122,7 +122,7 @@ export class ACBConnectorClient implements OnModuleInit {
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(
-              `Init QR Code from ACB API failed: ${JSON.stringify(error.response?.data)}`,
+              `Init QR Code from ACB API failed: ${JSON.stringify(error)}`,
               context,
             );
             throw new BadRequestException(error.message);

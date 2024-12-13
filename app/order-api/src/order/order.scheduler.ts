@@ -18,8 +18,8 @@ export class OrderScheduler {
   ) {}
 
   @Cron(CronExpression.EVERY_5_MINUTES)
-  async migrateTableNameToTable() {
-    const context = `${OrderScheduler.name}.${this.migrateTableNameToTable.name}`;
+  async updateOrdertable() {
+    const context = `${OrderScheduler.name}.${this.updateOrdertable.name}`;
     this.logger.log(`Migrating tablename to table...`, context);
 
     const orders = await this.orderRepository
@@ -38,7 +38,6 @@ export class OrderScheduler {
             branch: {
               id: item.branch?.id,
             },
-            name: item.tableName,
           },
         });
         if (table) {
