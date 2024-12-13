@@ -2,6 +2,18 @@ volumes:
   mysql:
 
 services:
+  redis:
+    image: "bitnami/redis:latest"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/bitnami/redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "secure_password", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   order-api:
     build:
       context: ../../app/order-api
@@ -43,6 +55,7 @@ services:
       # Redis queue
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
 
       TZ: Asia/Ho_Chi_Minh
     depends_on:

@@ -62,6 +62,7 @@ services:
       # Redis queue
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
 
       TZ: Asia/Ho_Chi_Minh
     depends_on:

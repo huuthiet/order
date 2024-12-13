@@ -1,5 +1,5 @@
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { QueueRegisterKey } from 'src/app/app.constants';
@@ -15,7 +15,6 @@ export class MailConsumer extends WorkerHost {
     switch (job.name) {
       case 'send-mail':
         const result = await this.mailerService.sendMail(job.data);
-        console.log({ result });
         return result;
     }
   }

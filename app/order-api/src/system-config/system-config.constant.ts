@@ -3,4 +3,5 @@ export enum SystemConfigKey {
   ROBOT_ID = 'ROBOT_ID',
   ROBOT_API_URL = 'ROBOT_API_URL',
   ACB_API_URL = 'ACB_API_URL',
+  AUTH_ACB_API_URL = 'AUTH_ACB_API_URL',
 }
