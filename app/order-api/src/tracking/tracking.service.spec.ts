@@ -24,14 +24,21 @@ import { TrackingScheduler } from './tracking.scheduler';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfig } from 'src/system-config/system-config.entity';
 import { TrackingException } from './tracking.exception';
-import { CreateTrackingOrderItemRequestDto, CreateTrackingOrderItemWithQuantityAndOrderItemEntity } from 'src/tracking-order-item/tracking-order-item.dto';
+import {
+  CreateTrackingOrderItemRequestDto,
+  CreateTrackingOrderItemWithQuantityAndOrderItemEntity,
+} from 'src/tracking-order-item/tracking-order-item.dto';
 import { Variant } from 'src/variant/variant.entity';
 import { TrackingType, WorkflowStatus } from './tracking.constants';
 import { Branch } from 'src/branch/branch.entity';
 import { TableException } from 'src/table/table.exception';
 import { RobotConnectorException } from 'src/robot-connector/robot-connector.exception';
 import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.validation';
-import { QRLocationResponseDto, RobotResponseDto, WorkflowExecutionResponseDto } from 'src/robot-connector/robot-connector.dto';
+import {
+  QRLocationResponseDto,
+  RobotResponseDto,
+  WorkflowExecutionResponseDto,
+} from 'src/robot-connector/robot-connector.dto';
 import { TrackingValidation } from './tracking.validation';
 import { RobotStatus } from 'src/robot-connector/robot-connector.constants';
 import { WorkflowException } from 'src/workflow/workflow.exception';
@@ -178,13 +185,13 @@ describe('TrackingService', () => {
   describe('checkCurrentShipment - check any shipments are running or pending', () => {
     it('should throw exception when there are shipments running or pending', async () => {
       const tracking = {
-        workflowExecution: "",
-        status: "",
+        workflowExecution: '',
+        status: '',
       } as Tracking;
       const trackings = [tracking];
       (trackingRepositoryMock.find as jest.Mock).mockResolvedValue(trackings);
       await expect(service.checkCurrentShipment()).rejects.toThrow(
-        TrackingException
+        TrackingException,
       );
     });
     it('should no throw exception when there are no shipments running or pending', async () => {
@@ -201,19 +208,21 @@ describe('TrackingService', () => {
 
     it('should return invalid result when order item not found', async () => {
       const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-        orderItem: "mock-order-item-slug",
-        quantity: 1
+        orderItem: 'mock-order-item-slug',
+        quantity: 1,
       };
       const mockInput = [createTrackingOrderItem, createTrackingOrderItem];
 
       (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.validateDefinedAndQuantityOrderItem(mockInput)).rejects.toThrow(OrderItemException);
+      await expect(
+        service.validateDefinedAndQuantityOrderItem(mockInput),
+      ).rejects.toThrow(OrderItemException);
     });
 
     it('should return invalid result when have not order relate to order item', async () => {
       const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-        orderItem: "mock-order-item-slug",
-        quantity: 1
+        orderItem: 'mock-order-item-slug',
+        quantity: 1,
       };
       const mockInput = [createTrackingOrderItem];
       const orderItem = {
@@ -222,30 +231,34 @@ describe('TrackingService', () => {
         order: null,
         variant: new Variant(),
         trackingOrderItems: [],
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as OrderItem;
 
-      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(orderItem);
-      await expect(service.validateDefinedAndQuantityOrderItem(mockInput)).rejects.toThrow(OrderItemException);
+      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        orderItem,
+      );
+      await expect(
+        service.validateDefinedAndQuantityOrderItem(mockInput),
+      ).rejects.toThrow(OrderItemException);
     });
 
     it('should return invalid result when order item have not any tracking order item, but request quantity is greater quantity of order item', async () => {
       const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-        orderItem: "mock-order-item-slug",
-        quantity: 5
+        orderItem: 'mock-order-item-slug',
+        quantity: 5,
       };
       const mockInput = [createTrackingOrderItem];
       const order: Order = {
         subtotal: 0,
-        status: "",
-        type: "",
-        id: "",
-        slug: "",
+        status: '',
+        type: '',
+        id: '',
+        slug: '',
         createdAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
       } as Order;
       const orderItem = {
         quantity: 2,
@@ -253,29 +266,33 @@ describe('TrackingService', () => {
         order,
         variant: new Variant(),
         trackingOrderItems: [],
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as OrderItem;
 
-      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(orderItem);
-       await expect(service.validateDefinedAndQuantityOrderItem(mockInput)).rejects.toThrow(OrderItemException);
+      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        orderItem,
+      );
+      await expect(
+        service.validateDefinedAndQuantityOrderItem(mockInput),
+      ).rejects.toThrow(OrderItemException);
     });
 
     it('should return invalid result when order item have any tracking order item, but total request quantity is greater quantity of order item', async () => {
       const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-        orderItem: "mock-order-item-slug",
-        quantity: 3
+        orderItem: 'mock-order-item-slug',
+        quantity: 3,
       };
       const mockInput = [createTrackingOrderItem];
       const order = {
         subtotal: 0,
-        status: "",
-        type: "",
+        status: '',
+        type: '',
       } as Order;
-      const tracking  = {
-        workflowExecution: "",
+      const tracking = {
+        workflowExecution: '',
         status: WorkflowStatus.COMPLETED,
       } as Tracking;
       const trackingOrderItem = {
@@ -288,23 +305,27 @@ describe('TrackingService', () => {
         trackingOrderItems: [trackingOrderItem, trackingOrderItem], // (2 + 2 + 3) > 5
       } as OrderItem;
 
-      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(orderItem);
-      await expect(service.validateDefinedAndQuantityOrderItem(mockInput)).rejects.toThrow(OrderItemException);
+      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        orderItem,
+      );
+      await expect(
+        service.validateDefinedAndQuantityOrderItem(mockInput),
+      ).rejects.toThrow(OrderItemException);
     });
 
     it('should return valid result when order item have any tracking order item', async () => {
       const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-        orderItem: "mock-order-item-slug",
-        quantity: 1
+        orderItem: 'mock-order-item-slug',
+        quantity: 1,
       };
       const mockInput = [createTrackingOrderItem];
       const order = {
         subtotal: 0,
-        status: "",
-        type: "",
+        status: '',
+        type: '',
       } as Order;
-      const tracking  = {
-        workflowExecution: "",
+      const tracking = {
+        workflowExecution: '',
         status: WorkflowStatus.COMPLETED,
       } as Tracking;
       const trackingOrderItem = {
@@ -316,32 +337,40 @@ describe('TrackingService', () => {
         order,
         trackingOrderItems: [trackingOrderItem, trackingOrderItem], // (2 + 2 + 1) = 5
       } as OrderItem;
-      const mockOutput = [{quantity: 1, orderItem}];
+      const mockOutput = [{ quantity: 1, orderItem }];
 
-      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(orderItem);
-      expect(await service.validateDefinedAndQuantityOrderItem(mockInput)).toEqual(mockOutput);
+      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        orderItem,
+      );
+      expect(
+        await service.validateDefinedAndQuantityOrderItem(mockInput),
+      ).toEqual(mockOutput);
     });
 
     it('should return valid result when order item have not any tracking order item', async () => {
       const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-        orderItem: "mock-order-item-slug",
-        quantity: 1
+        orderItem: 'mock-order-item-slug',
+        quantity: 1,
       };
       const mockInput = [createTrackingOrderItem];
       const order = {
         subtotal: 0,
-        status: "",
-        type: "",
+        status: '',
+        type: '',
       } as Order;
       const orderItem = {
         quantity: 5,
         order,
         trackingOrderItems: [], // 1 < 5
       } as OrderItem;
-      const mockOutput = [{quantity: 1, orderItem}];
+      const mockOutput = [{ quantity: 1, orderItem }];
 
-      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(orderItem);
-      expect(await service.validateDefinedAndQuantityOrderItem(mockInput)).toEqual(mockOutput);
+      (orderItemRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        orderItem,
+      );
+      expect(
+        await service.validateDefinedAndQuantityOrderItem(mockInput),
+      ).toEqual(mockOutput);
     });
   });
 
@@ -353,112 +382,120 @@ describe('TrackingService', () => {
     it('should return null when table not found in this branch', async () => {
       const branch = {
         id: 'mock-branch-id',
-        name: "",
-        address: "",
+        name: '',
+        address: '',
       } as Branch;
       const mockInput = {
         subtotal: 0,
-        status: "",
-        type: "",
-        tableName: 'mock-table-name',
+        status: '',
+        type: '',
         branch,
         orderItems: [],
       } as Order;
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(TableException);
+      await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(
+        TableException,
+      );
     });
 
     it('should return null when table does not have location', async () => {
       const branch = {
         id: 'mock-branch-id',
-        name: "",
-        address: "",
+        name: '',
+        address: '',
       } as Branch;
       const mockInput = {
         subtotal: 0,
-        status: "",
-        type: "",
-        tableName: 'mock-table-name',
+        status: '',
+        type: '',
         branch,
         orderItems: [],
       } as Order;
 
       const table = {
-        name: "",
-        location: null
+        name: '',
+        location: null,
       } as Table;
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
-      await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(TableException);
+      await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(
+        TableException,
+      );
     });
 
     it('should throw exception when get QR code', async () => {
       const branch = {
         id: 'mock-branch-id',
-        name: "",
-        address: "",
+        name: '',
+        address: '',
       } as Branch;
       const mockInput = {
         subtotal: 0,
-        status: "",
-        type: "",
-        tableName: 'mock-table-name',
+        status: '',
+        type: '',
         branch,
         orderItems: [],
       } as Order;
 
       const table = {
-        name: "",
+        name: '',
         location: 'mock-location-table',
       } as Table;
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
-      (robotConnectorClientMock.getQRLocationById as jest.Mock).mockRejectedValue(
-        new RobotConnectorException(RobotConnectorValidation.GET_LOCATION_FROM_ROBOT_API_FAILED)
+      (
+        robotConnectorClientMock.getQRLocationById as jest.Mock
+      ).mockRejectedValue(
+        new RobotConnectorException(
+          RobotConnectorValidation.GET_LOCATION_FROM_ROBOT_API_FAILED,
+        ),
       );
       await expect(service.getLocationTableByOrder(mockInput)).rejects.toThrow(
-        RobotConnectorException
+        RobotConnectorException,
       );
     });
     it('should return location table', async () => {
       const branch = {
         id: 'mock-branch-id',
-        name: "",
-        address: "",
+        name: '',
+        address: '',
       } as Branch;
       const mockInput = {
         subtotal: 0,
-        status: "",
-        type: "",
-        tableName: 'mock-table-name',
+        status: '',
+        type: '',
         branch,
         orderItems: [],
       } as Order;
 
       const table = {
-        name: "",
+        name: '',
         location: 'mock-location-table',
       } as Table;
 
       const locationData = {
-        id: "",
-        name: "",
-        qr_code: "mock-location",
+        id: '',
+        name: '',
+        qr_code: 'mock-location',
       } as QRLocationResponseDto;
 
       (tableRepositoryMock.findOne as jest.Mock).mockResolvedValue(table);
-      (robotConnectorClientMock.getQRLocationById as jest.Mock).mockResolvedValue(locationData);
-      expect(await service.getLocationTableByOrder(mockInput)).toEqual(locationData.qr_code);
+      (
+        robotConnectorClientMock.getQRLocationById as jest.Mock
+      ).mockResolvedValue(locationData);
+      expect(await service.getLocationTableByOrder(mockInput)).toEqual(
+        locationData.qr_code,
+      );
     });
   });
 
-  describe('createTrackingAndTrackingOrderItem - create tracking and related tracking order item',  () => {
+  describe('createTrackingAndTrackingOrderItem - create tracking and related tracking order item', () => {
     it('should save tracking failed', async () => {
       const tracking = {
-        workflowExecution: "",
-        status: "",
-      } as Tracking; 
+        workflowExecution: '',
+        status: '',
+      } as Tracking;
       const orderItem = {
         quantity: 0,
         subtotal: 0,
@@ -466,26 +503,25 @@ describe('TrackingService', () => {
 
       const createTrackingOrderItem = {
         quantity: 0,
-        orderItem
+        orderItem,
       } as CreateTrackingOrderItemWithQuantityAndOrderItemEntity;
 
       const orderItemsData = [createTrackingOrderItem];
 
       (mockQueryRunner.manager.save as jest.Mock).mockRejectedValue(
-        new TrackingException(TrackingValidation.CREATE_TRACKING_FAILED)
-      )
+        new TrackingException(TrackingValidation.CREATE_TRACKING_FAILED),
+      );
 
-      await expect(service.createTrackingAndTrackingOrderItem(
-        tracking,
-        orderItemsData
-      )).rejects.toThrow(TrackingException);
+      await expect(
+        service.createTrackingAndTrackingOrderItem(tracking, orderItemsData),
+      ).rejects.toThrow(TrackingException);
     });
-    
+
     it('should save tracking order item failed', async () => {
       const tracking = {
-        workflowExecution: "",
-        status: "",
-      } as Tracking; 
+        workflowExecution: '',
+        status: '',
+      } as Tracking;
       const orderItem = {
         quantity: 0,
         subtotal: 0,
@@ -493,28 +529,29 @@ describe('TrackingService', () => {
 
       const createTrackingOrderItem = {
         quantity: 0,
-        orderItem
+        orderItem,
       } as CreateTrackingOrderItemWithQuantityAndOrderItemEntity;
 
       const orderItemsData = [createTrackingOrderItem];
 
-      (mockQueryRunner.manager.save as jest.Mock).mockImplementationOnce(() => tracking);
+      (mockQueryRunner.manager.save as jest.Mock).mockImplementationOnce(
+        () => tracking,
+      );
       (mockQueryRunner.manager.save as jest.Mock).mockRejectedValueOnce(
-        new TrackingException(TrackingValidation.CREATE_TRACKING_FAILED)
-      )
+        new TrackingException(TrackingValidation.CREATE_TRACKING_FAILED),
+      );
 
-      await expect(service.createTrackingAndTrackingOrderItem(
-        tracking,
-        orderItemsData
-      )).rejects.toThrow(TrackingException);
+      await expect(
+        service.createTrackingAndTrackingOrderItem(tracking, orderItemsData),
+      ).rejects.toThrow(TrackingException);
     });
 
     it('should create tracking and related tracking order item success', async () => {
       const tracking = {
-        workflowExecution: "",
-        status: "",
-        id: 'mock-tracking-id'
-      } as Tracking; 
+        workflowExecution: '',
+        status: '',
+        id: 'mock-tracking-id',
+      } as Tracking;
       const orderItem = {
         quantity: 0,
         subtotal: 0,
@@ -522,7 +559,7 @@ describe('TrackingService', () => {
 
       const createTrackingOrderItem = {
         quantity: 0,
-        orderItem
+        orderItem,
       } as CreateTrackingOrderItemWithQuantityAndOrderItemEntity;
 
       const orderItemsData = [createTrackingOrderItem];
@@ -533,15 +570,19 @@ describe('TrackingService', () => {
       } as TrackingOrderItem;
       const trackingOrderItems = [trackingOrderItem];
 
-      (mockQueryRunner.manager.save as jest.Mock).mockImplementationOnce(() => tracking);
       (mockQueryRunner.manager.save as jest.Mock).mockImplementationOnce(
-        () => trackingOrderItems
+        () => tracking,
+      );
+      (mockQueryRunner.manager.save as jest.Mock).mockImplementationOnce(
+        () => trackingOrderItems,
       );
 
-      expect(await service.createTrackingAndTrackingOrderItem(
-        tracking,
-        orderItemsData
-      )).toEqual(tracking.id);
+      expect(
+        await service.createTrackingAndTrackingOrderItem(
+          tracking,
+          orderItemsData,
+        ),
+      ).toEqual(tracking.id);
     });
   });
 
@@ -552,28 +593,34 @@ describe('TrackingService', () => {
 
     it('should throw exception when  robotConnectorClient.getRobotById throws', async () => {
       (robotConnectorClientMock.getRobotById as jest.Mock).mockRejectedValue(
-        new RobotConnectorException(RobotConnectorValidation.GET_ROBOT_DATA_FAILED)
+        new RobotConnectorException(
+          RobotConnectorValidation.GET_ROBOT_DATA_FAILED,
+        ),
       );
 
-      await expect(service.checkRobotStatusBeforeCall()).rejects.toThrow(RobotConnectorException);
+      await expect(service.checkRobotStatusBeforeCall()).rejects.toThrow(
+        RobotConnectorException,
+      );
     });
     it('should throw exception when robot busy', async () => {
       const robotData = {
-        status: "mock-order-status"
+        status: 'mock-order-status',
       } as RobotResponseDto;
       (robotConnectorClientMock.getRobotById as jest.Mock).mockResolvedValue(
-        robotData
+        robotData,
       );
 
-      await expect(service.checkRobotStatusBeforeCall()).rejects.toThrow(RobotConnectorException);
+      await expect(service.checkRobotStatusBeforeCall()).rejects.toThrow(
+        RobotConnectorException,
+      );
     });
 
     it('should not throw exception when robot idle', async () => {
       const robotData = {
-        status: RobotStatus.IDLE
+        status: RobotStatus.IDLE,
       } as RobotResponseDto;
       (robotConnectorClientMock.getRobotById as jest.Mock).mockResolvedValue(
-        robotData
+        robotData,
       );
 
       await service.checkRobotStatusBeforeCall();
@@ -589,18 +636,22 @@ describe('TrackingService', () => {
     it('should throw exception when workflow not found', async () => {
       (workflowRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.getWorkflowIdByBranchId('mock-branch-id')).rejects.toThrow(WorkflowException);
+      await expect(
+        service.getWorkflowIdByBranchId('mock-branch-id'),
+      ).rejects.toThrow(WorkflowException);
     });
 
     it('should return workflow id when get success', async () => {
       const workflow = {
-        workflowId: "mock-workflow-id",
-        id: "",
-        slug: "",
+        workflowId: 'mock-workflow-id',
+        id: '',
+        slug: '',
       } as Workflow;
       (workflowRepositoryMock.findOne as jest.Mock).mockResolvedValue(workflow);
 
-      expect(await service.getWorkflowIdByBranchId('mock-branch-id')).toEqual(workflow.workflowId);
+      expect(await service.getWorkflowIdByBranchId('mock-branch-id')).toEqual(
+        workflow.workflowId,
+      );
     });
   });
 
