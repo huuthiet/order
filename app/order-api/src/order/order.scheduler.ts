@@ -17,7 +17,7 @@ export class OrderScheduler {
     private readonly dataSource: DataSource,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async updateOrdertable() {
     const context = `${OrderScheduler.name}.${this.updateOrdertable.name}`;
     this.logger.log(`Migrating tablename to table...`, context);

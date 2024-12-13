@@ -48,8 +48,8 @@ export class ACBConnectorClient implements OnModuleInit {
     const context = `${ACBConnectorClient.name}.${this.getAuthAcbApiUrl.name}`;
     if (!this.authAcbApiUrl) {
       this.logger.log(`Auth ACB API URL is not loaded`, context);
-      this.setAuthAcbApiUrl();
     }
+    this.setAuthAcbApiUrl();
     return this.authAcbApiUrl;
   }
 
@@ -63,8 +63,8 @@ export class ACBConnectorClient implements OnModuleInit {
     const context = `${ACBConnectorClient.name}.${this.getAcbApiUrl.name}`;
     if (!this.acbApiUrl) {
       this.logger.log(`ACB API URL is not loaded`, context);
-      this.setAcbApiUrl();
     }
+    this.setAcbApiUrl();
     return this.acbApiUrl;
   }
 
