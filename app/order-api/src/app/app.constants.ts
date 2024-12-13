@@ -1,1 +1,4 @@
 export const MAPPER_MODULE_PROVIDER = 'automapper:nestjs:default';
+export enum QueueRegisterKey {
+  MAIL = 'mail',
+}

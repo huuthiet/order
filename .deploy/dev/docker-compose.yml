@@ -1,7 +1,13 @@
 volumes:
   mysql:
+  redis_data:
 
 services:
+  redis:
+    image: "bitnami/redis:latest"
+    volumes:
+      - redis_data:/bitnami/redis
+
   order-api:
     build:
       context: ../../app/order-api

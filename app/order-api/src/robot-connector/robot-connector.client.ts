@@ -6,7 +6,6 @@ import {
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   RunWorkflowRequestDto,
@@ -23,8 +22,9 @@ import { catchError, firstValueFrom, retry } from 'rxjs';
 import { AxiosError } from 'axios';
 import { RobotConnectorException } from './robot-connector.exception';
 import { RobotConnectorValidation } from './robot-connector.validation';
-import { SystemConfigModule } from 'src/system-config/system-config.module';
 import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfigKey } from 'src/system-config/system-config.constant';
+import * as _ from 'lodash';
 
 @Injectable()
 export class RobotConnectorClient implements OnModuleInit {
@@ -39,14 +39,23 @@ export class RobotConnectorClient implements OnModuleInit {
 
   async onModuleInit() {
     const context = `${RobotConnectorClient.name}.${this.onModuleInit.name}`;
-    this.robotApiUrl = await this.systemConfigService.get('ROBOT_API_URL');
+    this.robotApiUrl = await this.systemConfigService.get(
+      SystemConfigKey.ROBOT_API_URL,
+    );
     this.logger.log(`Robot API URL loaded: ${this.robotApiUrl}`, context);
+  }
+
+  async getRobotApiUrl() {
+    if (_.isEmpty(this.robotApiUrl)) {
+      await this.onModuleInit();
+    }
+    return this.robotApiUrl;
   }
 
   /* RAYBOTS */
   async getRobotById(id: string): Promise<RobotResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.getRobotById.name}`;
-    const requestUrl = `${this.robotApiUrl}/raybots/${id}`;
+    const requestUrl = `${await this.getRobotApiUrl()}/raybots/${id}`;
     const { data } = await firstValueFrom(
       this.httpService.get<RobotResponseDto>(requestUrl).pipe(
         catchError((error: AxiosError) => {

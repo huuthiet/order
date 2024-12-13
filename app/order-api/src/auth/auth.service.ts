@@ -47,6 +47,8 @@ import { CurrentUserDto } from 'src/user/user.dto';
 import { Role } from 'src/role/role.entity';
 import { RoleEnum } from 'src/role/role.enum';
 import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfigKey } from 'src/system-config/system-config.constant';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -83,8 +85,17 @@ export class AuthService implements OnModuleInit {
 
   async onModuleInit() {
     const context = `${AuthService.name}.${this.onModuleInit.name}`;
-    this.frontedUrl = await this.systemConfigService.get('FRONTEND_URL');
+    this.frontedUrl = await this.systemConfigService.get(
+      SystemConfigKey.FRONTEND_URL,
+    );
     this.logger.log(`Frontend URL loaded: ${this.frontedUrl}`, context);
+  }
+
+  async getFrontendUrl() {
+    if (_.isEmpty(this.frontedUrl)) {
+      await this.onModuleInit();
+    }
+    return this.frontedUrl;
   }
 
   async forgotPassword(requestData: ForgotPasswordRequestDto) {
@@ -186,7 +197,7 @@ export class AuthService implements OnModuleInit {
       user,
     } as ForgotPasswordToken);
 
-    const url = `${this.frontedUrl}/reset-password?token=${token}`;
+    const url = `${await this.getFrontendUrl()}/reset-password?token=${token}`;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
