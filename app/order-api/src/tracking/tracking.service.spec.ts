@@ -587,40 +587,12 @@ describe('TrackingService', () => {
     });
 
     it('should throw exception when workflow not found', async () => {
-      const branch = {
-        name: "",
-        address: "",
-        id: "",
-        slug: "mock-branch-slug",
-      } as Branch;
-      const mockInput = {
-        branch,
-        subtotal: 0,
-        status: "",
-        type: "",
-        id: "",
-        slug: "mock-order-slug",
-      } as Order;
       (workflowRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.getWorkflowIdByOrder(mockInput)).rejects.toThrow(WorkflowException);
+      await expect(service.getWorkflowIdByBranchId('mock-branch-id')).rejects.toThrow(WorkflowException);
     });
 
     it('should return workflow id when get success', async () => {
-      const branch = {
-        name: "",
-        address: "",
-        id: "",
-        slug: "mock-branch-slug",
-      } as Branch;
-      const mockInput = {
-        branch,
-        subtotal: 0,
-        status: "",
-        type: "",
-        id: "",
-        slug: "mock-order-slug",
-      } as Order;
       const workflow = {
         workflowId: "mock-workflow-id",
         id: "",
@@ -628,7 +600,7 @@ describe('TrackingService', () => {
       } as Workflow;
       (workflowRepositoryMock.findOne as jest.Mock).mockResolvedValue(workflow);
 
-      expect(await service.getWorkflowIdByOrder(mockInput)).toEqual(workflow.workflowId);
+      expect(await service.getWorkflowIdByBranchId('mock-branch-id')).toEqual(workflow.workflowId);
     });
   });
 
@@ -836,7 +808,7 @@ describe('TrackingService', () => {
       jest.spyOn(service, 'validateOrderItemInOneTable').mockResolvedValue();
       jest.spyOn(service, 'getOrderByOrderItemSlug').mockResolvedValue(order);
       jest.spyOn(service, 'getLocationTableByOrder').mockResolvedValue('mock-table-location');
-      jest.spyOn(service, 'getWorkflowIdByOrder').mockRejectedValue(
+      jest.spyOn(service, 'getWorkflowIdByBranchId').mockRejectedValue(
         new WorkflowException(WorkflowValidation.MUST_ADD_WORKFLOW_FOR_BRANCH)
       );
 
@@ -884,7 +856,7 @@ describe('TrackingService', () => {
       jest.spyOn(service, 'validateOrderItemInOneTable').mockResolvedValue();
       jest.spyOn(service, 'getOrderByOrderItemSlug').mockResolvedValue(order);
       jest.spyOn(service, 'getLocationTableByOrder').mockResolvedValue('mock-table-location');
-      jest.spyOn(service, 'getWorkflowIdByOrder').mockResolvedValue('mock-workflow-id');
+      jest.spyOn(service, 'getWorkflowIdByBranchId').mockResolvedValue('mock-workflow-id');
       jest.spyOn(service, 'checkRobotStatusBeforeCall').mockRejectedValue(
         new RobotConnectorException(RobotConnectorValidation.ROBOT_BUSY)
       );
@@ -933,7 +905,7 @@ describe('TrackingService', () => {
       jest.spyOn(service, 'validateOrderItemInOneTable').mockResolvedValue();
       jest.spyOn(service, 'getOrderByOrderItemSlug').mockResolvedValue(order);
       jest.spyOn(service, 'getLocationTableByOrder').mockResolvedValue('mock-table-location');
-      jest.spyOn(service, 'getWorkflowIdByOrder').mockResolvedValue('mock-workflow-id');
+      jest.spyOn(service, 'getWorkflowIdByBranchId').mockResolvedValue('mock-workflow-id');
       jest.spyOn(service, 'checkRobotStatusBeforeCall').mockResolvedValue();
       (robotConnectorClientMock.runWorkflow as jest.Mock).mockRejectedValue(
         new RobotConnectorException(RobotConnectorValidation.RUN_WORKFLOW_FROM_ROBOT_API_FAILED)
@@ -982,7 +954,7 @@ describe('TrackingService', () => {
       jest.spyOn(service, 'validateOrderItemInOneTable').mockResolvedValue();
       jest.spyOn(service, 'getOrderByOrderItemSlug').mockResolvedValue(order);
       jest.spyOn(service, 'getLocationTableByOrder').mockResolvedValue('mock-table-location');
-      jest.spyOn(service, 'getWorkflowIdByOrder').mockResolvedValue('mock-workflow-id');
+      jest.spyOn(service, 'getWorkflowIdByBranchId').mockResolvedValue('mock-workflow-id');
       jest.spyOn(service, 'checkRobotStatusBeforeCall').mockResolvedValue();
       (robotConnectorClientMock.runWorkflow as jest.Mock).mockResolvedValue(
         {workflow_execution_id: 'mock-workflow-execution-id'} as WorkflowExecutionResponseDto
@@ -1042,7 +1014,7 @@ describe('TrackingService', () => {
       jest.spyOn(service, 'validateOrderItemInOneTable').mockResolvedValue();
       jest.spyOn(service, 'getOrderByOrderItemSlug').mockResolvedValue(order);
       jest.spyOn(service, 'getLocationTableByOrder').mockResolvedValue('mock-table-location');
-      jest.spyOn(service, 'getWorkflowIdByOrder').mockResolvedValue('mock-workflow-id');
+      jest.spyOn(service, 'getWorkflowIdByBranchId').mockResolvedValue('mock-workflow-id');
       jest.spyOn(service, 'checkRobotStatusBeforeCall').mockResolvedValue();
       (robotConnectorClientMock.runWorkflow as jest.Mock).mockResolvedValue(
         {workflow_execution_id: 'mock-workflow-execution-id'} as WorkflowExecutionResponseDto
@@ -1158,95 +1130,4 @@ describe('TrackingService', () => {
       expect(await service.createTracking(mockInput)).toEqual(mockOutput);
     });
   });
-
-
-  // describe('validateOrderItemInOneOrder - check order items in a order or not', () => {
-  //   beforeEach(() => {
-  //     jest.clearAllMocks();
-  //   });
-
-  //   it('should return null when not found any order', async () => {
-  //     const createTrackingOrderItem = {
-  //       orderItem: "mock-order-item-slug",
-  //       quantity: 0
-  //     }  as CreateTrackingOrderItemRequestDto;
-  //     const mockInput = [createTrackingOrderItem];
-
-  //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue([]);
-  //     await expect(service.validateOrderItemInOneOrder(mockInput)).rejects.toThrow(OrderItemException);
-  //   });
-
-  //   it('should return null when found more than 1 order', async () => {
-  //     const createTrackingOrderItem1: CreateTrackingOrderItemRequestDto = {
-  //       orderItem: "mock-order-item-slug-1",
-  //       quantity: 0
-  //     };
-  //     const createTrackingOrderItem2: CreateTrackingOrderItemRequestDto = {
-  //       orderItem: "mock-order-item-slug-2",
-  //       quantity: 0
-  //     };
-  //     const mockInput = [createTrackingOrderItem1, createTrackingOrderItem2];
-  //     const order1 = {
-  //       slug: 'mock-order-slug-1',
-  //       subtotal: 0,
-  //       status: "",
-  //       type: "",
-  //       orderItems: [],
-  //     } as Order;
-  //     const order2 = {
-  //       slug: 'mock-order-slug-2',
-  //       subtotal: 0,
-  //       status: "",
-  //       type: "",
-  //       orderItems: [],
-  //     } as Order;
-  //     const orders  = [order1, order2];
-
-  //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
-  //     await expect(service.validateOrderItemInOneOrder(mockInput)).rejects.toThrow(OrderItemException);
-  //   });
-
-  //   it('should return null when found 1 order but have not any related branch', async () => {
-  //     const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-  //       orderItem: "mock-order-item-slug",
-  //       quantity: 0
-  //     };
-  //     const mockInput = [createTrackingOrderItem, createTrackingOrderItem];
-  //     const order = {
-  //       slug: 'mock-order-slug',
-  //       subtotal: 0,
-  //       status: "",
-  //       type: "",
-  //       orderItems: [],
-  //     } as Order;
-  //     const orders  = [order];
-
-  //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
-  //     await expect(service.validateOrderItemInOneOrder(mockInput)).rejects.toThrow(OrderItemException);
-  //   });
-
-  //   it('should return order when validate success', async () => {
-  //     const createTrackingOrderItem: CreateTrackingOrderItemRequestDto = {
-  //       orderItem: "mock-order-item-slug",
-  //       quantity: 0
-  //     };
-  //     const mockInput = [createTrackingOrderItem, createTrackingOrderItem];
-  //     const branch = {
-  //       name: "",
-  //       address: "",
-  //     } as Branch;
-  //     const order = {
-  //       slug: 'mock-order-slug',
-  //       branch,
-  //       subtotal: 0,
-  //       status: "",
-  //       type: "",
-  //       orderItems: [],
-  //     } as Order;
-  //     const orders  = [order];
-
-  //     (orderRepositoryMock.find as jest.Mock).mockResolvedValue(orders);
-  //     expect(await service.validateOrderItemInOneOrder(mockInput)).toEqual(order);
-  //   });
-  // });
 });

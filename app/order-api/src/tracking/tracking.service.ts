@@ -96,7 +96,6 @@ export class TrackingService implements OnModuleInit {
     const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
       requestData.trackingOrderItems,
     );
-    // await this.validateOrderItemInOneOrder(requestData.trackingOrderItems);
     // validate order item of orders in a table
     await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
     
@@ -117,7 +116,7 @@ export class TrackingService implements OnModuleInit {
 
       const tableLocation: string = await this.getLocationTableByOrder(order);
 
-      const workflowId: string = await this.getWorkflowIdByOrder(order);
+      const workflowId: string = await this.getWorkflowIdByBranchId(order.branch?.id);
 
       await this.checkRobotStatusBeforeCall();
 
@@ -216,16 +215,16 @@ export class TrackingService implements OnModuleInit {
    * @throws {OrderItemException} If request order item greater order item quantity
    */
   async validateDefinedAndQuantityOrderItem(
-    orderItems: CreateTrackingOrderItemRequestDto[],
+    createTrackingOrderItems: CreateTrackingOrderItemRequestDto[],
   ): Promise<CreateTrackingOrderItemWithQuantityAndOrderItemEntity[]> {
     const context = `${TrackingService.name}.${this.validateDefinedAndQuantityOrderItem.name}`;
     const orderItemsData: CreateTrackingOrderItemWithQuantityAndOrderItemEntity[] =
       [];
-    for (let i = 0; i < orderItems.length; i++) {
+    for (const createTrackingOrderItem of createTrackingOrderItems) {
       // check defined
       const orderItem = await this.orderItemRepository.findOne({
         where: {
-          slug: orderItems[i].orderItem,
+          slug: createTrackingOrderItem.orderItem,
         },
         relations: ['order', 'trackingOrderItems.tracking'],
       });
@@ -243,7 +242,7 @@ export class TrackingService implements OnModuleInit {
         );
       }
       orderItemsData.push({
-        quantity: orderItems[i].quantity,
+        quantity: createTrackingOrderItem.quantity,
         orderItem,
       });
 
@@ -251,7 +250,7 @@ export class TrackingService implements OnModuleInit {
 
       // order item have not tracking order item
       if (_.isEmpty(orderItem.trackingOrderItems)) {
-        if (orderItems[i].quantity > orderItem.quantity) {
+        if (createTrackingOrderItem.quantity > orderItem.quantity) {
           this.logger.warn(
             OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY,
             context,
@@ -271,7 +270,7 @@ export class TrackingService implements OnModuleInit {
         },
         0,
       );
-      if (totalCompleted + orderItems[i].quantity > orderItem.quantity) {
+      if (totalCompleted + createTrackingOrderItem.quantity > orderItem.quantity) {
         this.logger.warn(
           OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY,
           context,
@@ -286,44 +285,9 @@ export class TrackingService implements OnModuleInit {
   }
 
   /**
-   * Validate order items belong to a order or not
-   * @param {CreateTrackingOrderItemRequestDto} orderItems The array of order item slug
-   * @throws {OrderItemException} If all order item not belong to a order
+   * 
+   * @param {CreateTrackingOrderItemRequestDto[]} orderItems The data to create tracking order item
    */
-  async validateOrderItemInOneOrder(
-    orderItems: CreateTrackingOrderItemRequestDto[],
-  ): Promise<void> {
-    const context = `${TrackingService.name}.${this.validateOrderItemInOneOrder.name}`;
-    const orderItemSlugs = orderItems.map((item) => item.orderItem);
-    const orders = await this.orderRepository.find({
-      where: {
-        orderItems: {
-          slug: In(orderItemSlugs),
-        },
-      },
-      relations: ['branch', 'orderItems'],
-    });
-    if (orders.length !== 1) {
-      this.logger.warn(
-        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
-        context,
-      );
-      throw new OrderItemException(
-        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
-      );
-    }
-
-    if (!orders[0].branch) {
-      this.logger.warn(
-        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
-        context,
-      );
-      throw new OrderItemException(
-        OrderItemValidation.ALL_ORDER_ITEM_MUST_BELONG_TO_A_ORDER,
-      );
-    }
-  }
-
   async validateOrderItemInOneTable(
     orderItems: CreateTrackingOrderItemRequestDto[],
   ): Promise<void> {
@@ -372,10 +336,7 @@ export class TrackingService implements OnModuleInit {
     const context = `${TrackingService.name}.${this.getLocationTableByOrder.name}`;
     const table = await this.tableRepository.findOne({
       where: {
-        name: order.tableName,
-        branch: {
-          id: order.branch.id,
-        },
+        orders: { id: order?.id }
       },
     });
     if (!table) {
@@ -394,24 +355,20 @@ export class TrackingService implements OnModuleInit {
 
   /**
    *
-   * @param {Order} order The order data relate to branch
+   * @param {string} branchId The id of branch
    * @returns {Promise<string>} The workflow id from ROBOT API
    * @throws {WorkflowException} If branch does not have workflow
    */
-  async getWorkflowIdByOrder(order: Order): Promise<string> {
-    const context = `${TrackingService.name}.${this.getWorkflowIdByOrder.name}`;
+  async getWorkflowIdByBranchId(branchId: string): Promise<string> {
+    const context = `${TrackingService.name}.${this.getWorkflowIdByBranchId.name}`;
     const workflowData = await this.workflowRepository.findOne({
       where: {
-        branch: {
-          orders: {
-            slug: order.slug,
-          },
-        },
+        branch: { id: branchId },
       },
     });
     if (!workflowData) {
       this.logger.warn(
-        `${WorkflowValidation.MUST_ADD_WORKFLOW_FOR_BRANCH} ${order.branch.slug}`,
+        `${WorkflowValidation.MUST_ADD_WORKFLOW_FOR_BRANCH} ${branchId}`,
         context,
       );
       throw new WorkflowException(
@@ -459,17 +416,6 @@ export class TrackingService implements OnModuleInit {
       const createdTracking = await queryRunner.manager.save(tracking);
 
       // create tracking order item
-      // const trackingOrderItems: TrackingOrderItem[] = [];
-      // for(let i = 0; i < orderItemsData.length; i++) {
-      //   let trackingOrderItem = new TrackingOrderItem();
-      //   Object.assign(trackingOrderItem, {
-      //     quantity: orderItemsData[i].quantity,
-      //     orderItem: orderItemsData[i].orderItem,
-      //     tracking: createdTracking
-      //   });
-
-      //   trackingOrderItems.push(trackingOrderItem);
-      // }
       const trackingOrderItems = orderItemsData.map((item) => {
         const trackingOrderItem = new TrackingOrderItem();
         Object.assign(trackingOrderItem, {
@@ -499,8 +445,6 @@ export class TrackingService implements OnModuleInit {
       "3f15f447-c5b7-4ee2-bcb9-c0cd9bcf0325"
     );
     
-
-
     const tracking = await this.trackingRepository.findOne({
       where: {
         slug,

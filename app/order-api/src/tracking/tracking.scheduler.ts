@@ -112,6 +112,11 @@ export class TrackingScheduler {
     }));
   }
 
+  /**
+   * 
+   * @param {string} trackingId The id of tracking
+   * @returns {Promise<Order[]>} The array of orders
+   */
   async getAllOrdersByTrackingId (
     trackingId: string
   ): Promise<Order[]> {
@@ -135,7 +140,6 @@ export class TrackingScheduler {
         orderItems: { id: In(orderItemIds) }
       },
     });
-    console.log({orders})
 
     const results: Order[] = await Promise.all(
       orders.map(order => 
