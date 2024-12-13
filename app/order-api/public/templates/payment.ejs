@@ -16,7 +16,7 @@
   </head>
 
   <body>
-    <div class="p-6 mt-10 flex flex-col justify-center items-center">
+    <div class="p-6 pt-0 flex flex-col justify-center items-center">
       <p class="mb-2 text-center">
         Mã đơn hàng: <strong><%= order.slug %></strong>
       </p>
@@ -27,7 +27,7 @@
         Số tiền thanh toán:
         <strong class="text-xl"><%= formatCurrency(amount) %></strong>
       </p>
-      <p class="mb-4 text-2s text-center text-red-500">
+      <p class="mb-4 text-center">
         Quý khách vui lòng kiểm tra thông tin thanh toán trước khi thực hiện
         giao dịch.
       </p>

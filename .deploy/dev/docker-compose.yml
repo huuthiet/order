@@ -1,7 +1,20 @@
 volumes:
   mysql:
+  redis_data:
 
 services:
+  redis:
+    image: "bitnami/redis:latest"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/bitnami/redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "secure_password", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   order-api:
     build:
       context: ../../app/order-api
@@ -19,23 +32,38 @@ services:
       retries: 10
       start_period: 30s # Give more time for MySQL to become ready
     environment:
+      # General
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      VERSION: ${VERSION}
+
+      # Database
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
-      NODE_ENV: ${NODE_ENV}
-      PORT: ${PORT}
-      VERSION: ${VERSION}
+
+      # Token
       SALT_ROUNDS: ${SALT_ROUNDS}
       DURATION: ${DURATION}
       REFRESHABLE_DURATION: ${REFRESHABLE_DURATION}
+
+      # ACB Banking
       ACB_CLIENT_ID: ${ACB_CLIENT_ID}
       ACB_CLIENT_SECRET: ${ACB_CLIENT_SECRET}
+
+      # Mail
       MAIL_HOST: ${MAIL_HOST}
       MAIL_USER: ${MAIL_USER}
       MAIL_FROM: ${MAIL_FROM}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
+
+      # Redis queue
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
       TZ: Asia/Ho_Chi_Minh
     depends_on:
       mysql_db:
@@ -58,18 +86,18 @@ services:
       timeout: 60s # Increase timeout to give MySQL more time
       retries: 5
 
-  order-ui:
-    build:
-      context: ../../app/order-ui
-      dockerfile: ../../.build/order-ui/Dockerfile # Adjusted to be relative to the context
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "5173"] # TCP check on port 5173
-      interval: 10s # Increase interval between health checks
-      timeout: 10s # Increase timeout for slower responses
-      retries: 5
-    restart: always
-    ports:
-      - "5173:5173"
+  # order-ui:
+  #   build:
+  #     context: ../../app/order-ui
+  #     dockerfile: ../../.build/order-ui/Dockerfile # Adjusted to be relative to the context
+  #   healthcheck:
+  #     test: ["CMD", "nc", "-z", "localhost", "5173"] # TCP check on port 5173
+  #     interval: 10s # Increase interval between health checks
+  #     timeout: 10s # Increase timeout for slower responses
+  #     retries: 5
+  #   restart: always
+  #   ports:
+  #     - "5173:5173"
 
 networks:
   default:

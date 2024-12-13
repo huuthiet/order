@@ -22,6 +22,7 @@ import { SystemConfig } from 'src/system-config/system-config.entity';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { DataSource } from 'typeorm';
 import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
+import { MailProducer } from 'src/mail/mail.producer';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -33,6 +34,11 @@ describe('AuthController', () => {
         AuthService,
         FileService,
         SystemConfigService,
+        MailProducer,
+        {
+          provide: 'BullQueue_mail',
+          useValue: {},
+        },
         { provide: DataSource, useFactory: dataSourceMockFactory },
         {
           provide: getRepositoryToken(SystemConfig),

@@ -3,13 +3,16 @@ import { MailService } from './mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { resolve } from 'path';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
-import { SystemConfigService } from 'src/system-config/system-config.service';
 import { ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bullmq';
+import { QueueRegisterKey } from 'src/app/app.constants';
+import { MailProducer } from './mail.producer';
+import { MailConsumer } from './mail.consumer';
 
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      useFactory: async (config: ConfigService) => ({
+      useFactory: (config: ConfigService) => ({
         transport: {
           host: config.get('MAIL_HOST'),
           secure: false,
@@ -19,7 +22,7 @@ import { ConfigService } from '@nestjs/config';
           },
         },
         defaults: {
-          from: `"No Reply" <${await config.get('MAIL_FROM')}>`,
+          from: `"No Reply" <${config.get('MAIL_FROM')}>`,
         },
         template: {
           dir: resolve('public/templates/mail'),
@@ -31,8 +34,11 @@ import { ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    BullModule.registerQueue({
+      name: QueueRegisterKey.MAIL,
+    }),
   ],
-  providers: [MailService],
+  providers: [MailService, MailProducer, MailConsumer],
   exports: [MailService],
 })
 export class MailModule {}
