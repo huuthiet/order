@@ -34,6 +34,7 @@ import { Role } from 'src/role/role.entity';
 import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfig } from 'src/system-config/system-config.entity';
+import { MailProducer } from 'src/mail/mail.producer';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -49,6 +50,11 @@ describe('AuthService', () => {
         FileService,
         SystemConfigService,
         { provide: DataSource, useFactory: dataSourceMockFactory },
+        MailProducer,
+        {
+          provide: 'BullQueue_mail',
+          useValue: {},
+        },
         {
           provide: getRepositoryToken(File),
           useFactory: repositoryMockFactory,
