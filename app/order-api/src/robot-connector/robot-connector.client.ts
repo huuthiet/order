@@ -27,9 +27,7 @@ import { SystemConfigKey } from 'src/system-config/system-config.constant';
 import * as _ from 'lodash';
 
 @Injectable()
-export class RobotConnectorClient implements OnModuleInit {
-  private robotApiUrl: string;
-
+export class RobotConnectorClient {
   constructor(
     private readonly httpService: HttpService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
@@ -37,19 +35,8 @@ export class RobotConnectorClient implements OnModuleInit {
     private readonly systemConfigService: SystemConfigService,
   ) {}
 
-  async onModuleInit() {
-    const context = `${RobotConnectorClient.name}.${this.onModuleInit.name}`;
-    this.robotApiUrl = await this.systemConfigService.get(
-      SystemConfigKey.ROBOT_API_URL,
-    );
-    this.logger.log(`Robot API URL loaded: ${this.robotApiUrl}`, context);
-  }
-
   async getRobotApiUrl() {
-    if (_.isEmpty(this.robotApiUrl)) {
-      await this.onModuleInit();
-    }
-    return this.robotApiUrl;
+    return await this.systemConfigService.get(SystemConfigKey.ROBOT_API_URL);
   }
 
   /* RAYBOTS */
@@ -77,7 +64,7 @@ export class RobotConnectorClient implements OnModuleInit {
   async createWorkflow(
     requestData: CreateWorkflowRequestDto,
   ): Promise<WorkflowResponseDto> {
-    const requestUrl = `${this.robotApiUrl}/workflows`;
+    const requestUrl = `${await this.getRobotApiUrl()}/workflows`;
     const { data } = await firstValueFrom(
       this.httpService
         .post<WorkflowResponseDto>(requestUrl, requestData, {})
@@ -96,7 +83,7 @@ export class RobotConnectorClient implements OnModuleInit {
 
   async getAllWorkflows(): Promise<WorkflowResponseDto[]> {
     const context = `${RobotConnectorClient.name}.${this.getAllWorkflows.name}`;
-    const requestUrl = `${this.robotApiUrl}/workflows`;
+    const requestUrl = `${await this.getRobotApiUrl()}/workflows`;
     const { data } = await firstValueFrom(
       this.httpService.get<WorkflowResponseDto[]>(requestUrl).pipe(
         catchError((error: AxiosError) => {
@@ -119,7 +106,7 @@ export class RobotConnectorClient implements OnModuleInit {
     requestData: RunWorkflowRequestDto,
   ): Promise<WorkflowExecutionResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.runWorkflow.name}`;
-    const requestUrl = `${this.robotApiUrl}/workflows/${workflowId}/run`;
+    const requestUrl = `${await this.getRobotApiUrl()}/workflows/${workflowId}/run`;
     const { data } = await firstValueFrom(
       this.httpService
         .post<WorkflowExecutionResponseDto>(requestUrl, requestData)
@@ -144,7 +131,7 @@ export class RobotConnectorClient implements OnModuleInit {
     workflowExecutionId: string,
   ): Promise<GetWorkflowExecutionResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.retrieveWorkflowExecution.name}`;
-    const requestUrl = `${this.robotApiUrl}/workflow-executions/${workflowExecutionId}`;
+    const requestUrl = `${await this.getRobotApiUrl()}/workflow-executions/${workflowExecutionId}`;
     const { data } = await firstValueFrom(
       this.httpService.get<GetWorkflowExecutionResponseDto>(requestUrl).pipe(
         catchError((error: AxiosError) => {
@@ -165,7 +152,7 @@ export class RobotConnectorClient implements OnModuleInit {
   async retrieveAllWorkflowExecutions(): Promise<
     GetWorkflowExecutionResponseDto[]
   > {
-    const requestUrl = `${this.robotApiUrl}/workflow-executions`;
+    const requestUrl = `${await this.getRobotApiUrl()}/workflow-executions`;
     const { data } = await firstValueFrom(
       this.httpService.get<GetWorkflowExecutionResponseDto[]>(requestUrl).pipe(
         catchError((error: AxiosError) => {
@@ -183,7 +170,7 @@ export class RobotConnectorClient implements OnModuleInit {
   /** QR LOCATIONS */
   async retrieveAllQRLocations(): Promise<QRLocationResponseDto[]> {
     const context = `${RobotConnectorClient.name}.${this.retrieveAllQRLocations.name}`;
-    const requestUrl = `${this.robotApiUrl}/qr-locations`;
+    const requestUrl = `${await this.getRobotApiUrl()}/qr-locations`;
     const { data } = await firstValueFrom(
       this.httpService.get<QRLocationResponseDto[]>(requestUrl).pipe(
         retry(3),
@@ -203,7 +190,7 @@ export class RobotConnectorClient implements OnModuleInit {
   async createQRLocation(
     requestData: CreateQRLocationRequestDto,
   ): Promise<QRLocationResponseDto> {
-    const requestUrl = `${this.robotApiUrl}/qr-locations`;
+    const requestUrl = `${await this.getRobotApiUrl()}/qr-locations`;
     const { data } = await firstValueFrom(
       this.httpService
         .post<QRLocationResponseDto>(requestUrl, requestData)
@@ -222,7 +209,7 @@ export class RobotConnectorClient implements OnModuleInit {
 
   async getQRLocationById(id: string): Promise<QRLocationResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.getQRLocationById.name}`;
-    const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
+    const requestUrl = `${await this.getRobotApiUrl()}/qr-locations/${id}`;
     const { data } = await firstValueFrom(
       this.httpService.get<QRLocationResponseDto>(requestUrl).pipe(
         catchError((error: AxiosError) => {
@@ -245,7 +232,7 @@ export class RobotConnectorClient implements OnModuleInit {
     requestData: UpdateQRLocationRequestDto,
   ): Promise<QRLocationResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.updateQRLocation.name}`;
-    const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
+    const requestUrl = `${await this.getRobotApiUrl()}/qr-locations/${id}`;
 
     const { data } = await firstValueFrom(
       this.httpService.put<QRLocationResponseDto>(requestUrl, requestData).pipe(
@@ -265,7 +252,7 @@ export class RobotConnectorClient implements OnModuleInit {
   }
 
   async deleteQRLocation(id: string): Promise<number> {
-    const requestUrl = `${this.robotApiUrl}/qr-locations/${id}`;
+    const requestUrl = `${await this.getRobotApiUrl()}/qr-locations/${id}`;
     const response = await firstValueFrom(
       this.httpService.delete<number>(requestUrl).pipe(
         catchError((error: AxiosError) => {
