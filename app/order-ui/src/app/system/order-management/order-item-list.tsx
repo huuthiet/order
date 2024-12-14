@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui'
 // import { useOrderTrackingStore } from '@/stores'
 
 interface IOrderItemListProps {
-  orderDetailData: IOrder
+  orderDetailData?: IOrder
 }
 
 export default function OrderItemList({

@@ -1,3 +1,6 @@
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import {
   CustomerInformation,
   OrderItemList,
@@ -11,9 +14,7 @@ import {
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderTrackingStore, useUserStore } from '@/stores'
 import { IOrder } from '@/types'
-import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { useState, useEffect, useRef } from 'react'
 import { ScrollArea } from '@/components/ui'
 import {
   CreateOrderTrackingByStaffDialog,
@@ -21,7 +22,7 @@ import {
 } from '../dialog'
 
 interface IOrderItemDetailSheetProps {
-  order?: IOrder
+  order: string
   isOpen: boolean
   onClose: () => void
 }
@@ -37,15 +38,21 @@ export default function OrderItemDetailSheet({
   const [shouldFetchOrders, setShouldFetchOrders] = useState(false)
   const [orderSlugs, setOrderSlugs] = useState<string[]>([])
   const [orderDetails, setOrderDetails] = useState<IOrder[]>([])
+  const { data: selectedOrder, refetch: refetchSelectedOrder } = useOrderBySlug(
+    order,
+    {
+      enabled: shouldFetchOrders && orderSlugs.length > orderDetails.length,
+    },
+  )
   const { getSelectedItems } = useOrderTrackingStore()
 
   // Create an object to store refetch functions for each order
   const orderRefetchMap = useRef<{ [key: string]: () => void }>({})
 
-  useEffect(() => {
-    setOrderDetails([])
-    setShouldFetchOrders(false)
-  }, [order])
+  // useEffect(() => {
+  //   setOrderDetails([])
+  //   setShouldFetchOrders(false)
+  // }, [order])
 
   const { data: ordersData, refetch: allOrderRefetch } = useOrders({
     page: pagination.pageIndex,
@@ -53,13 +60,18 @@ export default function OrderItemDetailSheet({
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
-    table: order?.table?.slug,
+    table: selectedOrder?.result?.table?.slug,
     hasPaging: false,
-    enabled: shouldFetchOrders && !!order?.table?.slug,
+    enabled: shouldFetchOrders && !!selectedOrder?.result?.table?.slug,
   })
 
+  // Thêm hook mới sử dụng useMemo để cache slug cần fetch
+  const currentSlug = useMemo(() => {
+    return orderSlugs[orderDetails.length]
+  }, [orderSlugs, orderDetails.length])
+
   const { data: orderDetail, refetch: refetchOrderDetail } = useOrderBySlug(
-    orderSlugs[orderDetails.length],
+    currentSlug,
     {
       enabled: shouldFetchOrders && orderSlugs.length > orderDetails.length,
     },
@@ -79,8 +91,8 @@ export default function OrderItemDetailSheet({
         .map((item) => item.slug)
         .filter((slug) => !!slug) // Filter out empty or undefined slugs
       setOrderSlugs(validSlugs)
+      console.log('Valid slugs', validSlugs) // Log valid slugs
     }
-    console.log('Valid slugs', orderSlugs)
   }, [ordersData])
 
   // Update order details
@@ -103,30 +115,23 @@ export default function OrderItemDetailSheet({
     }
   }, [orderDetail])
 
-  // Refetch every 5 seconds
+  // Gộp 2 useEffect interval thành 1
   useEffect(() => {
     const interval = setInterval(() => {
-      if (shouldFetchOrders && orderSlugs.length > orderDetails.length) {
-        refetchOrderDetail()
-      }
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [orderSlugs, orderDetails.length, shouldFetchOrders, refetchOrderDetail])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (shouldFetchOrders && orderDetails.length > 0) {
-        orderDetails.forEach((_orderDetail, index) => {
-          if (orderSlugs[index] && orderSlugs[index] !== undefined) {
-            refetchOrderDetail()
+      if (shouldFetchOrders && orderSlugs.length > 0) {
+        console.log('Refetching order details...', orderSlugs)
+        // Chỉ refetch những order đã có trong orderDetails
+        orderDetails.forEach((detail) => {
+          const refetchFn = orderRefetchMap.current[detail.slug]
+          if (refetchFn) {
+            refetchFn()
           }
         })
       }
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [orderDetails, orderSlugs, shouldFetchOrders, refetchOrderDetail])
+  }, [orderDetails, orderSlugs, shouldFetchOrders])
 
   const handleFetchOrders = () => {
     setShouldFetchOrders(true)
@@ -156,7 +161,7 @@ export default function OrderItemDetailSheet({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle className="flex items-center justify-between mt-6">
+          <SheetTitle className="mt-6 flex items-center justify-between">
             Thông tin chi tiết
             <Button onClick={handleFetchOrders}>
               {shouldFetchOrders ? 'Refresh Orders' : 'Load Orders'}
@@ -173,20 +178,22 @@ export default function OrderItemDetailSheet({
           <div className="mt-4">
             {order ? (
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2 p-4 border-2 rounded-lg border-primary bg-primary/5">
+                <div className="flex flex-col gap-2 rounded-lg border-2 border-primary bg-primary/5 p-4">
                   <div className="font-medium text-primary">Current Order</div>
-                  <CustomerInformation orderDetailData={order} />
-                  <OrderItemList orderDetailData={order} />
+                  <CustomerInformation
+                    orderDetailData={selectedOrder?.result}
+                  />
+                  <OrderItemList orderDetailData={selectedOrder?.result} />
                 </div>
 
                 {shouldFetchOrders && (
                   <div className="flex flex-col gap-4">
                     {orderDetails
-                      .filter((orderDetail) => orderDetail.slug !== order.slug)
+                      .filter((orderDetail) => orderDetail.slug !== order)
                       .map((orderDetail) => (
                         <div
                           key={orderDetail.slug}
-                          className="flex flex-col gap-2 p-4 border rounded-lg"
+                          className="flex flex-col gap-2 rounded-lg border p-4"
                         >
                           <CustomerInformation orderDetailData={orderDetail} />
                           <OrderItemList orderDetailData={orderDetail} />

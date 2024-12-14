@@ -55,7 +55,8 @@ export default function OrderManagementPage() {
     return () => clearInterval(interval)
   }, [refetch, allOrderRefetch])
 
-  const orderDetailData = orderDetail?.result
+  // const orderDetailData = orderDetail?.result
+  // console.log('orderDetailData check', orderDetailData)
   return (
     <div className="flex flex-row flex-1 gap-2 py-4">
       <ScrollArea className="flex-1">
@@ -92,7 +93,8 @@ export default function OrderManagementPage() {
 
             {/* Order Information */}
             <OrderItemDetailSheet
-              order={orderDetailData}
+              // order={orderDetailData}
+              order={selectedOrderSlug}
               isOpen={isSheetOpen}
               onClose={handleCloseSheet}
             />

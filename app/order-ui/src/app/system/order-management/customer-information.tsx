@@ -4,7 +4,7 @@ import moment from 'moment'
 import { IOrder, IOrderType } from '@/types'
 
 interface ICustomerInfoProps {
-  orderDetailData: IOrder
+  orderDetailData?: IOrder
 }
 
 export default function CustomerInformation({
@@ -28,7 +28,7 @@ export default function CustomerInformation({
             {t('order.orderDate')}
           </span>
           <span className="col-span-1 text-xs">
-            {orderDetailData.createdAt ? moment(orderDetailData?.createdAt).format('hh:mm DD/MM/YYYY') : ''}
+            {orderDetailData?.createdAt ? moment(orderDetailData?.createdAt).format('hh:mm DD/MM/YYYY') : ''}
           </span>
         </div>
         {/* <div className="grid grid-cols-2">
@@ -58,7 +58,7 @@ export default function CustomerInformation({
             {t('order.tableNumber')}
           </span>
           <span className="col-span-1 text-xs">
-            {orderDetailData?.table.name}
+            {orderDetailData?.table?.name}
           </span>
         </div>
       </div>
