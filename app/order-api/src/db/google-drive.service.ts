@@ -65,6 +65,7 @@ export class GoogleDriveService {
     } catch (err) {
       this.logger.error(
         `Error uploading file: ${JSON.stringify(err)}`,
+        err.stack,
         context,
       );
       throw new BadRequestException(`Error uploading file: ${err.message}`);

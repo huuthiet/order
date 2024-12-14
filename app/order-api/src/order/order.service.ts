@@ -81,7 +81,7 @@ export class OrderService {
     });
 
     if (!order) {
-      this.logger.error(`Order not found`, context);
+      this.logger.error(`Order not found`, null, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
@@ -490,7 +490,10 @@ export class OrderService {
     });
 
     if (!order) {
-      this.logger.warn(`${OrderValidation.ORDER_NOT_FOUND.message} ${slug}`, context);
+      this.logger.warn(
+        `${OrderValidation.ORDER_NOT_FOUND.message} ${slug}`,
+        context,
+      );
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 

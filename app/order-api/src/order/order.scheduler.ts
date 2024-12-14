@@ -63,6 +63,7 @@ export class OrderScheduler {
       await queryRunner.rollbackTransaction();
       this.logger.error(
         `Error encountered while migrating: ${error.message}`,
+        error.stack,
         context,
       );
     } finally {

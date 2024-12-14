@@ -53,6 +53,7 @@ export class RoleScheduler {
       } catch (error) {
         this.logger.error(
           `Error when initializing roles: ${error.message}`,
+          error.stack,
           context,
         );
       }

@@ -61,6 +61,7 @@ export class RobotConnectorClient implements OnModuleInit {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get robot ${id} data from ROBOT API failed: ${error.message}`,
+            error.stack,
             context,
           );
           throw new RobotConnectorException(
@@ -84,6 +85,7 @@ export class RobotConnectorClient implements OnModuleInit {
           catchError((error: AxiosError) => {
             this.logger.error(
               `Create Workflow from ROBOT API failed: ${error.message}`,
+              error.stack,
             );
             throw error;
           }),
@@ -93,12 +95,15 @@ export class RobotConnectorClient implements OnModuleInit {
   }
 
   async getAllWorkflows(): Promise<WorkflowResponseDto[]> {
+    const context = `${RobotConnectorClient.name}.${this.getAllWorkflows.name}`;
     const requestUrl = `${this.robotApiUrl}/workflows`;
     const { data } = await firstValueFrom(
       this.httpService.get<WorkflowResponseDto[]>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get all Workflows from ROBOT API failed: ${error.message}`,
+            error.stack,
+            context,
           );
           throw new BadRequestException(
             'Get all Workflows from ROBOT API failed',
@@ -122,6 +127,7 @@ export class RobotConnectorClient implements OnModuleInit {
           catchError((error: AxiosError) => {
             this.logger.error(
               `${RobotConnectorValidation.RUN_WORKFLOW_FROM_ROBOT_API_FAILED} ${workflowId}: ${error.message}`,
+              error.stack,
               context,
             );
             throw new RobotConnectorException(
@@ -144,6 +150,7 @@ export class RobotConnectorClient implements OnModuleInit {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get Workflow Execution from ROBOT API failed: ${error.message}`,
+            error.stack,
             context,
           );
           throw new BadRequestException(
@@ -164,6 +171,7 @@ export class RobotConnectorClient implements OnModuleInit {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get all Workflow Executions from ROBOT API failed: ${error.message}`,
+            error.stack,
           );
           throw error;
         }),
@@ -182,6 +190,7 @@ export class RobotConnectorClient implements OnModuleInit {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get all QR locations from ROBOT API failed: ${error.message}`,
+            error.stack,
             context,
           );
           throw new BadRequestException(error.message);
@@ -202,6 +211,7 @@ export class RobotConnectorClient implements OnModuleInit {
           catchError((error: AxiosError) => {
             this.logger.error(
               `Create QR location from ROBOT API failed: ${error.message}`,
+              error.stack,
             );
             throw error;
           }),
@@ -218,6 +228,7 @@ export class RobotConnectorClient implements OnModuleInit {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get QR location by ID from ROBOT API failed: ${error.message}`,
+            error.stack,
             context,
           );
           throw new RobotConnectorException(
@@ -241,6 +252,7 @@ export class RobotConnectorClient implements OnModuleInit {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Update QR location by ID from ROBOT API failed: ${error.message}`,
+            error.stack,
             context,
           );
           throw new BadRequestException(
@@ -259,6 +271,7 @@ export class RobotConnectorClient implements OnModuleInit {
         catchError((error: AxiosError) => {
           this.logger.error(
             `Delete QR location by ID from ROBOT API failed: ${error.message}`,
+            error.stack,
           );
           throw error;
         }),

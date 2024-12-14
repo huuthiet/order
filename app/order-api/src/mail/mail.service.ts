@@ -19,7 +19,6 @@ export class MailService {
 
   async sendForgotPasswordToken(user: User, url: string) {
     const context = `${MailService.name}.${this.sendForgotPasswordToken.name}`;
-    // try {
     await this.mailProducer.sendMail({
       to: user.email, // list of receivers
       subject: 'Reset Password', // Subject line
@@ -29,13 +28,6 @@ export class MailService {
         url,
       },
     });
-    // } catch (error) {
-    //   this.logger.error(
-    //     `Error sending email to ${JSON.stringify(error)}`,
-    //     context,
-    //   );
-    //   throw new BadRequestException(`Error sending email to ${user.email}`);
-    // }
     this.logger.log(`Email is sending to ${user.email}`, context);
   }
 
@@ -55,6 +47,7 @@ export class MailService {
     } catch (error) {
       this.logger.error(
         `Error sending email to ${JSON.stringify(error)}`,
+        error.stack,
         context,
       );
       throw new BadRequestException(`Error sending email to ${user.email}`);
