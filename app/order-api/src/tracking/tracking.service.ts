@@ -111,6 +111,10 @@ export class TrackingService implements OnModuleInit {
 
     let savedTrackingId: string = '';
     if (requestData.type === TrackingType.BY_ROBOT) {
+      const order = await this.getOrderByOrderItemSlug(
+        _.first(requestData.trackingOrderItems).orderItem
+      );
+      
       const tableLocation: string = await this.getLocationTableByOrder(order);
 
       const workflowId: string = await this.getWorkflowIdByBranchId(
@@ -131,6 +135,87 @@ export class TrackingService implements OnModuleInit {
           workflowId,
           runWorkflowData,
         );
+
+      const tracking = new Tracking();
+      Object.assign(tracking, {
+        workflowExecution: workflowRobot.workflow_execution_id,
+      });
+
+      savedTrackingId = await this.createTrackingAndTrackingOrderItem(
+        tracking,
+        orderItemsData,
+      );
+      this.trackingScheduler.startUpdateStatusTracking();
+    }
+
+    if (requestData.type === TrackingType.BY_STAFF) {
+      const tracking = new Tracking();
+      Object.assign(tracking, { status: WorkflowStatus.COMPLETED });
+
+      savedTrackingId = await this.createTrackingAndTrackingOrderItem(
+        tracking,
+        orderItemsData,
+      );
+      await this.trackingScheduler.updateStatusOrder(savedTrackingId);
+    }
+
+
+
+    const trackingData = await this.trackingRepository.findOne({
+      where: {
+        id: savedTrackingId,
+      },
+      relations: ['trackingOrderItems.orderItem'],
+    });
+
+    const TrackingDto = this.mapper.map(
+      trackingData,
+      Tracking,
+      TrackingResponseDto,
+    );
+    return TrackingDto;
+  }
+
+  async createTrackingTest(
+    requestData: CreateTrackingRequestDto,
+  ): Promise<TrackingResponseDto> {
+    const context = `${TrackingService.name}.${this.createTracking.name}`;
+    
+    if(_.isEmpty(requestData.trackingOrderItems)) {
+      this.logger.warn(TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM.message, context);
+      throw new TrackingException(TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM);
+    }
+
+    const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
+      requestData.trackingOrderItems,
+    );
+        
+    let savedTrackingId: string = '';
+    if (requestData.type === TrackingType.BY_ROBOT) {
+      await this.checkCurrentShipment();
+
+      await this.checkRobotStatusBeforeCall();
+
+      // validate order item of orders in a table
+      await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
+
+      const order = await this.getOrderByOrderItemSlug(
+        _.first(requestData.trackingOrderItems).orderItem
+      );
+      
+      const tableLocation: string = await this.getLocationTableByOrder(order);
+
+      const workflowId: string = await this.getWorkflowIdByBranchId(order.branch?.id);
+
+      const runWorkflowData: RunWorkflowRequestDto = {
+        runtime_config: {
+          raybot_id: this.robotId,
+          location: tableLocation,
+          order_code: order.slug,
+        },
+      };
+      const workflowRobot: WorkflowExecutionResponseDto =
+        await this.robotConnectorClient.runWorkflow(workflowId, runWorkflowData);
 
       const tracking = new Tracking();
       Object.assign(tracking, {
@@ -241,12 +326,6 @@ export class TrackingService implements OnModuleInit {
           OrderItemValidation.ORDER_ITEM_NOT_BELONG_TO_ANY_ORDER,
         );
       }
-      orderItemsData.push({
-        quantity: createTrackingOrderItem.quantity,
-        orderItem,
-      });
-
-      // check quantity
 
       // order item have not tracking order item
       if (_.isEmpty(orderItem.trackingOrderItems)) {
@@ -284,6 +363,11 @@ export class TrackingService implements OnModuleInit {
           OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY,
         );
       }
+
+      orderItemsData.push({
+        quantity: createTrackingOrderItem.quantity,
+        orderItem,
+      });
     }
 
     return orderItemsData;
@@ -328,13 +412,8 @@ export class TrackingService implements OnModuleInit {
       );
     }
 
-    // const isOrdersOneTable = orders.every(
-    //   (order) => order.table?.id === _.first(orders).table?.id
-    // );
     const isOrdersOneTable = orders.every(
-      (order) =>
-        order.branch?.id === _.first(orders).branch?.id &&
-        order.table.id === _.first(orders).table.id,
+      (order) => order.table?.id === _.first(orders).table?.id
     );
     if (!isOrdersOneTable) {
       this.logger.warn(
