@@ -51,7 +51,7 @@ import { SystemConfigKey } from 'src/system-config/system-config.constant';
 import * as _ from 'lodash';
 
 @Injectable()
-export class AuthService implements OnModuleInit {
+export class AuthService {
   private saltOfRounds: number;
   private duration: number;
   private refeshableDuration: number;
@@ -83,19 +83,8 @@ export class AuthService implements OnModuleInit {
     );
   }
 
-  async onModuleInit() {
-    const context = `${AuthService.name}.${this.onModuleInit.name}`;
-    this.frontedUrl = await this.systemConfigService.get(
-      SystemConfigKey.FRONTEND_URL,
-    );
-    this.logger.log(`Frontend URL loaded: ${this.frontedUrl}`, context);
-  }
-
   async getFrontendUrl() {
-    if (_.isEmpty(this.frontedUrl)) {
-      await this.onModuleInit();
-    }
-    return this.frontedUrl;
+    return await this.systemConfigService.get(SystemConfigKey.FRONTEND_URL);
   }
 
   async forgotPassword(requestData: ForgotPasswordRequestDto) {

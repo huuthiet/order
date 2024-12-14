@@ -43,17 +43,19 @@ import { RoleModule } from 'src/role/role.module';
 import { RolesGuard } from 'src/role/roles.guard';
 import { SystemConfigModule } from 'src/system-config/system-config.module';
 import { BullModule } from '@nestjs/bullmq';
+import { ConnectionOptions, RedisConnection } from 'bullmq';
 
 @Module({
   imports: [
     BullModule.forRootAsync({
       useFactory: (config: ConfigService) => {
+        const connectionOptions: ConnectionOptions = {
+          host: config.get('REDIS_HOST'),
+          port: config.get('REDIS_PORT'),
+          password: config.get('REDIS_PASSWORD'),
+        };
         return {
-          connection: {
-            host: config.get('REDIS_HOST'),
-            port: config.get('REDIS_PORT'),
-            password: config.get('REDIS_PASSWORD'),
-          },
+          connection: connectionOptions,
         };
       },
       inject: [ConfigService],
