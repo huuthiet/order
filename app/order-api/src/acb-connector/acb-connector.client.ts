@@ -19,10 +19,7 @@ import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
 
 @Injectable()
-export class ACBConnectorClient implements OnModuleInit {
-  private acbApiUrl: string;
-  private authAcbApiUrl: string;
-
+export class ACBConnectorClient {
   constructor(
     private readonly httpService: HttpService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
@@ -30,42 +27,14 @@ export class ACBConnectorClient implements OnModuleInit {
     private readonly systemConfigService: SystemConfigService,
   ) {}
 
-  async onModuleInit() {
-    const context = `${ACBConnectorClient.name}.${this.onModuleInit.name}`;
-    this.setAcbApiUrl();
-    this.setAuthAcbApiUrl();
-    this.logger.log(`ACB API URL loaded: ${this.acbApiUrl}`, context);
-    this.logger.log(`Auth ACB API URL loaded: ${this.authAcbApiUrl}`, context);
-  }
-
-  async setAuthAcbApiUrl() {
-    this.authAcbApiUrl = await this.systemConfigService.get(
-      SystemConfigKey.AUTH_ACB_API_URL,
-    );
-  }
-
   async getAuthAcbApiUrl() {
     const context = `${ACBConnectorClient.name}.${this.getAuthAcbApiUrl.name}`;
-    if (!this.authAcbApiUrl) {
-      this.logger.log(`Auth ACB API URL is not loaded`, context);
-    }
-    this.setAuthAcbApiUrl();
-    return this.authAcbApiUrl;
-  }
-
-  async setAcbApiUrl() {
-    this.authAcbApiUrl = await this.systemConfigService.get(
-      SystemConfigKey.ACB_API_URL,
-    );
+    return await this.systemConfigService.get(SystemConfigKey.AUTH_ACB_API_URL);
   }
 
   async getAcbApiUrl() {
     const context = `${ACBConnectorClient.name}.${this.getAcbApiUrl.name}`;
-    if (!this.acbApiUrl) {
-      this.logger.log(`ACB API URL is not loaded`, context);
-    }
-    this.setAcbApiUrl();
-    return this.acbApiUrl;
+    return await this.systemConfigService.get(SystemConfigKey.ACB_API_URL);
   }
 
   /**
@@ -110,6 +79,7 @@ export class ACBConnectorClient implements OnModuleInit {
     accessToken: string,
   ): Promise<ACBInitiateQRCodeResponseDto> {
     const context = `${ACBConnectorClient.name}.${this.initiateQRCode.name}`;
+    console.log(await this.getAcbApiUrl());
     const requestUrl = `${await this.getAcbApiUrl()}/payments/qr-payment/v1/initiate`;
     const { data } = await firstValueFrom(
       this.httpService
