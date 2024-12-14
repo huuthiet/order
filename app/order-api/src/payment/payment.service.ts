@@ -107,12 +107,12 @@ export class PaymentService {
       relations: ['owner', 'payment'],
     });
     if (!order) {
-      this.logger.error('Order not found', context);
+      this.logger.error('Order not found', null, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
     if (order.status !== OrderStatus.PENDING) {
-      this.logger.error('Order is not pending', context);
+      this.logger.error('Order is not pending', null, context);
       throw new OrderException(
         OrderValidation.ORDER_STATUS_INVALID,
         'Order is not pending',
@@ -129,7 +129,7 @@ export class PaymentService {
         payment = await this.cashStrategy.process(order);
         break;
       default:
-        this.logger.error('Invalid payment method', context);
+        this.logger.error('Invalid payment method', null, context);
         throw new PaymentException(PaymentValidation.PAYMENT_METHOD_INVALID);
     }
 
@@ -158,7 +158,7 @@ export class PaymentService {
     const transaction =
       requestData.requestParameters?.request?.requestParams?.transactions?.[0];
     if (!transaction) {
-      this.logger.error('Transaction not found', context);
+      this.logger.error('Transaction not found', null, context);
       throw new PaymentException(PaymentValidation.TRANSACTION_NOT_FOUND);
     }
 
@@ -170,7 +170,7 @@ export class PaymentService {
     });
 
     if (!payment) {
-      this.logger.error('Payment not found', context);
+      this.logger.error('Payment not found', null, context);
       throw new PaymentException(PaymentValidation.PAYMENT_NOT_FOUND);
     }
 

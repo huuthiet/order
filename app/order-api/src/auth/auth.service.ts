@@ -446,7 +446,7 @@ export class AuthService {
       relations: ['branch', 'role'],
     });
     if (!user) {
-      this.logger.error(`User ${userId} not found`, context);
+      this.logger.error(`User ${userId} not found`, null, context);
       throw new AuthException(AuthValidation.USER_NOT_FOUND);
     }
     return this.mapper.map(user, User, AuthProfileResponseDto);

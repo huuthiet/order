@@ -106,7 +106,7 @@ export class MenuService {
       relations: ['branch'],
     });
     if (!menu) {
-      this.logger.error(`Menu ${slug} not found`, context);
+      this.logger.error(`Menu ${slug} not found`, null, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
 
@@ -114,7 +114,11 @@ export class MenuService {
       where: { slug: requestData.branchSlug },
     });
     if (!branch) {
-      this.logger.error(`Branch ${requestData.branchSlug} not found`, context);
+      this.logger.error(
+        `Branch ${requestData.branchSlug} not found`,
+        null,
+        context,
+      );
       throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
     }
 
