@@ -2,7 +2,6 @@ import { Controller, Post, HttpStatus } from '@nestjs/common';
 import { DbService } from './db.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppResponseDto } from 'src/app/app.dto';
-import { Public } from 'src/auth/public.decorator';
 import { RoleEnum } from 'src/role/role.enum';
 import { HasRoles } from 'src/role/roles.decorator';
 
