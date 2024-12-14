@@ -76,7 +76,7 @@ export function TableItem({
       case TableStatus.AVAILABLE:
         return 'bg-muted-foreground/10'
       case TableStatus.RESERVED:
-        return 'bg-red-100 border-red-500 border'
+        return 'bg-yellow-500'
       default:
         return 'border-gray-500'
     }
@@ -93,11 +93,10 @@ export function TableItem({
       onClick={onClick}
     >
       <div
-        className={`rounded-md bg-transparent p-2 transition-all duration-200 ${
-          isSelected
-            ? 'z-10 scale-110 border-primary bg-primary/10 ring-4 ring-primary'
-            : 'bg-background hover:scale-105 hover:ring-2 hover:ring-primary/50'
-        } `}
+        className={`rounded-md bg-transparent p-2 transition-all duration-200 ${isSelected
+          ? 'z-10 scale-110 border-primary bg-primary/10 ring-4 ring-primary'
+          : 'bg-background hover:scale-105 hover:ring-2 hover:ring-primary/50'
+          } `}
       >
         <div className="flex items-center gap-2">
           {/* <div className={`w-2 h-3/5 rounded-full ${getStatusColor()}`} /> */}
@@ -133,7 +132,7 @@ export function TableItem({
                 className={`flex cursor-pointer items-center justify-center rounded-md ${getStatusColor()}`}
                 style={{ width: '100%', height: '100%' }}
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white p-1 text-sm font-medium text-muted-foreground">
+                <span className="flex items-center justify-center p-1 text-sm font-medium bg-white rounded-full h-7 w-7 text-muted-foreground">
                   {table.name}
                 </span>
               </div>

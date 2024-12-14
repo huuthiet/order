@@ -83,13 +83,19 @@ export default function OrderManagementPage() {
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
                 rowClassName={(row) =>
-                  row.slug === selectedRow ? 'bg-primary/20 border border-primary' : ''
+                  row.slug === selectedRow
+                    ? 'bg-primary/20 border border-primary'
+                    : ''
                 }
               />
             </div>
 
             {/* Order Information */}
-            <OrderItemDetailSheet order={orderDetailData} isOpen={isSheetOpen} onClose={handleCloseSheet} />
+            <OrderItemDetailSheet
+              order={orderDetailData}
+              isOpen={isSheetOpen}
+              onClose={handleCloseSheet}
+            />
           </div>
         </div>
       </ScrollArea>

@@ -15,11 +15,8 @@ interface OrderItemDetailProps {
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   const { t } = useTranslation(['menu'])
   // const [showDetails, setShowDetails] = useState(false)
-  const {
-    addSelectedItem,
-    removeSelectedItem,
-    getSelectedItems,
-  } = useOrderTrackingStore()
+  const { addSelectedItem, removeSelectedItem, getSelectedItems } =
+    useOrderTrackingStore()
   const [selectedIndexes, setSelectedIndexes] = useState<{
     [key: string]: boolean
   }>({})
@@ -82,6 +79,19 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
     const items = Array(orderItem.quantity)
       .fill(null)
       .map((_, index) => {
+        // Lấy tracking item có createdAt mới nhất
+        const latestTrackingItem = orderItem.trackingOrderItems.reduce((latest, item) => {
+          return new Date(item.tracking.createdAt) > new Date(latest.tracking.createdAt)
+            ? item
+            : latest
+        }, orderItem.trackingOrderItems[0])
+
+        // Nếu trạng thái là FAILED, trả về trạng thái FAILED
+        if (latestTrackingItem?.tracking.status === 'FAILED') {
+          return { status: OrderStatus.FAILED, index }
+        }
+
+        // Logic xử lý các trạng thái khác
         if (index < orderItem.status.COMPLETED) {
           return { status: OrderStatus.COMPLETED, index }
         }
@@ -107,10 +117,11 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
               key={item.index}
               className="grid flex-row items-center grid-cols-5 gap-3 px-2 py-4 border rounded-md"
             >
-              {item.status === OrderStatus.PENDING ? (
+              {item.status === OrderStatus.PENDING ||
+                item.status === OrderStatus.FAILED ? (
                 <div className="flex flex-row items-center col-span-3 gap-2">
                   <Checkbox
-                    className='w-5 h-5 shadow-none'
+                    className="w-5 h-5 shadow-none"
                     checked={isChecked(orderItem, item.index)}
                     onCheckedChange={(checked) =>
                       handleSelectOrderItem(checked, orderItem, item.index)
@@ -126,10 +137,10 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                 <div className="flex flex-row items-center justify-start col-span-3 gap-3">
                   <div
                     className={`h-3 w-3 rounded-full ${item.status === OrderStatus.COMPLETED
-                      ? 'bg-green-500'
-                      : item.status === OrderStatus.SHIPPING
-                        ? 'bg-blue-500'
-                        : 'bg-gray-300'
+                        ? 'bg-green-500'
+                        : item.status === OrderStatus.SHIPPING
+                          ? 'bg-blue-500'
+                          : 'bg-gray-300'
                       }`}
                   />
                   <p className="text-sm">{orderItem.variant.product.name}</p>
@@ -168,7 +179,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       {/* {showDetails && (
         <div className="mt-4 space-y-4">{renderOrderItem(order)}</div>
       )} */}
-      <div className='flex flex-col gap-2'>{renderOrderItem(order)}</div>
+      <div className="flex flex-col gap-2">{renderOrderItem(order)}</div>
     </div>
   )
 }

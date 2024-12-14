@@ -19,7 +19,7 @@ export default function OrderItemStatusBadge({
         return 'border-green-500 bg-green-50 border text-green-500 font-semibold'
       case OrderStatus.SHIPPING:
         return 'border-blue-500 bg-blue-50 border text-blue-500 font-semibold'
-      case OrderStatus.CANCEL:
+      case OrderStatus.FAILED:
         return 'border-destructive bg-destructive/20 border text-destructive'
     }
   }
@@ -32,7 +32,7 @@ export default function OrderItemStatusBadge({
         return t('order.shipping')
       case OrderStatus.COMPLETED:
         return t('order.completed')
-      case OrderStatus.CANCEL:
+      case OrderStatus.FAILED:
         return t('order.failed')
     }
   }

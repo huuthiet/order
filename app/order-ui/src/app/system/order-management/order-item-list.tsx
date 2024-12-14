@@ -4,8 +4,11 @@ import { IOrder } from '@/types'
 import OrderItemDetail from './order-item-detail'
 // import { publicFileURL } from '@/constants'
 import { ScrollArea } from '@/components/ui'
-import { CreateOrderTrackingByStaffDialog, CreateOrderTrackingByRobotDialog } from '@/components/app/dialog'
-import { useOrderTrackingStore } from '@/stores'
+// import {
+//   CreateOrderTrackingByStaffDialog,
+//   CreateOrderTrackingByRobotDialog,
+// } from '@/components/app/dialog'
+// import { useOrderTrackingStore } from '@/stores'
 
 interface IOrderItemListProps {
   orderDetailData: IOrder
@@ -15,26 +18,23 @@ export default function OrderItemList({
   orderDetailData,
 }: IOrderItemListProps) {
   const { t } = useTranslation(['menu'])
-  const { getSelectedItems } = useOrderTrackingStore()
+  // const { getSelectedItems } = useOrderTrackingStore()
   return (
     <div className="flex flex-col gap-1">
       <span className="flex items-center justify-between py-1 font-semibold text-md">
         {t('order.orderDetail')}
-        {getSelectedItems().length > 0 && (
+        {/* {getSelectedItems().length > 0 && (
           <div className="flex gap-2">
             <CreateOrderTrackingByStaffDialog />
             <CreateOrderTrackingByRobotDialog />
           </div>
-        )}
+        )} */}
       </span>
 
       <div className="flex flex-col w-full">
-        <ScrollArea>
+        <ScrollArea className="">
           {orderDetailData?.orderItems?.map((item) => (
-            <div
-              key={item.slug}
-              className="grid items-center w-full gap-4"
-            >
+            <div key={item.slug} className="grid items-center w-full gap-4">
               {/* <div
                 key={`${item.slug}`}
                 className="grid flex-row items-center w-full grid-cols-4"
@@ -47,7 +47,7 @@ export default function OrderItemList({
                         alt={item.variant.product.name}
                         className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                       />
-                      <span className="absolute flex items-center justify-center text-xs text-white rounded-full -bottom-2 -right-2 h-7 w-7 bg-primary">
+                      <span className="absolute flex items-center justify-center text-xs text-white rounded-full -right-2 -bottom-2 w-7 h-7 bg-primary">
                         x{item.quantity}
                       </span>
                     </div>
