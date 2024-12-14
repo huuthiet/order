@@ -5,7 +5,6 @@ import {
   Inject,
   Injectable,
   Logger,
-  OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -46,9 +45,7 @@ import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.va
 import { SystemConfigService } from 'src/system-config/system-config.service';
 
 @Injectable()
-export class TrackingService implements OnModuleInit {
-  private robotId: string;
-
+export class TrackingService {
   constructor(
     @InjectRepository(Tracking)
     private readonly trackingRepository: Repository<Tracking>,
@@ -70,10 +67,11 @@ export class TrackingService implements OnModuleInit {
     private readonly systemConfigService: SystemConfigService,
   ) {}
 
-  async onModuleInit() {
-    const context = `${TrackingService.name}.${this.onModuleInit.name}`;
-    this.robotId = await this.systemConfigService.get('ROBOT_ID');
-    this.logger.log(`Robot id loaded: ${this.robotId}`, context);
+  async getRobotId() {
+    const context = `${TrackingService.name}.${this.getRobotId.name}`;
+    const robotId = await this.systemConfigService.get('ROBOT_ID');
+    this.logger.log(`Robot id loaded: ${robotId}`, context);
+    return robotId;
   }
 
   /**
@@ -121,7 +119,7 @@ export class TrackingService implements OnModuleInit {
 
       const runWorkflowData: RunWorkflowRequestDto = {
         runtime_config: {
-          raybot_id: this.robotId,
+          raybot_id: await this.getRobotId(),
           location: tableLocation,
           order_code: order.slug,
         },
@@ -404,11 +402,11 @@ export class TrackingService implements OnModuleInit {
   async checkRobotStatusBeforeCall(): Promise<void> {
     const context = `${TrackingService.name}.${this.checkRobotStatusBeforeCall.name}`;
     const robotData: RobotResponseDto =
-      await this.robotConnectorClient.getRobotById(this.robotId);
+      await this.robotConnectorClient.getRobotById(await this.getRobotId());
 
     if (robotData.status !== RobotStatus.IDLE) {
       this.logger.warn(
-        `${RobotConnectorValidation.ROBOT_BUSY.message} ${this.robotId}`,
+        `${RobotConnectorValidation.ROBOT_BUSY.message} ${await this.getRobotId()}`,
         context,
       );
       throw new RobotConnectorException(RobotConnectorValidation.ROBOT_BUSY);
