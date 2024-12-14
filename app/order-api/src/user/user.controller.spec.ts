@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { MailService } from 'src/mail/mail.service';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Role } from 'src/role/role.entity';
+import { MailProducer } from 'src/mail/mail.producer';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -21,6 +22,11 @@ describe('UserController', () => {
       providers: [
         UserService,
         MailService,
+        MailProducer,
+        {
+          provide: 'BullQueue_mail',
+          useValue: {},
+        },
         { provide: MailerService, useValue: {} },
         {
           provide: getRepositoryToken(User),

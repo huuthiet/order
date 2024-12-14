@@ -6,7 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  Repository,
+} from 'typeorm';
 import {
   CreateOrderRequestDto,
   GetOrderRequestDto,
@@ -41,7 +47,6 @@ import { MenuItem } from 'src/menu-item/menu-item.entity';
 import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
 import * as moment from 'moment';
-import { table } from 'console';
 
 @Injectable()
 export class OrderService {
@@ -76,7 +81,7 @@ export class OrderService {
     });
 
     if (!order) {
-      this.logger.error(`Order not found`, context);
+      this.logger.error(`Order not found`, null, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
@@ -164,7 +169,7 @@ export class OrderService {
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
     if (!branch) {
       this.logger.warn(
-        `${BranchValidation.BRANCH_NOT_FOUND} ${data.branch}`,
+        `${BranchValidation.BRANCH_NOT_FOUND.message} ${data.branch}`,
         context,
       );
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
@@ -183,7 +188,7 @@ export class OrderService {
       });
       if (!table) {
         this.logger.warn(
-          `${TableValidation.TABLE_NOT_FOUND} ${data.table}`,
+          `${TableValidation.TABLE_NOT_FOUND.message} ${data.table}`,
           context,
         );
         throw new TableException(TableValidation.TABLE_NOT_FOUND);
@@ -194,7 +199,7 @@ export class OrderService {
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
     if (!owner) {
       this.logger.warn(
-        `${OrderValidation.OWNER_NOT_FOUND} ${data.owner}`,
+        `${OrderValidation.OWNER_NOT_FOUND.message} ${data.owner}`,
         context,
       );
       throw new OrderException(OrderValidation.OWNER_NOT_FOUND);
@@ -234,7 +239,7 @@ export class OrderService {
       },
     });
     if (!menu) {
-      this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
+      this.logger.warn(MenuValidation.MENU_NOT_FOUND.message, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
 
@@ -249,7 +254,7 @@ export class OrderService {
         });
         if (!variant) {
           this.logger.warn(
-            `${VariantValidation.VARIANT_NOT_FOUND} ${item.variant}`,
+            `${VariantValidation.VARIANT_NOT_FOUND.message} ${item.variant}`,
             context,
           );
           throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
@@ -266,7 +271,7 @@ export class OrderService {
         });
         if (!menuItem) {
           this.logger.warn(
-            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU.message,
             context,
           );
           throw new ProductException(
@@ -276,7 +281,7 @@ export class OrderService {
 
         if (item.quantity > menuItem.currentStock) {
           this.logger.warn(
-            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
             context,
           );
           throw new OrderException(
@@ -317,7 +322,7 @@ export class OrderService {
       },
     });
     if (!menu) {
-      this.logger.warn(MenuValidation.MENU_NOT_FOUND, context);
+      this.logger.warn(MenuValidation.MENU_NOT_FOUND.message, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
 
@@ -332,7 +337,7 @@ export class OrderService {
       });
       if (!variant) {
         this.logger.warn(
-          `${VariantValidation.VARIANT_NOT_FOUND} ${item.variant}`,
+          `${VariantValidation.VARIANT_NOT_FOUND.message} ${item.variant}`,
           context,
         );
         throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
@@ -349,7 +354,7 @@ export class OrderService {
       });
       if (!menuItem) {
         this.logger.warn(
-          ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
+          ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU.message,
           context,
         );
         throw new ProductException(
@@ -359,7 +364,7 @@ export class OrderService {
 
       if (item.quantity > menuItem.currentStock) {
         this.logger.warn(
-          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
           context,
         );
         throw new OrderException(
@@ -402,6 +407,7 @@ export class OrderService {
   async getAllOrders(
     options: GetOrderRequestDto,
   ): Promise<AppPaginatedResponseDto<OrderResponseDto>> {
+    console.log({ options });
     const findOptionsWhere: FindOptionsWhere<any> = {
       branch: {
         slug: options.branch,
@@ -410,15 +416,15 @@ export class OrderService {
         slug: options.owner,
       },
       table: {
-        slug: options.table
-      }
+        slug: options.table,
+      },
     };
 
     if (options.status.length > 0) {
       findOptionsWhere.status = In(options.status);
     }
 
-    const [orders, total] = await this.orderRepository.findAndCount({
+    const findManyOptions: FindManyOptions<Order> = {
       where: findOptionsWhere,
       relations: [
         'owner',
@@ -426,27 +432,38 @@ export class OrderService {
         'orderItems.variant.product',
         'payment',
         'invoice',
+        'table',
       ],
       order: { createdAt: 'DESC' },
-      skip: (options.page - 1) * options.size,
-      take: options.size,
-    });
+    };
+
+    if (options.hasPaging) {
+      Object.assign(findManyOptions, {
+        skip: (options.page - 1) * options.size,
+        take: options.size,
+      });
+    }
+
+    const [orders, total] =
+      await this.orderRepository.findAndCount(findManyOptions);
 
     const ordersDto = this.mapper.mapArray(orders, Order, OrderResponseDto);
+    const page = options.hasPaging ? options.page : 1;
+    const pageSize = options.hasPaging ? options.size : total;
 
     // Calculate total pages
-    const totalPages = Math.ceil(total / options.size);
+    const totalPages = Math.ceil(total / pageSize);
     // Determine hasNext and hasPrevious
-    const hasNext = options.page < totalPages;
-    const hasPrevious = options.page > 1;
+    const hasNext = page < totalPages;
+    const hasPrevious = page > 1;
 
     return {
       hasNext: hasNext,
       hasPrevios: hasPrevious,
       items: ordersDto,
       total,
-      page: options.page,
-      pageSize: options.size,
+      page,
+      pageSize,
       totalPages,
     } as AppPaginatedResponseDto<OrderResponseDto>;
   }
@@ -468,11 +485,15 @@ export class OrderService {
         'orderItems.variant.product',
         'orderItems.trackingOrderItems.tracking',
         'invoice.invoiceItems',
+        'table',
       ],
     });
 
     if (!order) {
-      this.logger.warn(`${OrderValidation.ORDER_NOT_FOUND} ${slug}`, context);
+      this.logger.warn(
+        `${OrderValidation.ORDER_NOT_FOUND.message} ${slug}`,
+        context,
+      );
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 

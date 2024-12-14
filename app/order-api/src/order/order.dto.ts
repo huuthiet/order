@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -20,6 +21,7 @@ import { Transform, Type } from 'class-transformer';
 import { OrderItem } from 'src/order-item/order-item.entity';
 import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
+import { TableResponseDto } from 'src/table/table.dto';
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -111,6 +113,20 @@ export class OrderPaymentResponseDto extends BaseResponseDto {
   statusMessage: string;
 }
 
+export class OrderTableResponseDto extends BaseResponseDto {
+  @AutoMap()
+  @ApiProperty()
+  name: string;
+
+  @AutoMap()
+  @ApiProperty()
+  location: string;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string;
+}
+
 export class OrderResponseDto extends BaseResponseDto {
   @AutoMap()
   subtotal: number;
@@ -138,6 +154,9 @@ export class OrderResponseDto extends BaseResponseDto {
 
   @AutoMap(() => InvoiceResponseDto)
   invoice: InvoiceResponseDto;
+
+  @AutoMap(() => OrderTableResponseDto)
+  table: OrderTableResponseDto;
 }
 
 export class GetOrderRequestDto {
@@ -200,4 +219,17 @@ export class GetOrderRequestDto {
     typeof value === 'string' ? value.split(',') : [value],
   )
   status: string[] = [];
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'Enable paging',
+    required: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === undefined || value === null) return true; // Default true
+    return value === 'true'; // Transform 'true' to `true` and others to `false`
+  })
+  hasPaging?: boolean;
 }

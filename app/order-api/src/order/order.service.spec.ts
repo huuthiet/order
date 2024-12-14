@@ -43,6 +43,8 @@ import { MenuItem } from 'src/menu-item/menu-item.entity';
 import { Menu } from 'src/menu/menu.entity';
 import { MenuException } from 'src/menu/menu.exception';
 import { ProductException } from 'src/product/product.exception';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -77,6 +79,7 @@ describe('OrderService', () => {
         OrderService,
         RobotConnectorClient,
         HttpService,
+        SystemConfigService,
         {
           provide: ConfigService,
           useValue: {
@@ -98,6 +101,10 @@ describe('OrderService', () => {
         {
           provide: DataSource,
           useValue: mockDataSource,
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
+          useFactory: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(Order),

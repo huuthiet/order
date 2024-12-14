@@ -6,7 +6,7 @@ import {
   MockType,
   repositoryMockFactory,
 } from 'src/test-utils/repository-mock.factory';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -31,6 +31,10 @@ import { ForgotPasswordToken } from './forgot-password-token.entity';
 import { MailService } from 'src/mail/mail.service';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Role } from 'src/role/role.entity';
+import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
+import { MailProducer } from 'src/mail/mail.producer';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -44,8 +48,19 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         FileService,
+        SystemConfigService,
+        { provide: DataSource, useFactory: dataSourceMockFactory },
+        MailProducer,
+        {
+          provide: 'BullQueue_mail',
+          useValue: {},
+        },
         {
           provide: getRepositoryToken(File),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
           useFactory: repositoryMockFactory,
         },
         {

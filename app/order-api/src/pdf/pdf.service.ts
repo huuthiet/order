@@ -45,6 +45,7 @@ export class PdfService {
     } catch (error) {
       this.logger.error(
         `Error when rendering template: ${JSON.stringify(error)}`,
+        error.stack,
         context,
       );
       throw new BadRequestException(

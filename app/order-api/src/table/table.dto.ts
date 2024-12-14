@@ -78,10 +78,6 @@ export class TableResponseDto extends BaseResponseDto {
 
   @AutoMap()
   @ApiProperty()
-  isEmpty: Boolean;
-
-  @AutoMap()
-  @ApiProperty()
   xPosition: number;
 
   @AutoMap()

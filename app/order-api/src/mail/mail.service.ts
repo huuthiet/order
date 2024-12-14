@@ -1,4 +1,3 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import {
   BadRequestException,
   Inject,
@@ -8,41 +7,34 @@ import {
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { resolve } from 'path';
 import { User } from 'src/user/user.entity';
+import { MailProducer } from './mail.producer';
 
 @Injectable()
 export class MailService {
   constructor(
-    private mailerService: MailerService,
-
-    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+    private readonly mailProducer: MailProducer,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: Logger,
   ) {}
 
   async sendForgotPasswordToken(user: User, url: string) {
     const context = `${MailService.name}.${this.sendForgotPasswordToken.name}`;
-    try {
-      await this.mailerService.sendMail({
-        to: user.email, // list of receivers
-        subject: 'Reset Password', // Subject line
-        template: resolve('public/templates/mail/forgot-password'), // `.ejs` extension is appended automatically
-        context: {
-          name: `${user.firstName} ${user.lastName}`,
-          url,
-        },
-      });
-    } catch (error) {
-      this.logger.error(
-        `Error sending email to ${JSON.stringify(error)}`,
-        context,
-      );
-      throw new BadRequestException(`Error sending email to ${user.email}`);
-    }
-    this.logger.log(`Email sent to ${user.email}`, context);
+    await this.mailProducer.sendMail({
+      to: user.email, // list of receivers
+      subject: 'Reset Password', // Subject line
+      template: resolve('public/templates/mail/forgot-password'), // `.ejs` extension is appended automatically
+      context: {
+        name: `${user.firstName} ${user.lastName}`,
+        url,
+      },
+    });
+    this.logger.log(`Email is sending to ${user.email}`, context);
   }
 
   async sendNewPassword(user: User, newPassword: string) {
     const context = `${MailService.name}.${this.sendNewPassword.name}`;
     try {
-      await this.mailerService.sendMail({
+      await this.mailProducer.sendMail({
         to: user.email, // list of receivers
         // from: '"Support Team" <support@example.com>', // override default from
         subject: 'Reset Password', // Subject line
@@ -55,6 +47,7 @@ export class MailService {
     } catch (error) {
       this.logger.error(
         `Error sending email to ${JSON.stringify(error)}`,
+        error.stack,
         context,
       );
       throw new BadRequestException(`Error sending email to ${user.email}`);

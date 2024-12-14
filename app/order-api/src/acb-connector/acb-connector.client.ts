@@ -4,8 +4,8 @@ import {
   Inject,
   Injectable,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   ACBInitiateQRCodeRequestDto,
   ACBInitiateQRCodeResponseDto,
@@ -15,18 +15,27 @@ import {
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfigKey } from 'src/system-config/system-config.constant';
 
 @Injectable()
 export class ACBConnectorClient {
-  private readonly acbApiUrl: string =
-    this.configService.get<string>('ACB_API_URL');
-
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: Logger,
+    private readonly systemConfigService: SystemConfigService,
   ) {}
+
+  async getAuthAcbApiUrl() {
+    const context = `${ACBConnectorClient.name}.${this.getAuthAcbApiUrl.name}`;
+    return await this.systemConfigService.get(SystemConfigKey.AUTH_ACB_API_URL);
+  }
+
+  async getAcbApiUrl() {
+    const context = `${ACBConnectorClient.name}.${this.getAcbApiUrl.name}`;
+    return await this.systemConfigService.get(SystemConfigKey.ACB_API_URL);
+  }
 
   /**
    * Get token from ACB API
@@ -35,7 +44,7 @@ export class ACBConnectorClient {
    */
   async token(requestData: ACBTokenRequestDto): Promise<ACBTokenResponseDto> {
     const context = `${ACBConnectorClient.name}.${this.token.name}`;
-    const requestUrl = `${this.acbApiUrl}/iam/id/v1/auth/realms/soba/protocol/openid-connect/token`;
+    const requestUrl = `${await this.getAuthAcbApiUrl()}/auth/realms/soba/protocol/openid-connect/token`;
     const { data } = await firstValueFrom(
       this.httpService
         .post<ACBTokenResponseDto>(requestUrl, requestData, {
@@ -47,6 +56,7 @@ export class ACBConnectorClient {
           catchError((error: AxiosError) => {
             this.logger.error(
               `Get token from ACB API failed: ${JSON.stringify(error.response?.data)}`,
+              error.stack,
               context,
             );
             throw new BadRequestException(error.message);
@@ -70,7 +80,8 @@ export class ACBConnectorClient {
     accessToken: string,
   ): Promise<ACBInitiateQRCodeResponseDto> {
     const context = `${ACBConnectorClient.name}.${this.initiateQRCode.name}`;
-    const requestUrl = `${this.acbApiUrl}/payments/qr-payment/v1/initiate`;
+    console.log(await this.getAcbApiUrl());
+    const requestUrl = `${await this.getAcbApiUrl()}/payments/qr-payment/v1/initiate`;
     const { data } = await firstValueFrom(
       this.httpService
         .post<ACBInitiateQRCodeResponseDto>(requestUrl, requestData, {
@@ -82,7 +93,8 @@ export class ACBConnectorClient {
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(
-              `Init QR Code from ACB API failed: ${JSON.stringify(error.response?.data)}`,
+              `Init QR Code from ACB API failed: ${JSON.stringify(error)}`,
+              error.stack,
               context,
             );
             throw new BadRequestException(error.message);

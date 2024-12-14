@@ -50,7 +50,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
       take: 1,
     });
     if (_.isEmpty(acbConnectorConfig)) {
-      this.logger.error('ACB Connector config not found', context);
+      this.logger.error('ACB Connector config not found', null, context);
       throw new BadRequestException('ACB Connector config not found');
     }
     // Get token from ACB

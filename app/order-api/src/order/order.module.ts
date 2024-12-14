@@ -13,6 +13,7 @@ import { Tracking } from 'src/tracking/tracking.entity';
 import { Menu } from 'src/menu/menu.entity';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
 import { OrderSubscriber } from './order.subscriber';
+import { OrderScheduler } from './order.scheduler';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { OrderSubscriber } from './order.subscriber';
     RobotConnectorModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderProfile, OrderSubscriber],
+  providers: [OrderService, OrderProfile, OrderSubscriber, OrderScheduler],
   exports: [OrderService],
 })
 export class OrderModule {}

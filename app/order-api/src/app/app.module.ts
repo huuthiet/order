@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../config/configuration';
 import { validate } from './env.validation';
 import { AuthModule } from 'src/auth/auth.module';
@@ -41,9 +41,29 @@ import { DbModule } from 'src/db/db.module';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RoleModule } from 'src/role/role.module';
 import { RolesGuard } from 'src/role/roles.guard';
+import { SystemConfigModule } from 'src/system-config/system-config.module';
+import { BullModule } from '@nestjs/bullmq';
+import { ConnectionOptions, RedisConnection } from 'bullmq';
 
 @Module({
   imports: [
+    BullModule.forRootAsync({
+      useFactory: (config: ConfigService) => {
+        const connectionOptions: ConnectionOptions = {
+          host: config.get('REDIS_HOST'),
+          port: config.get('REDIS_PORT'),
+          password: config.get('REDIS_PASSWORD'),
+          retryStrategy: (times) => {
+            if (times > 10) return null;
+            return 3000;
+          },
+        };
+        return {
+          connection: connectionOptions,
+        };
+      },
+      inject: [ConfigService],
+    }),
     ServeStaticModule.forRoot({
       rootPath: resolve('public'),
     }),
@@ -83,6 +103,7 @@ import { RolesGuard } from 'src/role/roles.guard';
     WorkflowModule,
     DbModule,
     RoleModule,
+    SystemConfigModule,
   ],
   controllers: [AppController],
   providers: [

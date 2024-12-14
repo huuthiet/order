@@ -73,6 +73,7 @@ export class InvoiceService {
         'orderItems.variant.product',
         'orderItems.variant.size',
         'approvalBy',
+        'table',
       ],
     });
     if (!order) {
@@ -109,7 +110,7 @@ export class InvoiceService {
       amount: order.subtotal,
       paymentMethod: order.payment?.paymentMethod,
       status: order.status,
-      tableName: order.tableName,
+      tableName: order.table.name,
       customer: `${order.owner.firstName} ${order.owner.lastName}`,
       branchAddress: order.branch.address,
       cashier: `${order.approvalBy?.firstName} ${order.approvalBy?.lastName}`,

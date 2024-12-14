@@ -13,6 +13,9 @@ import { BadRequestException } from "@nestjs/common";
 import { Catalog } from "src/catalog/catalog.entity";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { SizeException } from "src/size/size.exception";
+import { ProductException } from "src/product/product.exception";
+import { VariantException } from "./variant.exception";
 
 
 describe('VariantService', () => {
@@ -75,7 +78,7 @@ describe('VariantService', () => {
       } as CreateVariantRequestDto;
 
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.createVariant(mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.createVariant(mockInput)).rejects.toThrow(SizeException);
     });
 
     it('should throw error when product is not found', async () => {
@@ -86,7 +89,7 @@ describe('VariantService', () => {
       } as CreateVariantRequestDto;
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.createVariant(mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.createVariant(mockInput)).rejects.toThrow(ProductException);
     });
 
     it('should throw error when the both of product and size does exists', async () => {
@@ -128,7 +131,7 @@ describe('VariantService', () => {
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(product);
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(size);
       (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(variant);
-      await expect(service.createVariant(mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.createVariant(mockInput)).rejects.toThrow(VariantException);
     });
 
     it('should create success and return created product', async () => {
@@ -213,7 +216,7 @@ describe('VariantService', () => {
         price: 0
       } as UpdateVariantRequestDto;
       (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.updateVariant(variantSlug, mockInput)).rejects.toThrow(BadRequestException);
+      await expect(service.updateVariant(variantSlug, mockInput)).rejects.toThrow(VariantException);
     });
 
     it('should update success and return updated variant', async () => {
@@ -249,7 +252,7 @@ describe('VariantService', () => {
       const variantSlug = 'mock-variant-slug';
       (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.deleteVariant(variantSlug)).rejects.toThrow(BadRequestException);
+      await expect(service.deleteVariant(variantSlug)).rejects.toThrow(VariantException);
     });
 
     it('should delete success and return number of deleted records', async () => {

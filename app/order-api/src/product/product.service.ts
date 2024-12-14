@@ -46,7 +46,7 @@ export class ProductService {
       where: { slug },
       relations: ['catalog', 'variants.size'],
     });
-    console.log({product})
+    console.log({ product });
     if (!product) {
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
@@ -71,7 +71,11 @@ export class ProductService {
       },
     });
     if (!product) {
-      this.logger.error(ProductValidation.PRODUCT_NOT_FOUND.message, context);
+      this.logger.error(
+        ProductValidation.PRODUCT_NOT_FOUND.message,
+        null,
+        context,
+      );
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
 
@@ -90,10 +94,7 @@ export class ProductService {
     return this.mapper.map(updatedProduct, Product, ProductResponseDto);
   }
 
-  async deleteProductImage(
-    slug: string,
-    name: string,
-  ): Promise<number> {
+  async deleteProductImage(slug: string, name: string): Promise<number> {
     const context = `${ProductService.name}.${this.deleteProductImage.name}`;
     const product = await this.productRepository.findOne({
       where: {
@@ -101,7 +102,11 @@ export class ProductService {
       },
     });
     if (!product) {
-      this.logger.error(ProductValidation.PRODUCT_NOT_FOUND.message, context);
+      this.logger.error(
+        ProductValidation.PRODUCT_NOT_FOUND.message,
+        null,
+        context,
+      );
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
 
@@ -126,7 +131,11 @@ export class ProductService {
       },
     });
     if (!product) {
-      this.logger.error(ProductValidation.PRODUCT_NOT_FOUND.message, context);
+      this.logger.error(
+        ProductValidation.PRODUCT_NOT_FOUND.message,
+        null,
+        context,
+      );
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
 
@@ -135,7 +144,7 @@ export class ProductService {
     const nameImagesUpload = imagesUpload.map((item) => item.name);
 
     let images: string[] = [];
-    if(product.images) {
+    if (product.images) {
       images = JSON.parse(product.images);
     }
     images = images.concat(nameImagesUpload);
@@ -143,13 +152,10 @@ export class ProductService {
 
     const updatedProduct = await this.productRepository.save(product);
 
-    this.logger.log(
-      `Product images uploaded successfully`,
-      context,
-    );
+    this.logger.log(`Product images uploaded successfully`, context);
 
     return this.mapper.map(updatedProduct, Product, ProductResponseDto);
-  }  
+  }
 
   /**
    * Create a new product
@@ -166,7 +172,11 @@ export class ProductService {
       name: createProductDto.name,
     });
     if (product) {
-      this.logger.error(ProductValidation.PRODUCT_NAME_EXIST.message, context);
+      this.logger.error(
+        ProductValidation.PRODUCT_NAME_EXIST.message,
+        null,
+        context,
+      );
       throw new ProductException(ProductValidation.PRODUCT_NAME_EXIST);
     }
 
@@ -181,7 +191,7 @@ export class ProductService {
       Product,
     );
     Object.assign(productData, { catalog });
-    
+
     const newProduct = this.productRepository.create(productData);
     const createdProduct = await this.productRepository.save(newProduct);
     this.logger.log(
