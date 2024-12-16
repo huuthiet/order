@@ -47,6 +47,7 @@ import { MenuItem } from 'src/menu-item/menu-item.entity';
 import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
 import * as moment from 'moment';
+import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
 
 @Injectable()
 export class OrderService {
@@ -496,6 +497,15 @@ export class OrderService {
       );
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
+
+    order.orderItems.forEach(orderItem => {
+      orderItem.trackingOrderItems = orderItem.trackingOrderItems.reduce(
+        (latest: TrackingOrderItem[], current: TrackingOrderItem) => {
+          return latest.length === 0 || current.createdAt > latest[0].createdAt ? [current] : latest;
+        },
+        []
+      );
+    });
 
     const orderDto = this.getStatusEachOrderItemInOrder(order);
     return orderDto;
