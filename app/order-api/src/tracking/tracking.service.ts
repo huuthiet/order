@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, In, Not, Repository } from 'typeorm';
 import { Tracking } from './tracking.entity';
 import { CreateTrackingRequestDto, TrackingResponseDto } from './tracking.dto';
 import {
@@ -44,6 +44,7 @@ import { WorkflowValidation } from 'src/workflow/workflow.validation';
 import { RobotConnectorException } from 'src/robot-connector/robot-connector.exception';
 import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.validation';
 import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfigKey } from 'src/system-config/system-config.constant';
 
 @Injectable()
 export class TrackingService implements OnModuleInit {
@@ -72,7 +73,9 @@ export class TrackingService implements OnModuleInit {
 
   async onModuleInit() {
     const context = `${TrackingService.name}.${this.onModuleInit.name}`;
-    this.robotId = await this.systemConfigService.get('ROBOT_ID');
+    this.robotId = await this.systemConfigService.get(
+      SystemConfigKey.ROBOT_ID
+    );
     this.logger.log(`Robot id loaded: ${this.robotId}`, context);
   }
 
@@ -104,10 +107,6 @@ export class TrackingService implements OnModuleInit {
 
     // validate order item of orders in a table
     await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
-
-    const order = await this.getOrderByOrderItemSlug(
-      _.first(requestData.trackingOrderItems).orderItem,
-    );
 
     let savedTrackingId: string = '';
     if (requestData.type === TrackingType.BY_ROBOT) {
@@ -197,11 +196,8 @@ export class TrackingService implements OnModuleInit {
       await this.checkRobotStatusBeforeCall();
 
       // validate order item of orders in a table
-      await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
-
-      const order = await this.getOrderByOrderItemSlug(
-        _.first(requestData.trackingOrderItems).orderItem
-      );
+      const orders = await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
+      const order = _.first(orders);
       
       const tableLocation: string = await this.getLocationTableByOrder(order);
 
@@ -327,6 +323,11 @@ export class TrackingService implements OnModuleInit {
         );
       }
 
+      orderItemsData.push({
+        quantity: createTrackingOrderItem.quantity,
+        orderItem,
+      });
+
       // order item have not tracking order item
       if (_.isEmpty(orderItem.trackingOrderItems)) {
         if (createTrackingOrderItem.quantity > orderItem.quantity) {
@@ -342,16 +343,20 @@ export class TrackingService implements OnModuleInit {
       }
 
       // order item have tracking order item
-      const totalCompleted = orderItem.trackingOrderItems.reduce(
+      // note: cho phép gọi nhiều đơn nếu không dùng robot
+      // => cần kiểm tra đối với số lượng đang được xử lý bởi robot
+      const totalHandling = orderItem.trackingOrderItems.reduce(
         (total, item) => {
-          return item.tracking.status === WorkflowStatus.COMPLETED
+          return item.tracking.status === WorkflowStatus.COMPLETED ||
+            item.tracking.status === WorkflowStatus.PENDING ||
+            item.tracking.status === WorkflowStatus.RUNNING
             ? total + item.quantity
             : total;
         },
         0,
       );
       if (
-        totalCompleted + createTrackingOrderItem.quantity >
+        (totalHandling + createTrackingOrderItem.quantity) >
         orderItem.quantity
       ) {
         this.logger.warn(
@@ -363,11 +368,6 @@ export class TrackingService implements OnModuleInit {
           OrderItemValidation.REQUEST_ORDER_ITEM_GREATER_ORDER_ITEM_QUANTITY,
         );
       }
-
-      orderItemsData.push({
-        quantity: createTrackingOrderItem.quantity,
-        orderItem,
-      });
     }
 
     return orderItemsData;
@@ -379,7 +379,7 @@ export class TrackingService implements OnModuleInit {
    */
   async validateOrderItemInOneTable(
     orderItems: CreateTrackingOrderItemRequestDto[],
-  ): Promise<void> {
+  ): Promise<Order[]> {
     const context = `${TrackingService.name}.${this.validateOrderItemInOneTable.name}`;
     const orderItemSlugs = orderItems.map((item) => item.orderItem);
     const orders = await this.orderRepository.find({
@@ -422,6 +422,8 @@ export class TrackingService implements OnModuleInit {
       );
       new TrackingException(TrackingValidation.ORDERS_MUST_BELONG_TO_ONE_TABLE);
     }
+
+    return orders;
   }
 
   /**
