@@ -19,13 +19,14 @@
 <body>
   <div class="p-5 pt-0">
     <!-- Logo -->
-    <div class="flex items-center justify-center">
-      <img src="data:image/png;base64,<%= logoString %>" alt="" class="w-52">
+    <div class="mb-1">
+      <div class="flex items-center justify-center">
+        <img src="data:image/png;base64,<%= logoString %>" alt="" class="w-52">
+      </div>
+      <p class="text-center text-sm">
+        <%= branchAddress %>
+      </p>
     </div>
-    <p class="text-center text-sm">
-      <%= branchAddress %>
-    </p>
-
 
     <!-- Invoive info -->
     <div class="flex flex-col gap-2">
