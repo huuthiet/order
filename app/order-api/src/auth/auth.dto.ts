@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import {
   INVALID_FIRSTNAME,
   INVALID_LASTNAME,
@@ -36,9 +36,9 @@ export class RegisterAuthRequestDto extends LoginAuthRequestDto {
   @AutoMap()
   lastName: string;
 
-  @ApiProperty({ example: 'XOT7hr58Q' })
-  // @IsNotEmpty({ message: INVALID_BRANCH_SLUG })
+  @ApiProperty({ example: '' })
   @AutoMap()
+  @IsOptional()
   branchSlug: string;
 }
 
