@@ -191,10 +191,6 @@ export class ProductController {
     type: ProductResponseDto,
   })
   @ApiOperation({ summary: 'Upload product image' })
-  @ApiResponse({
-    status: 200,
-    description: 'Product image have been uploaded successfully',
-  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Chef, RoleEnum.Staff)
   @UseInterceptors(FileInterceptor('file'))
@@ -244,7 +240,10 @@ export class ProductController {
     @Param('slug') slug: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    const result = await this.productService.uploadMultiProductImages(slug, files);
+    const result = await this.productService.uploadMultiProductImages(
+      slug,
+      files,
+    );
     return {
       message: 'Product have been updated successfully',
       statusCode: HttpStatus.OK,
@@ -261,7 +260,10 @@ export class ProductController {
     type: String,
   })
   @ApiOperation({ summary: 'Delete product image' })
-  @ApiResponse({ status: 200, description: 'Product image deleted successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product image deleted successfully',
+  })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiParam({
     name: 'slug',
