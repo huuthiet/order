@@ -1,119 +1,230 @@
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { NotepadText, SquareMenu } from 'lucide-react'
+import { SquareMenu } from 'lucide-react'
 
-import { Input, ScrollArea } from '@/components/ui'
+import {
+  Button,
+  ScrollArea,
+  Separator,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui'
 import { useOrderBySlug } from '@/hooks'
-import CustomerInformation from './customer-information'
-import { ProgressBar } from '@/components/app/progress'
 import { publicFileURL } from '@/constants'
+import moment from 'moment'
+import OrderStatusBadge from '@/components/app/badge/order-status-badge'
+import { IOrderType, OrderStatus } from '@/types'
+import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 
 export default function OrderDetailPage() {
-    const { t } = useTranslation(['menu'])
-    const { slug } = useParams()
-    const { data: orderDetail } = useOrderBySlug(slug as string)
-    return (
-        <div className="flex flex-row flex-1 gap-2">
-            <ScrollArea className="flex-1">
-                <div className='flex flex-col gap-2'>
-                    <div className="flex flex-col">
-                        <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
-                            <span className="flex items-center justify-start w-full gap-1 text-lg">
-                                <SquareMenu />
-                                {t('order.orderDetail')} <span className='text-muted-foreground'>#{orderDetail?.result?.slug}</span>
-                            </span>
-                        </div>
-                    </div>
-                    <ProgressBar step={orderDetail?.result.status} />
-                    <CustomerInformation orderDetailData={orderDetail?.result} />
-                    <ScrollArea className="flex flex-col gap-2 pb-4">
-                        <div className="grid grid-cols-7 px-4 py-3 mb-4 text-sm font-thin rounded-md bg-muted/60">
-                            <span className="col-span-2">{t('order.product')}</span>
-                            <span className="col-span-1">{t('order.unitPrice')}</span>
-                            <span className="col-span-2 text-center">
-                                {t('order.quantity')}
-                            </span>
-                            <span className="col-span-2 text-center">
-                                {t('order.grandTotal')}
-                            </span>
-                        </div>
+  const { t } = useTranslation(['menu'])
+  const { slug } = useParams()
+  const { data: orderDetail } = useOrderBySlug(slug as string)
+  const navigate = useNavigate()
 
-                        {/* Danh sách sản phẩm */}
-                        <div className="flex flex-col border rounded-md">
-                            {orderDetail?.result.orderItems.map((item) => (
-                                <div
-                                    key={item.slug}
-                                    className="grid items-center w-full gap-4 p-4 pb-4 rounded-md"
-                                >
-                                    <div
-                                        key={`${item.slug}`}
-                                        className="grid flex-row items-center w-full grid-cols-7"
-                                    >
-                                        <div className="flex w-full col-span-2 gap-2">
-                                            <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
-                                                <img
-                                                    src={`${publicFileURL}/${item.variant.product.image}`}
-                                                    alt={item.variant.product.image}
-                                                    className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
-                                                />
-                                                <div className="flex flex-col">
-                                                    <span className="font-bold truncate">{item.variant.product.name}</span>
-                                                    <span className="text-sm text-muted-foreground">
-                                                        {t('order.size')}{item.variant.size.name}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex col-span-1">
-                                            <span className='text-sm text-muted-foreground'>
-                                                {`${(item.variant.price || 0).toLocaleString('vi-VN')}đ`}
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-center col-span-2">
-                                            <span className='text-sm text-muted-foreground'>{item.quantity}</span>
-                                        </div>
-
-                                        <div className="flex justify-center col-span-2">
-                                            <span className="text-sm font-semibold text-center text-primary">
-                                                {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {item.note && (
-                                        <div className='flex flex-row items-center gap-2'>
-                                            <NotepadText className="text-muted-foreground" />
-                                            <Input value={item.note} />
-                                        </div>
-                                    )}
-                                    <div className='flex justify-end'>
-                                        <div className='flex flex-col justify-end w-1/3 gap-3'>
-                                            <div className='grid grid-cols-3'>
-                                                <div className='col-span-2 text-sm font-semibold text-muted-foreground'>
-                                                    {t('order.total')}
-                                                </div>
-                                                <div className='col-span-1 text-sm text-right text-muted-foreground'>
-                                                    {`${orderDetail.result.subtotal.toLocaleString('vi-VN')}đ`}
-
-                                                </div>
-                                            </div>
-                                            <div className='grid grid-cols-3'>
-                                                <div className='col-span-2 text-sm font-semibold text-muted-foreground'>
-                                                    {t('order.totalPayment')}
-                                                </div>
-                                                <div className='col-span-1 text-xl font-semibold text-right text-primary'>
-                                                    {`${orderDetail.result.subtotal.toLocaleString('vi-VN')}đ`}
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </ScrollArea>
+  return (
+    <div className="flex flex-1 flex-row gap-2">
+      <ScrollArea className="flex-1">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
+            <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
+              <span className="flex w-full items-center justify-start gap-1 text-lg">
+                <SquareMenu />
+                {t('order.orderDetail')}{' '}
+                <span className="text-muted-foreground">
+                  #{orderDetail?.result?.slug}
+                </span>
+              </span>
+            </div>
+          </div>
+          {/* <CustomerInformation orderDetailData={orderDetail?.result} /> */}
+          <div className="flex gap-2">
+            {/* Left, info */}
+            <div className="flex w-3/4 flex-col gap-4">
+              {/* Order info */}
+              <div className="flex items-center justify-between rounded-sm border border-gray-200 bg-slate-100 p-3">
+                <div className="">
+                  <p className="pb-2">
+                    <span className="font-bold">Đơn hàng:</span>{' '}
+                    <span className="text-purple-800">
+                      {orderDetail?.result?.slug}
+                    </span>
+                  </p>
+                  <div className="flex items-center gap-1 font-thin">
+                    <p>
+                      {moment(orderDetail?.result?.createdAt).format(
+                        'hh:mm:ss DD/MM/YYYY',
+                      )}
+                    </p>{' '}
+                    |
+                    <p className="flex items-center gap-1">
+                      <span>Thu ngân:</span>
+                      <span className="text-purple-400">
+                        {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName} - ${orderDetail?.result?.owner?.phonenumber}`}
+                      </span>
+                    </p>
+                  </div>
                 </div>
-            </ScrollArea>
+                <OrderStatusBadge
+                  status={orderDetail?.result?.status || OrderStatus.PENDING}
+                />
+              </div>
+              {/* Order owner info */}
+              <div className="flex gap-2">
+                <div className="w-1/2 rounded-sm border border-gray-200">
+                  <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                    Khách hàng
+                  </div>
+                  <div className="px-3 py-2">
+                    <p>
+                      {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName}`}
+                    </p>
+                    <p>{orderDetail?.result?.owner?.phonenumber}</p>
+                  </div>
+                </div>
+                <div className="w-1/2 rounded-sm border border-gray-200">
+                  <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                    Loại đơn hàng
+                  </div>
+                  <div className="px-3 py-2">
+                    <p>
+                      {orderDetail?.result?.type === IOrderType.AT_TABLE
+                        ? t('order.dineIn')
+                        : t('order.takeAway')}
+                    </p>
+                    <p className="flex gap-1">
+                      <span className="col-span-2">
+                        {t('order.tableNumber')}
+                      </span>
+                      <span className="col-span-1">
+                        {orderDetail?.result?.table?.name}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {/* Order table */}
+              <Table>
+                <TableCaption>A list of orders.</TableCaption>
+                <TableHeader className="rounded bg-gray-200">
+                  <TableRow>
+                    <TableHead className="w-[100px]">
+                      {t('order.product')}
+                    </TableHead>
+                    <TableHead>{t('order.size')}</TableHead>
+                    <TableHead> {t('order.quantity')}</TableHead>
+                    <TableHead className="text-right">
+                      {t('order.unitPrice')}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t('order.grandTotal')}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orderDetail?.result.orderItems?.map((item) => (
+                    <TableRow key={item.slug}>
+                      <TableCell className="flex w-96 items-center gap-1 font-bold">
+                        <img
+                          src={`${publicFileURL}/${item.variant.product.image}`}
+                          alt={item.variant.product.image}
+                          className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                        />
+                        {item.variant.product.name}
+                      </TableCell>
+                      <TableCell>{item.variant.size.name}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell className="text-right">
+                        {`${orderDetail.result.subtotal.toLocaleString('vi-VN')}đ`}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Right, payment*/}
+            <div className="flex w-1/4 flex-col gap-2">
+              {/* Payment method, status */}
+              <div className="rounded-sm border border-gray-200">
+                <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                  Phương thức thanh toán
+                </div>
+                <div className="px-3 py-2">
+                  <p className="flex items-center gap-1 pb-2">
+                    <span className="col-span-1 text-xs font-semibold">
+                      {t('paymentMethod.title')}
+                    </span>
+                    <span className="text-xs">
+                      {orderDetail?.result?.payment?.paymentMethod && (
+                        <>
+                          {orderDetail?.result?.payment.paymentMethod ===
+                            'bank-transfer' && (
+                            <span>{t('paymentMethod.bankTransfer')}</span>
+                          )}
+                          {orderDetail?.result?.payment.paymentMethod ===
+                            'cash' && <span>{t('paymentMethod.cash')}</span>}
+                        </>
+                      )}
+                    </span>
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <span className="col-span-1 text-xs font-semibold">
+                      {t('paymentMethod.status')}
+                    </span>
+                    <span className="col-span-1 text-xs">
+                      {orderDetail?.result?.payment && (
+                        <PaymentStatusBadge
+                          status={orderDetail?.result?.payment?.statusCode}
+                        />
+                      )}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              {/* Total */}
+              <div className="flex flex-col gap-2 rounded-sm border border-gray-200 p-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">Tạm tính</p>
+                  <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">Thành tiền</p>
+                  <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <p className="text-gray-500">Cần thanh toán</p>
+                  <p className="text-2xl font-bold text-primary">{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">
+                    ({orderDetail?.result?.orderItems?.length} sản phẩm )
+                  </p>
+                  <p className="text-sm">(Đã bao gồm VAT)</p>
+                </div>
+              </div>
+              {/* Return order button */}
+              <Button
+                className="w-full bg-primary"
+                onClick={() => {
+                  navigate('/order-history')
+                }}
+              >
+                Quay lại
+              </Button>
+            </div>
+          </div>
         </div>
-    )
+      </ScrollArea>
+    </div>
+  )
 }

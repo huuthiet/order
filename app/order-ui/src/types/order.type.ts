@@ -1,4 +1,4 @@
-import { IOrderDetail, IOrder, OrderStatus } from './dish.type'
+import { IOrderDetail, IOrder } from './dish.type'
 
 export interface IOrderStore {
   order: IOrder | null
@@ -30,7 +30,7 @@ export interface IOrdersQuery {
   page: number | 1
   size: number | 10
   order: 'ASC' | 'DESC'
-  status?: OrderStatus[] // No changes needed here
+  status?: string // No changes needed here
   table?: string
   hasPaging?: boolean
   enabled?: boolean

@@ -3,6 +3,7 @@ import { BranchService } from './branch.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Branch } from './branch.entity';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 describe('BranchService', () => {
   let service: BranchService;
@@ -18,6 +19,10 @@ describe('BranchService', () => {
         {
           provide: MAPPER_MODULE_PROVIDER,
           useValue: {},
+        },
+        {
+          provide: WINSTON_MODULE_NEST_PROVIDER,
+          useValue: console,
         },
       ],
     }).compile();

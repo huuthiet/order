@@ -142,12 +142,14 @@ export default function AddToCartDialog({
                       <SelectValue placeholder={t('menu.selectSize')} />
                     </SelectTrigger>
                     <SelectContent>
-                      {product.variants.map((variant) => (
-                        <SelectItem key={variant.slug} value={variant.slug}>
-                          {variant.size.name.toUpperCase()} -{' '}
-                          {variant.price.toLocaleString('vi-VN')}đ
-                        </SelectItem>
-                      ))}
+                      {product.variants
+                        .sort((a, b) => a.price - b.price)
+                        .map((variant) => (
+                          <SelectItem key={variant.slug} value={variant.slug}>
+                            {variant.size.name.toUpperCase()} -{' '}
+                            {variant.price.toLocaleString('vi-VN')}đ
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </div>

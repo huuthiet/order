@@ -15,22 +15,22 @@ export default function BankConfigPage() {
 
   const bankConfigData = bankConfig?.result
   return (
-    <div className="flex flex-row h-full gap-2">
+    <div className="flex h-full flex-row gap-2">
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
         <div className={`transition-all duration-300 ease-in-out`}>
           <div className="sticky top-0 z-10 flex flex-col items-center gap-2">
-            <div className="flex justify-end w-full gap-2">
+            <div className="flex w-full justify-end gap-2">
               {!bankConfigData && <CreateBankConnectorDialog />}
               <UpdateBankConnectorDialog bankConnector={bankConfigData} />
             </div>
-            <div className="grid items-center justify-center w-full grid-cols-1 gap-4 mt-6 xl:grid-cols-5">
-              <div className="items-center justify-center w-full xl:col-span-2">
+            <div className="mt-6 grid w-full grid-cols-1 items-center justify-center gap-4 xl:grid-cols-5">
+              <div className="w-full items-center justify-center xl:col-span-2">
                 <BankCard bankCardData={bankConfigData} />
               </div>
               {bankConfigData && (
-                <div className="grid items-center justify-between w-full grid-cols-1 p-4 border rounded-sm xl:col-span-3">
-                  <div className="flex flex-col justify-between h-full col-span-1 gap-2 px-4">
+                <div className="grid w-full grid-cols-1 items-center justify-between rounded-sm border p-4 xl:col-span-3">
+                  <div className="col-span-1 flex h-full flex-col justify-between gap-2 px-4">
                     <div className="grid grid-cols-2">
                       <h3 className="col-span-1 text-sm font-medium">
                         {t('bank.xProviderId')}
@@ -38,7 +38,6 @@ export default function BankConfigPage() {
                       <PasswordInput
                         readOnly
                         value={bankConfigData.xProviderId}
-
                       />
                     </div>
                     <div className="grid grid-cols-2">
@@ -48,7 +47,6 @@ export default function BankConfigPage() {
                       <PasswordInput
                         readOnly
                         value={bankConfigData.xOwnerNumber}
-
                       />
                     </div>
                     <div className="grid grid-cols-2">
@@ -58,7 +56,6 @@ export default function BankConfigPage() {
                       <PasswordInput
                         readOnly
                         value={bankConfigData.xOwnerType}
-
                       />
                     </div>
                     <div className="grid grid-cols-2">
@@ -68,7 +65,6 @@ export default function BankConfigPage() {
                       <PasswordInput
                         readOnly
                         value={bankConfigData.beneficiaryName}
-
                       />
                     </div>
                     <div className="grid grid-cols-2">
@@ -78,7 +74,6 @@ export default function BankConfigPage() {
                       <PasswordInput
                         readOnly
                         value={bankConfigData.virtualAccountPrefix}
-
                       />
                     </div>
                   </div>

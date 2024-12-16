@@ -7,20 +7,18 @@ import {
   FileText,
   Grid2x2,
   LayoutGrid,
-  SquareTerminal,
   Users,
-  Wallet,
 } from 'lucide-react'
 import type { ISidebarRoute } from '@/types'
 import { Role, ROUTE } from '@/constants'
 
 export const sidebarRoutes: ISidebarRoute[] = [
-  {
-    title: 'sidebar.home',
-    path: ROUTE.STAFF_HOME,
-    icon: SquareTerminal,
-    roles: [Role.ADMIN, Role.CUSTOMER],
-  },
+  // {
+  //   title: 'sidebar.home',
+  //   path: ROUTE.STAFF_HOME,
+  //   icon: SquareTerminal,
+  //   roles: [Role.ADMIN, Role.CUSTOMER],
+  // },
   {
     title: 'sidebar.menu',
     path: ROUTE.STAFF_MENU,
@@ -45,11 +43,11 @@ export const sidebarRoutes: ISidebarRoute[] = [
     roles: [Role.MANAGER, Role.ADMIN],
     icon: Grid2x2,
   },
-  {
-    title: 'sidebar.internalWallet',
-    path: ROUTE.STAFF_WALLET_MANAGEMENT,
-    icon: Wallet,
-  },
+  // {
+  //   title: 'sidebar.internalWallet',
+  //   path: ROUTE.STAFF_WALLET_MANAGEMENT,
+  //   icon: Wallet,
+  // },
   {
     title: 'sidebar.menuManagement',
     path: ROUTE.STAFF_MENU_MANAGEMENT,

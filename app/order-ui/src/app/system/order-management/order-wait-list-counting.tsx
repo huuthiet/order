@@ -17,7 +17,7 @@ export default function OrderWaitListCounting() {
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
-    status: [OrderStatus.PENDING],
+    status: [OrderStatus.PENDING].join(','),
   })
 
   useEffect(() => {
@@ -29,13 +29,15 @@ export default function OrderWaitListCounting() {
 
   return (
     <div className="flex h-[8rem] min-w-[12rem] flex-col justify-between rounded-md border p-6 text-muted-foreground">
-      <div className="flex flex-row items-center justify-between text-md">
+      <div className="text-md flex flex-row items-center justify-between">
         {t('order.pendingOrders')}
-        <div className="flex items-center justify-center p-3 bg-green-100 rounded-lg h-fit w-fit">
-          <AlarmClock className="text-green-500 icon" />
+        <div className="flex h-fit w-fit items-center justify-center rounded-lg bg-green-100 p-3">
+          <AlarmClock className="icon text-green-500" />
         </div>
       </div>
-      <span className="flex items-center h-full text-3xl">{data?.result.total}</span>
+      <span className="flex h-full items-center text-3xl">
+        {data?.result.total}
+      </span>
     </div>
   )
 }
