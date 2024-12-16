@@ -9,7 +9,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui'
 import { ISize } from '@/types'
 import { DeleteSizeDialog, UpdateSizeDialog } from '@/components/app/dialog'
@@ -22,21 +22,30 @@ export const useSizeColumns = (): ColumnDef<ISize>[] => {
   return [
     {
       accessorKey: 'createdAt',
-      header: ({ column }) => <DataTableColumnHeader column={column} title={t('size.createdAt')} />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('size.createdAt')} />
+      ),
       cell: ({ row }) => {
         const createdAt = row.getValue('createdAt')
-        return createdAt ? moment(new Date(createdAt as string)).format('HH:mm DD/MM/YYYY') : ''
-      }
+        return createdAt
+          ? moment(new Date(createdAt as string)).format('HH:mm DD/MM/YYYY')
+          : ''
+      },
     },
     {
       accessorKey: 'name',
-      header: ({ column }) => <DataTableColumnHeader column={column} title={t('size.name')} />
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('size.name')} />
+      ),
+      cell: ({ row }) => {
+        return <div className="uppercase">{row.original.name}</div>
+      },
     },
     {
       accessorKey: 'description',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('size.description')} />
-      )
+      ),
     },
     {
       id: 'actions',
@@ -46,24 +55,29 @@ export const useSizeColumns = (): ColumnDef<ISize>[] => {
         return (
           <div>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild className="flex justify-start w-full">
-                <Button variant="ghost" className="w-8 h-8 p-0">
+              <DropdownMenuTrigger
+                asChild
+                className="flex w-full justify-start"
+              >
+                <Button variant="ghost" className="h-8 w-8 p-0">
                   <span className="sr-only">{tCommon('common.action')}</span>
-                  <MoreHorizontal className="w-4 h-4" />
+                  <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="flex flex-col justify-start min-w-[14rem] w-full"
+                className="flex w-full min-w-[14rem] flex-col justify-start"
               >
-                <DropdownMenuLabel>{tCommon('common.action')}</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                  {tCommon('common.action')}
+                </DropdownMenuLabel>
                 <UpdateSizeDialog size={size} />
                 <DeleteSizeDialog size={size} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         )
-      }
-    }
+      },
+    },
   ]
 }

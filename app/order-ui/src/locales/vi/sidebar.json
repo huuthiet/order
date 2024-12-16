@@ -2,8 +2,8 @@
   "sidebar": {
     "home": "Trang chủ",
     "menu": "Thực đơn",
-    "orderManagement": "Quản lý đơn hàng",
-    "orderHistory": "Lịch sử đơn hàng",
+    "orderManagement": "Quản lý giao hàng",
+    "orderHistory": "Quản lý đơn hàng",
     "tableManagement": "Quản lý bàn",
     "internalWallet": "Ví nội bộ",
     "menuManagement": "Quản lý thực đơn",

@@ -22,9 +22,9 @@ import { useDownloadStore } from '@/stores'
 export async function getAllOrders(
   params: IOrdersQuery,
 ): Promise<IApiResponse<IPaginationResponse<IOrder>>> {
+  console.log({ params })
   const response = await http.get<IApiResponse<IPaginationResponse<IOrder>>>(
     '/orders',
-
     {
       // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
       doNotShowLoading: true,

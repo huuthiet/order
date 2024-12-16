@@ -4,7 +4,6 @@ import { ChevronRight, Sparkles } from 'lucide-react'
 import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSidebar } from '@/components/ui'
-// import { hasRequiredRole } from '@/utils/auth'
 import { useMemo } from 'react'
 import { useUserStore } from '@/stores'
 import { Role } from '@/constants/role'
@@ -36,6 +35,8 @@ import {
 import { sidebarRoutes } from '@/router/routes'
 import { ISidebarRoute } from '@/types'
 import { Logo } from '@/assets/images'
+import { HomeIcon } from '@radix-ui/react-icons'
+import { cn } from '@/lib'
 
 export default function AppSidebar() {
   const { t } = useTranslation('sidebar')
@@ -67,34 +68,26 @@ export default function AppSidebar() {
       // Kiểm tra role cho phép
       return !route.roles || route.roles.includes(userInfo.role.name)
     })
-  }, [userInfo])
-
-  console.log(filteredRoutes)
+  }, [translatedRoutes, userInfo?.role?.name])
 
   return (
     <Sidebar
       variant="inset"
-      className="z-50 bg-white border-r"
+      className="z-50 border-r bg-slate-50 shadow-2xl shadow-gray-300"
       collapsible="icon"
     >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="w-full">
-            <SidebarMenuButton size="lg" asChild>
-              <NavLink
-                to="/staff/home"
-                className="flex items-center justify-center w-full"
-              >
-                {/* <div className="flex items-center justify-center text-white rounded-lg aspect-square size-8 bg-primary shrink-0 group-data-[collapsible=icon]:w-full">
-                  <Command className="size-4" />
+            <NavLink to="/" className="flex items-center justify-center p-3">
+              {state === 'collapsed' ? (
+                <div>
+                  <HomeIcon />
                 </div>
-                <div className="flex items-center">
-                  <span className="font-semibold text-primary">SMART</span>
-                  <span>COFFEE</span>
-                </div> */}
+              ) : (
                 <img src={Logo} alt="logo" className="h-6" />
-              </NavLink>
-            </SidebarMenuButton>
+              )}
+            </NavLink>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -107,7 +100,10 @@ export default function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
-                    className={isActive(item.path) ? 'text-primary' : ''}
+                    className={cn(
+                      'hover:bg-primary hover:text-white',
+                      isActive(item.path) ? 'bg-primary text-white' : '',
+                    )}
                   >
                     <NavLink
                       to={item.path}
@@ -121,10 +117,12 @@ export default function AppSidebar() {
                       {item.icon && (
                         <IconWrapper
                           Icon={item.icon}
-                          className={isActive(item.path) ? 'text-primary' : ''}
+                          className={
+                            isActive(item.path) ? 'bg-primary text-white' : ''
+                          }
                         />
                       )}
-                      <span>{item.title}</span>
+                      <span className="font-thin">{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                   {item.children?.length ? (

@@ -26,7 +26,7 @@ export default function ProtectedElement({
     setLogout()
     removeUserInfo()
     navigate(ROUTE.LOGIN)
-  }, [setLogout, removeUserInfo])
+  }, [setLogout, removeUserInfo, navigate])
 
   const hasRequiredPermissions = useCallback(() => {
     if (!userInfo?.role?.name || !allowedRoles) return false
@@ -34,7 +34,6 @@ export default function ProtectedElement({
     // Kiểm tra SUPER_ADMIN có quyền truy cập tất cả
     if (userInfo.role.name === Role.SUPER_ADMIN) return true
 
-    console.log(allowedRoles.includes(userInfo.role.name))
     return allowedRoles.includes(userInfo.role.name)
   }, [userInfo, allowedRoles])
 
@@ -46,7 +45,7 @@ export default function ProtectedElement({
       showToast(t('auth:accessDenied'))
       navigate(ROUTE.LOGIN)
     }
-  }, [isAuthenticated, navigate, handleLogout, hasRequiredPermissions])
+  }, [isAuthenticated, navigate, handleLogout, hasRequiredPermissions, t])
 
   return hasRequiredPermissions() ? <>{element}</> : null
 }

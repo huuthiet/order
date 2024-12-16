@@ -1,43 +1,45 @@
 import { useTranslation } from 'react-i18next'
 
-import { OrderStatus } from '@/types'
+import { paymentStatus } from '@/constants'
 
 interface IPaymentStatusBadgeProps {
-    status: OrderStatus
+  status: paymentStatus
 }
 
-export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps) {
-    const { t } = useTranslation(['menu'])
+export default function PaymentStatusBadge({
+  status,
+}: IPaymentStatusBadgeProps) {
+  const { t } = useTranslation(['menu'])
 
-    const getBadgeColor = (status: OrderStatus) => {
-        switch (status) {
-            case OrderStatus.PENDING:
-                return 'bg-yellow-500 text-white'
-            case OrderStatus.PAID:
-                return 'bg-green-500 text-white'
-            case OrderStatus.FAILED:
-                return 'bg-destructive text-white'
-        }
+  const getBadgeColor = (status: paymentStatus) => {
+    switch (status) {
+      case paymentStatus.PENDING:
+        return 'bg-yellow-500 text-white'
+      case paymentStatus.COMPLETED:
+        return 'bg-green-500 text-white'
+      case paymentStatus.CANCELLED:
+        return 'bg-destructive text-white'
     }
+  }
 
-    const getBadgeText = (status: OrderStatus) => {
-        switch (status) {
-            case OrderStatus.PENDING:
-                return t('paymentMethod.pending')
-            case OrderStatus.PAID:
-                return t('paymentMethod.paid')
-            case OrderStatus.FAILED:
-                return t('paymentMethod.failed')
-        }
+  const getBadgeText = (status: paymentStatus) => {
+    switch (status) {
+      case paymentStatus.PENDING:
+        return t('paymentMethod.pending')
+      case paymentStatus.COMPLETED:
+        return t('paymentMethod.paid')
+      case paymentStatus.CANCELLED:
+        return t('paymentMethod.failed')
     }
-    // Ensure the component returns valid JSX
-    return (
-        <span
-            className={`inline-block bg-green-500 px-2 py-1 rounded-full w-fit text-center text-xs ${getBadgeColor(
-                status || OrderStatus.PENDING
-            )}`}
-        >
-            {getBadgeText(status || OrderStatus.PENDING)}
-        </span>
-    )
+  }
+  // Ensure the component returns valid JSX
+  return (
+    <span
+      className={`inline-block w-fit rounded-full bg-green-500 px-2 py-1 text-center text-xs ${getBadgeColor(
+        status || paymentStatus.PENDING,
+      )}`}
+    >
+      {getBadgeText(status || paymentStatus.PENDING)}
+    </span>
+  )
 }

@@ -1,29 +1,22 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ShoppingCartIcon } from 'lucide-react'
+import { BikeIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 
-import {
-  DataTableColumnHeader,
-} from '@/components/ui'
+import { DataTableColumnHeader } from '@/components/ui'
 import { IOrder } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-// import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-// import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
-// import { PaymentMethod } from '@/constants'
 
 export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
   const { t } = useTranslation(['menu'])
   return [
     {
       accessorKey: 'icon',
-      header: () => (
-        <div title='' />
-      ),
+      header: () => <div title="" />,
       cell: () => {
         return (
-          <div className="flex items-center h-8 w-8 justify-center rounded-lg bg-primary p-2.5">
-            <ShoppingCartIcon className="text-white icon" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary p-2.5">
+            <BikeIcon className="icon text-white" />
           </div>
         )
       },
@@ -36,37 +29,48 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
       ),
       cell: ({ row }) => {
         const slug = row.original.slug
-        return (
-          <span className='text-sm text-muted-foreground'>{slug}</span>
-        )
+        return <span className="text-sm text-muted-foreground">{slug}</span>
       },
     },
     {
       accessorKey: 'owner',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('order.customerName')} />
+        <DataTableColumnHeader
+          column={column}
+          title={t('order.customerName')}
+        />
       ),
       cell: ({ row }) => {
-        const owner = row.original.owner.firstName + ' ' + row.original.owner.lastName
+        const owner =
+          row.original.owner.firstName + ' ' + row.original.owner.lastName
         // const orderItemCount = row.original.orderItems.length
         return (
-          <div className='flex flex-col justify-start'>
-            <span className='text-sm font-medium'>{owner}</span>
+          <div className="flex flex-col justify-start">
+            <span className="text-sm font-medium">{owner}</span>
           </div>
         )
       },
     },
     {
-      accessorKey: 'owner',
+      accessorKey: 'table',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('order.table')} />
+      ),
+      cell: ({ row }) => {
+        const order = row.original
+        return <div>Bàn số {order?.table?.name}</div>
+      },
+    },
+    {
+      accessorKey: 'itemAmount',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('order.itemAmount')} />
       ),
       cell: ({ row }) => {
-        // const owner = row.original.owner.firstName + ' ' + row.original.owner.lastName
         const orderItemCount = row.original.orderItems.length
         return (
-          <div className='flex flex-col justify-start'>
-            <div className='flex flex-row gap-1 text-sm'>
+          <div className="flex flex-col">
+            <div className="flex gap-1 text-sm">
               <span>{orderItemCount}</span>
               {t('order.item').toLocaleLowerCase()}
             </div>
@@ -81,12 +85,7 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
       ),
       cell: ({ row }) => {
         const order = row.original
-        return (
-          <OrderStatusBadge
-            status={order?.status}
-          />
-
-        )
+        return <OrderStatusBadge status={order?.status} />
       },
     },
     {
@@ -97,7 +96,9 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
       cell: ({ row }) => {
         const createdAt = row.getValue('createdAt')
         return (
-          <span className='text-sm text-muted-foreground'>{createdAt ? moment(createdAt).format('HH:mm DD/MM/YYYY') : ''}</span>
+          <span className="text-sm text-muted-foreground">
+            {createdAt ? moment(createdAt).format('HH:mm DD/MM/YYYY') : ''}
+          </span>
         )
       },
     },

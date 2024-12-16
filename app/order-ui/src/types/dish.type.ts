@@ -61,7 +61,7 @@ export interface IPayment extends IBase {
   qrCode: string
   userId: string
   transactionId: string
-  statusCode: string
+  statusCode: paymentStatus
   statusMessage: string
 }
 

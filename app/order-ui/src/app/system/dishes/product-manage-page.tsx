@@ -17,7 +17,7 @@ export default function ProductManagementPage() {
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
         <div className={`pl-4 transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pb-4 pr-4">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 pr-4">
             <div className="mt-4 flex w-full flex-1 flex-col">
               <span className="flex items-center gap-1 text-lg">
                 <SquareMenu />
