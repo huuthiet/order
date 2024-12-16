@@ -1,5 +1,6 @@
 volumes:
   mysql:
+  redis_data:
 
 services:
   redis:

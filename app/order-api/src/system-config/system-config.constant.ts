@@ -4,4 +4,5 @@ export enum SystemConfigKey {
   ROBOT_API_URL = 'ROBOT_API_URL',
   ACB_API_URL = 'ACB_API_URL',
   AUTH_ACB_API_URL = 'AUTH_ACB_API_URL',
+  FOLDER_ID = 'FOLDER_ID',
 }

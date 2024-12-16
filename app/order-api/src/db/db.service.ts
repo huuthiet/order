@@ -58,11 +58,11 @@ export class DbService {
 
       exec(dumpCommand, (error, stdout, stderr) => {
         if (error) {
-          this.logger.error(`Error: ${error.message}`, context);
+          this.logger.error(`Error: ${error.message}`, error.stack, context);
           return reject(new BadRequestException('Error exporting database'));
         }
         if (stderr) {
-          this.logger.error(`stderr: ${stderr}`, context);
+          this.logger.error(`stderr: ${stderr}`, null, context);
         }
         resolve(dumpFilePath);
       });
@@ -76,6 +76,7 @@ export class DbService {
         if (err) {
           this.logger.error(
             `Error deleting temporary file: ${err.message}`,
+            err.stack,
             context,
           );
           return reject(err);

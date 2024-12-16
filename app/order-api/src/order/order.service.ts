@@ -82,7 +82,7 @@ export class OrderService {
     });
 
     if (!order) {
-      this.logger.error(`Order not found`, context);
+      this.logger.error(`Order not found`, null, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
@@ -490,6 +490,14 @@ export class OrderService {
       ],
     });
 
+    if (!order) {
+      this.logger.warn(
+        `${OrderValidation.ORDER_NOT_FOUND.message} ${slug}`,
+        context,
+      );
+      throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
+    }
+
     order.orderItems.forEach(orderItem => {
       orderItem.trackingOrderItems = orderItem.trackingOrderItems.reduce(
         (latest: TrackingOrderItem[], current: TrackingOrderItem) => {
@@ -498,12 +506,6 @@ export class OrderService {
         []
       );
     });
-    
-
-    if (!order) {
-      this.logger.warn(`${OrderValidation.ORDER_NOT_FOUND.message} ${slug}`, context);
-      throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
-    }
 
     const orderDto = this.getStatusEachOrderItemInOrder(order);
     return orderDto;

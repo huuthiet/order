@@ -56,6 +56,7 @@ export class ACBConnectorClient {
           catchError((error: AxiosError) => {
             this.logger.error(
               `Get token from ACB API failed: ${JSON.stringify(error.response?.data)}`,
+              error.stack,
               context,
             );
             throw new BadRequestException(error.message);
@@ -93,6 +94,7 @@ export class ACBConnectorClient {
           catchError((error: AxiosError) => {
             this.logger.error(
               `Init QR Code from ACB API failed: ${JSON.stringify(error)}`,
+              error.stack,
               context,
             );
             throw new BadRequestException(error.message);

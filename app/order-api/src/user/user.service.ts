@@ -67,6 +67,7 @@ export class UserService {
     } catch (error) {
       this.logger.error(
         `Error when updating user role: ${error.message}`,
+        error.stack,
         context,
       );
     }

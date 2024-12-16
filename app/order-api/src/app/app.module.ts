@@ -53,6 +53,10 @@ import { ConnectionOptions, RedisConnection } from 'bullmq';
           host: config.get('REDIS_HOST'),
           port: config.get('REDIS_PORT'),
           password: config.get('REDIS_PASSWORD'),
+          retryStrategy: (times) => {
+            if (times > 10) return null;
+            return 3000;
+          },
         };
         return {
           connection: connectionOptions,

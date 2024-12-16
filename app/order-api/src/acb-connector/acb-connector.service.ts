@@ -44,7 +44,7 @@ export class ACBConnectorService {
     const context = `${ACBConnectorService.name}.${this.create.name}`;
     const hasConfig = await this.acbConnectorConfigRepository.find({ take: 1 });
     if (hasConfig.length > 0) {
-      this.logger.error('ACB Config already exists', context);
+      this.logger.error('ACB Config already exists', null, context);
       throw new BadRequestException('ACB Config already exists');
     }
     const config = this.mapper.map(
@@ -69,7 +69,7 @@ export class ACBConnectorService {
       },
     });
     if (!config) {
-      this.logger.error('ACB Config not found', context);
+      this.logger.error('ACB Config not found', null, context);
       throw new BadRequestException('ACB Config not found');
     }
 

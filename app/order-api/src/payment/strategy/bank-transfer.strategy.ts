@@ -46,13 +46,14 @@ export class BankTransferStrategy implements IPaymentStrategy {
 
   async process(order: Order): Promise<Payment> {
     const context = `${BankTransferStrategy.name}.${this.process.name}`;
-    const acbConnectorConfig = await this.acbConnectorConfigRepository.find({
+    const acbConnectorConfigs = await this.acbConnectorConfigRepository.find({
       take: 1,
     });
-    if (_.isEmpty(acbConnectorConfig)) {
-      this.logger.error('ACB Connector config not found', context);
+    if (_.isEmpty(acbConnectorConfigs)) {
+      this.logger.error('ACB Connector config not found', null, context);
       throw new BadRequestException('ACB Connector config not found');
     }
+    console.log({ clientId: this.clientId, clientSecret: this.clientSecret });
     // Get token from ACB
     const { access_token } = await this.acbConnectorClient.token({
       client_id: this.clientId,
@@ -62,11 +63,12 @@ export class BankTransferStrategy implements IPaymentStrategy {
 
     // Call ACB API to create payment
     const requestTrace = uuidv4();
+    const acbConnectorConfig = _.first(acbConnectorConfigs);
     const headers = {
       [X_CLIENT_ID]: this.clientId,
-      [X_OWNER_NUMBER]: acbConnectorConfig[0]?.xOwnerNumber,
-      [X_OWNER_TYPE]: acbConnectorConfig[0]?.xOwnerType,
-      [X_PROVIDER_ID]: acbConnectorConfig[0]?.xProviderId,
+      [X_OWNER_NUMBER]: acbConnectorConfig?.xOwnerNumber,
+      [X_OWNER_TYPE]: acbConnectorConfig?.xOwnerType,
+      [X_PROVIDER_ID]: acbConnectorConfig?.xProviderId,
       [X_REQUEST_ID]: uuidv4(),
     };
 
