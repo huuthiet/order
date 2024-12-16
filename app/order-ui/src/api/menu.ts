@@ -47,7 +47,10 @@ export async function createMenu(
 export async function updateMenu(
   data: IUpdateMenuRequest,
 ): Promise<IApiResponse<IMenu>> {
-  const response = await http.patch<IApiResponse<IMenu>>('/menu', data)
+  const response = await http.patch<IApiResponse<IMenu>>(
+    `/menu/${data.slug}`,
+    data,
+  )
   return response.data
 }
 

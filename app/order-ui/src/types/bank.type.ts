@@ -1,4 +1,5 @@
 export interface IBankConnector {
+  slug: string
   xProviderId: string
   xService: string
   xOwnerNumber: string

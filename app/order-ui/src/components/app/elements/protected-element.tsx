@@ -25,7 +25,7 @@ export default function ProtectedElement({
   const handleLogout = useCallback(() => {
     setLogout()
     removeUserInfo()
-    // navigate(ROUTE.LOGIN)
+    navigate(ROUTE.LOGIN)
   }, [setLogout, removeUserInfo])
 
   const hasRequiredPermissions = useCallback(() => {

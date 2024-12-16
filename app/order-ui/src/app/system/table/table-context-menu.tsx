@@ -1,4 +1,4 @@
-import { DeleteTableDialog } from '@/components/app/dialog'
+import { DeleteTableDialog, UpdateTableDialog } from '@/components/app/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,6 +53,7 @@ export default function TableContextMenu({
           Đánh dấu đã đặt
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        <UpdateTableDialog table={table} />
         <DeleteTableDialog
           table={table}
           onContextOpen={() => onOpenChange(false)}

@@ -37,6 +37,7 @@ export const UpdateBankConnectorForm: React.FC<
   const form = useForm<TUpdateBankConnectorSchema>({
     resolver: zodResolver(updateBankConnectorSchema),
     defaultValues: {
+      slug: bankConnector?.slug || '',
       xProviderId: bankConnector?.xProviderId || '',
       xService: bankConnector?.xService || '',
       xOwnerNumber: bankConnector?.xOwnerNumber || '',

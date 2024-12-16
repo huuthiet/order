@@ -43,7 +43,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
             <span className="text-sm font-semibold text-muted-foreground">
               {order.owner?.firstName} {order.owner?.lastName}
             </span>
-            <span className="text-xs text-muted-foreground">{order.tableName}</span>
+            <span className="text-xs text-muted-foreground">{order.table.name}</span>
           </div>
         </div>
       </div>

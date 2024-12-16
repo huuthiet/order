@@ -40,6 +40,10 @@
     "updateMenuSuccess": "Cập nhật thực đơn thành công",
     "deleteMenuSuccess": "Xóa thực đơn thành công",
 
+    "createBankConnectorSuccess": "Tạo kết nối ngân hàng thành công",
+    "updateBankConnectorSuccess": "Cập nhật kết nối ngân hàng thành công",
+    "deleteBankConnectorSuccess": "Xóa kết nối ngân hàng thành công",
+
     "addMenuItemSuccess": "Thêm món vào thực đơn thành công",
     "updateMenuItemSuccess": "Cập nhật món trong thực đơn thành công",
     "deleteMenuItemSuccess": "Xóa món khỏi thực đơn thành công",

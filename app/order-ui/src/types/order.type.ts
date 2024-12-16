@@ -31,4 +31,7 @@ export interface IOrdersQuery {
   size: number | 10
   order: 'ASC' | 'DESC'
   status?: OrderStatus[] // No changes needed here
+  table?: string
+  hasPaging?: boolean
+  enabled?: boolean
 }

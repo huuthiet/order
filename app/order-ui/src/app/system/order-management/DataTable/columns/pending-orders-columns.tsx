@@ -8,6 +8,7 @@ import {
 } from '@/components/ui'
 import { IOrder } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
+// import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 // import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 // import { PaymentMethod } from '@/constants'
 
@@ -27,15 +28,16 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
         )
       },
     },
+
     {
-      accessorKey: 'createdAt',
+      accessorKey: 'slug',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('menu.createdAt')} />
+        <DataTableColumnHeader column={column} title={t('order.slug')} />
       ),
       cell: ({ row }) => {
-        const createdAt = row.getValue('createdAt')
+        const slug = row.original.slug
         return (
-          <span className='text-[0.5rem] text-muted-foreground'>{createdAt ? moment(createdAt).format('HH:mm DD/MM/YYYY') : ''}</span>
+          <span className='text-sm text-muted-foreground'>{slug}</span>
         )
       },
     },
@@ -46,11 +48,25 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
       ),
       cell: ({ row }) => {
         const owner = row.original.owner.firstName + ' ' + row.original.owner.lastName
+        // const orderItemCount = row.original.orderItems.length
+        return (
+          <div className='flex flex-col justify-start'>
+            <span className='text-sm font-medium'>{owner}</span>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'owner',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('order.itemAmount')} />
+      ),
+      cell: ({ row }) => {
+        // const owner = row.original.owner.firstName + ' ' + row.original.owner.lastName
         const orderItemCount = row.original.orderItems.length
         return (
-          <div className='flex flex-col justify-start gap-1'>
-            <span className='text-xs font-medium'>{owner}</span>
-            <div className='flex flex-row gap-1 text-xs text-muted-foreground/50'>
+          <div className='flex flex-col justify-start'>
+            <div className='flex flex-row gap-1 text-sm'>
               <span>{orderItemCount}</span>
               {t('order.item').toLocaleLowerCase()}
             </div>
@@ -70,6 +86,18 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
             status={order?.status}
           />
 
+        )
+      },
+    },
+    {
+      accessorKey: 'createdAt',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('menu.createdAt')} />
+      ),
+      cell: ({ row }) => {
+        const createdAt = row.getValue('createdAt')
+        return (
+          <span className='text-sm text-muted-foreground'>{createdAt ? moment(createdAt).format('HH:mm DD/MM/YYYY') : ''}</span>
         )
       },
     },

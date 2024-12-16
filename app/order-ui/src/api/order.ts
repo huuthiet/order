@@ -145,8 +145,21 @@ export async function exportOrderInvoice(
         doNotShowLoading: true,
       } as AxiosRequestConfig,
     )
-    const blob = new Blob([response.data], { type: 'application/pdf' })
-    saveAs(blob, `TREND Coffee Invoice-${currentDate}.pdf`)
+    const blobUrl = window.URL.createObjectURL(
+      new Blob([response.data], { type: response.headers['content-type'] }),
+    )
+
+    // Open the Blob in a new window for printing
+    const printWindow = window.open(blobUrl, '_blank')
+    if (printWindow) {
+      printWindow.focus()
+      printWindow.print()
+
+      // Optionally revoke the object URL after printing
+      printWindow.onafterprint = () => window.URL.revokeObjectURL(blobUrl)
+    }
+    // const blob = new Blob([response.data], { type: 'application/pdf' })
+    // saveAs(blob, `TREND Coffee Invoice-${currentDate}.pdf`)
     return response.data
   } finally {
     setIsDownloading(false)

@@ -55,7 +55,7 @@ export default function TableSelect() {
             <span className="text-sm">{t('table.available')}</span>
           </div>
           <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 bg-red-100 border border-red-500 rounded-sm" />
+            <div className="w-4 h-4 bg-yellow-500 rounded-sm" />
             <span className="text-sm">{t('table.reserved')}</span>
           </div>
           <div className="flex flex-row items-center gap-2">
