@@ -156,7 +156,7 @@ export class TrackingService {
       await this.trackingScheduler.updateStatusOrder(savedTrackingId);
     }
 
-
+    await this.softDeleteOldTrackingOrderItemFailed(orderItemsData.map((item) => item.orderItem?.id));
 
     const trackingData = await this.trackingRepository.findOne({
       where: {
@@ -234,6 +234,8 @@ export class TrackingService {
       await this.trackingScheduler.updateStatusOrder(savedTrackingId);
     }
 
+    await this.softDeleteOldTrackingOrderItemFailed(orderItemsData.map((item) => item.orderItem?.id));
+
     const trackingData = await this.trackingRepository.findOne({
       where: {
         id: savedTrackingId,
@@ -247,6 +249,26 @@ export class TrackingService {
       TrackingResponseDto,
     );
     return TrackingDto;
+  }
+
+  async softDeleteOldTrackingOrderItemFailed(
+    orderItemIds: string[]
+  ): Promise<void> {
+    // const orderItemIds = orderItems.map((item) => item.id);
+    const trackingOrderItems = await this.trackingOrderItemRepository.find({
+      where: {
+        orderItem: {
+          id: In(orderItemIds)
+        },
+        tracking: {
+          status: WorkflowStatus.FAILED
+        },
+      }
+    });
+    const trackingOrderItemIds = trackingOrderItems.map((item) => item.id);
+    await this.trackingOrderItemRepository.softDelete({
+      id: In(trackingOrderItemIds)
+    })
   }
 
   async getOrderByOrderItemSlug(orderItemSlug: string): Promise<Order> {
