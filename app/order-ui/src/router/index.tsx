@@ -228,7 +228,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: `${ROUTE.STAFF_PRODUCT_DETAIL}/:slug`,
+    path: `${ROUTE.STAFF_PRODUCT_MANAGEMENT}/:slug`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />
@@ -266,7 +266,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: `${ROUTE.STAFF_MENU_DETAIL}/:slug`,
+    path: `${ROUTE.STAFF_MENU_MANAGEMENT}/:slug`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />

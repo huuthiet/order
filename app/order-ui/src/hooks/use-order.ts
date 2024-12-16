@@ -26,11 +26,15 @@ export const useOrders = (q: IOrdersQuery) => {
   })
 }
 
-export const useOrderBySlug = (slug: string) => {
+export const useOrderBySlug = (
+  slug: string,
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: ['order', slug],
     queryFn: () => getOrderBySlug(slug),
     placeholderData: keepPreviousData,
+    enabled: options?.enabled,
   })
 }
 

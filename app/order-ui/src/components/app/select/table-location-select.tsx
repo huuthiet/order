@@ -67,7 +67,7 @@ export default function TableLocationSelect({
             onMenuScrollToBottom={() => { }}
             options={allTableLocations}
             onChange={handleChange}
-            defaultValue={selectedTableLocation}
+            defaultValue={selectedTableLocation || allTableLocations.find(option => option.value === defaultValue)}
         />
     )
 }

@@ -16,7 +16,7 @@ import { UpdateTableForm } from '@/components/app/form'
 import { ITable } from '@/types'
 
 interface UpdateTableDialogProps {
-  table: ITable
+  table: ITable | null
 }
 
 export default function UpdateTableDialog({ table }: UpdateTableDialogProps) {
@@ -27,11 +27,12 @@ export default function UpdateTableDialog({ table }: UpdateTableDialogProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
-          className="gap-1 text-sm"
+          variant="ghost"
+          className="gap-1 px-2 text-sm"
           onClick={() => setIsOpen(true)}
         >
           <PenSquareIcon className="icon" />
+          {t('table.update')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">

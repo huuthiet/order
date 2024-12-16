@@ -12,7 +12,7 @@ import { CartToggleButton } from '@/components/app/button'
 import AddMenuItem from './add-menu-item'
 
 export default function MenuDetailPage() {
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(true)
   const { t } = useTranslation(['menu'])
   const { slug } = useParams()
   const { data: menuDetail, isLoading } = useSpecificMenu({
@@ -30,15 +30,14 @@ export default function MenuDetailPage() {
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
         <div
-          className={`px-4 transition-all duration-300 ease-in-out ${
-            isCartOpen ? 'w-full' : 'w-full'
-          }`}
+          className={`px-4 transition-all duration-300 ease-in-out ${isCartOpen ? 'w-full' : 'w-full'
+            }`}
         >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background pr-4">
-            <div className="flex w-full flex-row items-center justify-end"></div>
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pr-4 bg-background">
+            <div className="flex flex-row items-center justify-end w-full"></div>
           </div>
-          <div className="flex w-full flex-row items-center justify-between">
-            <span className="flex w-full items-center gap-1 text-lg">
+          <div className="flex flex-row items-center justify-between w-full">
+            <span className="flex items-center w-full gap-1 text-lg">
               <SquareMenu />
               {t('menu.title')}
               {' - '}
@@ -60,9 +59,8 @@ export default function MenuDetailPage() {
         </div>
       </ScrollArea>
       <div
-        className={`border-l bg-background transition-all duration-300 ease-in-out ${
-          isCartOpen ? 'w-[50%]' : 'w-0 opacity-0'
-        } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
+        className={`border-l bg-background transition-all duration-300 ease-in-out ${isCartOpen ? 'w-[50%]' : 'w-0 opacity-0'
+          } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
       >
         {isCartOpen && <AddMenuItem />}
       </div>

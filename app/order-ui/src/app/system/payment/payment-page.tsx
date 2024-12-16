@@ -8,6 +8,7 @@ import { useExportPayment, useInitiatePayment, useOrderBySlug } from '@/hooks'
 import { PaymentMethod, ROUTE } from '@/constants'
 import { PaymentMethodSelect } from '@/app/system/payment'
 import { showToast } from '@/utils'
+import { ButtonLoading } from '@/components/app/loading'
 // import { QrCodeDialog } from '@/components/app/dialog'
 
 export default function PaymentPage() {
@@ -16,7 +17,7 @@ export default function PaymentPage() {
   const navigate = useNavigate()
   const [paymentMethod, setPaymentMethod] = useState<string>('')
   const { data: order, refetch: refetchOrder } = useOrderBySlug(slug as string)
-  const { mutate: initiatePayment } = useInitiatePayment()
+  const { mutate: initiatePayment, isPending } = useInitiatePayment()
   const { mutate: exportPayment } = useExportPayment()
   const [qrCode, setQrCode] = useState<string>('')
   const [paymentSlug, setPaymentSlug] = useState<string>('')
@@ -32,8 +33,8 @@ export default function PaymentPage() {
     if (isPolling) {
       interval = setInterval(async () => {
         const updatedOrder = await refetchOrder()
-        const paymentStatus = updatedOrder.data?.result?.payment?.statusCode
-        if (paymentStatus === 'paid') {
+        const orderStatus = updatedOrder.data?.result?.status
+        if (orderStatus === 'paid') {
           clearInterval(interval!)
           navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
         }
@@ -142,7 +143,7 @@ export default function PaymentPage() {
                           {t('order.location')}
                         </h3>
                         <p className="col-span-1 text-sm font-semibold">
-                          {order.result.tableName}
+                          {order.result.table.name}
                         </p>
                       </div>
                     </div>
@@ -231,13 +232,13 @@ export default function PaymentPage() {
               )}
               <div className="flex justify-end py-6">
                 {(paymentMethod === PaymentMethod.BANK_TRANSFER || paymentMethod === PaymentMethod.CASH) && (
-                  <div>
+                  <div className='flex gap-2'>
                     <Button
-                      disabled={isDisabled}
+                      disabled={isDisabled || isPending}
                       className="w-fit"
                       onClick={handleConfirmPayment}
                     >
-                      {t('paymentMethod.confirmPayment')}
+                      {isPending ? <ButtonLoading /> : t('paymentMethod.confirmPayment')}
                     </Button>
                     {paymentSlug && (
                       <Button

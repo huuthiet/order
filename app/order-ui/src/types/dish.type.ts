@@ -3,6 +3,7 @@ import { IBase } from './base.type'
 import { ICatalog } from './catalog.type'
 import { IProduct, IProductVariant } from './product.type'
 import { ISize } from './size.type'
+import { ITable } from './table.type'
 
 export interface IDish {
   id: number
@@ -68,7 +69,7 @@ export interface IOrder {
   createdAt: string
   slug: string
   type: string
-  tableName: string
+  table: ITable
   payment: IPayment
   branch: string
   owner: IOrderOwner
@@ -127,7 +128,7 @@ export interface ITrackingOrderItems extends IBase {
 export enum OrderStatus {
   PENDING = 'pending',
   SHIPPING = 'shipping',
-  CANCEL = 'cancel',
+  FAILED = 'FAILED',
   COMPLETED = 'completed',
   PAID = 'paid',
 }

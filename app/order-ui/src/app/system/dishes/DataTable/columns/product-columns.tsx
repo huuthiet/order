@@ -79,7 +79,7 @@ export const useProductColumns = (): ColumnDef<IProduct>[] => {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>{tCommon('common.action')}</DropdownMenuLabel>
                 <NavLink
-                  to={`${ROUTE.STAFF_PRODUCT_DETAIL}/${product.slug}`}
+                  to={`${ROUTE.STAFF_PRODUCT_MANAGEMENT}/${product.slug}`}
                   className="flex items-center justify-start w-full"
                 >
                   <Button variant="ghost" className="flex justify-start w-full gap-1 px-2 text-sm">

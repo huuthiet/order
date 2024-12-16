@@ -67,7 +67,7 @@ export default function CustomerInformation({
               {t('order.tableNumber')}
             </span>
             <span className="col-span-1 text-xs">
-              {orderDetailData?.tableName}
+              {orderDetailData?.table.name}
             </span>
           </div>
         </div>
@@ -100,7 +100,7 @@ export default function CustomerInformation({
             </span>
             <span className="col-span-1 text-xs">
               {orderDetailData?.invoice?.status && (
-                <PaymentStatusBadge status={orderDetailData?.invoice.status} />
+                <PaymentStatusBadge status={orderDetailData?.status} />
               )}
             </span>
           </div>
