@@ -16,7 +16,7 @@ import { IOrder } from '@/types'
 import { PaymentMethod, ROUTE } from '@/constants'
 import { useExportOrderInvoice } from '@/hooks'
 import { showToast } from '@/utils'
-import OrderStatusBadge from '@/components/app/badge/order-status-badge'
+// import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 // import axios from 'axios';
 
@@ -65,21 +65,21 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
         )
       },
     },
-    {
-      accessorKey: 'status',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('order.status')} />
-      ),
-      cell: ({ row }) => {
-        const order = row.original
-        return (
-          <OrderStatusBadge
-            status={order?.status}
-          />
+    // {
+    //   accessorKey: 'status',
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title={t('order.status')} />
+    //   ),
+    //   cell: ({ row }) => {
+    //     const order = row.original
+    //     return (
+    //       <OrderStatusBadge
+    //         status={order?.status}
+    //       />
 
-        )
-      },
-    },
+    //     )
+    //   },
+    // },
     {
       accessorKey: 'paymentStatus',
       header: ({ column }) => (
@@ -93,8 +93,21 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
             <span className='text-sm'>
               {order?.payment && order?.payment.paymentMethod === PaymentMethod.CASH ? t('order.cash') : t('order.bankTransfer')}
             </span>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'paymentStatus',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('order.paymentStatus')} />
+      ),
+      cell: ({ row }) => {
+        const order = row.original
+        return (
+          <div className='flex flex-col'>
             <PaymentStatusBadge
-              status={order?.invoice?.status}
+              status={order?.status}
             />
           </div>
         )

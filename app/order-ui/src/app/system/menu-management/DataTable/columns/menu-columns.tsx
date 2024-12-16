@@ -47,7 +47,7 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
       ),
       cell: ({ row }) => {
         const dayIndex = row.getValue('dayIndex')
-        return dayIndex ? tCommon(`dayOfWeek.${dayIndex}`) : tCommon(`dayOfWeek.noDayOfWeek`)
+        return dayIndex !== null && dayIndex !== undefined ? tCommon(`dayOfWeek.${dayIndex}`) : tCommon('dayOfWeek.noDayOfWeek')
       },
     },
     {
@@ -89,7 +89,7 @@ export const useMenusColumns = (): ColumnDef<IMenu>[] => {
                   {tCommon('common.action')}
                 </DropdownMenuLabel>
                 <NavLink
-                  to={`${ROUTE.STAFF_MENU_DETAIL}/${menu.slug}`}
+                  to={`${ROUTE.STAFF_MENU_MANAGEMENT}/${menu.slug}`}
                   className="flex items-center justify-start w-full"
                 >
                   <Button

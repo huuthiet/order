@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
-import { OrderStatus } from '@/types'
+import { OrderItemStatus } from '@/types'
 
 interface IOrderItemStatusBadgeProps {
-  status: OrderStatus
+  status: OrderItemStatus
 }
 
 export default function OrderItemStatusBadge({
@@ -11,28 +11,28 @@ export default function OrderItemStatusBadge({
 }: IOrderItemStatusBadgeProps) {
   const { t } = useTranslation(['menu'])
 
-  const getBadgeColor = (status: OrderStatus) => {
+  const getBadgeColor = (status: OrderItemStatus) => {
     switch (status) {
-      case OrderStatus.PENDING:
+      case OrderItemStatus.PENDING:
         return 'border-yellow-500 bg-yellow-50 border text-yellow-500 font-semibold'
-      case OrderStatus.COMPLETED:
+      case OrderItemStatus.COMPLETED:
         return 'border-green-500 bg-green-50 border text-green-500 font-semibold'
-      case OrderStatus.SHIPPING:
+      case OrderItemStatus.RUNNING:
         return 'border-blue-500 bg-blue-50 border text-blue-500 font-semibold'
-      case OrderStatus.FAILED:
+      case OrderItemStatus.FAILED:
         return 'border-destructive bg-destructive/20 border text-destructive'
     }
   }
 
-  const getBadgeText = (status: OrderStatus) => {
+  const getBadgeText = (status: OrderItemStatus) => {
     switch (status) {
-      case OrderStatus.PENDING:
+      case OrderItemStatus.PENDING:
         return t('order.pending')
-      case OrderStatus.SHIPPING:
+      case OrderItemStatus.RUNNING:
         return t('order.shipping')
-      case OrderStatus.COMPLETED:
+      case OrderItemStatus.COMPLETED:
         return t('order.completed')
-      case OrderStatus.FAILED:
+      case OrderItemStatus.FAILED:
         return t('order.failed')
     }
   }

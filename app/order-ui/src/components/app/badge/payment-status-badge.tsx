@@ -1,43 +1,43 @@
 import { useTranslation } from 'react-i18next'
 
-import { paymentStatus } from '@/constants'
+import { OrderStatus } from '@/types'
 
 interface IPaymentStatusBadgeProps {
-    status?: paymentStatus
+    status: OrderStatus
 }
 
 export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps) {
     const { t } = useTranslation(['menu'])
 
-    const getBadgeColor = (status: paymentStatus) => {
+    const getBadgeColor = (status: OrderStatus) => {
         switch (status) {
-            case paymentStatus.PENDING:
-                return 'text-yellow-500 italic'
-            case paymentStatus.PAID:
-                return 'text-green-500 italic'
-            case paymentStatus.CANCELLED:
-                return 'text-destructive italic'
+            case OrderStatus.PENDING:
+                return 'bg-yellow-500 text-white'
+            case OrderStatus.PAID:
+                return 'bg-green-500 text-white'
+            case OrderStatus.FAILED:
+                return 'bg-destructive text-white'
         }
     }
 
-    const getBadgeText = (status: paymentStatus) => {
+    const getBadgeText = (status: OrderStatus) => {
         switch (status) {
-            case paymentStatus.PENDING:
+            case OrderStatus.PENDING:
                 return t('paymentMethod.pending')
-            case paymentStatus.PAID:
+            case OrderStatus.PAID:
                 return t('paymentMethod.paid')
-            case paymentStatus.CANCELLED:
+            case OrderStatus.FAILED:
                 return t('paymentMethod.failed')
         }
     }
     // Ensure the component returns valid JSX
     return (
         <span
-            className={`inline-block w-fit text-center text-[0.5rem] ${getBadgeColor(
-                status || paymentStatus.PENDING
+            className={`inline-block bg-green-500 px-2 py-1 rounded-full w-fit text-center text-xs ${getBadgeColor(
+                status || OrderStatus.PENDING
             )}`}
         >
-            {getBadgeText(status || paymentStatus.PENDING)}
+            {getBadgeText(status || OrderStatus.PENDING)}
         </span>
     )
 }

@@ -100,7 +100,7 @@ export default function CustomerInformation({
             </span>
             <span className="col-span-1 text-xs">
               {orderDetailData?.invoice?.status && (
-                <PaymentStatusBadge status={orderDetailData?.invoice.status} />
+                <PaymentStatusBadge status={orderDetailData?.status} />
               )}
             </span>
           </div>

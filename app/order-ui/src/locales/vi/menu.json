@@ -101,7 +101,8 @@
     "paymentStatus": "Thanh toán",
     "cash": "Tiền mặt",
     "bankTransfer": "Chuyển khoản ngân hàng",
-    "pending": "Đang chuẩn bị",
+    "pending": "Chờ thanh toán",
+    "paid": "Đã thanh toán",
     "completed": "Đã hoàn tất",
     "shipping": "Đang giao hàng",
     "failed": "Thất bại",
@@ -125,6 +126,7 @@
     "orderList": "Danh sách đơn hàng",
 
     "customerInformation": "Thông tin khách hàng",
+    "itemAmount": "Số lượng món",
     "paymentMethod": "Phương thức thanh toán",
     "status": "Trạng thái",
     "slug": "Mã đơn hàng",

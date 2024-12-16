@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 // import { ChevronDown, ChevronUp } from 'lucide-react'
 import { CheckedState } from '@radix-ui/react-checkbox'
 
-import { IOrderDetail, OrderStatus } from '@/types'
+import { IOrderDetail, OrderItemStatus } from '@/types'
 import { Checkbox } from '@/components/ui'
 import { useOrderTrackingStore } from '@/stores'
 import OrderItemStatusBadge from '@/components/app/badge/order-item-status-badge'
@@ -14,14 +14,12 @@ interface OrderItemDetailProps {
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   const { t } = useTranslation(['menu'])
-  // const [showDetails, setShowDetails] = useState(false)
   const { addSelectedItem, removeSelectedItem, getSelectedItems } =
     useOrderTrackingStore()
   const [selectedIndexes, setSelectedIndexes] = useState<{
     [key: string]: boolean
   }>({})
 
-  // Sync selectedIndexes with store
   useEffect(() => {
     const selectedItems = getSelectedItems()
     const newSelectedIndexes: { [key: string]: boolean } = {}
@@ -49,57 +47,52 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         quantity: 1,
         subtotal: orderItem.variant.price,
         slug: orderItem.slug,
-        index: itemIndex, // Add index to track specific item
+        index: itemIndex,
       }
       addSelectedItem(singleItem)
     } else {
-      // Xóa trạng thái khi bỏ chọn
       setSelectedIndexes((prev) => {
         const updated = { ...prev }
         delete updated[key]
         return updated
       })
-
-      // Xóa item khỏi store
-      // removeSelectedItem(key)
       removeSelectedItem(`${orderItem.slug}-${itemIndex}`)
     }
   }
 
   const isChecked = (orderItem: IOrderDetail, index: number) => {
     const key = `${orderItem.slug}-${index}`
-    // Kiểm tra trạng thái dựa trên `selectedIndexes`
     return !!selectedIndexes[key]
   }
 
   const renderOrderItem = (orderItem: IOrderDetail) => {
     const totalProcessedItems =
-      orderItem.status.RUNNING + orderItem.status.COMPLETED
+      orderItem.status.COMPLETED
+
+    // console.log('item', orderItem)
 
     const items = Array(orderItem.quantity)
       .fill(null)
       .map((_, index) => {
-        // Lấy tracking item có createdAt mới nhất
-        const latestTrackingItem = orderItem.trackingOrderItems.reduce((latest, item) => {
-          return new Date(item.tracking.createdAt) > new Date(latest.tracking.createdAt)
-            ? item
-            : latest
-        }, orderItem.trackingOrderItems[0])
+        const latestTrackingItem = orderItem.trackingOrderItems[0]?.tracking?.status
 
-        // Nếu trạng thái là FAILED, trả về trạng thái FAILED
-        if (latestTrackingItem?.tracking.status === 'FAILED') {
-          return { status: OrderStatus.FAILED, index }
+        if (latestTrackingItem === 'FAILED') {
+          return { status: OrderItemStatus.FAILED, index }
+        }
+        if (latestTrackingItem === 'RUNNING') {
+          return { status: OrderItemStatus.RUNNING, index }
         }
 
-        // Logic xử lý các trạng thái khác
-        if (index < orderItem.status.COMPLETED) {
-          return { status: OrderStatus.COMPLETED, index }
-        }
-        if (index < orderItem.status.COMPLETED + orderItem.status.RUNNING) {
-          return { status: OrderStatus.SHIPPING, index }
-        }
-        return { status: OrderStatus.PENDING, index }
+        // if (index < orderItem.status.COMPLETED) {
+        //   return { status: OrderStatus.COMPLETED, index }
+        // }
+        // if (index < orderItem.status.COMPLETED + orderItem.status.RUNNING) {
+        //   return { status: OrderStatus.SHIPPING, index }
+        // }
+        return { status: OrderItemStatus.PENDING, index }
       })
+
+    console.log('items', items)
 
     return (
       <div key={orderItem.id} className="mt-4 space-y-2">
@@ -117,8 +110,8 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
               key={item.index}
               className="grid flex-row items-center grid-cols-5 gap-3 px-2 py-4 border rounded-md"
             >
-              {item.status === OrderStatus.PENDING ||
-                item.status === OrderStatus.FAILED ? (
+              {item.status === OrderItemStatus.PENDING ||
+                item.status === OrderItemStatus.FAILED ? (
                 <div className="flex flex-row items-center col-span-3 gap-2">
                   <Checkbox
                     className="w-5 h-5 shadow-none"
@@ -136,11 +129,11 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
               ) : (
                 <div className="flex flex-row items-center justify-start col-span-3 gap-3">
                   <div
-                    className={`h-3 w-3 rounded-full ${item.status === OrderStatus.COMPLETED
-                        ? 'bg-green-500'
-                        : item.status === OrderStatus.SHIPPING
-                          ? 'bg-blue-500'
-                          : 'bg-gray-300'
+                    className={`h-3 w-3 rounded-full ${item.status === OrderItemStatus.COMPLETED
+                      ? 'bg-green-500'
+                      : item.status === OrderItemStatus.RUNNING
+                        ? 'bg-blue-500'
+                        : 'bg-gray-300'
                       }`}
                   />
                   <p className="text-sm">{orderItem.variant.product.name}</p>
@@ -165,20 +158,20 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
     )
   }
 
+  useEffect(() => {
+    order.trackingOrderItems.forEach((trackingItem, index) => {
+      if (trackingItem.tracking.status === 'FAILED') {
+        setSelectedIndexes((prev) => {
+          const updated = { ...prev }
+          delete updated[`${order.slug}-${index}`]
+          return updated
+        })
+      }
+    })
+  }, [order])
+
   return (
     <div className="flex flex-col w-full gap-2 rounded-lg">
-      {/* <Button
-        variant="outline"
-        onClick={() => setShowDetails(!showDetails)}
-        className="justify-between w-fit"
-      >
-        <span className="text-sm font-medium">{t('order.orderDetail')}</span>
-        {showDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </Button> */}
-
-      {/* {showDetails && (
-        <div className="mt-4 space-y-4">{renderOrderItem(order)}</div>
-      )} */}
       <div className="flex flex-col gap-2">{renderOrderItem(order)}</div>
     </div>
   )

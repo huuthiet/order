@@ -16,7 +16,7 @@ export default function OrderManagementPage() {
   const { userInfo } = useUserStore()
   const { addOrder } = useOrderStore()
   const { clearSelectedItems } = useOrderTrackingStore()
-  const { data: orderDetail, refetch } = useOrderBySlug(selectedOrderSlug)
+  const { data: orderDetail } = useOrderBySlug(selectedOrderSlug)
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
@@ -24,13 +24,12 @@ export default function OrderManagementPage() {
     setIsSheetOpen(false)
   }
 
-  const { data, refetch: allOrderRefetch } = useOrders({
+  const { data } = useOrders({
     page: pagination.pageIndex,
     size: pagination.pageSize,
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
-    // status: [OrderStatus.PENDING, OrderStatus.SHIPPING, OrderStatus.COMPLETED], // Pass status as an array
   })
 
   useEffect(() => {
@@ -46,17 +45,13 @@ export default function OrderManagementPage() {
     setIsSheetOpen(true)
   }
 
-  //i want to refetch orderDetail every 1 second
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refetch()
-      allOrderRefetch()
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [refetch, allOrderRefetch])
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     allOrderRefetch()
+  //   }, 5000)
+  //   return () => clearInterval(interval)
+  // }, [allOrderRefetch])
 
-  // const orderDetailData = orderDetail?.result
-  // console.log('orderDetailData check', orderDetailData)
   return (
     <div className="flex flex-row flex-1 gap-2 py-4">
       <ScrollArea className="flex-1">
@@ -69,12 +64,6 @@ export default function OrderManagementPage() {
           </div>
           <div className="grid h-full grid-cols-1 gap-2">
             <div className="flex flex-col col-span-4 gap-2">
-              {/* <div className="grid grid-cols-2 gap-2">
-                <TotalOrders orderTotal={data?.result.total} />
-                <OrderWaitListCounting />
-              </div> */}
-
-              {/* Order wait list */}
               <DataTable
                 isLoading={false}
                 data={data?.result.items || []}
@@ -91,9 +80,7 @@ export default function OrderManagementPage() {
               />
             </div>
 
-            {/* Order Information */}
             <OrderItemDetailSheet
-              // order={orderDetailData}
               order={selectedOrderSlug}
               isOpen={isSheetOpen}
               onClose={handleCloseSheet}

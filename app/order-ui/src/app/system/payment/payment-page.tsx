@@ -33,8 +33,8 @@ export default function PaymentPage() {
     if (isPolling) {
       interval = setInterval(async () => {
         const updatedOrder = await refetchOrder()
-        const paymentStatus = updatedOrder.data?.result?.payment?.statusCode
-        if (paymentStatus === 'paid') {
+        const orderStatus = updatedOrder.data?.result?.status
+        if (orderStatus === 'paid') {
           clearInterval(interval!)
           navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
         }

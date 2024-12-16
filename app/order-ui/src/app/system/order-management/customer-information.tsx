@@ -15,6 +15,9 @@ export default function CustomerInformation({
     <div className="grid grid-cols-2 gap-2 pb-6 border-b-2">
       <div className="flex flex-col col-span-1 gap-1 border-r-2 text-muted-foreground">
         <div className="grid grid-cols-2">
+          <span>
+            {orderDetailData?.slug}
+          </span>
           <span className="col-span-1 text-xs font-semibold">
             {t('order.customerName')}
           </span>

@@ -19,9 +19,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { IUpdateTableRequest, ITable } from '@/types'
 import { useUpdateTable } from '@/hooks'
 import { showToast } from '@/utils'
+import TableLocationSelect from '../select/table-location-select'
 
 interface IFormUpdateTableProps {
-  table: ITable
+  table: ITable | null
   onSubmit: (isOpen: boolean) => void
 }
 
@@ -35,11 +36,9 @@ export const UpdateTableForm: React.FC<IFormUpdateTableProps> = ({
   const form = useForm<TUpdateTableSchema>({
     resolver: zodResolver(updateTableSchema),
     defaultValues: {
-      slug: table.slug,
-      name: table.name,
-      location: table.location,
-      xPosition: table.xPosition || 0,
-      yPosition: table.yPosition || 0,
+      slug: table?.slug,
+      name: table?.name,
+      location: table?.location,
     },
   })
 
@@ -80,43 +79,13 @@ export const UpdateTableForm: React.FC<IFormUpdateTableProps> = ({
           <FormItem>
             <FormLabel>{t('table.location')}</FormLabel>
             <FormControl>
-              <Input {...field} placeholder={t('table.enterLocation')} />
+              <TableLocationSelect defaultValue={field.value} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-    ),
-    xPosition: (
-      <FormField
-        control={form.control}
-        name="xPosition"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t('table.xPosition')}</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder={t('table.enterXPosition')} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    ),
-    yPosition: (
-      <FormField
-        control={form.control}
-        name="yPosition"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t('table.yPosition')}</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder={t('table.enterYPosition')} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    ),
+    )
   }
 
   return (
