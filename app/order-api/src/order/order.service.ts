@@ -498,15 +498,51 @@ export class OrderService {
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
 
-    order.orderItems.forEach(orderItem => {
-      orderItem.trackingOrderItems = orderItem.trackingOrderItems.reduce(
-        (latest: TrackingOrderItem[], current: TrackingOrderItem) => {
-          return latest.length === 0 || current.createdAt > latest[0].createdAt ? [current] : latest;
-        },
-        []
-      );
-    });
+    // order.orderItems.forEach(orderItem => {
+    //   orderItem.trackingOrderItems = orderItem.trackingOrderItems.reduce(
+    //     (latest: TrackingOrderItem[], current: TrackingOrderItem) => {
+    //       return latest.length === 0 || current.createdAt > latest[0].createdAt ? [current] : latest;
+    //     },
+    //     []  
+    //   );
+    // });
 
+    // order.orderItems.forEach(orderItem => {
+    //   const trackingOrderItems = orderItem.trackingOrderItems;
+    
+    //   // Lấy các trạng thái của tracking
+    //   const statuses = trackingOrderItems.map(item => item.tracking.status);
+    
+    //   // Kiểm tra sự tồn tại của RUNNING hoặc PENDING
+    //   const hasRunningOrPending = statuses.includes("RUNNING") || statuses.includes("PENDING");
+    
+    //   if (hasRunningOrPending) {
+    //     // Nếu có RUNNING hoặc PENDING, bỏ FAILED, giữ COMPLETED, RUNNING và PENDING
+    //     orderItem.trackingOrderItems = trackingOrderItems.filter(
+    //       item =>
+    //         item.tracking.status === "COMPLETED" ||
+    //         item.tracking.status === "RUNNING" ||
+    //         item.tracking.status === "PENDING"
+    //     );
+    //   } else {
+    //     // Nếu không có RUNNING hoặc PENDING
+    //     // Lấy tất cả các COMPLETED
+    //     const completedItems = trackingOrderItems.filter(item => item.tracking.status === "COMPLETED");
+    
+    //     // Lấy FAILED mới nhất nếu tồn tại
+    //     const failedItems = trackingOrderItems.filter(item => item.tracking.status === "FAILED");
+    //     const latestFailedItem = failedItems.reduce((latest, current) => {
+    //       return !latest || current.createdAt > latest.createdAt ? current : latest;
+    //     }, null);
+    
+    //     // Kết hợp kết quả
+    //     orderItem.trackingOrderItems = [
+    //       ...(latestFailedItem ? [latestFailedItem] : []),
+    //       ...completedItems,
+    //     ];
+    //   }
+    // });
+    
     const orderDto = this.getStatusEachOrderItemInOrder(order);
     return orderDto;
   }
