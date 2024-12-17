@@ -11,8 +11,9 @@ import OrderItemStatusBadge from '@/components/app/badge/order-item-status-badge
 interface OrderItemDetailProps {
   order: IOrderDetail
 }
-
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
+  console.log('check order', order)
+  // console.log('check order status', order.status)
   const { t } = useTranslation(['menu'])
   const { addSelectedItem, removeSelectedItem, getSelectedItems } =
     useOrderTrackingStore()
@@ -66,29 +67,21 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   }
 
   const renderOrderItem = (orderItem: IOrderDetail) => {
-    const totalProcessedItems =
-      orderItem.status.COMPLETED
-
-    // console.log('item', orderItem)
+    console.log('check orderItem', orderItem)
+    const totalProcessedItems = orderItem.status.COMPLETED
 
     const items = Array(orderItem.quantity)
       .fill(null)
       .map((_, index) => {
-        const latestTrackingItem = orderItem.trackingOrderItems[0]?.tracking?.status
-
-        if (latestTrackingItem === 'FAILED') {
-          return { status: OrderItemStatus.FAILED, index }
+        if (index < orderItem.status.COMPLETED) {
+          return { status: OrderItemStatus.COMPLETED, index }
         }
-        if (latestTrackingItem === 'RUNNING') {
+        if (index < orderItem.status.COMPLETED + orderItem.status.RUNNING) {
           return { status: OrderItemStatus.RUNNING, index }
         }
-
-        // if (index < orderItem.status.COMPLETED) {
-        //   return { status: OrderStatus.COMPLETED, index }
-        // }
-        // if (index < orderItem.status.COMPLETED + orderItem.status.RUNNING) {
-        //   return { status: OrderStatus.SHIPPING, index }
-        // }
+        if (index < orderItem.status.COMPLETED + orderItem.status.RUNNING + orderItem.status.FAILED) {
+          return { status: OrderItemStatus.FAILED, index }
+        }
         return { status: OrderItemStatus.PENDING, index }
       })
 

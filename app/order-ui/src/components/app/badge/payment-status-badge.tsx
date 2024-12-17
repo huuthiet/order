@@ -13,6 +13,10 @@ export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps)
         switch (status) {
             case OrderStatus.PENDING:
                 return 'bg-yellow-500 text-white'
+            case OrderStatus.COMPLETED:
+                return 'bg-green-500 text-white'
+            case OrderStatus.SHIPPING:
+                return 'bg-blue-500 text-white'
             case OrderStatus.PAID:
                 return 'bg-green-500 text-white'
             case OrderStatus.FAILED:
@@ -24,6 +28,10 @@ export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps)
         switch (status) {
             case OrderStatus.PENDING:
                 return t('paymentMethod.pending')
+            case OrderStatus.COMPLETED:
+                return t('paymentMethod.completed')
+            case OrderStatus.SHIPPING:
+                return t('paymentMethod.shipping')
             case OrderStatus.PAID:
                 return t('paymentMethod.paid')
             case OrderStatus.FAILED:
@@ -33,7 +41,7 @@ export default function PaymentStatusBadge({ status }: IPaymentStatusBadgeProps)
     // Ensure the component returns valid JSX
     return (
         <span
-            className={`inline-block bg-green-500 px-2 py-1 rounded-full w-fit text-center text-xs ${getBadgeColor(
+            className={`inline-block  px-2 py-1 rounded-full w-fit text-center text-xs ${getBadgeColor(
                 status || OrderStatus.PENDING
             )}`}
         >

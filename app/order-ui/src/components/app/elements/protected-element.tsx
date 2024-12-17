@@ -34,7 +34,7 @@ export default function ProtectedElement({
     // Kiểm tra SUPER_ADMIN có quyền truy cập tất cả
     if (userInfo.role.name === Role.SUPER_ADMIN) return true
 
-    console.log(allowedRoles.includes(userInfo.role.name))
+    // console.log(allowedRoles.includes(userInfo.role.name))
     return allowedRoles.includes(userInfo.role.name)
   }, [userInfo, allowedRoles])
 

@@ -69,8 +69,6 @@ export default function AppSidebar() {
     })
   }, [userInfo])
 
-  console.log(filteredRoutes)
-
   return (
     <Sidebar
       variant="inset"
