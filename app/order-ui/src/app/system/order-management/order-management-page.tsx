@@ -31,7 +31,7 @@ export default function OrderManagementPage() {
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
-    status: [OrderStatus.PAID, OrderStatus.SHIPPING].join(','),
+    // status: [OrderStatus.PAID, OrderStatus.SHIPPING].join(','),
   })
 
   useEffect(() => {
