@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { isAxiosError } from 'axios'
 import { useTranslation } from 'react-i18next'
@@ -10,34 +10,39 @@ import {
     FormLabel,
     FormControl,
     FormMessage,
-    Input,
     Form,
     Button,
+    PasswordInput,
 } from '@/components/ui'
-import { forgotPasswordSchema, TForgotPasswordSchema } from '@/schemas'
+import { resetPasswordSchema, TResetPasswordSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ButtonLoading } from '@/components/app/loading'
 
 import { ROUTE } from '@/constants'
-import { useForgotPassword } from '@/hooks'
+import { useResetPasswordForForgotPassword } from '@/hooks'
 
 import { showErrorToast, showToast } from '@/utils'
 
-export const ForgotPasswordForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
+export const ResetPasswordForForgotPasswordForm: React.FC = () => {
     const { t } = useTranslation(['auth'])
-    const { mutate: forgotPassword, isPending } = useForgotPassword()
-    const form = useForm<TForgotPasswordSchema>({
-        resolver: zodResolver(forgotPasswordSchema),
+    const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const token = searchParams.get('token') // Lấy giá trị token từ query string
+    const { mutate: resetPassword, isPending } = useResetPasswordForForgotPassword()
+    const form = useForm<TResetPasswordSchema>({
+        resolver: zodResolver(resetPasswordSchema),
         defaultValues: {
-            email: '',
+            newPassword: '',
+            confirmPassword: '',
+            token: token || '',
         }
     })
 
-    const handleSubmit = (value: TForgotPasswordSchema) => {
-        forgotPassword(value, {
+    const handleSubmit = (value: TResetPasswordSchema) => {
+        resetPassword(value, {
             onSuccess: () => {
-                onSuccess()
-                showToast(t('toast.forgotPasswordSuccess'))
+                showToast(t('toast.resetPasswordSuccess'))
+                navigate(ROUTE.LOGIN)
             },
             onError: (error) => {
                 if (isAxiosError(error)) {
@@ -56,15 +61,30 @@ export const ForgotPasswordForm: React.FC<{ onSuccess: () => void }> = ({ onSucc
     }
 
     const formFields = {
-        email: (
+        newPassword: (
             <FormField
                 control={form.control}
-                name="email"
+                name="newPassword"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>{t('forgotPassword.email')}</FormLabel>
+                        <FormLabel>{t('forgotPassword.newPassword')}</FormLabel>
                         <FormControl>
-                            <Input placeholder={t('forgotPassword.enterEmail')} {...field} />
+                            <PasswordInput placeholder={t('forgotPassword.enterNewPassword')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        ),
+        confirmPassword: (
+            <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t('forgotPassword.confirmNewPassword')}</FormLabel>
+                        <FormControl>
+                            <PasswordInput placeholder={t('forgotPassword.enterConfirmNewPassword')} {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -96,7 +116,7 @@ export const ForgotPasswordForm: React.FC<{ onSuccess: () => void }> = ({ onSucc
                             className="flex items-center justify-center"
                             disabled={isPending}
                         >
-                            {isPending ? <ButtonLoading /> : t('forgotPassword.send')}
+                            {isPending ? <ButtonLoading /> : t('forgotPassword.reset')}
                         </Button>
                     </div>
                 </form>

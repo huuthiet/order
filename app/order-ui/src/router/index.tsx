@@ -28,6 +28,7 @@ import {
   UserListPage,
   ForgotPasswordPage,
   ConfigPage,
+  ForgotPasswordAndResetPasswordPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
   {
     path: ROUTE.FORGOT_PASSWORD,
     element: <SuspenseElement component={ForgotPasswordPage} />,
+  },
+  {
+    path: `${ROUTE.RESET_PASSWORD}`,
+    element: <SuspenseElement component={ForgotPasswordAndResetPasswordPage} />,
   },
   {
     path: ROUTE.STAFF_HOME,

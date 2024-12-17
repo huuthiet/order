@@ -26,6 +26,12 @@ export const ForgotPasswordPage = React.lazy(() =>
   })),
 )
 
+export const ForgotPasswordAndResetPasswordPage = React.lazy(() =>
+  import('@/app/auth').then((module) => ({
+    default: module.ForgotPasswordAndResetPasswordPage,
+  })),
+)
+
 //Views
 
 //Home page

@@ -20,6 +20,7 @@ import {
   CreateOrderTrackingByStaffDialog,
   CreateOrderTrackingByRobotDialog,
 } from '@/components/app/dialog'
+import { CircleAlert } from 'lucide-react'
 
 interface IOrderItemDetailSheetProps {
   order: string
@@ -33,15 +34,16 @@ export default function OrderItemDetailSheet({
   onClose,
 }: IOrderItemDetailSheetProps) {
   const { t: tCommon } = useTranslation(['common'])
+  const { t } = useTranslation(['menu'])
   const { userInfo } = useUserStore()
   const { pagination } = usePagination()
   const [shouldFetchOrders, setShouldFetchOrders] = useState(false)
   const [orderSlugs, setOrderSlugs] = useState<string[]>([])
   const [orderDetails, setOrderDetails] = useState<IOrder[]>([])
   const [currentFetchIndex, setCurrentFetchIndex] = useState(0)
+  const { getSelectedItems } = useOrderTrackingStore()
 
-  // Log trước khi call hook useOrderBySlug cho order chính
-  console.log('Main order slug before hook:', order)
+  // Polling: Order chính
   const { data: selectedOrder, refetch: refetchSelectedOrder } = useOrderBySlug(
     order,
     {
@@ -49,10 +51,22 @@ export default function OrderItemDetailSheet({
     },
   )
 
-  console.log('Selected order:', selectedOrder)
+  useEffect(() => {
+    if (!order) return
 
-  const { getSelectedItems } = useOrderTrackingStore()
+    const interval = setInterval(async () => {
+      try {
+        console.log('Polling main order...')
+        await refetchSelectedOrder()
+      } catch (error) {
+        console.error('Error polling main order:', error)
+      }
+    }, 5000) // Polling mỗi 5 giây
 
+    return () => clearInterval(interval) // Cleanup
+  }, [order, refetchSelectedOrder])
+
+  // Lấy danh sách orders cùng bàn
   const { data: ordersInTheSameTable, refetch: allOrderRefetch } = useOrders({
     page: pagination.pageIndex,
     size: pagination.pageSize,
@@ -64,9 +78,6 @@ export default function OrderItemDetailSheet({
     enabled: shouldFetchOrders && !!selectedOrder?.result?.table?.slug,
   })
 
-  console.log('Orders in the same table:', ordersInTheSameTable)
-
-  // Kiểm tra nếu có dữ liệu từ ordersInTheSameTable
   useEffect(() => {
     const slugs =
       ordersInTheSameTable?.result?.items?.map((item) => item.slug) || []
@@ -74,7 +85,14 @@ export default function OrderItemDetailSheet({
     console.log('Order slugs:', slugs)
   }, [ordersInTheSameTable])
 
-  // Hook để fetch từng order một
+  // Update orderDetails when ordersInTheSameTable changes
+  // useEffect(() => {
+  //   if (ordersInTheSameTable?.result?.items) {
+  //     setOrderDetails(ordersInTheSameTable.result.items)
+  //   }
+  // }, [ordersInTheSameTable])
+
+  // Fetch từng order từ danh sách orders cùng bàn
   const { data: currentOrderDetail } = useOrderBySlug(
     shouldFetchOrders && orderSlugs[currentFetchIndex]
       ? orderSlugs[currentFetchIndex]
@@ -83,11 +101,10 @@ export default function OrderItemDetailSheet({
       enabled:
         shouldFetchOrders &&
         currentFetchIndex < orderSlugs.length &&
-        orderSlugs[currentFetchIndex] !== order, // Không fetch order hiện tại
+        orderSlugs[currentFetchIndex] !== order,
     },
   )
 
-  // Effect để xử lý kết quả fetch và chuyển sang fetch order tiếp theo
   useEffect(() => {
     if (currentOrderDetail?.result) {
       setOrderDetails((prev) => {
@@ -97,7 +114,11 @@ export default function OrderItemDetailSheet({
         if (!exists) {
           return [...prev, currentOrderDetail.result]
         }
-        return prev
+        return prev.map((detail) =>
+          detail.slug === currentOrderDetail.result.slug
+            ? currentOrderDetail.result
+            : detail,
+        )
       })
 
       setCurrentFetchIndex((prevIndex) => {
@@ -107,54 +128,43 @@ export default function OrderItemDetailSheet({
     }
   }, [currentOrderDetail])
 
-  // Thêm hàm để bắt đầu fetch orders
   const handleFetchOrders = () => {
     setShouldFetchOrders(true)
-    setOrderDetails([]) // Reset order details
-    setCurrentFetchIndex(0) // Reset index về 0 để bắt đầu fetch từ đầu
+    setOrderDetails([])
+    setCurrentFetchIndex(0)
   }
 
-  // Thêm hàm để refresh tất cả orders
   const handleRefetchAll = async () => {
-    setOrderDetails([]) // Clear current orders
-    setCurrentFetchIndex(0) // Reset index
-    await allOrderRefetch() // Refetch danh sách orders
+    setOrderDetails([])
+    setCurrentFetchIndex(0)
+    await allOrderRefetch()
   }
 
-  // Thêm polling effect
   useEffect(() => {
     if (!shouldFetchOrders) return
 
     const interval = setInterval(async () => {
       try {
-        // Refetch order chính
-        await refetchSelectedOrder()
-
-        // Refetch danh sách orders cùng bàn để cập nhật orderSlugs
         await allOrderRefetch()
-
-        // Không reset lại trạng thái
-        setCurrentFetchIndex(0)
-
-        console.log('Polling: Refreshing orders...')
+        console.log('Polling: Refreshing orders in the same table...')
       } catch (error) {
-        console.error('Error during polling:', error)
+        console.error('Error during polling orders:', error)
       }
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [shouldFetchOrders, refetchSelectedOrder, allOrderRefetch])
+  }, [shouldFetchOrders, allOrderRefetch])
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle className="flex items-center justify-between mt-6">
-            Thông tin chi tiết
+            {t('order.orderDetail')}
             <Button
               onClick={shouldFetchOrders ? handleRefetchAll : handleFetchOrders}
             >
-              {shouldFetchOrders ? 'Refresh Orders' : 'Load Orders'}
+              {shouldFetchOrders ? t('order.refresh') : t('order.loadOrdersInTheSameTable')}
             </Button>
           </SheetTitle>
           {getSelectedItems().length > 0 && (
@@ -169,13 +179,20 @@ export default function OrderItemDetailSheet({
             {order ? (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2 p-4 border-2 rounded-lg border-primary bg-primary/5">
-                  <div className="font-medium text-primary">Current Order</div>
+                  <div className="font-medium text-primary">
+                    {t('order.currentOrder')}
+                  </div>
                   <CustomerInformation
                     orderDetailData={selectedOrder?.result}
                   />
                   <OrderItemList orderDetailData={selectedOrder?.result} />
                 </div>
-
+                {orderDetails && orderDetails.length > 0 && (
+                  <div className="flex items-center gap-1">
+                    <CircleAlert size={14} className="text-blue-500" />
+                    <span className='text-sm text-muted-foreground'>{t('order.refreshOrdersInTheSameTable')}</span>
+                  </div>
+                )}
                 {shouldFetchOrders && (
                   <div className="flex flex-col gap-4">
                     {orderDetails

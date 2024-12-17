@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
+import moment from 'moment'
 
 import {
   Button,
@@ -16,7 +17,6 @@ import {
 } from '@/components/ui'
 import { useOrderBySlug } from '@/hooks'
 import { publicFileURL } from '@/constants'
-import moment from 'moment'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import { IOrderType, OrderStatus } from '@/types'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
@@ -28,12 +28,12 @@ export default function OrderDetailPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-1 flex-row gap-2">
+    <div className="flex flex-row flex-1 gap-2">
       <ScrollArea className="flex-1">
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
             <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
-              <span className="flex w-full items-center justify-start gap-1 text-lg">
+              <span className="flex items-center justify-start w-full gap-1 text-lg">
                 <SquareMenu />
                 {t('order.orderDetail')}{' '}
                 <span className="text-muted-foreground">
@@ -45,17 +45,20 @@ export default function OrderDetailPage() {
           {/* <CustomerInformation orderDetailData={orderDetail?.result} /> */}
           <div className="flex gap-2">
             {/* Left, info */}
-            <div className="flex w-3/4 flex-col gap-4">
+            <div className="flex flex-col w-3/4 gap-4">
               {/* Order info */}
-              <div className="flex items-center justify-between rounded-sm border border-gray-200 bg-slate-100 p-3">
+              <div className="flex items-center justify-between p-3 border border-gray-200 rounded-sm bg-slate-100">
                 <div className="">
-                  <p className="pb-2">
+                  <p className="flex items-center gap-2 pb-2">
                     <span className="font-bold">Đơn hàng:</span>{' '}
-                    <span className="text-purple-800">
+                    <span className="text-primary">
                       {orderDetail?.result?.slug}
                     </span>
+                    <OrderStatusBadge
+                      status={orderDetail?.result?.status || OrderStatus.PENDING}
+                    />
                   </p>
-                  <div className="flex items-center gap-1 font-thin">
+                  <div className="flex items-center gap-1 text-sm font-thin">
                     <p>
                       {moment(orderDetail?.result?.createdAt).format(
                         'hh:mm:ss DD/MM/YYYY',
@@ -64,31 +67,29 @@ export default function OrderDetailPage() {
                     |
                     <p className="flex items-center gap-1">
                       <span>Thu ngân:</span>
-                      <span className="text-purple-400">
+                      <span className="text-muted-foreground">
                         {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName} - ${orderDetail?.result?.owner?.phonenumber}`}
                       </span>
                     </p>
                   </div>
                 </div>
-                <OrderStatusBadge
-                  status={orderDetail?.result?.status || OrderStatus.PENDING}
-                />
+
               </div>
               {/* Order owner info */}
               <div className="flex gap-2">
-                <div className="w-1/2 rounded-sm border border-gray-200">
-                  <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                <div className="w-1/2 border border-gray-200 rounded-sm">
+                  <div className="px-3 py-2 font-bold uppercase bg-slate-100">
                     Khách hàng
                   </div>
                   <div className="px-3 py-2">
-                    <p>
+                    <p className='font-bold'>
                       {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName}`}
                     </p>
-                    <p>{orderDetail?.result?.owner?.phonenumber}</p>
+                    <p className='text-sm'>{orderDetail?.result?.owner?.phonenumber}</p>
                   </div>
                 </div>
-                <div className="w-1/2 rounded-sm border border-gray-200">
-                  <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                <div className="w-1/2 border border-gray-200 rounded-sm">
+                  <div className="px-3 py-2 font-bold uppercase bg-slate-100">
                     Loại đơn hàng
                   </div>
                   <div className="px-3 py-2">
@@ -111,7 +112,7 @@ export default function OrderDetailPage() {
               {/* Order table */}
               <Table>
                 <TableCaption>A list of orders.</TableCaption>
-                <TableHeader className="rounded bg-gray-200">
+                <TableHeader className="bg-gray-200 rounded">
                   <TableRow>
                     <TableHead className="w-[100px]">
                       {t('order.product')}
@@ -129,11 +130,11 @@ export default function OrderDetailPage() {
                 <TableBody>
                   {orderDetail?.result.orderItems?.map((item) => (
                     <TableRow key={item.slug}>
-                      <TableCell className="flex w-96 items-center gap-1 font-bold">
+                      <TableCell className="flex items-center gap-1 font-bold w-96">
                         <img
                           src={`${publicFileURL}/${item.variant.product.image}`}
                           alt={item.variant.product.image}
-                          className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                          className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                         />
                         {item.variant.product.name}
                       </TableCell>
@@ -152,10 +153,10 @@ export default function OrderDetailPage() {
             </div>
 
             {/* Right, payment*/}
-            <div className="flex w-1/4 flex-col gap-2">
+            <div className="flex flex-col w-1/4 gap-2">
               {/* Payment method, status */}
-              <div className="rounded-sm border border-gray-200">
-                <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+              <div className="border border-gray-200 rounded-sm">
+                <div className="px-3 py-2 font-bold uppercase bg-slate-100">
                   Phương thức thanh toán
                 </div>
                 <div className="px-3 py-2">
@@ -168,8 +169,8 @@ export default function OrderDetailPage() {
                         <>
                           {orderDetail?.result?.payment.paymentMethod ===
                             'bank-transfer' && (
-                            <span>{t('paymentMethod.bankTransfer')}</span>
-                          )}
+                              <span>{t('paymentMethod.bankTransfer')}</span>
+                            )}
                           {orderDetail?.result?.payment.paymentMethod ===
                             'cash' && <span>{t('paymentMethod.cash')}</span>}
                         </>
@@ -191,7 +192,7 @@ export default function OrderDetailPage() {
                 </div>
               </div>
               {/* Total */}
-              <div className="flex flex-col gap-2 rounded-sm border border-gray-200 p-2">
+              <div className="flex flex-col gap-2 p-2 border border-gray-200 rounded-sm">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-500">Tạm tính</p>
                   <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>

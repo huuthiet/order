@@ -1,6 +1,6 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useQueryClient } from '@tanstack/react-query'
+// import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -23,6 +23,7 @@ import { showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { DatePicker } from '@/components/app/picker'
 import { useUserStore } from '@/stores'
+import { getProfile } from '@/api'
 
 interface IFormUpdateProfileProps {
   userProfile?: IUserInfo
@@ -33,7 +34,7 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
   userProfile,
   onSubmit,
 }) => {
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
   const { t } = useTranslation(['profile'])
   const { setUserInfo } = useUserStore()
   const { mutate: createProductVariant } = useUpdateProfile()
@@ -51,11 +52,14 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
 
   const handleSubmit = (data: IUpdateProfileRequest) => {
     createProductVariant(data, {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({
-          queryKey: ['profile'],
+      onSuccess: () => {
+        getProfile().then((data) => {
+          setUserInfo(data.result)
         })
-        setUserInfo(data.result)
+        // queryClient.invalidateQueries({
+        //   queryKey: ['profile'],
+        // })
+        // setUserInfo(data.result)
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateProfileSuccess'))

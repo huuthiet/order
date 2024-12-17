@@ -65,6 +65,10 @@
     "exportInvoiceSuccess": "Xuất hóa đơn thành công",
 
     "updatePasswordSuccess": "Cập nhật mật khẩu thành công",
-    "resetPasswordSuccess": "Đặt lại mật khẩu thành công"
+    "forgotPasswordSuccess": "Gửi email đặt lại mật khẩu thành công",
+    "resetPasswordSuccess": "Đặt lại mật khẩu thành công",
+
+    "accessDenied": "Truy cập bị từ chối",
+    "sessionExpired": "Phiên làm việc đã hết hạn"
   }
 }
