@@ -27,22 +27,28 @@ export default function PaymentMethodRadioGroup({
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="internalWallet" id="r1" />
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">
-          <WalletMinimal size={20} />
-          <Label htmlFor="r1">{t('paymentMethod.internalWallet')}</Label>
+          <Label htmlFor="r1" className="flex items-center gap-1">
+            <WalletMinimal size={20} />
+            {t('paymentMethod.internalWallet')}
+          </Label>
         </div>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value={PaymentMethod.BANK_TRANSFER} id="r2" />
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">
-          <CreditCard size={20} />
-          <Label htmlFor="r2">{t('paymentMethod.bankTransfer')}</Label>
+          <Label htmlFor="r2" className="flex items-center gap-1">
+            <CreditCard size={20} />
+            {t('paymentMethod.bankTransfer')}
+          </Label>
         </div>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value={PaymentMethod.CASH} id="r3" />
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">
-          <Coins size={20} />
-          <Label htmlFor="r3">{t('paymentMethod.cash')}</Label>
+          <Label htmlFor="r3" className="flex items-center gap-1">
+            <Coins size={20} />
+            {t('paymentMethod.cash')}
+          </Label>
         </div>
       </div>
     </RadioGroup>
