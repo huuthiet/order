@@ -76,6 +76,8 @@ export class OrderService {
     const context = `${OrderService.name}.${this.handleUpdateOrderStatus.name}`;
     this.logger.log(`Update order status after payment process`, context);
 
+    this.logger.log(`Request data: ${JSON.stringify(requestData)}`, context);
+
     const order = await this.orderRepository.findOne({
       where: { id: requestData.orderId },
       relations: ['payment'],
