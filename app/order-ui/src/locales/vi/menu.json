@@ -102,7 +102,7 @@
     "paymentStatus": "Thanh toán",
     "cash": "Tiền mặt",
     "bankTransfer": "Chuyển khoản ngân hàng",
-    "pending": "Chưa được giao",
+    "pending": "Chờ thanh toán",
     "paid": "Đã thanh toán",
     "completed": "Đã hoàn tất",
     "shipping": "Đang giao hàng",
