@@ -20,6 +20,7 @@ import {
   CreateOrderTrackingByStaffDialog,
   CreateOrderTrackingByRobotDialog,
 } from '@/components/app/dialog'
+import { CircleAlert } from 'lucide-react'
 
 interface IOrderItemDetailSheetProps {
   order: string
@@ -33,6 +34,7 @@ export default function OrderItemDetailSheet({
   onClose,
 }: IOrderItemDetailSheetProps) {
   const { t: tCommon } = useTranslation(['common'])
+  const { t } = useTranslation(['menu'])
   const { userInfo } = useUserStore()
   const { pagination } = usePagination()
   const [shouldFetchOrders, setShouldFetchOrders] = useState(false)
@@ -158,11 +160,11 @@ export default function OrderItemDetailSheet({
       <SheetContent>
         <SheetHeader>
           <SheetTitle className="flex items-center justify-between mt-6">
-            Thông tin chi tiết
+            {t('order.orderDetail')}
             <Button
               onClick={shouldFetchOrders ? handleRefetchAll : handleFetchOrders}
             >
-              {shouldFetchOrders ? 'Refresh Orders' : 'Load Orders'}
+              {shouldFetchOrders ? t('order.refresh') : t('order.loadOrdersInTheSameTable')}
             </Button>
           </SheetTitle>
           {getSelectedItems().length > 0 && (
@@ -177,13 +179,20 @@ export default function OrderItemDetailSheet({
             {order ? (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2 p-4 border-2 rounded-lg border-primary bg-primary/5">
-                  <div className="font-medium text-primary">Current Order</div>
+                  <div className="font-medium text-primary">
+                    {t('order.currentOrder')}
+                  </div>
                   <CustomerInformation
                     orderDetailData={selectedOrder?.result}
                   />
                   <OrderItemList orderDetailData={selectedOrder?.result} />
                 </div>
-
+                {orderDetails && orderDetails.length > 0 && (
+                  <div className="flex items-center gap-1">
+                    <CircleAlert size={14} className="text-blue-500" />
+                    <span className='text-sm text-muted-foreground'>{t('order.refreshOrdersInTheSameTable')}</span>
+                  </div>
+                )}
                 {shouldFetchOrders && (
                   <div className="flex flex-col gap-4">
                     {orderDetails

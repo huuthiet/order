@@ -5,7 +5,7 @@ import { SquareMenu } from 'lucide-react'
 import { DataTable, ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder } from '@/types'
+import { IOrder, OrderStatus } from '@/types'
 import { usePendingOrdersColumns } from './DataTable/columns'
 import { OrderItemDetailSheet } from '@/components/app/sheet'
 
@@ -24,12 +24,14 @@ export default function OrderManagementPage() {
     setIsSheetOpen(false)
   }
 
-  const { data } = useOrders({
+  const { data, isLoading } = useOrders({
+    hasPaging: true,
     page: pagination.pageIndex,
     size: pagination.pageSize,
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
+    status: [OrderStatus.PAID, OrderStatus.SHIPPING].join(','),
   })
 
   useEffect(() => {
@@ -45,27 +47,20 @@ export default function OrderManagementPage() {
     setIsSheetOpen(true)
   }
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     allOrderRefetch()
-  //   }, 5000)
-  //   return () => clearInterval(interval)
-  // }, [allOrderRefetch])
-
   return (
-    <div className="flex flex-row flex-1 gap-2 py-4">
+    <div className="flex flex-1 flex-row gap-2 py-4">
       <ScrollArea className="flex-1">
         <div className="flex flex-col">
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
-            <span className="flex items-center justify-start w-full gap-1 text-lg">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
+            <span className="flex w-full items-center justify-start gap-1 text-lg">
               <SquareMenu />
               {t('order.title')}
             </span>
           </div>
           <div className="grid h-full grid-cols-1 gap-2">
-            <div className="flex flex-col col-span-4 gap-2">
+            <div className="col-span-4 flex flex-col gap-2">
               <DataTable
-                isLoading={false}
+                isLoading={isLoading}
                 data={data?.result.items || []}
                 columns={usePendingOrdersColumns()}
                 pages={data?.result?.totalPages || 1}

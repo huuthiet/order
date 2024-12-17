@@ -17,7 +17,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { OrderService } from './order.service';
-import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import {
   CreateOrderRequestDto,
@@ -33,7 +32,6 @@ export class OrderController {
   constructor(private orderService: OrderService) {}
 
   @Post()
-  @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseWithType({
     status: HttpStatus.OK,
@@ -62,7 +60,6 @@ export class OrderController {
   }
 
   @Get()
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Retrieve all orders' })
   @ApiResponse({ status: 200, description: 'Get all orders successfully' })
@@ -87,7 +84,6 @@ export class OrderController {
   }
 
   @Get(':slug')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Retrieve order by slug' })
   @ApiResponse({ status: 200, description: 'Get order by slug successfully' })

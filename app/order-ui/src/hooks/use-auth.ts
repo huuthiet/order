@@ -1,4 +1,9 @@
-import { forgotPassword, login, register } from '@/api'
+import {
+  forgotPasswordAndGetToken,
+  forgotPasswordAndResetPassword,
+  login,
+  register,
+} from '@/api'
 import {
   ILoginRequest,
   IRegisterRequest,
@@ -30,7 +35,15 @@ export const useRegister = () => {
 export const useForgotPassword = () => {
   return useMutation({
     mutationFn: async (email: IForgotPasswordRequest) => {
-      return forgotPassword(email)
+      return forgotPasswordAndGetToken(email)
+    },
+  })
+}
+
+export const useResetPasswordForForgotPassword = () => {
+  return useMutation({
+    mutationFn: async (data: { newPassword: string; token: string }) => {
+      return forgotPasswordAndResetPassword(data)
     },
   })
 }

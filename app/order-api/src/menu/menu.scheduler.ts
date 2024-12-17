@@ -31,8 +31,15 @@ export class MenuScheduler {
     const branches = await this.branchRepository.find();
     this.logger.log(`Branch count = ${branches.length}`, context);
 
+    // Get all template menus base on list of branches
     const templateMenus = await this.getTemplateMenus(branches, dayIndex);
-    const filteredMenus = templateMenus.filter((menu) => menu !== null);
+    const filteredMenus = templateMenus
+      .filter((menu) => menu !== null)
+      .filter((menu) => {
+        // Filter the menu if the menu is for today.
+        const isSame = moment(menu.date).isSame(moment(today));
+        return !isSame;
+      });
     this.logger.log(`Template menu count = ${filteredMenus.length}`, context);
 
     const newMenus = filteredMenus.map((menu) => {

@@ -12,22 +12,20 @@ export default function MenuManagementPage() {
   const { t } = useTranslation(['menu'])
   const { userInfo } = useUserStore()
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
-  const { data, isLoading } = useAllMenus(
-    {
-      order: 'DESC',
-      page: pagination.pageIndex,
-      pageSize: pagination.pageSize,
-      branch: userInfo?.branch.slug,
-    }
-  )
+  const { data, isLoading } = useAllMenus({
+    order: 'DESC',
+    page: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+    branch: userInfo?.branch.slug,
+  })
 
   return (
-    <div className="flex flex-row h-full gap-2">
+    <div className="flex h-full flex-row gap-2">
       {/* Menu Section - Scrollable */}
       <ScrollArea className="flex-1">
-        <div className={` transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
-            <span className="flex items-center justify-start w-full gap-1 text-lg">
+        <div className={`transition-all duration-300 ease-in-out`}>
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
+            <span className="flex w-full items-center justify-start gap-1 text-lg">
               <SquareMenu />
               {t('menu.title')}
             </span>

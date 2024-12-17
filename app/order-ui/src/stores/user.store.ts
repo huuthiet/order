@@ -7,7 +7,10 @@ export const useUserStore = create<IUserStore>()(
   persist(
     (set, get) => ({
       userInfo: null,
-      setUserInfo: (userInfo: IUserInfo) => set({ userInfo }),
+      setUserInfo: (userInfo: IUserInfo) => {
+        console.log('setUserInfo', userInfo)
+        set({ userInfo })
+      },
       getUserInfo: () => get().userInfo,
       removeUserInfo: () => set({ userInfo: null }),
     }),

@@ -15,6 +15,7 @@ import {
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ACBConnectorService {
@@ -34,7 +35,7 @@ export class ACBConnectorService {
       return null;
     }
     return this.mapper.map(
-      config.pop(),
+      _.first(config),
       ACBConnectorConfig,
       ACBConnectorConfigResponseDto,
     );

@@ -26,4 +26,16 @@ export const forgotPasswordSchema = z.object({
   email: z.string().email(),
 })
 
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z.string().min(6),
+    confirmPassword: z.string().min(6),
+    token: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Mật khẩu không khớp',
+  })
+
+export type TResetPasswordSchema = z.infer<typeof resetPasswordSchema>
+
 export type TForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>

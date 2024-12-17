@@ -88,18 +88,18 @@ services:
       timeout: 60s # Increase timeout to give MySQL more time
       retries: 5
 
-  # order-ui:
-  #   build:
-  #     context: ../../app/order-ui
-  #     dockerfile: ../../.build/order-ui/Dockerfile # Adjusted to be relative to the context
-  #   healthcheck:
-  #     test: ["CMD", "nc", "-z", "localhost", "5173"] # TCP check on port 5173
-  #     interval: 10s # Increase interval between health checks
-  #     timeout: 10s # Increase timeout for slower responses
-  #     retries: 5
-  #   restart: always
-  #   ports:
-  #     - "5173:5173"
+  order-ui:
+    build:
+      context: ../../app/order-ui
+      dockerfile: ../../.build/order-ui/Dockerfile # Adjusted to be relative to the context
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "5173"] # TCP check on port 5173
+      interval: 10s # Increase interval between health checks
+      timeout: 10s # Increase timeout for slower responses
+      retries: 5
+    restart: always
+    ports:
+      - "5173:5173"
 
 networks:
   default:

@@ -5,12 +5,24 @@ import { BaseResponseDto } from 'src/app/base.dto';
 
 export class CreateBranchDto {
   @AutoMap()
-  @ApiProperty({ description: 'The day of menu', example: '' })
+  @ApiProperty()
   @IsNotEmpty()
   name: string;
 
   @AutoMap()
-  @ApiProperty({ description: 'The name of catalog', example: '' })
+  @ApiProperty()
+  @IsNotEmpty()
+  address: string;
+}
+
+export class UpdateBranchDto {
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  name: string;
+
+  @AutoMap()
+  @ApiProperty()
   @IsNotEmpty()
   address: string;
 }

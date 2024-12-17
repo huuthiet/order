@@ -101,7 +101,7 @@
     "paymentStatus": "Thanh toán",
     "cash": "Tiền mặt",
     "bankTransfer": "Chuyển khoản ngân hàng",
-    "pending": "Chờ thanh toán",
+    "pending": "Chưa được giao",
     "paid": "Đã thanh toán",
     "completed": "Đã hoàn tất",
     "shipping": "Đang giao hàng",
@@ -129,6 +129,7 @@
     "itemAmount": "Số lượng món",
     "paymentMethod": "Phương thức thanh toán",
     "status": "Trạng thái",
+    "table": "Tên bàn",
     "slug": "Mã đơn hàng",
     "orderType": "Loại đơn hàng",
     "owner": "Người đặt",
@@ -148,7 +149,12 @@
     "productName": "Tên món",
     "confirmCreateOrderTracking": "Xác nhận giao hàng",
     "createOrderTrackingByRobot": "Robot giao",
-    "createOrderTrackingByRobotDescription": "Robot sẽ giao hàng tới vị trí bàn của khách hàng"
+    "createOrderTrackingByRobotDescription": "Robot sẽ giao hàng tới vị trí bàn của khách hàng",
+
+    "currentOrder": "Đơn hàng chính",
+    "refreshOrdersInTheSameTable": "Lưu ý: Bạn nên làm mới trang để lấy dữ liệu mới nhất",
+    "refresh": "Làm mới dữ liệu",
+    "loadOrdersInTheSameTable": "Lấy các đơn hàng cùng bàn"
   },
   "table": {
     "title": "Danh sách bàn"

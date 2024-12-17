@@ -22,12 +22,23 @@ export async function register(params: {
   return response.data
 }
 
-export async function forgotPassword(
+export async function forgotPasswordAndGetToken(
   email: IForgotPasswordRequest,
-): Promise<IApiResponse<ILoginResponse>> {
-  const response = await http.post<IApiResponse<ILoginResponse>>(
-    '/auth/forgot-password',
+): Promise<IApiResponse<null>> {
+  const response = await http.post<IApiResponse<null>>(
+    '/auth/forgot-password/token',
     email,
+  )
+  return response.data
+}
+
+export async function forgotPasswordAndResetPassword(data: {
+  newPassword: string
+  token: string
+}): Promise<IApiResponse<null>> {
+  const response = await http.post<IApiResponse<null>>(
+    '/auth/forgot-password',
+    data,
   )
   return response.data
 }
