@@ -145,9 +145,7 @@ export class PaymentService {
 
     if (payment.paymentMethod === PaymentMethod.CASH) {
       // Update order status
-      this.eventEmitter.emit(PaymentAction.PAYMENT_PAID, {
-        orderId: payment.order?.id,
-      });
+      this.eventEmitter.emit(PaymentAction.PAYMENT_PAID, { orderId: order.id });
     }
     return this.mapper.map(payment, Payment, PaymentResponseDto);
   }
@@ -174,6 +172,8 @@ export class PaymentService {
       },
       relations: ['order'],
     });
+
+    this.logger.log(`Payment: ${JSON.stringify(payment)}`, context);
 
     if (!payment) {
       this.logger.error('Payment not found', null, context);
