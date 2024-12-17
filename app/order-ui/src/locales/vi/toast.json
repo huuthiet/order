@@ -69,6 +69,8 @@
     "resetPasswordSuccess": "Đặt lại mật khẩu thành công",
 
     "accessDenied": "Truy cập bị từ chối",
-    "sessionExpired": "Phiên làm việc đã hết hạn"
+    "sessionExpired": "Phiên làm việc đã hết hạn",
+
+    "updateSystemConfigSuccess": "Cập nhật cấu hình hệ thống thành công"
   }
 }

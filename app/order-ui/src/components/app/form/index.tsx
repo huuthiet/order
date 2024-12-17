@@ -52,3 +52,7 @@ export * from './create-order-tracking-by-robot-form'
 export * from './update-password-form'
 // eslint-disable-next-line react-refresh/only-export-components
 export * from './user-info-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './system-config-form'
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './update-system-config-form'
