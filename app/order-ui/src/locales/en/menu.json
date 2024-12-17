@@ -18,6 +18,7 @@
   },
 
   "order": {
+    "confirmation": "Order confirmation",
     "product": "Product",
     "unitPrice": "Unit Price",
     "quantity": "Quantity",

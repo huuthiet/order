@@ -64,6 +64,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
     // Call ACB API to create payment
     const requestTrace = uuidv4();
     const acbConnectorConfig = _.first(acbConnectorConfigs);
+    console.log({ acbConnectorConfig });
     const headers = {
       [X_CLIENT_ID]: this.clientId,
       [X_OWNER_NUMBER]: acbConnectorConfig?.xOwnerNumber,
@@ -83,13 +84,13 @@ export class BankTransferStrategy implements IPaymentStrategy {
       requestParameters: {
         traceNumber: requestTrace,
         amount: order.subtotal,
-        beneficiaryName: acbConnectorConfig[0]?.beneficiaryName,
+        beneficiaryName: acbConnectorConfig?.beneficiaryName,
         merchantId: shortid(),
         orderId: order.slug,
         terminalId: shortid(),
         userId: order.owner.id,
         loyaltyCode: shortid(),
-        virtualAccountPrefix: acbConnectorConfig[0]?.virtualAccountPrefix,
+        virtualAccountPrefix: acbConnectorConfig?.virtualAccountPrefix,
         voucherCode: shortid(),
         description: 'hoa don thanh toan',
       },

@@ -68,6 +68,7 @@
   },
 
   "order": {
+    "confirmation": "Xác nhận thanh toán",
     "product": "Sản phẩm",
     "unitPrice": "Đơn giá",
     "quantity": "Số lượng",
