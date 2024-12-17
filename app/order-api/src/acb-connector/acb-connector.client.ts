@@ -80,7 +80,6 @@ export class ACBConnectorClient {
     accessToken: string,
   ): Promise<ACBInitiateQRCodeResponseDto> {
     const context = `${ACBConnectorClient.name}.${this.initiateQRCode.name}`;
-    console.log(await this.getAcbApiUrl());
     const requestUrl = `${await this.getAcbApiUrl()}/payments/qr-payment/v1/initiate`;
     const { data } = await firstValueFrom(
       this.httpService
