@@ -5,7 +5,7 @@ import { SquareMenu } from 'lucide-react'
 import { DataTable, ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder, OrderStatus } from '@/types'
+import { IOrder } from '@/types'
 import { usePendingOrdersColumns } from './DataTable/columns'
 import { OrderItemDetailSheet } from '@/components/app/sheet'
 
