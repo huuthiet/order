@@ -20,7 +20,7 @@ import {
   Textarea,
 } from '@/components/ui'
 
-import { ICartItem, IProduct, IProductVariant } from '@/types'
+import { ICartItem, IOrderType, IProduct, IProductVariant } from '@/types'
 import { useCartItemStore, useUserStore } from '@/stores'
 import { publicFileURL } from '@/constants'
 
@@ -53,7 +53,7 @@ export default function AddToCartDialog({
       id: generateCartItemId(),
       slug: product.slug,
       owner: getUserInfo()?.slug,
-      type: 'at-table', // default value, can be modified based on requirements
+      type: IOrderType.AT_TABLE, // default value, can be modified based on requirements
       branch: getUserInfo()?.branch.slug, // get branch from user info
       orderItems: [
         {
@@ -84,7 +84,7 @@ export default function AddToCartDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="flex flex-row items-center justify-center gap-1 rounded-full px-4 text-white">
+          <Button className="flex flex-row items-center justify-center gap-1 px-4 text-white rounded-full">
             <ShoppingCart size={12} />
             {t('menu.addToCart')}
           </Button>
@@ -107,14 +107,14 @@ export default function AddToCartDialog({
                 <img
                   src={`${publicFileURL}/${product.image}`}
                   alt={product.name}
-                  className="h-56 w-full rounded-md object-cover sm:h-64 lg:h-80"
+                  className="object-cover w-full h-56 rounded-md sm:h-64 lg:h-80"
                 />
               ) : (
                 <div className="w-full rounded-md bg-muted/50" />
               )}
             </div>
 
-            <div className="col-span-2 flex flex-col gap-6">
+            <div className="flex flex-col col-span-2 gap-6">
               {/* Product Details */}
               <div>
                 <h3 className="text-lg font-semibold">{product.name}</h3>
@@ -175,7 +175,7 @@ export default function AddToCartDialog({
           </div>
         </ScrollArea>
 
-        <DialogFooter className="flex w-full flex-row justify-end gap-3">
+        <DialogFooter className="flex flex-row justify-end w-full gap-3">
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             {tCommon('common.cancel')}
           </Button>

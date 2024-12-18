@@ -34,8 +34,19 @@ export async function updateSystemConfigs(
   return response.data
 }
 
-export async function deleteSystemConfigs(): Promise<IApiResponse<null>> {
-  const response = await http.delete<IApiResponse<null>>('/system-config')
+export async function deleteSystemConfigs({
+  key,
+  slug,
+}: {
+  key: string
+  slug: string
+}): Promise<IApiResponse<null>> {
+  const response = await http.delete<IApiResponse<null>>('/system-config', {
+    params: {
+      key,
+      slug,
+    },
+  })
   return response.data
 }
 

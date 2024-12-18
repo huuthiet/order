@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 
 import { DataTableColumnHeader } from '@/components/ui'
-import { IOrder } from '@/types'
+import { IOrder, IOrderType } from '@/types'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 
 export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
@@ -58,7 +58,11 @@ export const usePendingOrdersColumns = (): ColumnDef<IOrder>[] => {
       ),
       cell: ({ row }) => {
         const order = row.original
-        return <div>Bàn số {order?.table?.name}</div>
+        return order?.type === IOrderType.AT_TABLE ? (
+          <div>Bàn số {order?.table?.name}</div>
+        ) : (
+          <div>{t('order.takeAway')}</div>
+        )
       },
     },
     {

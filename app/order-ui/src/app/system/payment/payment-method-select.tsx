@@ -28,8 +28,7 @@ export default function PaymentMethodSelect({
       <div className="p-4 bg-muted/60">
         <Label className="text-md">{t('paymentMethod.title')}</Label>
       </div>
-      <div className='grid grid-cols-2'>
-
+      <div className={`grid ${qrCode ? 'grid-cols-2' : 'grid-cols-1'}`}>
         <div className='flex flex-col col-span-1'>
           <div className="p-4">
             <PaymentMethodRadioGroup onSubmit={handlePaymentMethodSubmit} />
@@ -39,8 +38,8 @@ export default function PaymentMethodSelect({
             {t('paymentMethod.bankTransferProcessing')}
           </div>
         </div>
-        <div className='col-span-1 pb-4'>
-          {qrCode && (
+        {qrCode && (
+          <div className='col-span-1 pb-4'>
             <div className="flex flex-col items-center justify-center">
               <img src={qrCode} alt="QR Code" className="w-2/5" />
               <div className='flex flex-col items-center justify-center gap-2'>
@@ -53,8 +52,8 @@ export default function PaymentMethodSelect({
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { CircleAlert } from 'lucide-react'
 
 import {
   CustomerInformation,
@@ -7,7 +8,7 @@ import {
 } from '@/app/system/order-management'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder } from '@/types'
+import { IOrder, IOrderType } from '@/types'
 import {
   Sheet,
   SheetContent,
@@ -20,7 +21,6 @@ import {
   CreateOrderTrackingByStaffDialog,
   CreateOrderTrackingByRobotDialog,
 } from '@/components/app/dialog'
-import { CircleAlert } from 'lucide-react'
 
 interface IOrderItemDetailSheetProps {
   order: string
@@ -53,10 +53,8 @@ export default function OrderItemDetailSheet({
 
   useEffect(() => {
     if (!order) return
-
     const interval = setInterval(async () => {
       try {
-        console.log('Polling main order...')
         await refetchSelectedOrder()
       } catch (error) {
         console.error('Error polling main order:', error)
@@ -82,7 +80,6 @@ export default function OrderItemDetailSheet({
     const slugs =
       ordersInTheSameTable?.result?.items?.map((item) => item.slug) || []
     setOrderSlugs(slugs)
-    console.log('Order slugs:', slugs)
   }, [ordersInTheSameTable])
 
   // Update orderDetails when ordersInTheSameTable changes
@@ -146,7 +143,6 @@ export default function OrderItemDetailSheet({
     const interval = setInterval(async () => {
       try {
         await allOrderRefetch()
-        console.log('Polling: Refreshing orders in the same table...')
       } catch (error) {
         console.error('Error during polling orders:', error)
       }
@@ -157,20 +153,22 @@ export default function OrderItemDetailSheet({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent>
+      <SheetContent className='p-2'>
         <SheetHeader>
-          <SheetTitle className="flex items-center justify-between mt-6">
+          <SheetTitle className="flex items-center justify-between mt-8 sm:mt-6">
             {t('order.orderDetail')}
-            <Button
-              onClick={shouldFetchOrders ? handleRefetchAll : handleFetchOrders}
-            >
-              {shouldFetchOrders ? t('order.refresh') : t('order.loadOrdersInTheSameTable')}
-            </Button>
+
           </SheetTitle>
           {getSelectedItems().length > 0 && (
             <div className="flex gap-2">
-              <CreateOrderTrackingByStaffDialog />
-              <CreateOrderTrackingByRobotDialog />
+              {selectedOrder?.result?.type === IOrderType.TAKE_OUT ? (
+                <CreateOrderTrackingByStaffDialog />
+              ) : (
+                <div className='flex gap-2'>
+                  <CreateOrderTrackingByStaffDialog />
+                  <CreateOrderTrackingByRobotDialog />
+                </div>
+              )}
             </div>
           )}
         </SheetHeader>
@@ -178,7 +176,7 @@ export default function OrderItemDetailSheet({
           <div className="mt-4">
             {order ? (
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2 p-4 border-2 rounded-lg border-primary bg-primary/5">
+                <div className="flex flex-col gap-2 p-2 border-2 rounded-lg sm:p-4 border-primary bg-primary/5">
                   <div className="font-medium text-primary">
                     {t('order.currentOrder')}
                   </div>
@@ -190,9 +188,16 @@ export default function OrderItemDetailSheet({
                 {orderDetails && orderDetails.length > 0 && (
                   <div className="flex items-center gap-1">
                     <CircleAlert size={14} className="text-blue-500" />
-                    <span className='text-sm text-muted-foreground'>{t('order.refreshOrdersInTheSameTable')}</span>
+                    <span className='text-xs sm:text-sm text-muted-foreground'>{t('order.refreshOrdersInTheSameTable')}</span>
                   </div>
                 )}
+                <div className='flex justify-start'>
+                  <Button
+                    onClick={shouldFetchOrders ? handleRefetchAll : handleFetchOrders}
+                  >
+                    {shouldFetchOrders ? t('order.refresh') : t('order.loadOrdersInTheSameTable')}
+                  </Button>
+                </div>
                 {shouldFetchOrders && (
                   <div className="flex flex-col gap-4">
                     {orderDetails

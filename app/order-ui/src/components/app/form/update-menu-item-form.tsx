@@ -17,9 +17,11 @@ import {
 import { updateMenuItemSchema, TUpdateMenuItemSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IUpdateMenuItemRequest, IMenuItem } from '@/types'
+import { IUpdateMenuItemRequest, IMenuItem, IApiResponse } from '@/types'
 import { useUpdateMenuItem } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
+import { isAxiosError } from 'axios'
+import { AxiosError } from 'axios'
 
 interface IFormUpdateMenuItemProps {
   menuItem: IMenuItem
@@ -54,6 +56,13 @@ export const UpdateMenuItemForm: React.FC<IFormUpdateMenuItemProps> = ({
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateMenuItemSuccess'))
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
       },
     })
   }

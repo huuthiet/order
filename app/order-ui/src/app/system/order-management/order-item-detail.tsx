@@ -12,8 +12,6 @@ interface OrderItemDetailProps {
   order: IOrderDetail
 }
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
-  console.log('check order', order)
-  // console.log('check order status', order.status)
   const { t } = useTranslation(['menu'])
   const { addSelectedItem, removeSelectedItem, getSelectedItems } =
     useOrderTrackingStore()
@@ -67,7 +65,6 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   }
 
   const renderOrderItem = (orderItem: IOrderDetail) => {
-    console.log('check orderItem', orderItem)
     const totalProcessedItems = orderItem.status.COMPLETED
 
     const items = Array(orderItem.quantity)
@@ -85,8 +82,6 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         return { status: OrderItemStatus.PENDING, index }
       })
 
-    console.log('items', items)
-
     return (
       <div key={orderItem.id} className="mt-4 space-y-2">
         <div className="font-medium">
@@ -101,11 +96,11 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
           {items.map((item) => (
             <div
               key={item.index}
-              className="grid flex-row items-center grid-cols-5 gap-3 px-2 py-4 border rounded-md"
+              className="grid flex-row items-center grid-cols-9 gap-3 py-4 rounded-md"
             >
               {item.status === OrderItemStatus.PENDING ||
                 item.status === OrderItemStatus.FAILED ? (
-                <div className="flex flex-row items-center col-span-3 gap-2">
+                <div className="flex flex-row items-center col-span-4 gap-2">
                   <Checkbox
                     className="w-5 h-5 shadow-none"
                     checked={isChecked(orderItem, item.index)}
@@ -113,14 +108,14 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                       handleSelectOrderItem(checked, orderItem, item.index)
                     }
                   />
-                  <p className="text-sm">{orderItem.variant.product.name}</p>
-                  <p className="text-sm">
+                  <p className="text-xs sm:text-sm">{orderItem.variant.product.name}</p>
+                  <p className="text-xs sm:text-sm">
                     {t('order.size')}
                     {orderItem.variant.size?.name.toUpperCase()}
                   </p>
                 </div>
               ) : (
-                <div className="flex flex-row items-center justify-start col-span-3 gap-3">
+                <div className="flex flex-row items-center justify-start col-span-4 gap-3">
                   <div
                     className={`h-3 w-3 rounded-full ${item.status === OrderItemStatus.COMPLETED
                       ? 'bg-green-500'
@@ -129,19 +124,19 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
                         : 'bg-gray-300'
                       }`}
                   />
-                  <p className="text-sm">{orderItem.variant.product.name}</p>
+                  <p className="text-xs sm:text-sm">{orderItem.variant.product.name}</p>
                   {'-'}
-                  <p className="text-sm">
+                  <p className="text-xs sm:text-sm">
                     {t('order.size')}
                     {orderItem.variant.size?.name.toUpperCase()}
                   </p>
                 </div>
               )}
 
-              <div className="col-span-1 text-sm text-center">
+              <div className="col-span-2 text-xs text-center sm:text-sm">
                 {orderItem.variant.price.toLocaleString()}đ
               </div>
-              <div className="flex justify-end col-span-1">
+              <div className="flex justify-end col-span-3">
                 <OrderItemStatusBadge status={item.status} />
               </div>
             </div>

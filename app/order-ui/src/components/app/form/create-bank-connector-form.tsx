@@ -19,9 +19,10 @@ import {
 } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ICreateBankConnectorRequest } from '@/types'
+import { IApiResponse, ICreateBankConnectorRequest } from '@/types'
 import { useCreateBankConnector } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
+import { AxiosError, isAxiosError } from 'axios'
 
 interface IFormCreateBankConnectorProps {
   onSubmit: (isOpen: boolean) => void
@@ -54,6 +55,13 @@ export const CreateBankConnectorForm: React.FC<
         onSubmit(false)
         form.reset()
         showToast(t('toast.createBankConnectorSuccess'))
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
       },
     })
   }
