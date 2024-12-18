@@ -13,7 +13,7 @@ export default function StaffLayout() {
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <div className="box-border flex min-h-screen flex-1">
+      <div className="box-border flex flex-1 min-h-screen">
         {/* Sidebar - Hidden on mobile by default */}
         <AppSidebar />
 
@@ -34,7 +34,7 @@ export default function StaffLayout() {
             <main
               className={cn(
                 'min-h-full',
-                isMobile ? 'px-3 pb-[env(safe-area-inset-bottom)]' : 'px-4',
+                isMobile ? 'px-2 pb-[env(safe-area-inset-bottom)]' : 'px-4',
               )}
             >
               <Outlet />

@@ -35,7 +35,7 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
   if (isLoading) {
     return (
       <div
-        className={`grid ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-3`}
+        className={`grid grid-cols-1 ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-3`}
       >
         {[...Array(8)].map((_, index) => (
           <SkeletonMenuList key={index} />
@@ -50,12 +50,12 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
 
   return (
     <div
-      className={`grid grid-cols-2 ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-6`}
+      className={` grid grid-cols-2 ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-4`}
     >
       {menuItems.map((item) => (
         <div
           key={item.slug}
-          className="flex flex-col border rounded-xl backdrop-blur-md"
+          className="flex flex-col bg-white border rounded-xl backdrop-blur-md"
         >
           {/* Image Section with Discount Tag */}
           <div className="relative">

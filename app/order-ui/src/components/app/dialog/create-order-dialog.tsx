@@ -84,7 +84,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
             className="items-center justify-center gap-1 text-sm rounded-full"
             onClick={() => setIsOpen(true)}
           >
-            <ShoppingCart className="icon" />
+            {/* <ShoppingCart className="icon" /> */}
             {t('order.create')}
           </Button>
         </DialogTrigger>
@@ -109,7 +109,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
             {tCommon('common.cancel')}
           </Button>
           <Button onClick={() => order && handleSubmit(order)}>
-            {tCommon('common.createOrder')}
+            {t('order.create')}
           </Button>
         </DialogFooter>
       </DialogContent>

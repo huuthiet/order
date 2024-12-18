@@ -113,8 +113,10 @@
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
     "deleteContent2": " khỏi giỏ hàng không?",
 
-    "create": "Tạo đơn hàng",
-    "confirmOrder": "Bạn có chắc muốn tạo đơn hàng này không?",
+    "selectTableNote": "Lưu ý: Lựa chọn bàn trước khi nhấn xác nhận đơn hàng.  Nhiều đơn hàng có thể đặt chung một bàn.",
+
+    "create": "Đặt hàng",
+    "confirmOrder": "Bạn có chắc muốn đặt hàng?",
 
     "viewDetail": "Xem chi tiết",
     "updatePayment": "Cập nhật thanh toán",
@@ -155,7 +157,7 @@
     "currentOrder": "Đơn hàng chính",
     "refreshOrdersInTheSameTable": "Lưu ý: Bạn nên làm mới trang để lấy dữ liệu mới nhất",
     "refresh": "Làm mới dữ liệu",
-    "loadOrdersInTheSameTable": "Lấy các đơn hàng cùng bàn"
+    "loadOrdersInTheSameTable": "Lấy các đơn cùng bàn"
   },
   "table": {
     "title": "Danh sách bàn"

@@ -94,7 +94,7 @@ export function TableItem({
     >
       <div
         className={`rounded-md bg-transparent p-2 transition-all duration-200 ${isSelected
-          ? 'z-10 scale-110 border-primary bg-primary/10 ring-4 ring-primary'
+          ? 'z-10 scale-110 border-primary bg-primary/10 ring-2 ring-green-500'
           : 'bg-background hover:scale-105 hover:ring-2 hover:ring-primary/50'
           } `}
       >

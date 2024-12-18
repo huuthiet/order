@@ -114,7 +114,7 @@ export const SystemConfigForm: React.FC = () => {
                                             {config.key}
                                         </span>
                                         <span className='col-span-6'>
-                                            <PasswordInput className='border-none' value={config.value} />
+                                            <PasswordInput className='border-none shadow-none' value={config.value} />
                                         </span>
                                         <span className='flex justify-end col-span-2 text-xs text-muted-foreground'>
                                             {moment(config.createdAt).format('hh:mm DD/MM/YYYY')}
