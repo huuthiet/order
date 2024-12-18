@@ -180,7 +180,6 @@ export class OrderService {
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
-    let tableName: string = null; // default for take-out
     let table: Table;
     if (data.type === OrderType.AT_TABLE) {
       table = await this.tableRepository.findOne({
@@ -198,7 +197,6 @@ export class OrderService {
         );
         throw new TableException(TableValidation.TABLE_NOT_FOUND);
       }
-      tableName = table.name;
     }
 
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
@@ -213,7 +211,6 @@ export class OrderService {
     Object.assign(order, {
       owner: owner,
       branch: branch,
-      tableName,
       table,
     });
     return order;

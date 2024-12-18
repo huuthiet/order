@@ -4,7 +4,7 @@ import {
   EventSubscriber,
   InsertEvent,
 } from 'typeorm';
-import * as shortid from 'shortid';
+import { getRandomString } from 'src/helper';
 
 @EventSubscriber()
 export class AppSubscriber implements EntitySubscriberInterface {
@@ -15,7 +15,8 @@ export class AppSubscriber implements EntitySubscriberInterface {
    * Called before entity insertion.
    */
   beforeInsert(event: InsertEvent<{ slug: string }>) {
-    // if (_.has(event.entity, 'slug'))
-    event.entity.slug = shortid.generate();
+    if (event.entity.slug) return;
+    const randomString = getRandomString();
+    event.entity.slug = randomString;
   }
 }
