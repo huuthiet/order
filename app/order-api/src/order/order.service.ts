@@ -185,7 +185,7 @@ export class OrderService {
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
-    let table: Table;
+    let table: Table = null;
     if (data.type === OrderType.AT_TABLE) {
       table = await this.tableRepository.findOne({
         where: {
