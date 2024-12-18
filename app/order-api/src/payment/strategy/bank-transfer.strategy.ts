@@ -53,7 +53,6 @@ export class BankTransferStrategy implements IPaymentStrategy {
       this.logger.error('ACB Connector config not found', null, context);
       throw new BadRequestException('ACB Connector config not found');
     }
-    console.log({ clientId: this.clientId, clientSecret: this.clientSecret });
     // Get token from ACB
     const { access_token } = await this.acbConnectorClient.token({
       client_id: this.clientId,
@@ -64,7 +63,6 @@ export class BankTransferStrategy implements IPaymentStrategy {
     // Call ACB API to create payment
     const requestTrace = uuidv4();
     const acbConnectorConfig = _.first(acbConnectorConfigs);
-    console.log({ acbConnectorConfig });
     const headers = {
       [X_CLIENT_ID]: this.clientId,
       [X_OWNER_NUMBER]: acbConnectorConfig?.xOwnerNumber,

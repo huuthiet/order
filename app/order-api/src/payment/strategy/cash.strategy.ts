@@ -38,10 +38,6 @@ export class CashStrategy implements IPaymentStrategy {
     const createdPayment = await this.paymentRepository.save(payment);
     this.logger.log(`Payment created with id: ${createdPayment.id}`, context);
 
-    // Update order status
-    this.eventEmitter.emit(PaymentAction.PAYMENT_PAID, {
-      orderId: payment.order?.id,
-    });
     return createdPayment;
   }
 }

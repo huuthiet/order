@@ -76,6 +76,8 @@ export class OrderService {
     const context = `${OrderService.name}.${this.handleUpdateOrderStatus.name}`;
     this.logger.log(`Update order status after payment process`, context);
 
+    this.logger.log(`Request data: ${JSON.stringify(requestData)}`, context);
+
     const order = await this.orderRepository.findOne({
       where: { id: requestData.orderId },
       relations: ['payment'],
@@ -85,6 +87,8 @@ export class OrderService {
       this.logger.error(`Order not found`, null, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
+
+    this.logger.log(`Current order: ${JSON.stringify(order)}`, context);
 
     if (
       order.payment?.statusCode === PaymentStatus.COMPLETED &&
@@ -408,7 +412,6 @@ export class OrderService {
   async getAllOrders(
     options: GetOrderRequestDto,
   ): Promise<AppPaginatedResponseDto<OrderResponseDto>> {
-    console.log({ options });
     const findOptionsWhere: FindOptionsWhere<any> = {
       branch: {
         slug: options.branch,
@@ -503,19 +506,19 @@ export class OrderService {
     //     (latest: TrackingOrderItem[], current: TrackingOrderItem) => {
     //       return latest.length === 0 || current.createdAt > latest[0].createdAt ? [current] : latest;
     //     },
-    //     []  
+    //     []
     //   );
     // });
 
     // order.orderItems.forEach(orderItem => {
     //   const trackingOrderItems = orderItem.trackingOrderItems;
-    
+
     //   // Lấy các trạng thái của tracking
     //   const statuses = trackingOrderItems.map(item => item.tracking.status);
-    
+
     //   // Kiểm tra sự tồn tại của RUNNING hoặc PENDING
     //   const hasRunningOrPending = statuses.includes("RUNNING") || statuses.includes("PENDING");
-    
+
     //   if (hasRunningOrPending) {
     //     // Nếu có RUNNING hoặc PENDING, bỏ FAILED, giữ COMPLETED, RUNNING và PENDING
     //     orderItem.trackingOrderItems = trackingOrderItems.filter(
@@ -528,13 +531,13 @@ export class OrderService {
     //     // Nếu không có RUNNING hoặc PENDING
     //     // Lấy tất cả các COMPLETED
     //     const completedItems = trackingOrderItems.filter(item => item.tracking.status === "COMPLETED");
-    
+
     //     // Lấy FAILED mới nhất nếu tồn tại
     //     const failedItems = trackingOrderItems.filter(item => item.tracking.status === "FAILED");
     //     const latestFailedItem = failedItems.reduce((latest, current) => {
     //       return !latest || current.createdAt > latest.createdAt ? current : latest;
     //     }, null);
-    
+
     //     // Kết hợp kết quả
     //     orderItem.trackingOrderItems = [
     //       ...(latestFailedItem ? [latestFailedItem] : []),
@@ -542,7 +545,7 @@ export class OrderService {
     //     ];
     //   }
     // });
-    
+
     const orderDto = this.getStatusEachOrderItemInOrder(order);
     return orderDto;
   }
