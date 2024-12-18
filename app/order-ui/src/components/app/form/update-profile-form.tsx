@@ -17,13 +17,15 @@ import {
 import { updateProfileSchema, TUpdateProfileSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IUpdateProfileRequest, IUserInfo } from '@/types'
+import { IApiResponse, IUpdateProfileRequest, IUserInfo } from '@/types'
 import { useUpdateProfile } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
 import { BranchSelect } from '@/components/app/select'
 import { DatePicker } from '@/components/app/picker'
 import { useUserStore } from '@/stores'
 import { getProfile } from '@/api'
+import { isAxiosError } from 'axios'
+import { AxiosError } from 'axios'
 
 interface IFormUpdateProfileProps {
   userProfile?: IUserInfo
@@ -63,6 +65,13 @@ export const UpdateProfileForm: React.FC<IFormUpdateProfileProps> = ({
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateProfileSuccess'))
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
       },
     })
   }

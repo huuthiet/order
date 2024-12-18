@@ -56,14 +56,15 @@ export default function CustomerInformation({
               : null}
           </span>
         </div>
-        <div className="grid grid-cols-5 gap-1">
-          <span className="col-span-3 text-xs font-semibold ">
-            {t('order.tableNumber')}
-          </span>
-          <span className="col-span-2 text-xs ">
-            {orderDetailData?.table?.name}
-          </span>
-        </div>
+        {orderDetailData?.type === IOrderType.AT_TABLE && (
+          <div className="grid grid-cols-5 gap-1">
+            <span className="col-span-3 text-xs font-semibold ">
+              {t('order.tableNumber')}
+            </span>
+            <span className="col-span-2 text-xs ">
+              {orderDetailData?.table?.name}
+            </span>
+          </div>)}
       </div>
     </div>
   )

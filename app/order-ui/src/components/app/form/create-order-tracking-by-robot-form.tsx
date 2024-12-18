@@ -18,11 +18,12 @@ import {
 } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ICreateOrderTrackingRequest, IOrder } from '@/types'
+import { IApiResponse, ICreateOrderTrackingRequest, IOrder } from '@/types'
 import { useCreateOrderTracking } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
 import { useOrderStore, useOrderTrackingStore } from '@/stores'
 import { Label } from '@radix-ui/react-dropdown-menu'
+import { AxiosError, isAxiosError } from 'axios'
 
 interface IFormDeliverByRobotProps {
   onSubmit: (shouldRefetch: boolean) => void
@@ -78,9 +79,12 @@ export const CreateOrderTrackingByRobotForm: React.FC<
           onSubmit(false)
         }
       },
-      onError: () => {
-        showToast(t('toast.createOrderTrackingFailed'))
-        onSubmit(false)
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
       },
     })
   }

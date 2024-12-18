@@ -8,7 +8,7 @@ import {
 } from '@/app/system/order-management'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder } from '@/types'
+import { IOrder, IOrderType } from '@/types'
 import {
   Sheet,
   SheetContent,
@@ -161,8 +161,14 @@ export default function OrderItemDetailSheet({
           </SheetTitle>
           {getSelectedItems().length > 0 && (
             <div className="flex gap-2">
-              <CreateOrderTrackingByStaffDialog />
-              <CreateOrderTrackingByRobotDialog />
+              {selectedOrder?.result?.type === IOrderType.TAKE_OUT ? (
+                <CreateOrderTrackingByStaffDialog />
+              ) : (
+                <div className='flex gap-2'>
+                  <CreateOrderTrackingByStaffDialog />
+                  <CreateOrderTrackingByRobotDialog />
+                </div>
+              )}
             </div>
           )}
         </SheetHeader>

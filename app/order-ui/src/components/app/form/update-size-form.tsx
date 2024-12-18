@@ -16,9 +16,10 @@ import {
 import { updateSizeSchema, TUpdateSizeSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ISize, IUpdateSizeRequest } from '@/types'
+import { IApiResponse, ISize, IUpdateSizeRequest } from '@/types'
 import { useUpdateSize } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
+import { AxiosError, isAxiosError } from 'axios'
 
 interface IFormUpdateSizeProps {
   size: ISize
@@ -47,7 +48,14 @@ export const UpdateSizeForm: React.FC<IFormUpdateSizeProps> = ({ size, onSubmit 
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateSizeSuccess'))
-      }
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
+      },
     })
   }
 

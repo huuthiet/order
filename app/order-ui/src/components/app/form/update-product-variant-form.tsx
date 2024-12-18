@@ -19,9 +19,10 @@ import {
 } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IUpdateProductVariantRequest, IProductVariant } from '@/types'
+import { IUpdateProductVariantRequest, IProductVariant, IApiResponse } from '@/types'
 import { useUpdateProductVariant } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
+import { AxiosError, isAxiosError } from 'axios'
 
 interface IFormUpdateProductVariantProps {
   productVariant: IProductVariant
@@ -51,6 +52,13 @@ export const UpdateProductVariantForm: React.FC<
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateProductVariantSuccess'))
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
       },
     })
   }
