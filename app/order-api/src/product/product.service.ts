@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Product } from './product.entity';
 import { In, Repository } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
@@ -20,6 +15,8 @@ import { FileService } from 'src/file/file.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ProductException } from './product.exception';
 import ProductValidation from './product.validation';
+import { CatalogException } from 'src/catalog/catalog.exception';
+import { CatalogValidation } from 'src/catalog/catalog.validation';
 
 @Injectable()
 export class ProductService {
@@ -161,8 +158,8 @@ export class ProductService {
    * Create a new product
    * @param {CreateProductRequestDto} createProductDto The data to create product
    * @returns {Promise<ProductResponseDto>} The created product
-   * @throws {BadRequestException} if the product name already exists
-   * @throws {BadRequestException} if the catalog with specified slug is not found
+   * @throws {ProductException} if the product name already exists
+   * @throws {CatalogException} if the catalog with specified slug is not found
    */
   async createProduct(
     createProductDto: CreateProductRequestDto,
@@ -183,7 +180,8 @@ export class ProductService {
     const catalog = await this.catalogRepository.findOneBy({
       slug: createProductDto.catalog,
     });
-    if (!catalog) throw new BadRequestException('Catalog is not found');
+    if (!catalog)
+      throw new CatalogException(CatalogValidation.CATALOG_NOT_FOUND);
 
     const productData = this.mapper.map(
       createProductDto,
@@ -234,8 +232,8 @@ export class ProductService {
    * @param {string} slug The product slug is updated
    * @param {UpdateProductRequestDto} requestData The data to update product
    * @returns {Promise<ProductResponseDto>} The product data after updated
-   * @throws {BadRequestException} if product that need updating is not found
-   * @throws {BadRequestException} if catalog update for product is not found
+   * @throws {ProductException} if product that need updating is not found
+   * @throws {ProductException} if catalog update for product is not found
    */
   async updateProduct(
     slug: string,
@@ -249,7 +247,8 @@ export class ProductService {
     const catalog = await this.catalogRepository.findOneBy({
       slug: requestData.catalog,
     });
-    if (!catalog) throw new BadRequestException('Catalog not found');
+    if (!catalog)
+      throw new CatalogException(CatalogValidation.CATALOG_NOT_FOUND);
 
     const productData = this.mapper.map(
       requestData,
@@ -276,7 +275,7 @@ export class ProductService {
    * Delete product by slug
    * @param {string} slug The slug of product is deleted
    * @returns {Promise<number>} The number of product records is deleted
-   * @throws {BadRequestException} if product is not found
+   * @throws {ProductException} if product is not found
    */
   async deleteProduct(slug: string): Promise<number> {
     const context = `${ProductService.name}.${this.deleteProduct.name}`;
@@ -284,7 +283,8 @@ export class ProductService {
       where: { slug },
       relations: ['variants'],
     });
-    if (!product) throw new BadRequestException('Product not found');
+    if (!product)
+      throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
 
     // Delete variants
     await this.deleteVariantsRelatedProduct(product.variants);

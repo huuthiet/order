@@ -1,10 +1,18 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { VariantController } from "./variant.controller";
-import { VariantService } from "./variant.service";
-import { CreateVariantRequestDto, UpdateVariantRequestDto, VariantResponseDto } from "./variant.dto";
-import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
-import { SizeResponseDto } from "src/size/size.dto";
-import { ProductResponseDto } from "src/product/product.dto";
+import { Test, TestingModule } from '@nestjs/testing';
+import { VariantController } from './variant.controller';
+import { VariantService } from './variant.service';
+import {
+  CreateVariantRequestDto,
+  UpdateVariantRequestDto,
+  VariantResponseDto,
+} from './variant.dto';
+import { InternalServerErrorException } from '@nestjs/common';
+import { SizeResponseDto } from 'src/size/size.dto';
+import { ProductResponseDto } from 'src/product/product.dto';
+import { VariantException } from './variant.exception';
+import { VariantValidation } from './variant.validation';
+import { SizeException } from 'src/size/size.exception';
+import { SizeValidation } from 'src/size/size.validation';
 
 describe('VariantController', () => {
   let controller: VariantController;
@@ -23,8 +31,8 @@ describe('VariantController', () => {
             updateVariant: jest.fn(),
             deleteVariant: jest.fn(),
           },
-        }
-      ]
+        },
+      ],
     }).compile();
 
     controller = module.get<VariantController>(VariantController);
@@ -43,31 +51,31 @@ describe('VariantController', () => {
     it('should throw error if service.createVariant throws', async () => {
       const mockInput = {
         price: 0,
-        size: "mock-size-slug",
-        product: "mock-product-slug"
+        size: 'mock-size-slug',
+        product: 'mock-product-slug',
       } as CreateVariantRequestDto;
 
       (service.createVariant as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new SizeException(SizeValidation.SIZE_NOT_FOUND),
       );
 
       await expect(controller.createVariant(mockInput)).rejects.toThrow(
-        BadRequestException
+        SizeException,
       );
     });
 
     it('should return result when create success', async () => {
       const mockInput = {
         price: 0,
-        size: "mock-size-slug",
-        product: "mock-product-slug"
+        size: 'mock-size-slug',
+        product: 'mock-product-slug',
       } as CreateVariantRequestDto;
       const mockOutput = {
         price: 0,
         size: new SizeResponseDto(),
         product: new ProductResponseDto(),
-        createdAt: (new Date()).toString(),
-        slug: 'mock-variant-slug'
+        createdAt: new Date().toString(),
+        slug: 'mock-variant-slug',
       } as VariantResponseDto;
 
       (service.createVariant as jest.Mock).mockResolvedValue(mockOutput);
@@ -88,8 +96,8 @@ describe('VariantController', () => {
         price: 0,
         size: new SizeResponseDto(),
         product: new ProductResponseDto(),
-        createdAt: (new Date()).toString(),
-        slug: 'mock-variant-slug'
+        createdAt: new Date().toString(),
+        slug: 'mock-variant-slug',
       };
       const mockOutput = [variant];
 
@@ -102,10 +110,12 @@ describe('VariantController', () => {
     it('should return error when service.getAllVariants throws', async () => {
       const productSlug = 'mock-product-slug';
       (service.getAllVariants as jest.Mock).mockRejectedValue(
-        new InternalServerErrorException()
+        new InternalServerErrorException(),
       );
 
-      await expect(controller.getAllVariants(productSlug)).rejects.toThrow(InternalServerErrorException);
+      await expect(controller.getAllVariants(productSlug)).rejects.toThrow(
+        InternalServerErrorException,
+      );
       expect(service.getAllVariants).toHaveBeenCalled();
     });
   });
@@ -118,15 +128,15 @@ describe('VariantController', () => {
     it('should update success and return updated variant', async () => {
       const slug: string = 'mock-variant-slug';
       const mockInput = {
-        price: 0
+        price: 0,
       } as UpdateVariantRequestDto;
 
       const mockOutput = {
         price: 0,
         size: new SizeResponseDto(),
         product: new ProductResponseDto(),
-        createdAt: (new Date()).toString(),
-        slug: 'mock-variant-slug'
+        createdAt: new Date().toString(),
+        slug: 'mock-variant-slug',
       } as VariantResponseDto;
 
       (service.updateVariant as jest.Mock).mockResolvedValue(mockOutput);
@@ -138,16 +148,16 @@ describe('VariantController', () => {
     it('should throw bad request when service.updateVariant throws', async () => {
       const slug: string = 'mock-variant-slug';
       const mockInput: UpdateVariantRequestDto = {
-        price: 0
+        price: 0,
       };
 
       (service.updateVariant as jest.Mock).mockRejectedValue(
-        new BadRequestException()
+        new VariantException(VariantValidation.VARIANT_NOT_FOUND),
       );
 
-      await expect(
-        controller.updateVariant(slug, mockInput),
-      ).rejects.toThrow(BadRequestException);
+      await expect(controller.updateVariant(slug, mockInput)).rejects.toThrow(
+        VariantException,
+      );
       expect(service.updateVariant).toHaveBeenCalled();
     });
   });
@@ -169,11 +179,11 @@ describe('VariantController', () => {
       const slug: string = 'mock-variant-slug';
 
       (service.deleteVariant as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new VariantException(VariantValidation.VARIANT_NOT_FOUND),
       );
 
       await expect(controller.deleteVariant(slug)).rejects.toThrow(
-        BadRequestException
+        VariantException,
       );
       expect(service.deleteVariant).toHaveBeenCalled();
     });

@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
 import {
@@ -79,7 +74,7 @@ export class OrderService {
 
     if (_.isEmpty(requestData)) {
       this.logger.error(`Request data is empty`, null, context);
-      throw new BadRequestException('Request data not found');
+      throw new OrderException(OrderValidation.ORDER_ID_INVALID);
     }
 
     this.logger.log(`Request data: ${JSON.stringify(requestData)}`, context);
@@ -92,7 +87,6 @@ export class OrderService {
       this.logger.error(`Order not found`, null, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
-
     this.logger.log(`Current order: ${JSON.stringify(order)}`, context);
 
     if (
@@ -109,9 +103,9 @@ export class OrderService {
    *
    * @param {CreateOrderRequestDto} requestData The data to create a new order
    * @returns {Promise<OrderResponseDto>} The created order
-   * @throws {BadRequestException} If branch is not found
-   * @throws {BadRequestException} If table is not found in this branch
-   * @throws {BadRequestException} If invalid data to create order item
+   * @throws {BranchException} If branch is not found
+   * @throws {TableException} If table is not found in this branch
+   * @throws {OrderException} If invalid data to create order item
    */
   async createOrder(
     requestData: CreateOrderRequestDto,
@@ -160,7 +154,7 @@ export class OrderService {
         `Error when creating new order: ${err.message}`,
         context,
       );
-      throw new BadRequestException('Create new order failed');
+      throw new OrderException(OrderValidation.CREATE_ORDER_ERROR);
     } finally {
       await queryRunner.release();
     }
@@ -478,7 +472,7 @@ export class OrderService {
    *
    * @param {string} slug The slug of order retrieved
    * @returns {Promise<OrderResponseDto>} The order data is retrieved
-   * @throws {BadRequestException} If order is not found
+   * @throws {OrderException} If order is not found
    */
   async getOrderBySlug(slug: string): Promise<OrderResponseDto> {
     const context = `${OrderService.name}.${this.getOrderBySlug.name}`;
@@ -502,51 +496,6 @@ export class OrderService {
       );
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
     }
-
-    // order.orderItems.forEach(orderItem => {
-    //   orderItem.trackingOrderItems = orderItem.trackingOrderItems.reduce(
-    //     (latest: TrackingOrderItem[], current: TrackingOrderItem) => {
-    //       return latest.length === 0 || current.createdAt > latest[0].createdAt ? [current] : latest;
-    //     },
-    //     []
-    //   );
-    // });
-
-    // order.orderItems.forEach(orderItem => {
-    //   const trackingOrderItems = orderItem.trackingOrderItems;
-
-    //   // Lấy các trạng thái của tracking
-    //   const statuses = trackingOrderItems.map(item => item.tracking.status);
-
-    //   // Kiểm tra sự tồn tại của RUNNING hoặc PENDING
-    //   const hasRunningOrPending = statuses.includes("RUNNING") || statuses.includes("PENDING");
-
-    //   if (hasRunningOrPending) {
-    //     // Nếu có RUNNING hoặc PENDING, bỏ FAILED, giữ COMPLETED, RUNNING và PENDING
-    //     orderItem.trackingOrderItems = trackingOrderItems.filter(
-    //       item =>
-    //         item.tracking.status === "COMPLETED" ||
-    //         item.tracking.status === "RUNNING" ||
-    //         item.tracking.status === "PENDING"
-    //     );
-    //   } else {
-    //     // Nếu không có RUNNING hoặc PENDING
-    //     // Lấy tất cả các COMPLETED
-    //     const completedItems = trackingOrderItems.filter(item => item.tracking.status === "COMPLETED");
-
-    //     // Lấy FAILED mới nhất nếu tồn tại
-    //     const failedItems = trackingOrderItems.filter(item => item.tracking.status === "FAILED");
-    //     const latestFailedItem = failedItems.reduce((latest, current) => {
-    //       return !latest || current.createdAt > latest.createdAt ? current : latest;
-    //     }, null);
-
-    //     // Kết hợp kết quả
-    //     orderItem.trackingOrderItems = [
-    //       ...(latestFailedItem ? [latestFailedItem] : []),
-    //       ...completedItems,
-    //     ];
-    //   }
-    // });
 
     const orderDto = this.getStatusEachOrderItemInOrder(order);
     return orderDto;

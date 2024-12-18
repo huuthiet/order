@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Variant } from './variant.entity';
 import { In, Repository } from 'typeorm';
@@ -56,7 +56,10 @@ export class VariantService {
       where: { slug: createVariantDto.product },
     });
     if (!product) {
-      this.logger.warn(`Product ${createVariantDto.product} not found`, context);
+      this.logger.warn(
+        `Product ${createVariantDto.product} not found`,
+        context,
+      );
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
     }
 
@@ -71,7 +74,10 @@ export class VariantService {
       },
     });
     if (variant) {
-      this.logger.warn(`Variant both size ${createVariantDto.size} and product ${createVariantDto.product} does exists`, context);
+      this.logger.warn(
+        `Variant both size ${createVariantDto.size} and product ${createVariantDto.product} does exists`,
+        context,
+      );
       throw new VariantException(VariantValidation.VARIANT_DOES_EXIST);
     }
 
@@ -103,8 +109,8 @@ export class VariantService {
     const variants = await this.variantRepository.find({
       where: {
         product: {
-          slug: product
-        }
+          slug: product,
+        },
       },
       relations: ['size', 'product'],
     });
@@ -118,7 +124,7 @@ export class VariantService {
 
   /**
    * Update variant data
-   * @param {string} slug The slug of variant is updated 
+   * @param {string} slug The slug of variant is updated
    * @param {UpdateVariantRequestDto} requestData The data to update variant
    * @returns {Promise<VariantResponseDto>} The updated variant data
    * @throws {VariantException} If variant is not found
@@ -139,10 +145,7 @@ export class VariantService {
 
     Object.assign(variant, requestData);
     const updatedVariant = await this.variantRepository.save(variant);
-    this.logger.log(
-      `Variant ${slug} updated successfully`,
-      context,
-    );
+    this.logger.log(`Variant ${slug} updated successfully`, context);
     const variantDto = this.mapper.map(
       updatedVariant,
       Variant,
@@ -167,10 +170,7 @@ export class VariantService {
     }
 
     const deleted = await this.variantRepository.softDelete({ slug });
-    this.logger.log(
-      `Variant ${slug} deleted successfully`,
-      context,
-    );
+    this.logger.log(`Variant ${slug} deleted successfully`, context);
     return deleted.affected || 0;
   }
 }

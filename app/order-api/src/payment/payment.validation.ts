@@ -13,9 +13,10 @@ export type TPaymentErrorCodeKey =
 
 export type TPaymentErrorCode = Record<TPaymentErrorCodeKey, TErrorCodeValue>;
 
+// 123000 - 124000
 export const PaymentValidation: TPaymentErrorCode = {
-  PAYMENT_QUERY_INVALID: createErrorCode(1018, 'Payment query is invalid'),
-  PAYMENT_METHOD_INVALID: createErrorCode(1019, 'Payment method is invalid'),
-  PAYMENT_NOT_FOUND: createErrorCode(1020, 'Payment not found'),
-  TRANSACTION_NOT_FOUND: createErrorCode(1022, 'Payment not found'),
+  PAYMENT_QUERY_INVALID: createErrorCode(123000, 'Payment query is invalid'),
+  PAYMENT_METHOD_INVALID: createErrorCode(123001, 'Payment method is invalid'),
+  PAYMENT_NOT_FOUND: createErrorCode(123002, 'Payment not found'),
+  TRANSACTION_NOT_FOUND: createErrorCode(123003, 'Payment not found'),
 };

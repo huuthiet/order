@@ -23,16 +23,17 @@ export type TAuthErrorCodeKey =
 
 export type TAuthErrorCode = Record<TAuthErrorCodeKey, TErrorCodeValue>;
 
+// 119000 - 120000
 const AuthValidation: TAuthErrorCode = {
-  INVALID_PHONENUMBER: createErrorCode(1004, 'Phone number is required'),
-  INVALID_PASSWORD: createErrorCode(1005, 'Password is required'),
-  INVALID_FIRSTNAME: createErrorCode(1007, 'First name is required'),
-  INVALID_LASTNAME: createErrorCode(1008, 'Last name is required'),
-  INVALID_USERID: createErrorCode(1009, 'User ID is required'),
-  USER_EXISTS: createErrorCode(1010, 'User exist'),
-  USER_NOT_FOUND: createErrorCode(1011, 'User not found'),
-  INVALID_OLD_PASSWORD: createErrorCode(1026, 'Invalid old password'),
-  FORGOT_TOKEN_EXPIRED: createErrorCode(1046, 'Forgot token is expired'),
+  INVALID_PHONENUMBER: createErrorCode(119000, 'Phone number is required'),
+  INVALID_PASSWORD: createErrorCode(119001, 'Password is required'),
+  INVALID_FIRSTNAME: createErrorCode(119002, 'First name is required'),
+  INVALID_LASTNAME: createErrorCode(119003, 'Last name is required'),
+  INVALID_USERID: createErrorCode(119004, 'User ID is required'),
+  USER_EXISTS: createErrorCode(119005, 'User exist'),
+  USER_NOT_FOUND: createErrorCode(119006, 'User not found'),
+  INVALID_OLD_PASSWORD: createErrorCode(119007, 'Invalid old password'),
+  FORGOT_TOKEN_EXPIRED: createErrorCode(119008, 'Forgot token is expired'),
 };
 
 export default AuthValidation;

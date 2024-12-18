@@ -15,13 +15,14 @@ export type TTableErrorCodeKey =
 
 export type TTableErrorCode = Record<TTableErrorCodeKey, TErrorCodeValue>;
 
+// 125000 - 126000
 export const TableValidation: TTableErrorCode = {
-  TABLE_NAME_EXIST: createErrorCode(1024, 'Table name already exists'),
-  TABLE_NOT_FOUND: createErrorCode(1025, 'Table not found'),
+  TABLE_NAME_EXIST: createErrorCode(125000, 'Table name already exists'),
+  TABLE_NOT_FOUND: createErrorCode(125001, 'Table not found'),
   TABLE_DO_NOT_HAVE_LOCATION: createErrorCode(
-    1035,
+    125002,
     'Table do not have location',
   ),
-  LOCATION_NOT_FOUND: createErrorCode(1042, 'Location not found'),
-  LOCATION_ASSIGNED: createErrorCode(1043, 'Location is already assigned'),
+  LOCATION_NOT_FOUND: createErrorCode(125003, 'Location not found'),
+  LOCATION_ASSIGNED: createErrorCode(125004, 'Location is already assigned'),
 };

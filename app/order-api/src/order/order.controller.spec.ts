@@ -9,7 +9,6 @@ import {
   OrderResponseDto,
   OwnerResponseDto,
 } from './order.dto';
-import { OrderException } from './order.exception';
 import { BadRequestException } from '@nestjs/common';
 import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -19,6 +18,8 @@ import { SystemConfigService } from 'src/system-config/system-config.service';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import ProductValidation from 'src/product/product.validation';
+import { ProductException } from 'src/product/product.exception';
 
 describe('SizeController', () => {
   let controller: OrderController;
@@ -75,10 +76,10 @@ describe('SizeController', () => {
         orderItems: [],
       } as CreateOrderRequestDto;
       (service.createOrder as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new ProductException(ProductValidation.PRODUCT_NAME_EXIST),
       );
       await expect(controller.createOrder(mockInput)).rejects.toThrow(
-        BadRequestException,
+        ProductException,
       );
     });
 

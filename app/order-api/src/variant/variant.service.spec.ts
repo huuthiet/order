@@ -1,22 +1,26 @@
-import { Size } from "src/size/size.entity";
-import { VariantService } from "./variant.service";
-import { MockType, repositoryMockFactory } from "src/test-utils/repository-mock.factory";
-import { Repository } from "typeorm";
-import { Product } from "src/product/product.entity";
-import { Variant } from "./variant.entity";
-import { Mapper } from "@automapper/core";
-import { Test, TestingModule } from "@nestjs/testing";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { mapperMockFactory } from "src/test-utils/mapper-mock.factory";
-import { CreateVariantRequestDto, UpdateVariantRequestDto } from "./variant.dto";
-import { BadRequestException } from "@nestjs/common";
-import { Catalog } from "src/catalog/catalog.entity";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { Size } from 'src/size/size.entity';
+import { VariantService } from './variant.service';
+import {
+  MockType,
+  repositoryMockFactory,
+} from 'src/test-utils/repository-mock.factory';
+import { Repository } from 'typeorm';
+import { Product } from 'src/product/product.entity';
+import { Variant } from './variant.entity';
+import { Mapper } from '@automapper/core';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import {
+  CreateVariantRequestDto,
+  UpdateVariantRequestDto,
+} from './variant.dto';
+import { Catalog } from 'src/catalog/catalog.entity';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
-import { SizeException } from "src/size/size.exception";
-import { ProductException } from "src/product/product.exception";
-import { VariantException } from "./variant.exception";
-
+import { SizeException } from 'src/size/size.exception';
+import { ProductException } from 'src/product/product.exception';
+import { VariantException } from './variant.exception';
 
 describe('VariantService', () => {
   const mapperProvider = 'automapper:nestjs:default';
@@ -32,25 +36,25 @@ describe('VariantService', () => {
         VariantService,
         {
           provide: getRepositoryToken(Product),
-          useFactory: repositoryMockFactory
+          useFactory: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(Variant),
-          useFactory: repositoryMockFactory
+          useFactory: repositoryMockFactory,
         },
         {
           provide: getRepositoryToken(Size),
-          useFactory: repositoryMockFactory
+          useFactory: repositoryMockFactory,
         },
         {
           provide: MAPPER_MODULE_PROVIDER,
-          useFactory: mapperMockFactory
+          useFactory: mapperMockFactory,
         },
         {
           provide: WINSTON_MODULE_NEST_PROVIDER,
           useValue: console,
         },
-      ]
+      ],
     }).compile();
 
     service = module.get<VariantService>(VariantService);
@@ -64,7 +68,6 @@ describe('VariantService', () => {
     expect(service).toBeDefined();
   });
 
-
   describe('createVariant', () => {
     beforeEach(() => {
       jest.clearAllMocks();
@@ -73,49 +76,53 @@ describe('VariantService', () => {
     it('should throw error when size is not found', async () => {
       const mockInput = {
         price: 0,
-        size: "mock-size-slug",
-        product: "mock-product-slug"
+        size: 'mock-size-slug',
+        product: 'mock-product-slug',
       } as CreateVariantRequestDto;
 
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.createVariant(mockInput)).rejects.toThrow(SizeException);
+      await expect(service.createVariant(mockInput)).rejects.toThrow(
+        SizeException,
+      );
     });
 
     it('should throw error when product is not found', async () => {
       const mockInput = {
         price: 0,
-        size: "mock-size-slug",
-        product: "mock-product-slug"
+        size: 'mock-size-slug',
+        product: 'mock-product-slug',
       } as CreateVariantRequestDto;
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.createVariant(mockInput)).rejects.toThrow(ProductException);
+      await expect(service.createVariant(mockInput)).rejects.toThrow(
+        ProductException,
+      );
     });
 
     it('should throw error when the both of product and size does exists', async () => {
       const mockInput = {
         price: 0,
-        size: "mock-size-slug",
-        product: "mock-product-slug"
+        size: 'mock-size-slug',
+        product: 'mock-product-slug',
       } as CreateVariantRequestDto;
 
       const size = {
-        name: "Mock size name",
-        id: "mock-size-id",
-        slug: "mock-size-slug",
+        name: 'Mock size name',
+        id: 'mock-size-id',
+        slug: 'mock-size-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Size;
 
       const product = {
-        name: "Mock product name",
+        name: 'Mock product name',
         isActive: false,
         isLimit: false,
         catalog: new Catalog(),
-        id: "mock-product-id",
-        slug: "mock-product-slug",
+        id: 'mock-product-id',
+        slug: 'mock-product-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Product;
 
       const variant = {
@@ -124,40 +131,42 @@ describe('VariantService', () => {
         price: 50,
         createdAt: new Date(),
         updatedAt: new Date(),
-        id: "mock-variant-id",
-        slug: "mock-variant-slug"
+        id: 'mock-variant-id',
+        slug: 'mock-variant-slug',
       } as Variant;
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(product);
       (sizeRepositoryMock.findOne as jest.Mock).mockResolvedValue(size);
       (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(variant);
-      await expect(service.createVariant(mockInput)).rejects.toThrow(VariantException);
+      await expect(service.createVariant(mockInput)).rejects.toThrow(
+        VariantException,
+      );
     });
 
     it('should create success and return created product', async () => {
       const mockInput = {
         price: 0,
-        size: "mock-size-slug",
-        product: "mock-product-slug"
+        size: 'mock-size-slug',
+        product: 'mock-product-slug',
       } as CreateVariantRequestDto;
 
       const size = {
-        name: "Mock size name",
-        id: "mock-size-id",
-        slug: "mock-size-slug",
+        name: 'Mock size name',
+        id: 'mock-size-id',
+        slug: 'mock-size-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Size;
 
       const product = {
-        name: "Mock product name",
+        name: 'Mock product name',
         isActive: false,
         isLimit: false,
         catalog: new Catalog(),
-        id: "mock-product-id",
-        slug: "mock-product-slug",
+        id: 'mock-product-id',
+        slug: 'mock-product-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Product;
 
       const mockOutput = {
@@ -166,8 +175,8 @@ describe('VariantService', () => {
         price: 50,
         createdAt: new Date(),
         updatedAt: new Date(),
-        id: "mock-variant-id",
-        slug: "mock-variant-slug"
+        id: 'mock-variant-id',
+        slug: 'mock-variant-slug',
       } as Variant;
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(product);
@@ -176,7 +185,7 @@ describe('VariantService', () => {
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
       (variantRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (variantRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
-      (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);      
+      (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
 
       const result = await service.createVariant(mockInput);
       expect(result).toEqual(mockOutput);
@@ -197,8 +206,8 @@ describe('VariantService', () => {
         price: 50,
         createdAt: new Date(),
         updatedAt: new Date(),
-        id: "mock-variant-id",
-        slug: "mock-variant-slug"
+        id: 'mock-variant-id',
+        slug: 'mock-variant-slug',
       } as Variant;
       const mockOutput = [variant];
       (variantRepositoryMock.find as jest.Mock).mockResolvedValue(mockOutput);
@@ -206,35 +215,39 @@ describe('VariantService', () => {
 
       const result = await service.getAllVariants(productSlug);
       expect(result).toEqual(mockOutput);
-    })
+    });
   });
 
   describe('updateVariants', () => {
     it('should throw error when variant is not found', async () => {
       const variantSlug = 'mock-variant-slug';
       const mockInput = {
-        price: 0
+        price: 0,
       } as UpdateVariantRequestDto;
       (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.updateVariant(variantSlug, mockInput)).rejects.toThrow(VariantException);
+      await expect(
+        service.updateVariant(variantSlug, mockInput),
+      ).rejects.toThrow(VariantException);
     });
 
     it('should update success and return updated variant', async () => {
       const variantSlug = 'mock-variant-slug';
       const mockInput = {
-        price: 0
+        price: 0,
       } as UpdateVariantRequestDto;
       const mockOutput = {
         price: 0,
         size: new Size(),
         product: new Product(),
-        id: "mock-variant-id",
-        slug: "mock-variant-slug",
+        id: 'mock-variant-id',
+        slug: 'mock-variant-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Variant;
 
-      (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
+      (variantRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       (variantRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
 
@@ -252,7 +265,9 @@ describe('VariantService', () => {
       const variantSlug = 'mock-variant-slug';
       (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.deleteVariant(variantSlug)).rejects.toThrow(VariantException);
+      await expect(service.deleteVariant(variantSlug)).rejects.toThrow(
+        VariantException,
+      );
     });
 
     it('should delete success and return number of deleted records', async () => {
@@ -261,17 +276,21 @@ describe('VariantService', () => {
         price: 0,
         size: new Size(),
         product: new Product(),
-        id: "mock-variant-id",
-        slug: "mock-variant-slug",
+        id: 'mock-variant-id',
+        slug: 'mock-variant-slug',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Variant;
-      const mockOut = { affected: 1};
+      const mockOut = { affected: 1 };
 
       (variantRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(variant);
-      (variantRepositoryMock.softDelete as jest.Mock).mockResolvedValue(mockOut);
+      (variantRepositoryMock.softDelete as jest.Mock).mockResolvedValue(
+        mockOut,
+      );
 
-      expect(await service.deleteVariant(variantSlug)).toEqual(mockOut.affected);
+      expect(await service.deleteVariant(variantSlug)).toEqual(
+        mockOut.affected,
+      );
     });
   });
 });

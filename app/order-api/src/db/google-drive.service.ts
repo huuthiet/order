@@ -1,15 +1,12 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { drive_v3, google } from 'googleapis';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as path from 'path';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
 import { SystemConfigService } from 'src/system-config/system-config.service';
+import { DbException } from './db.exception';
+import { DbValidation } from './db.validation';
 
 @Injectable()
 export class GoogleDriveService {
@@ -59,7 +56,6 @@ export class GoogleDriveService {
           parents: [await this.getFolderId()],
         },
       });
-      // 1PQRLjknvtPAYsY8nBScIBnXKkZfytEp-
       this.logger.log(`File uploaded: ${path.basename(filename)}`, context);
       return file.data.id;
     } catch (err) {
@@ -68,7 +64,10 @@ export class GoogleDriveService {
         err.stack,
         context,
       );
-      throw new BadRequestException(`Error uploading file: ${err.message}`);
+      throw new DbException(
+        DbValidation.UPLOAD_DATABASE_ERROR,
+        `Error uploading file: ${err.message}`,
+      );
     }
   }
 }

@@ -1,11 +1,6 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { DataSource, In, Not, Repository } from 'typeorm';
@@ -71,7 +66,7 @@ export class TrackingService {
   async getRobotId() {
     const context = `${TrackingService.name}.${this.getRobotId.name}`;
     const robotId = await this.systemConfigService.get(
-      SystemConfigKey.ROBOT_ID
+      SystemConfigKey.ROBOT_ID,
     );
     this.logger.log(`Robot id loaded: ${robotId}`, context);
     return robotId;
@@ -109,9 +104,9 @@ export class TrackingService {
     let savedTrackingId: string = '';
     if (requestData.type === TrackingType.BY_ROBOT) {
       const order = await this.getOrderByOrderItemSlug(
-        _.first(requestData.trackingOrderItems).orderItem
+        _.first(requestData.trackingOrderItems).orderItem,
       );
-      
+
       const tableLocation: string = await this.getLocationTableByOrder(order);
 
       const workflowId: string = await this.getWorkflowIdByBranchId(
@@ -156,7 +151,9 @@ export class TrackingService {
       await this.trackingScheduler.updateStatusOrder(savedTrackingId);
     }
 
-    await this.softDeleteOldTrackingOrderItemFailed(orderItemsData.map((item) => item.orderItem?.id));
+    await this.softDeleteOldTrackingOrderItemFailed(
+      orderItemsData.map((item) => item.orderItem?.id),
+    );
 
     const trackingData = await this.trackingRepository.findOne({
       where: {
@@ -177,16 +174,21 @@ export class TrackingService {
     requestData: CreateTrackingRequestDto,
   ): Promise<TrackingResponseDto> {
     const context = `${TrackingService.name}.${this.createTracking.name}`;
-    
-    if(_.isEmpty(requestData.trackingOrderItems)) {
-      this.logger.warn(TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM.message, context);
-      throw new TrackingException(TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM);
+
+    if (_.isEmpty(requestData.trackingOrderItems)) {
+      this.logger.warn(
+        TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM.message,
+        context,
+      );
+      throw new TrackingException(
+        TrackingValidation.INVALID_DATA_CREATE_TRACKING_ORDER_ITEM,
+      );
     }
 
     const orderItemsData = await this.validateDefinedAndQuantityOrderItem(
       requestData.trackingOrderItems,
     );
-        
+
     let savedTrackingId: string = '';
     if (requestData.type === TrackingType.BY_ROBOT) {
       await this.checkCurrentShipment();
@@ -194,12 +196,16 @@ export class TrackingService {
       await this.checkRobotStatusBeforeCall();
 
       // validate order item of orders in a table
-      const orders = await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
+      const orders = await this.validateOrderItemInOneTable(
+        requestData.trackingOrderItems,
+      );
       const order = _.first(orders);
-      
+
       const tableLocation: string = await this.getLocationTableByOrder(order);
 
-      const workflowId: string = await this.getWorkflowIdByBranchId(order.branch?.id);
+      const workflowId: string = await this.getWorkflowIdByBranchId(
+        order.branch?.id,
+      );
 
       const runWorkflowData: RunWorkflowRequestDto = {
         runtime_config: {
@@ -209,7 +215,10 @@ export class TrackingService {
         },
       };
       const workflowRobot: WorkflowExecutionResponseDto =
-        await this.robotConnectorClient.runWorkflow(workflowId, runWorkflowData);
+        await this.robotConnectorClient.runWorkflow(
+          workflowId,
+          runWorkflowData,
+        );
 
       const tracking = new Tracking();
       Object.assign(tracking, {
@@ -234,7 +243,9 @@ export class TrackingService {
       await this.trackingScheduler.updateStatusOrder(savedTrackingId);
     }
 
-    await this.softDeleteOldTrackingOrderItemFailed(orderItemsData.map((item) => item.orderItem?.id));
+    await this.softDeleteOldTrackingOrderItemFailed(
+      orderItemsData.map((item) => item.orderItem?.id),
+    );
 
     const trackingData = await this.trackingRepository.findOne({
       where: {
@@ -252,23 +263,23 @@ export class TrackingService {
   }
 
   async softDeleteOldTrackingOrderItemFailed(
-    orderItemIds: string[]
+    orderItemIds: string[],
   ): Promise<void> {
     // const orderItemIds = orderItems.map((item) => item.id);
     const trackingOrderItems = await this.trackingOrderItemRepository.find({
       where: {
         orderItem: {
-          id: In(orderItemIds)
+          id: In(orderItemIds),
         },
         tracking: {
-          status: WorkflowStatus.FAILED
+          status: WorkflowStatus.FAILED,
         },
-      }
+      },
     });
     const trackingOrderItemIds = trackingOrderItems.map((item) => item.id);
     await this.trackingOrderItemRepository.softDelete({
-      id: In(trackingOrderItemIds)
-    })
+      id: In(trackingOrderItemIds),
+    });
   }
 
   async getOrderByOrderItemSlug(orderItemSlug: string): Promise<Order> {
@@ -376,7 +387,7 @@ export class TrackingService {
         0,
       );
       if (
-        (totalHandling + createTrackingOrderItem.quantity) >
+        totalHandling + createTrackingOrderItem.quantity >
         orderItem.quantity
       ) {
         this.logger.warn(
@@ -433,7 +444,7 @@ export class TrackingService {
     }
 
     const isOrdersOneTable = orders.every(
-      (order) => order.table?.id === _.first(orders).table?.id
+      (order) => order.table?.id === _.first(orders).table?.id,
     );
     if (!isOrdersOneTable) {
       this.logger.warn(
@@ -573,7 +584,8 @@ export class TrackingService {
       relations: ['trackingOrderItems.orderItem'],
     });
 
-    if (!tracking) throw new BadRequestException('Tracking not found');
+    if (!tracking)
+      throw new TrackingException(TrackingValidation.TRACKING_NOT_FOUND);
 
     Object.assign(tracking, { status });
     const updatedTracking = await this.trackingRepository.save(tracking);
@@ -593,7 +605,7 @@ export class TrackingService {
     });
     if (!tracking) {
       this.logger.warn(`Tracking ${slug} is not found`, context);
-      throw new BadRequestException('Tracking is not found');
+      throw new TrackingException(TrackingValidation.TRACKING_NOT_FOUND);
     }
     const trackingOrderItems = tracking.trackingOrderItems;
 
@@ -619,9 +631,7 @@ export class TrackingService {
         `Create tracking and tracking order item failed`,
         context,
       );
-      throw new BadRequestException(
-        'Create tracking adn tracking order item failed',
-      );
+      throw new TrackingException(TrackingValidation.CREATE_TRACKING_ERROR);
     } finally {
       await queryRunner.release();
     }
