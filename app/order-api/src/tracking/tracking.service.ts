@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DataSource, In, Not, Repository } from 'typeorm';
+import { DataSource, FindManyOptions, FindOptionsWhere, In, Not, Repository } from 'typeorm';
 import { Tracking } from './tracking.entity';
-import { CreateTrackingRequestDto, TrackingResponseDto } from './tracking.dto';
+import { CreateTrackingRequestDto, GetTrackingRequestDto, TrackingResponseDto } from './tracking.dto';
 import {
   CreateTrackingOrderItemRequestDto,
   CreateTrackingOrderItemWithQuantityAndOrderItemEntity,
@@ -44,6 +44,7 @@ import { RobotConnectorException } from 'src/robot-connector/robot-connector.exc
 import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.validation';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
+import { AppPaginatedResponseDto } from 'src/app/app.dto';
 
 @Injectable()
 export class TrackingService {
@@ -75,6 +76,43 @@ export class TrackingService {
     );
     this.logger.log(`Robot id loaded: ${robotId}`, context);
     return robotId;
+  }
+
+  async getAllTrackings(options: GetTrackingRequestDto) {
+    const findOptionsWhere: FindOptionsWhere<any> = {};
+    if (options.status.length > 0) {
+      findOptionsWhere.status = In(options.status);
+    }
+    const findManyOptions: FindManyOptions<Tracking> = {
+      where: findOptionsWhere,
+      order: { createdAt: 'DESC' },
+    }
+    if (options.hasPaging) {
+      Object.assign(findManyOptions, {
+        skip: (options.page - 1) * options.size,
+        take: options.size,
+      });
+    }
+    const [trackings, total] =
+      await this.trackingRepository.findAndCount(findManyOptions);
+
+    const trackingDto = this.mapper.mapArray(trackings, Tracking, TrackingResponseDto);
+    const page = options.hasPaging ? options.page : 1;
+    const pageSize = options.hasPaging ? options.size : total;
+
+    const totalPages = Math.ceil(total / pageSize);
+    const hasNext = page < totalPages;
+    const hasPrevious = page > 1;
+
+    return {
+      hasNext: hasNext,
+      hasPrevios: hasPrevious,
+      items: trackingDto,
+      total,
+      page,
+      pageSize,
+      totalPages,
+    } as AppPaginatedResponseDto<TrackingResponseDto>;
   }
 
   /**
@@ -112,7 +150,7 @@ export class TrackingService {
         _.first(requestData.trackingOrderItems).orderItem
       );
       
-      const tableLocation: string = await this.getLocationTableByOrder(order);
+      const tableLocation: string = await this.getLocationTableByOrder(order?.id);
 
       const workflowId: string = await this.getWorkflowIdByBranchId(
         order.branch?.id,
@@ -173,7 +211,7 @@ export class TrackingService {
     return TrackingDto;
   }
 
-  async createTrackingTest(
+  async createTrackingAllCases(
     requestData: CreateTrackingRequestDto,
   ): Promise<TrackingResponseDto> {
     const context = `${TrackingService.name}.${this.createTracking.name}`;
@@ -197,7 +235,7 @@ export class TrackingService {
       const orders = await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
       const order = _.first(orders);
       
-      const tableLocation: string = await this.getLocationTableByOrder(order);
+      const tableLocation: string = await this.getLocationTableByOrder(order?.id);
 
       const workflowId: string = await this.getWorkflowIdByBranchId(order.branch?.id);
 
@@ -234,7 +272,9 @@ export class TrackingService {
       await this.trackingScheduler.updateStatusOrder(savedTrackingId);
     }
 
-    await this.softDeleteOldTrackingOrderItemFailed(orderItemsData.map((item) => item.orderItem?.id));
+    await this.softDeleteOldTrackingOrderItemFailed(
+      orderItemsData.map((item) => item.orderItem?.id)
+    );
 
     const trackingData = await this.trackingRepository.findOne({
       where: {
@@ -251,10 +291,13 @@ export class TrackingService {
     return TrackingDto;
   }
 
+  /**
+   * 
+   * @param {string[]} orderItemIds The array of order item ids need delete failed tracking
+   */
   async softDeleteOldTrackingOrderItemFailed(
     orderItemIds: string[]
   ): Promise<void> {
-    // const orderItemIds = orderItems.map((item) => item.id);
     const trackingOrderItems = await this.trackingOrderItemRepository.find({
       where: {
         orderItem: {
@@ -268,7 +311,7 @@ export class TrackingService {
     const trackingOrderItemIds = trackingOrderItems.map((item) => item.id);
     await this.trackingOrderItemRepository.softDelete({
       id: In(trackingOrderItemIds)
-    })
+    });
   }
 
   async getOrderByOrderItemSlug(orderItemSlug: string): Promise<Order> {
@@ -453,11 +496,11 @@ export class TrackingService {
    * @throws {TableException} If table not found
    * @throws {TableException} If table does not have location
    */
-  async getLocationTableByOrder(order: Order): Promise<string> {
+  async getLocationTableByOrder(orderId: string): Promise<string> {
     const context = `${TrackingService.name}.${this.getLocationTableByOrder.name}`;
     const table = await this.tableRepository.findOne({
       where: {
-        orders: { id: order?.id },
+        orders: { id: orderId },
       },
     });
     if (!table) {

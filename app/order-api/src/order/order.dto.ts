@@ -32,7 +32,7 @@ export class CreateOrderRequestDto {
 
   @AutoMap()
   @ApiProperty({ description: 'The slug of table', example: 'table-' })
-  @IsNotEmpty({ message: 'Invalid slug of table' })
+  @IsOptional({ message: 'Invalid slug of table' })
   table: string;
 
   @AutoMap()
