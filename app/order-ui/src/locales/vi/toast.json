@@ -71,6 +71,8 @@
     "accessDenied": "Truy cập bị từ chối",
     "sessionExpired": "Phiên làm việc đã hết hạn",
 
-    "updateSystemConfigSuccess": "Cập nhật cấu hình hệ thống thành công"
+    "createSystemConfigSuccess": "Tạo cấu hình hệ thống thành công",
+    "updateSystemConfigSuccess": "Cập nhật cấu hình hệ thống thành công",
+    "deleteSystemConfigSuccess": "Xóa cấu hình hệ thống thành công"
   }
 }
