@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Patch, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, ValidationPipe } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TrackingService } from "./tracking.service";
 import { ApiResponseWithType } from "src/app/app.decorator";
-import { ChangeStatusRequestDto, CreateTrackingRequestDto, TrackingResponseDto } from "./tracking.dto";
-import { AppResponseDto } from "src/app/app.dto";
+import { ChangeStatusRequestDto, CreateTrackingRequestDto, GetTrackingRequestDto, TrackingResponseDto } from "./tracking.dto";
+import { AppPaginatedResponseDto, AppResponseDto } from "src/app/app.dto";
 import { Public } from "src/auth/public.decorator";
 
 @ApiTags('Tracking')
@@ -11,6 +11,31 @@ import { Public } from "src/auth/public.decorator";
 @ApiBearerAuth()
 export class TrackingController {
   constructor(private readonly trackingService: TrackingService) {}
+
+  @Get()
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Retrieve all trackings' })
+  @ApiResponse({ status: 200, description: 'Get all trackings successfully' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'All trackings have been retrieved successfully',
+    type: TrackingResponseDto,
+    isArray: true,
+  })
+  async getAllTrackings(
+    @Query(new ValidationPipe({ transform: true }))
+    query: GetTrackingRequestDto,
+  ) {
+    const result = await this.trackingService.getAllTrackings(query);
+    return {
+      message: 'All orders have been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<AppPaginatedResponseDto<TrackingResponseDto>>;
+  }
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
@@ -29,7 +54,7 @@ export class TrackingController {
     }))
     requestData: CreateTrackingRequestDto,
   ) {
-    const result = await this.trackingService.createTracking(requestData);
+    const result = await this.trackingService.createTrackingAllCases(requestData);
     return {
       message: 'Tracking have been created successfully',
       statusCode: HttpStatus.CREATED,
