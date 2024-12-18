@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { PaymentMethod } from 'src/payment/payment.constants';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  *  Format moment to yyyy-MM-ddTHH:mm:ss.SSSZ format
@@ -44,4 +45,13 @@ export const formatPaymentMethod = (method: string) => {
     default:
       return 'Không tìm thấy PTTT';
   }
+};
+
+/**
+ * Return 13 characters from random UUID
+ */
+export const getRandomString = () => {
+  const uuid = uuidv4(); // Generate a UUID
+  const numericPart = uuid.replace(/-/g, ''); // Remove non-numeric characters
+  return numericPart.slice(0, 10); // Get the first 13 digits
 };

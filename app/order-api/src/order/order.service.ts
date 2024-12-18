@@ -48,6 +48,7 @@ import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
 import * as moment from 'moment';
 import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
+import _ from 'lodash';
 
 @Injectable()
 export class OrderService {
@@ -76,8 +77,12 @@ export class OrderService {
     const context = `${OrderService.name}.${this.handleUpdateOrderStatus.name}`;
     this.logger.log(`Update order status after payment process`, context);
 
-    this.logger.log(`Request data: ${JSON.stringify(requestData)}`, context);
+    if (_.isEmpty(requestData)) {
+      this.logger.error(`Request data is empty`, null, context);
+      throw new BadRequestException('Request data not found');
+    }
 
+    this.logger.log(`Request data: ${JSON.stringify(requestData)}`, context);
     const order = await this.orderRepository.findOne({
       where: { id: requestData.orderId },
       relations: ['payment'],
@@ -180,7 +185,6 @@ export class OrderService {
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
-    let tableName: string = null; // default for take-out
     let table: Table;
     if (data.type === OrderType.AT_TABLE) {
       table = await this.tableRepository.findOne({
@@ -198,7 +202,6 @@ export class OrderService {
         );
         throw new TableException(TableValidation.TABLE_NOT_FOUND);
       }
-      tableName = table.name;
     }
 
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
@@ -213,7 +216,6 @@ export class OrderService {
     Object.assign(order, {
       owner: owner,
       branch: branch,
-      tableName,
       table,
     });
     return order;
