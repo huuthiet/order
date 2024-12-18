@@ -132,6 +132,7 @@ export class PaymentService {
         this.logger.error('Invalid payment method', null, context);
         throw new PaymentException(PaymentValidation.PAYMENT_METHOD_INVALID);
     }
+    this.logger.log(`Created Payment: ${JSON.stringify(payment)}`, context);
 
     // Delete previous payment
     if (order.payment) {
@@ -139,10 +140,13 @@ export class PaymentService {
     }
 
     // Update order
-    Object.assign(order, {
-      payment,
-    });
+    order.payment = payment;
     await this.orderRepository.save(order);
+
+    if (payment.paymentMethod === PaymentMethod.CASH) {
+      // Update order status
+      this.eventEmitter.emit(PaymentAction.PAYMENT_PAID, { orderId: order.id });
+    }
     return this.mapper.map(payment, Payment, PaymentResponseDto);
   }
 
@@ -168,6 +172,8 @@ export class PaymentService {
       },
       relations: ['order'],
     });
+
+    this.logger.log(`Payment: ${JSON.stringify(payment)}`, context);
 
     if (!payment) {
       this.logger.error('Payment not found', null, context);

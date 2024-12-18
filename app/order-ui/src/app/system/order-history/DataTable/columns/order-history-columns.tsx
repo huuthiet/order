@@ -22,7 +22,7 @@ import { PaymentMethod, ROUTE } from '@/constants'
 import { useExportOrderInvoice } from '@/hooks'
 import { showToast } from '@/utils'
 // import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
+import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 // import axios from 'axios';
 
 export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
@@ -67,11 +67,11 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
       },
     },
     {
-      accessorKey: 'paymentStatus',
+      accessorKey: 'paymentMethod',
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={t('order.paymentStatus')}
+          title={t('order.paymentMethod')}
         />
       ),
       cell: ({ row }) => {
@@ -100,7 +100,7 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
         const order = row.original
         return (
           <div className="flex flex-col">
-            <PaymentStatusBadge status={order?.payment?.statusCode} />
+            <OrderStatusBadge status={order?.status} />
           </div>
         )
       },
