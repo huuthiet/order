@@ -1,5 +1,14 @@
 {
   "config": {
-    "title": "Cấu hình"
+    "title": "Cấu hình",
+
+    "update": "Cập nhật",
+    "updateSystemConfigDescription": "Cập nhật cấu hình hệ thống",
+    "key": "Từ khóa",
+    "enterKey": "Nhập từ khóa",
+    "value": "Giá trị",
+    "enterValue": "Nhập giá trị",
+    "description": "Mô tả",
+    "enterDescription": "Nhập mô tả"
   }
 }

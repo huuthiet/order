@@ -50,3 +50,5 @@ export { default as UpdatePasswordDialog } from './update-password-dialog'
 export { default as UserInfoDialog } from './user-info-dialog'
 
 export { default as ResetPasswordDialog } from './reset-user-password-dialog'
+
+export { default as UpdateSystemConfigDialog } from './update-system-config-dialog'
