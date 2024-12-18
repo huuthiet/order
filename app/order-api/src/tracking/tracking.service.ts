@@ -291,6 +291,10 @@ export class TrackingService {
     return TrackingDto;
   }
 
+  /**
+   * 
+   * @param {string[]} orderItemIds The array of order item ids need delete failed tracking
+   */
   async softDeleteOldTrackingOrderItemFailed(
     orderItemIds: string[]
   ): Promise<void> {
