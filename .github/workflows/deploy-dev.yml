@@ -47,7 +47,7 @@ jobs:
           export DOCKER_BUILDKIT=1
 
           docker ps -a
-          docker-compose -f .deploy/dev/docker-compose.yml pull
+          docker compose -f .deploy/dev/docker-compose.yml pull
           docker compose -f .deploy/dev/docker-compose.yml down
           docker compose -f .deploy/dev/docker-compose.yml up -d --build
           docker image prune -f  # clean up none image after built
