@@ -15,19 +15,24 @@ import { OrderStatus } from './order.contants';
 import { Payment } from 'src/payment/payment.entity';
 import { Invoice } from 'src/invoice/invoice.entity';
 import { Table } from 'src/table/table.entity';
+import { IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
+import { ORDER_STATUS_INVALID } from './order.validation';
 
 @Entity('order_tbl')
 export class Order extends Base {
+  @IsNumber()
   @AutoMap()
   @Column({ name: 'subtotal_column' })
   subtotal: number;
 
   @AutoMap()
   @Column({ name: 'status_column', default: OrderStatus.PENDING })
+  @IsNotEmpty({ message: ORDER_STATUS_INVALID })
   status: string;
 
   @AutoMap()
   @Column({ name: 'type_column' })
+  @IsNotEmpty()
   type: string;
 
   // many to one with branch
