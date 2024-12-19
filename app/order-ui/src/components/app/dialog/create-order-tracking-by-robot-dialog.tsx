@@ -32,14 +32,14 @@ export default function CreateOrderTrackingByRobotDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger className="flex justify-start" asChild>
-        <Button className="gap-1 text-sm" onClick={() => setIsOpen(true)}>
+        <Button className="gap-1 text-xs sm:text-sm" onClick={() => setIsOpen(true)}>
           {t('order.createOrderTrackingByRobot')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[18rem] overflow-hidden rounded-lg transition-all duration-300 hover:overflow-y-auto sm:max-h-[32rem] sm:max-w-[28rem]">
+      <DialogContent className="max-w-[22rem] overflow-hidden rounded-lg transition-all duration-300 hover:overflow-y-auto sm:max-h-[32rem] sm:max-w-[28rem]">
         <DialogHeader>
-          <DialogTitle>{t('order.confirmOrderTrackingByRobot')}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className='text-md sm:text-lg'>{t('order.confirmOrderTrackingByRobot')}</DialogTitle>
+          <DialogDescription className='text-xs sm:text-md'>
             {t('order.createOrderTrackingByRobotDescription')}
           </DialogDescription>
         </DialogHeader>

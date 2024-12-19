@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import i18next from 'i18next'
 
 import { showToast } from '@/utils'
-import { ICartItemStore, ICartItem, ITable } from '@/types'
+import { ICartItemStore, ICartItem, ITable, IOrderType } from '@/types'
 
 export const useCartItemStore = create<ICartItemStore>()(
   persist(
@@ -116,6 +116,15 @@ export const useCartItemStore = create<ICartItemStore>()(
         if (cartItems) {
           set({
             cartItems: { ...cartItems },
+          })
+        }
+      },
+
+      addOrderType: (orderType: IOrderType) => {
+        const { cartItems } = get()
+        if (cartItems) {
+          set({
+            cartItems: { ...cartItems, type: orderType },
           })
         }
       },

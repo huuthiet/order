@@ -16,8 +16,11 @@ import { TableItem } from './table-item'
 import { useUserStore } from '@/stores'
 import TableContextMenu from './table-context-menu'
 import { useQueryClient } from '@tanstack/react-query'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
 import { TableStatus } from '@/constants'
+import { isAxiosError } from 'axios'
+import { AxiosError } from 'axios'
+import { IApiResponse } from '@/types'
 
 export default function TablePage() {
   const queryClient = useQueryClient()
@@ -94,6 +97,13 @@ export default function TablePage() {
             queryKey: ['tables', getUserInfo()?.branch.slug],
           })
           showToast(tToast('toast.updateTableStatusSuccess'))
+        },
+        onError: (error) => {
+          if (isAxiosError(error)) {
+            const axiosError = error as AxiosError<IApiResponse<void>>
+            if (axiosError.response?.data.code)
+              showErrorToast(axiosError.response.data.code)
+          }
         },
       },
     )

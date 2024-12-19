@@ -7,11 +7,13 @@ import { QuantitySelector } from '@/components/app/button'
 import { CartNoteInput, PromotionInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
 import { publicFileURL, ROUTE } from '@/constants'
+import { IOrderType } from '@/types'
+import { CreateOrderDialog } from '@/components/app/dialog'
 
 export default function CartContent() {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
-  const { getCartItems, removeCartItem } = useCartItemStore()
+  const { getCartItems, removeCartItem, addOrderType } = useCartItemStore()
 
   const cartItems = getCartItems()
 
@@ -27,12 +29,38 @@ export default function CartContent() {
     removeCartItem(id)
   }
 
+  const handleAddDeliveryMethod = (orderType: IOrderType) => {
+    addOrderType(orderType)
+  }
+
   return (
     <div className="flex flex-col h-full">
       {/* Header - Fixed */}
       <div className="z-30 px-4 pt-2 pb-2 border-b bg-background">
         <h1 className="text-lg font-medium">{t('menu.order')}</h1>
       </div>
+      {/* Order type selection */}
+      {cartItems && (
+        <div className="z-30 grid w-full grid-cols-2 gap-2 px-4 pt-4 bg-background">
+          <div
+            onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
+            className={`flex items-center cursor-pointer justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.AT_TABLE
+              ? 'border-primary bg-primary text-white'
+              : 'border'
+              } rounded-full hover:bg-primary hover:border-primary hover:text-white border-muted-foreground/40 text-muted-foreground`}
+          >
+            {t('menu.dineIn')}
+          </div>
+          <div
+            onClick={() => handleAddDeliveryMethod(IOrderType.TAKE_OUT)}
+            className={`flex items-center cursor-pointer justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.TAKE_OUT
+              ? 'border-primary bg-primary text-white'
+              : 'border'
+              } rounded-full hover:bg-primary hover:border-primary hover:text-white border-muted-foreground/40 text-muted-foreground`}
+          >
+            {t('menu.takeAway')}
+          </div>
+        </div>)}
 
       {/* Cart Items - Scrollable */}
       <div className="flex-1 overflow-hidden">
@@ -115,14 +143,26 @@ export default function CartContent() {
             </span>
           </div>
         </div>
-        <NavLink to={ROUTE.STAFF_CHECKOUT_ORDER}>
-          <Button
-            disabled={!cartItems}
-            className="w-full mt-4 text-white rounded-full bg-primary"
-          >
-            {t('menu.continue')}
-          </Button>
-        </NavLink>
+        {cartItems && getCartItems()?.type === IOrderType.AT_TABLE ? (
+          <NavLink to={ROUTE.STAFF_CHECKOUT_ORDER}>
+            <Button
+              disabled={!cartItems}
+              className="w-full mt-4 text-white rounded-full bg-primary"
+            >
+              {t('menu.continue')}
+            </Button>
+          </NavLink>
+        ) : (
+          <div className='flex justify-end w-full'>
+            {cartItems ? (
+              <CreateOrderDialog />
+            ) : (
+              <Button className='rounded-full' disabled>
+                {t('order.create')}
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

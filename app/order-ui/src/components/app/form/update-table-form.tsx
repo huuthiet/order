@@ -16,10 +16,12 @@ import {
 import { updateTableSchema, TUpdateTableSchema } from '@/schemas'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IUpdateTableRequest, ITable } from '@/types'
+import { IUpdateTableRequest, ITable, IApiResponse } from '@/types'
 import { useUpdateTable } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
 import TableLocationSelect from '../select/table-location-select'
+import { isAxiosError } from 'axios'
+import { AxiosError } from 'axios'
 
 interface IFormUpdateTableProps {
   table: ITable | null
@@ -51,6 +53,13 @@ export const UpdateTableForm: React.FC<IFormUpdateTableProps> = ({
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateTableSuccess'))
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
       },
     })
   }

@@ -1,14 +1,15 @@
+import { AxiosError, isAxiosError } from 'axios'
 import moment from 'moment'
 import { NavLink } from 'react-router-dom'
 import { Clock, ShoppingCartIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { IOrder } from '@/types'
+import { IApiResponse, IOrder } from '@/types'
 import { Button } from '@/components/ui'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import { ROUTE } from '@/constants'
 import { useExportOrderInvoice } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
 
 interface OrderItemDetailProps {
   order: IOrder
@@ -24,8 +25,12 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         showToast(t('toast.exportInvoiceSuccess'))
       },
       onError: (error) => {
-        console.log('Export invoice error', error)
-      }
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
+      },
     })
   }
 

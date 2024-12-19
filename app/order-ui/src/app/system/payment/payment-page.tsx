@@ -7,8 +7,10 @@ import { Button, ScrollArea } from '@/components/ui'
 import { useExportPayment, useInitiatePayment, useOrderBySlug } from '@/hooks'
 import { PaymentMethod, ROUTE } from '@/constants'
 import { PaymentMethodSelect } from '@/app/system/payment'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
 import { ButtonLoading } from '@/components/app/loading'
+import { AxiosError, isAxiosError } from 'axios'
+import { IApiResponse } from '@/types'
 // import { QrCodeDialog } from '@/components/app/dialog'
 
 export default function PaymentPage() {
@@ -64,6 +66,13 @@ export default function PaymentPage() {
             setQrCode(data.result.qrCode)
             setIsPolling(true) // Bắt đầu polling khi thanh toán qua chuyển khoản ngân hàng
           },
+          onError: (error) => {
+            if (isAxiosError(error)) {
+              const axiosError = error as AxiosError<IApiResponse<void>>
+              if (axiosError.response?.data.code)
+                showErrorToast(axiosError.response.data.code)
+            }
+          },
         },
       )
     } else if (paymentMethod === PaymentMethod.CASH) {
@@ -72,6 +81,13 @@ export default function PaymentPage() {
         {
           onSuccess: () => {
             navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
+          },
+          onError: (error) => {
+            if (isAxiosError(error)) {
+              const axiosError = error as AxiosError<IApiResponse<void>>
+              if (axiosError.response?.data.code)
+                showErrorToast(axiosError.response.data.code)
+            }
           },
         },
       )
@@ -85,6 +101,13 @@ export default function PaymentPage() {
       {
         onSuccess: () => {
           showToast(t('paymentMethod.exportPaymentSuccess'))
+        },
+        onError: (error) => {
+          if (isAxiosError(error)) {
+            const axiosError = error as AxiosError<IApiResponse<void>>
+            if (axiosError.response?.data.code)
+              showErrorToast(axiosError.response.data.code)
+          }
         },
       },
     )
@@ -143,7 +166,7 @@ export default function PaymentPage() {
                           {t('order.location')}
                         </h3>
                         <p className="col-span-1 text-sm font-semibold">
-                          {order.result.table.name}
+                          {order.result.table ? order.result.table.name : ''}
                         </p>
                       </div>
                     </div>

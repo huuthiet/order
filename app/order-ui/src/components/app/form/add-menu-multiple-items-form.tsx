@@ -14,10 +14,11 @@ import {
   Button,
   ScrollArea,
 } from '@/components/ui'
-import { IAddMenuItemRequest } from '@/types'
+import { IAddMenuItemRequest, IApiResponse } from '@/types'
 import { useAddMenuItems } from '@/hooks'
-import { showToast } from '@/utils'
+import { showErrorToast, showToast } from '@/utils'
 import { useMenuItemStore } from '@/stores'
+import { AxiosError, isAxiosError } from 'axios'
 
 interface IFormAddMenuMultipleItemsProps {
   products: IAddMenuItemRequest[]
@@ -63,6 +64,13 @@ export const AddMenuMultipleItemsForm: React.FC<
         onSubmit(false)
         showToast(t('toast.addMenuItemSuccess'))
       },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          const axiosError = error as AxiosError<IApiResponse<void>>
+          if (axiosError.response?.data.code)
+            showErrorToast(axiosError.response.data.code)
+        }
+      },
     })
   }
 
@@ -71,15 +79,15 @@ export const AddMenuMultipleItemsForm: React.FC<
     return {
       ...acc,
       [product.productSlug]: (
-        <div className="flex items-center justify-between gap-2 rounded-md p-2">
-          <FormLabel className="w-full rounded-md border p-2 text-sm">
+        <div className="flex items-center justify-between gap-2 p-2 rounded-md">
+          <FormLabel className="w-full p-2 text-sm border rounded-md">
             {product.productName}
           </FormLabel>
           <FormField
             control={form.control}
             name={product.productSlug}
             render={({ field }) => (
-              <FormItem className="w-32 flex-shrink-0">
+              <FormItem className="flex-shrink-0 w-32">
                 <FormControl>
                   <Input
                     type="number"

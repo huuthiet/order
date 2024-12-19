@@ -142,7 +142,7 @@ export enum OrderItemStatus {
 
 export enum IOrderType {
   AT_TABLE = 'at-table',
-  TAKE_AWAY = 'take-away',
+  TAKE_OUT = 'take-out',
 }
 
 export interface ICreateOrderResponse extends IBase {
