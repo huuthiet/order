@@ -3,9 +3,20 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DataSource, FindManyOptions, FindOptionsWhere, In, Not, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  Not,
+  Repository,
+} from 'typeorm';
 import { Tracking } from './tracking.entity';
-import { CreateTrackingRequestDto, GetTrackingRequestDto, TrackingResponseDto } from './tracking.dto';
+import {
+  CreateTrackingRequestDto,
+  GetTrackingRequestDto,
+  TrackingResponseDto,
+} from './tracking.dto';
 import {
   CreateTrackingOrderItemRequestDto,
   CreateTrackingOrderItemWithQuantityAndOrderItemEntity,
@@ -81,7 +92,7 @@ export class TrackingService {
     const findManyOptions: FindManyOptions<Tracking> = {
       where: findOptionsWhere,
       order: { createdAt: 'DESC' },
-    }
+    };
     if (options.hasPaging) {
       Object.assign(findManyOptions, {
         skip: (options.page - 1) * options.size,
@@ -91,7 +102,11 @@ export class TrackingService {
     const [trackings, total] =
       await this.trackingRepository.findAndCount(findManyOptions);
 
-    const trackingDto = this.mapper.mapArray(trackings, Tracking, TrackingResponseDto);
+    const trackingDto = this.mapper.mapArray(
+      trackings,
+      Tracking,
+      TrackingResponseDto,
+    );
     const page = options.hasPaging ? options.page : 1;
     const pageSize = options.hasPaging ? options.size : total;
 
@@ -144,13 +159,10 @@ export class TrackingService {
       const order = await this.getOrderByOrderItemSlug(
         _.first(requestData.trackingOrderItems).orderItem,
       );
-<<<<<<< HEAD
 
-      const tableLocation: string = await this.getLocationTableByOrder(order);
-=======
-      
-      const tableLocation: string = await this.getLocationTableByOrder(order?.id);
->>>>>>> 42472c5f9058cd18cddc48aeb411ea359b28d56d
+      const tableLocation: string = await this.getLocationTableByOrder(
+        order?.id,
+      );
 
       const workflowId: string = await this.getWorkflowIdByBranchId(
         order.branch?.id,
@@ -243,13 +255,10 @@ export class TrackingService {
         requestData.trackingOrderItems,
       );
       const order = _.first(orders);
-<<<<<<< HEAD
 
-      const tableLocation: string = await this.getLocationTableByOrder(order);
-=======
-      
-      const tableLocation: string = await this.getLocationTableByOrder(order?.id);
->>>>>>> 42472c5f9058cd18cddc48aeb411ea359b28d56d
+      const tableLocation: string = await this.getLocationTableByOrder(
+        order?.id,
+      );
 
       const workflowId: string = await this.getWorkflowIdByBranchId(
         order.branch?.id,
@@ -292,11 +301,7 @@ export class TrackingService {
     }
 
     await this.softDeleteOldTrackingOrderItemFailed(
-<<<<<<< HEAD
       orderItemsData.map((item) => item.orderItem?.id),
-=======
-      orderItemsData.map((item) => item.orderItem?.id)
->>>>>>> 42472c5f9058cd18cddc48aeb411ea359b28d56d
     );
 
     const trackingData = await this.trackingRepository.findOne({
@@ -315,7 +320,7 @@ export class TrackingService {
   }
 
   /**
-   * 
+   *
    * @param {string[]} orderItemIds The array of order item ids need delete failed tracking
    */
   async softDeleteOldTrackingOrderItemFailed(
@@ -333,11 +338,7 @@ export class TrackingService {
     });
     const trackingOrderItemIds = trackingOrderItems.map((item) => item.id);
     await this.trackingOrderItemRepository.softDelete({
-<<<<<<< HEAD
       id: In(trackingOrderItemIds),
-=======
-      id: In(trackingOrderItemIds)
->>>>>>> 42472c5f9058cd18cddc48aeb411ea359b28d56d
     });
   }
 
