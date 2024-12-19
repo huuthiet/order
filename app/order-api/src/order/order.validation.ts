@@ -1,6 +1,7 @@
 import { createErrorCode, TErrorCodeValue } from 'src/app/app.validation';
 
 export const OWNER_NOT_FOUND = 'OWNER_NOT_FOUND';
+export const ORDER_INVALID = 'ORDER_INVALID';
 export const ORDER_SLUG_INVALID = 'ORDER_SLUG_INVALID';
 export const SUBTOTAL_NOT_VALID = 'SUBTOTAL_NOT_VALID';
 export const ORDER_NOT_FOUND = 'ORDER_NOT_FOUND';
@@ -20,6 +21,7 @@ export type TOrderErrorCodeKey =
   | typeof ORDER_TYPE_INVALID
   | typeof CREATE_ORDER_ERROR
   | typeof ORDER_ID_INVALID
+  | typeof ORDER_INVALID
   | typeof REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY;
 
 export type TOrderErrorCode = Record<TOrderErrorCodeKey, TErrorCodeValue>;
@@ -38,4 +40,5 @@ export const OrderValidation: TOrderErrorCode = {
   ORDER_TYPE_INVALID: createErrorCode(101006, 'Order type is not valid'),
   CREATE_ORDER_ERROR: createErrorCode(101007, 'Error when saving order'),
   ORDER_ID_INVALID: createErrorCode(101008, 'Order id invalid'),
+  ORDER_INVALID: createErrorCode(101009, 'Order invalid'),
 };

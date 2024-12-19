@@ -5,12 +5,14 @@ export const SYSTEM_CONFIG_VALUE_INVALID = 'SYSTEM_CONFIG_VALUE_INVALID';
 export const SYSTEM_CONFIG_NOT_FOUND = 'SYSTEM_CONFIG_NOT_FOUND';
 export const CREATE_SYSTEM_CONFIG_ERROR = 'CREATE_SYSTEM_CONFIG_ERROR';
 export const SYSTEM_CONFIG_QUERY_INVALID = 'SYSTEM_CONFIG_QUERY_INVALID';
+export const SYSTEM_CONFIG_INVALID = 'SYSTEM_CONFIG_INVALID';
 
 export type TSystemConfigErrorCodeKey =
   | typeof SYSTEM_CONFIG_KEY_INVALID
   | typeof SYSTEM_CONFIG_NOT_FOUND
   | typeof CREATE_SYSTEM_CONFIG_ERROR
   | typeof SYSTEM_CONFIG_QUERY_INVALID
+  | typeof SYSTEM_CONFIG_INVALID
   | typeof SYSTEM_CONFIG_VALUE_INVALID;
 
 export type TSystemConfigErrorCode = Record<
@@ -37,4 +39,5 @@ export const SystemConfigValidation: TSystemConfigErrorCode = {
     140004,
     'Error when creating system config',
   ),
+  SYSTEM_CONFIG_INVALID: createErrorCode(140005, 'System config invalid'),
 };

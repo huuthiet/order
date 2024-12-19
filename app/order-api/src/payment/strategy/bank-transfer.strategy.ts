@@ -25,6 +25,9 @@ import { OrderException } from 'src/order/order.exception';
 import { OrderValidation } from 'src/order/order.validation';
 import { ACBConnectorConfigException } from 'src/acb-connector/acb-connector.exception';
 import { ACBConnectorValidation } from 'src/acb-connector/acb-connector.validation';
+import { validateOrReject } from 'class-validator';
+import { SystemConfigException } from 'src/system-config/system-config.exception';
+import { SystemConfigValidation } from 'src/system-config/system-config.validation';
 
 @Injectable()
 export class BankTransferStrategy implements IPaymentStrategy {
@@ -93,7 +96,7 @@ export class BankTransferStrategy implements IPaymentStrategy {
         amount: order.subtotal,
         beneficiaryName: acbConnectorConfig?.beneficiaryName,
         merchantId: shortid(),
-        orderId: order.slug,
+        orderId: orderId,
         terminalId: shortid(),
         userId: order.owner?.id,
         loyaltyCode: shortid(),
@@ -136,48 +139,38 @@ export class BankTransferStrategy implements IPaymentStrategy {
   }
 
   async validateAcbConfig(acbConfig: ACBConnectorConfig) {
-    if (_.isEmpty(acbConfig))
-      throw new ACBConnectorConfigException(
-        ACBConnectorValidation.ACB_CONNECTOR_CONFIG_NOT_FOUND,
+    const context = `${BankTransferStrategy.name}.${this.validateAcbConfig.name}`;
+    try {
+      await validateOrReject(acbConfig);
+      this.logger.log(`ACB config`, context);
+    } catch (errors) {
+      this.logger.error(
+        `Order invalid: ${JSON.stringify(errors)}`,
+        null,
+        context,
       );
-
-    if (!acbConfig.xOwnerNumber)
-      throw new ACBConnectorConfigException(
-        ACBConnectorValidation.X_OWNER_NUMBER_INVALID,
+      throw new SystemConfigException(
+        SystemConfigValidation.SYSTEM_CONFIG_INVALID,
+        JSON.stringify(errors),
       );
-
-    if (!acbConfig?.xOwnerType)
-      throw new ACBConnectorConfigException(
-        ACBConnectorValidation.X_OWNER_TYPE_INVALID,
-      );
-
-    if (!acbConfig?.xProviderId)
-      throw new ACBConnectorConfigException(
-        ACBConnectorValidation.X_PROVIDER_ID_INVALID,
-      );
-
-    if (!acbConfig?.beneficiaryName)
-      throw new ACBConnectorConfigException(
-        ACBConnectorValidation.BENEFICIARY_NAME_INVALID,
-      );
-
-    if (!acbConfig?.virtualAccountPrefix)
-      throw new ACBConnectorConfigException(
-        ACBConnectorValidation.VIRTUAL_ACCOUNT_PREFIX_INVALID,
-      );
+    }
   }
 
   async validateOrder(order: Order) {
-    if (_.isEmpty(order))
-      throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
-
-    if (!order.slug)
-      throw new OrderException(OrderValidation.ORDER_SLUG_INVALID);
-
-    if (!order.owner?.id)
-      throw new OrderException(OrderValidation.OWNER_NOT_FOUND);
-
-    if (!order.subtotal)
-      throw new OrderException(OrderValidation.SUBTOTAL_NOT_VALID);
+    const context = `${BankTransferStrategy.name}.${this.validateOrder.name}`;
+    try {
+      await validateOrReject(order);
+      this.logger.log(`Order valid`, context);
+    } catch (errors) {
+      this.logger.error(
+        `Order invalid: ${JSON.stringify(errors)}`,
+        null,
+        context,
+      );
+      throw new OrderException(
+        OrderValidation.ORDER_INVALID,
+        JSON.stringify(errors),
+      );
+    }
   }
 }
