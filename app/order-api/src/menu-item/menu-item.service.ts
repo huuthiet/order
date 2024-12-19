@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MenuItem } from './menu-item.entity';
 import { Repository } from 'typeorm';
@@ -21,6 +16,8 @@ import { MenuException } from 'src/menu/menu.exception';
 import { MenuValidation } from 'src/menu/menu.validation';
 import { ProductException } from 'src/product/product.exception';
 import ProductValidation from 'src/product/product.validation';
+import { MenuItemException } from './menu-item.exception';
+import { MenuItemValidation } from './menu-item.validation';
 
 @Injectable()
 export class MenuItemService {
@@ -51,12 +48,13 @@ export class MenuItemService {
       const product = await this.productRepository.findOne({
         where: { slug: menuItemDto.productSlug },
       });
-      if (!product) throw new BadRequestException('Product not found');
+      if (!product)
+        throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
 
       const menu = await this.menuRepository.findOne({
         where: { slug: menuItemDto.menuSlug },
       });
-      if (!menu) throw new BadRequestException('Menu not found');
+      if (!menu) throw new MenuException(MenuValidation.MENU_NOT_FOUND);
 
       const menuItem = this.mapper.map(
         menuItemDto,
@@ -106,7 +104,7 @@ export class MenuItemService {
       },
     });
     if (existedMenuItem)
-      throw new BadRequestException('Menu item already exists');
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_EXIST);
 
     const menuItem = this.mapper.map(
       createMenuItemDto,
@@ -143,7 +141,8 @@ export class MenuItemService {
     const menuItem = await this.menuItemRepository.findOne({
       where: { slug },
     });
-    if (!menuItem) throw new BadRequestException('Menu item not found');
+    if (!menuItem)
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_NOT_FOUND);
     return this.mapper.map(menuItem, MenuItem, MenuItemResponseDto);
   }
 
@@ -153,7 +152,8 @@ export class MenuItemService {
     const menuItem = await this.menuItemRepository.findOne({
       where: { slug },
     });
-    if (!menuItem) throw new BadRequestException('Menu item not found');
+    if (!menuItem)
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_NOT_FOUND);
 
     Object.assign(menuItem, {
       ...updateMenuItemDto,
@@ -171,7 +171,8 @@ export class MenuItemService {
     const menuItem = await this.menuItemRepository.findOne({
       where: { slug },
     });
-    if (!menuItem) throw new BadRequestException('Menu item not found');
+    if (!menuItem)
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_NOT_FOUND);
 
     await this.menuItemRepository.remove(menuItem);
     this.logger.log(`Menu item removed: ${menuItem.id}`, context);

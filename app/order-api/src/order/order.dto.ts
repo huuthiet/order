@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
-  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -18,16 +17,14 @@ import {
   OrderItemResponseDto,
 } from 'src/order-item/order-item.dto';
 import { Transform, Type } from 'class-transformer';
-import { OrderItem } from 'src/order-item/order-item.entity';
 import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
-import { MenuItem } from 'src/menu-item/menu-item.entity';
-import { TableResponseDto } from 'src/table/table.dto';
+import { ORDER_TYPE_INVALID } from './order.validation';
 
 export class CreateOrderRequestDto {
   @AutoMap()
   @ApiProperty({ description: 'The type of order', example: 'take-out' })
   @IsNotEmpty({ message: 'Invalid type of order' })
-  @IsEnum(OrderType, { message: 'Invalid type of order' })
+  @IsEnum(OrderType, { message: ORDER_TYPE_INVALID })
   type: string;
 
   @AutoMap()
@@ -56,8 +53,8 @@ export class CreateOrderRequestDto {
     example: [
       {
         quantity: 2,
-        variant: 'variant-',
-        note: 'Ghi chú',
+        variant: '',
+        note: '',
       },
     ],
   })

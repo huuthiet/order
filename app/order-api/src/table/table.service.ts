@@ -43,7 +43,7 @@ export class TableService {
    * Create a new table
    * @param {CreateTableRequestDto} createTableDto The data to create a new table
    * @returns {Promise<TableResponseDto>} The created table
-   * @throws {BadRequestException} If the table name already exists in this branch
+   * @throws {BranchException} If the table name already exists in this branch
    */
   async create(
     createTableDto: CreateTableRequestDto,
@@ -117,7 +117,7 @@ export class TableService {
    * Change status table by slug
    * @param {string} slug The slug of table needs changing status
    * @returns {Promise<TableResponseDto>} The table data after change status
-   * @throws {BadRequestException} If table is not found
+   * @throws {TableException} If table is not found
    */
   async changeStatus(
     slug: string,
@@ -142,8 +142,8 @@ export class TableService {
    * @param {string} slug The slug of table needs updating
    * @param {UpdateTableRequestDto} updateTableDto The data to update table
    * @returns {Promise<TableResponseDto>} The updated table
-   * @throws {BadRequestException} If table is not found
-   * @throws {BadRequestException} If the updated name of table that already exists at this branch
+   * @throws {TableException} If table is not found
+   * @throws {BranchException} If the updated name of table that already exists at this branch
    */
   async update(
     slug: string,

@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { has } from 'lodash';
+import * as _ from 'lodash';
 import { AppExceptionResponseDto } from './app.dto';
 import { AppValidation } from './app.validation';
 import { AuthValidation } from 'src/auth/auth.validation';
@@ -21,10 +21,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let statusCode = exception.getStatus();
     let code = statusCode;
     let message = exception.message;
+    if (_.has(exception, '_errorCodeValue')) {
+      code = _.get(exception, '_errorCodeValue.code');
+      // message = _.get(exception, '_errorCodeValue.message');
+    }
 
     if (
       typeof exceptionResponse === 'object' &&
-      has(exceptionResponse, 'message')
+      _.has(exceptionResponse, 'message')
     ) {
       const messages = exceptionResponse.message;
       message = Array.isArray(messages) ? messages[0] : messages; // Get the first error message if it's an array

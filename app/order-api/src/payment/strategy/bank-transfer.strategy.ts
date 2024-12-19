@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { IPaymentStrategy } from './payment.strategy';
 import { ACBConnectorClient } from 'src/acb-connector/acb-connector.client';
 import { ConfigService } from '@nestjs/config';
@@ -25,7 +20,14 @@ import * as shortid from 'shortid';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Payment } from '../payment.entity';
 import { PaymentMethod, PaymentStatus } from '../payment.constants';
-import { formatMoment } from 'src/helper';
+import { formatMoment, getRandomString } from 'src/helper';
+import { OrderException } from 'src/order/order.exception';
+import { OrderValidation } from 'src/order/order.validation';
+import { ACBConnectorConfigException } from 'src/acb-connector/acb-connector.exception';
+import { ACBConnectorValidation } from 'src/acb-connector/acb-connector.validation';
+import { validateOrReject } from 'class-validator';
+import { SystemConfigException } from 'src/system-config/system-config.exception';
+import { SystemConfigValidation } from 'src/system-config/system-config.validation';
 
 @Injectable()
 export class BankTransferStrategy implements IPaymentStrategy {
@@ -51,7 +53,9 @@ export class BankTransferStrategy implements IPaymentStrategy {
     });
     if (_.isEmpty(acbConnectorConfigs)) {
       this.logger.error('ACB Connector config not found', null, context);
-      throw new BadRequestException('ACB Connector config not found');
+      throw new ACBConnectorConfigException(
+        ACBConnectorValidation.ACB_CONNECTOR_CONFIG_NOT_FOUND,
+      );
     }
 
     // Get token from ACB
@@ -64,6 +68,8 @@ export class BankTransferStrategy implements IPaymentStrategy {
     // Call ACB API to create payment
     const requestTrace = uuidv4();
     const acbConnectorConfig = _.first(acbConnectorConfigs);
+    await this.validateAcbConfig(acbConnectorConfig);
+
     const headers = {
       [X_CLIENT_ID]: this.clientId,
       [X_OWNER_NUMBER]: acbConnectorConfig?.xOwnerNumber,
@@ -72,10 +78,15 @@ export class BankTransferStrategy implements IPaymentStrategy {
       [X_REQUEST_ID]: uuidv4(),
     };
 
+    // Validate order
+    await this.validateOrder(order);
+
     // Convert date to with format: yyyy-MM-ddTHH:mm:ss.SSSZ
     // example: 2024-11-09T11:03:33.033+0700
     const requestDateTime = formatMoment();
+    const orderId = order.slug.concat(getRandomString().slice(0, 3));
     this.logger.log(`Request date time: ${requestDateTime}`, context);
+    this.logger.log(`Order id: ${orderId}`, context);
 
     const requestData = {
       requestDateTime: requestDateTime,
@@ -85,9 +96,9 @@ export class BankTransferStrategy implements IPaymentStrategy {
         amount: order.subtotal,
         beneficiaryName: acbConnectorConfig?.beneficiaryName,
         merchantId: shortid(),
-        orderId: order.slug,
+        orderId: orderId,
         terminalId: shortid(),
-        userId: order.owner.id,
+        userId: order.owner?.id,
         loyaltyCode: shortid(),
         virtualAccountPrefix: acbConnectorConfig?.virtualAccountPrefix,
         voucherCode: shortid(),
@@ -125,5 +136,41 @@ export class BankTransferStrategy implements IPaymentStrategy {
 
     this.paymentRepository.create(payment);
     return await this.paymentRepository.save(payment);
+  }
+
+  async validateAcbConfig(acbConfig: ACBConnectorConfig) {
+    const context = `${BankTransferStrategy.name}.${this.validateAcbConfig.name}`;
+    try {
+      await validateOrReject(acbConfig);
+      this.logger.log(`ACB config`, context);
+    } catch (errors) {
+      this.logger.error(
+        `Order invalid: ${JSON.stringify(errors)}`,
+        null,
+        context,
+      );
+      throw new SystemConfigException(
+        SystemConfigValidation.SYSTEM_CONFIG_INVALID,
+        JSON.stringify(errors),
+      );
+    }
+  }
+
+  async validateOrder(order: Order) {
+    const context = `${BankTransferStrategy.name}.${this.validateOrder.name}`;
+    try {
+      await validateOrReject(order);
+      this.logger.log(`Order valid`, context);
+    } catch (errors) {
+      this.logger.error(
+        `Order invalid: ${JSON.stringify(errors)}`,
+        null,
+        context,
+      );
+      throw new OrderException(
+        OrderValidation.ORDER_INVALID,
+        JSON.stringify(errors),
+      );
+    }
   }
 }
