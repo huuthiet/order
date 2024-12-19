@@ -234,6 +234,7 @@ export class TrackingService {
       // validate order item of orders in a table
       const orders = await this.validateOrderItemInOneTable(requestData.trackingOrderItems);
       const order = _.first(orders);
+      console.log({order})
       
       const tableLocation: string = await this.getLocationTableByOrder(order?.id);
 
