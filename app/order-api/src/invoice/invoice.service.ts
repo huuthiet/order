@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   ExportInvoiceDto,
   GetSpecificInvoiceRequestDto,
@@ -24,6 +19,8 @@ import { PdfService } from 'src/pdf/pdf.service';
 import { QrCodeService } from 'src/qr-code/qr-code.service';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
+import { InvoiceException } from './invoice.exception';
+import { InvoiceValidation } from './invoice.validation';
 
 @Injectable()
 export class InvoiceService {
@@ -122,7 +119,10 @@ export class InvoiceService {
       try {
         await manager.save(invoice);
       } catch (error) {
-        throw new BadRequestException(error.message);
+        throw new InvoiceException(
+          InvoiceValidation.CREATE_INVOICE_ERROR,
+          error.message,
+        );
       }
     });
 
@@ -136,8 +136,7 @@ export class InvoiceService {
 
   async getSpecificInvoice(query: GetSpecificInvoiceRequestDto) {
     if (_.isEmpty(query))
-      throw new BadRequestException('Query parameters are required');
-    // throw new OrderException(OrderValidation.INVALID_QUERY);
+      throw new InvoiceException(InvoiceValidation.INVALID_QUERY);
 
     const invoice = await this.invoiceRepository.findOne({
       where: {

@@ -5,18 +5,18 @@ import { Mapper } from '@automapper/core';
 import { Catalog } from './catalog.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
-  CatalogResponseDto,
   CreateCatalogRequestDto,
   UpdateCatalogRequestDto,
 } from './catalog.dto';
-import { BadRequestException } from '@nestjs/common';
-import { MockType, repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import {
+  MockType,
+  repositoryMockFactory,
+} from 'src/test-utils/repository-mock.factory';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { Product } from 'src/product/product.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
-
-
+import { CatalogException } from './catalog.exception';
 
 describe('CatalogService', () => {
   let service: CatalogService;
@@ -67,17 +67,19 @@ describe('CatalogService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         id: 'mock-catalog-id',
-        description: 'Description for catalog'
+        description: 'Description for catalog',
       } as Catalog;
 
-      (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(mockOutput);
+      (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       await expect(service.createCatalog(mockInput)).rejects.toThrow(
-        BadRequestException,
+        CatalogException,
       );
     });
 
     it('should create and return a new catalog', async () => {
-      const mockInput = { 
+      const mockInput = {
         name: 'New Catalog',
         description: 'Description for new catalog',
       } as CreateCatalogRequestDto;
@@ -93,9 +95,7 @@ describe('CatalogService', () => {
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
       (catalogRepositoryMock.create as jest.Mock).mockReturnValue(mockOutput);
       (catalogRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
-      (mapperMock.map as jest.Mock).mockImplementationOnce(
-        () => mockOutput
-      );
+      (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
 
       const result = await service.createCatalog(mockInput);
 
@@ -138,9 +138,9 @@ describe('CatalogService', () => {
       } as UpdateCatalogRequestDto;
       (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
 
-      await expect(
-        service.updateCatalog(slug, mockInput),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.updateCatalog(slug, mockInput)).rejects.toThrow(
+        CatalogException,
+      );
     });
 
     it('should update catalog success', async () => {
@@ -160,12 +160,12 @@ describe('CatalogService', () => {
         updatedAt: new Date(),
       } as Catalog;
 
-      (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(mockOutput);
+      (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
       (catalogRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
-      (mapperMock.map as jest.Mock).mockImplementationOnce(
-        () => mockOutput
-      );
+      (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
 
       const result = await service.updateCatalog(slug, mockInput);
       expect(result).toEqual(mockOutput);
@@ -177,7 +177,9 @@ describe('CatalogService', () => {
       const slug: string = 'mock-catalog-slug';
       (catalogRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.deleteCatalog(slug)).rejects.toThrow(BadRequestException);
+      await expect(service.deleteCatalog(slug)).rejects.toThrow(
+        CatalogException,
+      );
     });
 
     it('should return bad request when catalog have related product', async () => {
@@ -221,7 +223,9 @@ describe('CatalogService', () => {
       const mockOutput = { affected: 1 };
 
       (catalogRepositoryMock.findOne as jest.Mock).mockResolvedValue(catalog);
-      (catalogRepositoryMock.softDelete as jest.Mock).mockResolvedValue(mockOutput);
+      (catalogRepositoryMock.softDelete as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
 
       const result = await service.deleteCatalog(slug);
       expect(result).toBe(mockOutput.affected);
@@ -243,7 +247,9 @@ describe('CatalogService', () => {
         updatedAt: new Date(),
       } as Catalog;
 
-      (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(mockOutput);
+      (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
 
       const result = await service.findOne(slug);
       expect(result).toEqual(mockOutput);

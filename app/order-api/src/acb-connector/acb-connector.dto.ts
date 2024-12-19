@@ -1,6 +1,15 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
+import {
+  BENEFICIARY_NAME_INVALID,
+  VIRTUAL_ACCOUNT_PREFIX_INVALID,
+  X_OWNER_NUMBER_INVALID,
+  X_OWNER_TYPE_INVALID,
+  X_PROVIDER_ID_INVALID,
+  X_SERVICE_INVALID,
+} from './acb-connector.validation';
 
 // Request
 export class ACBTokenRequestDto {
@@ -33,32 +42,36 @@ export class ACBInitiateQRCodeRequestParametersDto {
 export class CreateACBConnectorConfigRequestDto {
   @AutoMap()
   @ApiProperty()
+  @IsNotEmpty({ message: X_PROVIDER_ID_INVALID })
   xProviderId: string;
 
   @AutoMap()
   @ApiProperty()
+  @IsNotEmpty({ message: X_SERVICE_INVALID })
   xService: string;
 
   @AutoMap()
   @ApiProperty()
+  @IsNotEmpty({ message: X_OWNER_NUMBER_INVALID })
   xOwnerNumber: string;
 
   @AutoMap()
   @ApiProperty()
+  @IsNotEmpty({ message: X_OWNER_TYPE_INVALID })
   xOwnerType: string;
 
   @AutoMap()
   @ApiProperty()
+  @IsNotEmpty({ message: BENEFICIARY_NAME_INVALID })
   beneficiaryName: string;
 
   @AutoMap()
   @ApiProperty()
+  @IsNotEmpty({ message: VIRTUAL_ACCOUNT_PREFIX_INVALID })
   virtualAccountPrefix: string;
 }
 
-export class UpdateACBConnectorConfigRequestDto extends PartialType(
-  CreateACBConnectorConfigRequestDto,
-) {}
+export class UpdateACBConnectorConfigRequestDto extends CreateACBConnectorConfigRequestDto {}
 
 export class ACBTransactionEntityAttributeDto {
   @ApiProperty()

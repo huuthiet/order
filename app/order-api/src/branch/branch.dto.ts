@@ -2,28 +2,32 @@ import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
+import {
+  INVALID_BRANCH_ADDRESS,
+  INVALID_BRANCH_NAME,
+} from './branch.validation';
 
 export class CreateBranchDto {
   @AutoMap()
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: INVALID_BRANCH_NAME })
   name: string;
 
   @AutoMap()
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: INVALID_BRANCH_ADDRESS })
   address: string;
 }
 
 export class UpdateBranchDto {
   @AutoMap()
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: INVALID_BRANCH_NAME })
   name: string;
 
   @AutoMap()
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: INVALID_BRANCH_ADDRESS })
   address: string;
 }
 

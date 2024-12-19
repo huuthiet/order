@@ -3,7 +3,6 @@ import {
   Inject,
   Injectable,
   Logger,
-  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -49,6 +48,8 @@ import { RoleEnum } from 'src/role/role.enum';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
 import * as _ from 'lodash';
+import { RoleException } from 'src/role/role.exception';
+import { RoleValidation } from 'src/role/role.validation';
 
 @Injectable()
 export class AuthService {
@@ -412,7 +413,10 @@ export class AuthService {
       },
     });
     if (!role)
-      throw new BadRequestException(`Role ${RoleEnum.Customer} not found`);
+      throw new RoleException(
+        RoleValidation.ROLE_NOT_FOUND,
+        `Role ${RoleEnum.Customer} not found`,
+      );
 
     const user = this.mapper.map(requestData, RegisterAuthRequestDto, User);
 

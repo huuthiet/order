@@ -18,6 +18,8 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as _ from 'lodash';
 import { getDayIndex } from 'src/helper';
 import { AppPaginatedResponseDto } from 'src/app/app.dto';
+import { BranchException } from 'src/branch/branch.exception';
+import { BranchValidation } from 'src/branch/branch.validation';
 
 @Injectable()
 export class MenuService {
@@ -119,7 +121,7 @@ export class MenuService {
         null,
         context,
       );
-      throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
+      throw new BranchException(BranchValidation.INVALID_BRANCH_SLUG);
     }
 
     // Check if template menu already exist
@@ -157,7 +159,7 @@ export class MenuService {
     });
     if (!branch) {
       this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
-      throw new MenuException(MenuValidation.INVALID_BRANCH_SLUG);
+      throw new BranchException(BranchValidation.INVALID_BRANCH_SLUG);
     }
 
     // Check if template menu already exist

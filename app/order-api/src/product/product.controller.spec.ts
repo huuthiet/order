@@ -6,11 +6,12 @@ import {
   ProductResponseDto,
   UpdateProductRequestDto,
 } from './product.dto';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import { CatalogResponseDto } from 'src/catalog/catalog.dto';
+import { ProductException } from './product.exception';
+import ProductValidation from './product.validation';
+import { CatalogException } from 'src/catalog/catalog.exception';
+import { CatalogValidation } from 'src/catalog/catalog.validation';
 
 describe('ProductController', () => {
   let controller: ProductController;
@@ -55,11 +56,11 @@ describe('ProductController', () => {
       } as CreateProductRequestDto;
 
       (service.createProduct as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new ProductException(ProductValidation.PRODUCT_NAME_EXIST),
       );
 
       await expect(controller.createProduct(mockInput)).rejects.toThrow(
-        BadRequestException,
+        ProductException,
       );
     });
 
@@ -168,11 +169,11 @@ describe('ProductController', () => {
       } as UpdateProductRequestDto;
 
       (service.updateProduct as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new CatalogException(CatalogValidation.CATALOG_NOT_FOUND),
       );
 
       await expect(controller.updateProduct(slug, mockInput)).rejects.toThrow(
-        BadRequestException,
+        CatalogException,
       );
       expect(service.updateProduct).toHaveBeenCalled();
     });
@@ -195,11 +196,11 @@ describe('ProductController', () => {
       const slug: string = 'mock-catalog-slug';
 
       (service.deleteProduct as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new ProductException(ProductValidation.PRODUCT_NOT_FOUND),
       );
 
       await expect(controller.deleteProduct(slug)).rejects.toThrow(
-        BadRequestException,
+        ProductException,
       );
       expect(service.deleteProduct).toHaveBeenCalled();
     });
