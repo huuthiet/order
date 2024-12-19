@@ -8,7 +8,6 @@ import {
   FindManyOptions,
   FindOptionsWhere,
   In,
-  Not,
   Repository,
 } from 'typeorm';
 import { Tracking } from './tracking.entity';
