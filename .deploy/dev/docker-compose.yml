@@ -101,6 +101,28 @@ services:
     ports:
       - "5173:5173"
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+  roboflow:
+    image: tuanvux01/roboflow:dev
+    container_name: roboflow
+    restart: unless-stopped
+    ports:
+      - 8082:8080
+    environment:
+      - ENV=development
+      - PORT=8080
+      - POSTGRES_DSN=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    depends_on:
+      - postgres
+
 networks:
   default:
     external: true
