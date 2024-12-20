@@ -11,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  ScrollArea,
   Select,
   SelectContent,
   SelectItem,

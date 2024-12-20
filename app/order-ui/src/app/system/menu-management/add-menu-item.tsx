@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { Button, DataTable, ScrollArea } from '@/components/ui'
+import { Button, DataTable } from '@/components/ui'
 import { useProducts } from '@/hooks'
 import { useProductColumns } from './DataTable/columns'
 import { useMenuItemStore } from '@/stores'

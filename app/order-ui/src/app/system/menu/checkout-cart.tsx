@@ -5,7 +5,7 @@ import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button, Label, ScrollArea } from '@/components/ui'
-import { CartNoteInput, PromotionInput } from '@/components/app/input'
+import { CartNoteInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
 import { publicFileURL } from '@/constants'
 import { CreateOrderDialog } from '@/components/app/dialog'

@@ -6,7 +6,6 @@ import moment from 'moment'
 import {
   Button,
   ScrollArea,
-  ScrollBar,
   Separator,
   Table,
   TableBody,

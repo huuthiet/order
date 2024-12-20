@@ -1,7 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import moment from 'moment'
 import {
   CircleMinus,
   ChevronsLeftRight,
@@ -9,7 +8,7 @@ import {
   PlusCircleIcon,
 } from 'lucide-react'
 
-import { Label, Input, Button, PasswordInput } from '@/components/ui'
+import { Label, Input, Button } from '@/components/ui'
 import { useCreateSystemConfig, useSystemConfigs } from '@/hooks'
 import { ISystemConfig } from '@/types'
 import { ConfigDropdown } from '@/app/system/config'

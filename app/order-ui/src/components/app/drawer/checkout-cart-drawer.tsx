@@ -1,8 +1,5 @@
 'use client'
 
-import { ShoppingCart } from 'lucide-react'
-// import { Bar, BarChart, ResponsiveContainer } from 'recharts'
-
 import { Button } from '@/components/ui/button'
 import {
   Drawer,

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 
-import { DataTable, ScrollArea } from '@/components/ui'
+import { DataTable } from '@/components/ui'
 import { useAllMenus, usePagination } from '@/hooks'
 import { useMenusColumns } from './DataTable/columns'
 import { MenusActionOptions } from './DataTable/actions'

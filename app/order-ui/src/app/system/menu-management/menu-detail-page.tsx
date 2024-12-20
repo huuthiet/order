@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 import moment from 'moment'
 
-import { ScrollArea } from '@/components/ui'
 import { useSpecificMenu } from '@/hooks'
 import { ProductDetailSkeleton } from '@/components/app/skeleton'
 import MenuItemCard from './menu-item-card'
