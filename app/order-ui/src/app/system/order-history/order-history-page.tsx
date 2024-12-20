@@ -21,14 +21,14 @@ export default function OrderHistoryPage() {
   })
 
   return (
-    <ScrollArea className="flex-1">
-      <div className="flex flex-col">
-        <div className="sticky top-0 z-10 flex flex-col items-center gap-2">
-          <span className="flex w-full items-center justify-start gap-1 text-lg">
-            <SquareMenu />
-            {t('order.title')}
-          </span>
-        </div>
+    <div className="flex flex-col">
+      <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-gray-50">
+        <span className="flex w-full items-center justify-start gap-1 text-lg">
+          <SquareMenu />
+          {t('order.title')}
+        </span>
+      </div>
+      <div className="grid h-full grid-cols-1">
         <DataTable
           columns={useOrderHistoryColumns()}
           data={data?.result.items || []}
@@ -38,6 +38,6 @@ export default function OrderHistoryPage() {
           onPageSizeChange={handlePageSizeChange}
         />
       </div>
-    </ScrollArea>
+    </div>
   )
 }

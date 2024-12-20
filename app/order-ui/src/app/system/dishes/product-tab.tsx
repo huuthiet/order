@@ -5,12 +5,9 @@ import { ProductActionOptions } from './DataTable/actions'
 
 export default function ProductTab() {
   const { data: products, isLoading } = useProducts()
-  // const navigate = useNavigate()
-  // const handleRowClick = (product: IProduct) => {
-  //   navigate(`${ROUTE.STAFF_PRODUCT_DETAIL}/${product.slug}`)
-  // }
+
   return (
-    <div className="flex h-full flex-row gap-2">
+    <div className="grid h-full grid-cols-1 gap-2">
       <DataTable
         columns={useProductColumns()}
         data={products?.result || []}

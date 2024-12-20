@@ -120,6 +120,7 @@
 
     "viewDetail": "Xem chi tiết",
     "updatePayment": "Cập nhật thanh toán",
+    "exportPayment": "Xuất QR code thanh toán",
     "exportInvoice": "Xuất hóa đơn",
     "backToMenu": "Quay lại menu",
 

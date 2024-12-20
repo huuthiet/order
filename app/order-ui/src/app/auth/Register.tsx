@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { z } from 'zod'
 import { isAxiosError } from 'axios'
 import { useNavigate, NavLink } from 'react-router-dom'
@@ -12,11 +11,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter
+  CardFooter,
 } from '@/components/ui'
 import { LoginBackground } from '@/assets/images'
 import { RegisterForm } from '@/components/app/form'
-// import { useAuthStore } from '@/stores'
 import { ROUTE } from '@/constants'
 import { showErrorToast, showToast } from '@/utils'
 import { cn } from '@/lib/utils'
@@ -24,17 +22,11 @@ import { useRegister } from '@/hooks'
 
 export default function Register() {
   const { t } = useTranslation(['auth'])
-  //   const { setToken, setRefreshToken, setExpireTime, setExpireTimeRefreshToken, setSlug } =
-  //     useAuthStore()
-  //   const { getTheme } = useThemeStore()
-  // const { isAuthenticated } = useAuthStore()
 
   const navigate = useNavigate()
-  const { mutate: register } = useRegister()
-  const [isLoading, setIsLoading] = useState(false)
+  const { mutate: register, isPending } = useRegister()
 
   const handleSubmit = async (data: z.infer<typeof registerSchema>) => {
-    setIsLoading(true)
     try {
       register(data, {
         onSuccess: () => {
@@ -53,7 +45,7 @@ export default function Register() {
             }
             showErrorToast(error.response?.data?.statusCode)
           }
-        }
+        },
       })
     } catch (error) {
       if (isAxiosError(error)) {
@@ -66,25 +58,19 @@ export default function Register() {
           return
         }
       }
-    } finally {
-      setIsLoading(false)
     }
   }
 
-  // Redirect if the user is already authenticated
-  // useEffect(() => {
-  //   if (isAuthenticated()) {
-  //     navigate(ROUTE.STAFF_MENU, { replace: true })
-  //   }
-  // }, [isAuthenticated, navigate])
-
   return (
-    <div className="relative flex items-center justify-center min-h-screen">
-      <img src={LoginBackground} className="absolute top-0 left-0 w-full h-full sm:object-fill" />
-      <div className="relative z-10 flex items-center justify-center w-full h-full">
-        <Card className="sm:min-w-[24rem] bg-white border border-muted-foreground bg-opacity-10 mx-auto shadow-xl backdrop-blur-xl">
+    <div className="relative flex min-h-screen items-center justify-center">
+      <img
+        src={LoginBackground}
+        className="absolute left-0 top-0 h-full w-full sm:object-fill"
+      />
+      <div className="relative z-10 flex h-full w-full items-center justify-center">
+        <Card className="mx-auto border border-muted-foreground bg-white bg-opacity-10 shadow-xl backdrop-blur-xl sm:min-w-[24rem]">
           <CardHeader>
-            <CardTitle className={cn('text-2xl text-center text-white')}>
+            <CardTitle className={cn('text-center text-2xl text-white')}>
               {t('register.welcome')}{' '}
             </CardTitle>
             {/* <CardTitle className={cn('text-2xl text-white')}>{t('login.title')} </CardTitle> */}
@@ -94,7 +80,7 @@ export default function Register() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <RegisterForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <RegisterForm onSubmit={handleSubmit} isLoading={isPending} />
           </CardContent>
           <CardFooter className="flex gap-1 text-white">
             <span>{t('register.haveAccount')}</span>

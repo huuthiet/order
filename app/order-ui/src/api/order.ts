@@ -66,16 +66,14 @@ export async function initiatePayment(
   return response.data
 }
 
-export async function exportPaymentQRCode(
-  slug: string,
-): Promise<IApiResponse<string>> {
+export async function exportPaymentQRCode(slug: string): Promise<Blob> {
   const { setProgress, setFileName, setIsDownloading, reset } =
     useDownloadStore.getState()
-  const currentDate = moment(new Date()).format('DD/MM/YYYY')
-  setFileName(`TREND Coffee QR Code-${currentDate}.pdf`)
+  const currentDate = new Date().toISOString()
+  setFileName(`TRENDCoffee-${currentDate}.pdf`)
   setIsDownloading(true)
   try {
-    const response = await http.post(`payment/${slug}/export`, {
+    const response = await http.post(`payment/${slug}/export`, null, {
       responseType: 'blob',
       headers: {
         Accept: 'application/pdf',
@@ -88,8 +86,8 @@ export async function exportPaymentQRCode(
       },
       doNotShowLoading: true,
     } as AxiosRequestConfig)
-    const blob = new Blob([response.data], { type: 'application/pdf' })
-    saveAs(blob, `TREND Coffee QR Code-${currentDate}.pdf`)
+    // const blob = new Blob([response.data], { type: 'application/pdf' })
+    // saveAs(blob, `TREND Coffee QR Code-${currentDate}.pdf`)
     return response.data
   } finally {
     setIsDownloading(false)
@@ -118,13 +116,11 @@ export async function getOrderInvoice(
   return response.data
 }
 
-export async function exportOrderInvoice(
-  order: string,
-): Promise<IApiResponse<string>> {
+export async function exportOrderInvoice(order: string): Promise<Blob> {
   const { setProgress, setFileName, setIsDownloading, reset } =
     useDownloadStore.getState()
-  const currentDate = moment(new Date()).format('DD/MM/YYYY')
-  setFileName(`TREND Coffee Invoice-${currentDate}.pdf`)
+  const currentDate = moment(new Date()).toISOString()
+  setFileName(`Invoice-${currentDate}.pdf`)
   setIsDownloading(true)
 
   try {
@@ -145,21 +141,6 @@ export async function exportOrderInvoice(
         doNotShowLoading: true,
       } as AxiosRequestConfig,
     )
-    const blobUrl = window.URL.createObjectURL(
-      new Blob([response.data], { type: response.headers['content-type'] }),
-    )
-
-    // Open the Blob in a new window for printing
-    const printWindow = window.open(blobUrl, '_blank')
-    if (printWindow) {
-      printWindow.focus()
-      printWindow.print()
-
-      // Optionally revoke the object URL after printing
-      printWindow.onafterprint = () => window.URL.revokeObjectURL(blobUrl)
-    }
-    // const blob = new Blob([response.data], { type: 'application/pdf' })
-    // saveAs(blob, `TREND Coffee Invoice-${currentDate}.pdf`)
     return response.data
   } finally {
     setIsDownloading(false)

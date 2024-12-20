@@ -20,28 +20,25 @@ export default function MenuManagementPage() {
   })
 
   return (
-    <div className="flex h-full flex-row gap-2">
-      {/* Menu Section - Scrollable */}
-      <ScrollArea className="flex-1">
-        <div className={`transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
-            <span className="flex w-full items-center justify-start gap-1 text-lg">
-              <SquareMenu />
-              {t('menu.title')}
-            </span>
-            <DataTable
-              columns={useMenusColumns()}
-              data={data?.result.items || []}
-              isLoading={isLoading}
-              pages={data?.result?.totalPages || 0}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-              actionOptions={MenusActionOptions}
-              filterOptions={IsTemplateFilter}
-            />
-          </div>
+    <div className={`transition-all duration-300 ease-in-out`}>
+      <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
+        <span className="flex w-full items-center justify-start gap-1 text-lg">
+          <SquareMenu />
+          {t('menu.title')}
+        </span>
+        <div className="grid h-full w-full grid-cols-1">
+          <DataTable
+            columns={useMenusColumns()}
+            data={data?.result.items || []}
+            isLoading={isLoading}
+            pages={data?.result?.totalPages || 0}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            actionOptions={MenusActionOptions}
+            filterOptions={IsTemplateFilter}
+          />
         </div>
-      </ScrollArea>
+      </div>
     </div>
   )
 }

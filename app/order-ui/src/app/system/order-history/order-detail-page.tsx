@@ -6,6 +6,7 @@ import moment from 'moment'
 import {
   Button,
   ScrollArea,
+  ScrollBar,
   Separator,
   Table,
   TableBody,
@@ -28,12 +29,12 @@ export default function OrderDetailPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-row flex-1 gap-2">
+    <div className="mb-10 flex flex-1 flex-row gap-2">
       <ScrollArea className="flex-1">
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
             <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
-              <span className="flex items-center justify-start w-full gap-1 text-lg">
+              <span className="flex w-full items-center justify-start gap-1 text-lg">
                 <SquareMenu />
                 {t('order.orderDetail')}{' '}
                 <span className="text-muted-foreground">
@@ -42,12 +43,11 @@ export default function OrderDetailPage() {
               </span>
             </div>
           </div>
-          {/* <CustomerInformation orderDetailData={orderDetail?.result} /> */}
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-4 lg:flex-row">
             {/* Left, info */}
-            <div className="flex flex-col w-3/4 gap-4">
+            <div className="flex w-full flex-col gap-4 lg:w-3/4">
               {/* Order info */}
-              <div className="flex items-center justify-between p-3 border border-gray-200 rounded-sm bg-slate-100">
+              <div className="flex items-center justify-between rounded-sm border border-gray-200 bg-slate-100 p-3">
                 <div className="">
                   <p className="flex items-center gap-2 pb-2">
                     <span className="font-bold">Đơn hàng:</span>{' '}
@@ -55,7 +55,9 @@ export default function OrderDetailPage() {
                       {orderDetail?.result?.slug}
                     </span>
                     <OrderStatusBadge
-                      status={orderDetail?.result?.status || OrderStatus.PENDING}
+                      status={
+                        orderDetail?.result?.status || OrderStatus.PENDING
+                      }
                     />
                   </p>
                   <div className="flex items-center gap-1 text-sm font-thin">
@@ -73,26 +75,27 @@ export default function OrderDetailPage() {
                     </p>
                   </div>
                 </div>
-
               </div>
               {/* Order owner info */}
               <div className="flex gap-2">
-                <div className="w-1/2 border border-gray-200 rounded-sm">
-                  <div className="px-3 py-2 font-bold uppercase bg-slate-100">
+                <div className="w-1/2 rounded-sm border border-gray-200">
+                  <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
                     Khách hàng
                   </div>
-                  <div className="px-3 py-2">
-                    <p className='font-bold'>
+                  <div className="px-3 py-2 text-xs">
+                    <p className="font-bold">
                       {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName}`}
                     </p>
-                    <p className='text-sm'>{orderDetail?.result?.owner?.phonenumber}</p>
+                    <p className="text-sm">
+                      {orderDetail?.result?.owner?.phonenumber}
+                    </p>
                   </div>
                 </div>
-                <div className="w-1/2 border border-gray-200 rounded-sm">
-                  <div className="px-3 py-2 font-bold uppercase bg-slate-100">
+                <div className="w-1/2 rounded-sm border border-gray-200">
+                  <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
                     Loại đơn hàng
                   </div>
-                  <div className="px-3 py-2">
+                  <div className="px-3 py-2 text-sm">
                     <p>
                       {orderDetail?.result?.type === IOrderType.AT_TABLE
                         ? t('order.dineIn')
@@ -110,53 +113,53 @@ export default function OrderDetailPage() {
                 </div>
               </div>
               {/* Order table */}
-              <Table>
-                <TableCaption>A list of orders.</TableCaption>
-                <TableHeader className="bg-gray-200 rounded">
-                  <TableRow>
-                    <TableHead className="w-[100px]">
-                      {t('order.product')}
-                    </TableHead>
-                    <TableHead>{t('order.size')}</TableHead>
-                    <TableHead> {t('order.quantity')}</TableHead>
-                    <TableHead className="text-right">
-                      {t('order.unitPrice')}
-                    </TableHead>
-                    <TableHead className="text-right">
-                      {t('order.grandTotal')}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orderDetail?.result.orderItems?.map((item) => (
-                    <TableRow key={item.slug}>
-                      <TableCell className="flex items-center gap-1 font-bold w-96">
-                        <img
-                          src={`${publicFileURL}/${item.variant.product.image}`}
-                          alt={item.variant.product.image}
-                          className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
-                        />
-                        {item.variant.product.name}
-                      </TableCell>
-                      <TableCell>{item.variant.size.name}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell className="text-right">
-                        {`${orderDetail.result.subtotal.toLocaleString('vi-VN')}đ`}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table className="min-w-full table-auto border-collapse border border-gray-300">
+                  <TableCaption>A list of orders.</TableCaption>
+                  <TableHeader className="rounded bg-gray-200">
+                    <TableRow>
+                      <TableHead className="">{t('order.product')}</TableHead>
+                      <TableHead>{t('order.size')}</TableHead>
+                      <TableHead>{t('order.quantity')}</TableHead>
+                      <TableHead className="text-right">
+                        {t('order.unitPrice')}
+                      </TableHead>
+                      <TableHead className="text-right">
+                        {t('order.grandTotal')}
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {orderDetail?.result.orderItems?.map((item) => (
+                      <TableRow key={item.slug}>
+                        <TableCell className="flex items-center gap-1 font-bold">
+                          <img
+                            src={`${publicFileURL}/${item.variant.product.image}`}
+                            alt={item.variant.product.image}
+                            className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                          />
+                          {item.variant.product.name}
+                        </TableCell>
+                        <TableCell>{item.variant.size.name}</TableCell>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell className="text-right">
+                          {`${orderDetail.result.subtotal.toLocaleString('vi-VN')}đ`}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
 
             {/* Right, payment*/}
-            <div className="flex flex-col w-1/4 gap-2">
+            <div className="flex w-full flex-col gap-2 lg:w-1/4">
               {/* Payment method, status */}
-              <div className="border border-gray-200 rounded-sm">
-                <div className="px-3 py-2 font-bold uppercase bg-slate-100">
+              <div className="rounded-sm border border-gray-200">
+                <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
                   Phương thức thanh toán
                 </div>
                 <div className="px-3 py-2">
@@ -169,8 +172,8 @@ export default function OrderDetailPage() {
                         <>
                           {orderDetail?.result?.payment.paymentMethod ===
                             'bank-transfer' && (
-                              <span>{t('paymentMethod.bankTransfer')}</span>
-                            )}
+                            <span>{t('paymentMethod.bankTransfer')}</span>
+                          )}
                           {orderDetail?.result?.payment.paymentMethod ===
                             'cash' && <span>{t('paymentMethod.cash')}</span>}
                         </>
@@ -192,7 +195,7 @@ export default function OrderDetailPage() {
                 </div>
               </div>
               {/* Total */}
-              <div className="flex flex-col gap-2 p-2 border border-gray-200 rounded-sm">
+              <div className="flex flex-col gap-2 rounded-sm border border-gray-200 p-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-500">Tạm tính</p>
                   <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>

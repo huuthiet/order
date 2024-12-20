@@ -100,10 +100,10 @@ export class PaymentController {
   }
 
   @Post(':slug/export')
-  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Export payment' })
   async exportPayment(@Param('slug') slug: string) {
+    console.log({ slug });
     const result = await this.paymentService.exportPayment(slug);
     return new StreamableFile(result, {
       type: 'application/pdf',

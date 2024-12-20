@@ -24,7 +24,7 @@ export default function BankConfigPage() {
               {!bankConfigData && <CreateBankConnectorDialog />}
               <UpdateBankConnectorDialog bankConnector={bankConfigData} />
             </div>
-            <div className="mt-6 grid w-full grid-cols-1 items-center justify-center gap-4 xl:grid-cols-5">
+            <div className="mt-6 flex flex-col items-center justify-center gap-4 lg:flex-row">
               <div className="w-full items-center justify-center xl:col-span-2">
                 <BankCard bankCardData={bankConfigData} />
               </div>

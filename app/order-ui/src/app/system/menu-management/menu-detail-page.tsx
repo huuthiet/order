@@ -10,6 +10,7 @@ import MenuItemCard from './menu-item-card'
 import { useState } from 'react'
 import { CartToggleButton } from '@/components/app/button'
 import AddMenuItem from './add-menu-item'
+import { cn } from '@/lib'
 
 export default function MenuDetailPage() {
   const [isCartOpen, setIsCartOpen] = useState(true)
@@ -26,30 +27,27 @@ export default function MenuDetailPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-row gap-2">
-      {/* Menu Section - Scrollable */}
-      <ScrollArea className="flex-1">
+    <div>
+      <div className="mb-4 flex w-full items-center gap-1 text-lg">
+        <SquareMenu />
+        {t('menu.title')}
+        {' - '}
+        {moment(menuDetailData?.date).format('DD/MM/YYYY')}
+      </div>
+      <div className="mb-4 flex justify-end pr-2">
+        <CartToggleButton
+          isCartOpen={isCartOpen}
+          setIsCartOpen={setIsCartOpen}
+        />
+      </div>
+      <div className="flex flex-row gap-2">
+        {/* List menu items */}
         <div
-          className={`px-4 transition-all duration-300 ease-in-out ${
-            isCartOpen ? 'w-full' : 'w-full'
-          }`}
+          className={cn(
+            `px-4 transition-all duration-300 ease-in-out`,
+            isCartOpen ? 'hidden lg:block lg:w-1/2' : 'w-full',
+          )}
         >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pr-4">
-            <div className="flex w-full flex-row items-center justify-end"></div>
-          </div>
-          <div className="flex w-full flex-row items-center justify-between">
-            <span className="flex w-full items-center gap-1 text-lg">
-              <SquareMenu />
-              {t('menu.title')}
-              {' - '}
-              {moment(menuDetailData?.date).format('DD/MM/YYYY')}
-            </span>
-            <CartToggleButton
-              isCartOpen={isCartOpen}
-              setIsCartOpen={setIsCartOpen}
-            />
-          </div>
-
           <div
             className={`mt-4 grid grid-cols-1 gap-4 ${isCartOpen ? 'md:grid-cols-2' : 'md:grid-cols-5'} `}
           >
@@ -58,13 +56,15 @@ export default function MenuDetailPage() {
             ))}
           </div>
         </div>
-      </ScrollArea>
-      <div
-        className={`border-l bg-background transition-all duration-300 ease-in-out ${
-          isCartOpen ? 'w-[50%]' : 'w-0 opacity-0'
-        } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
-      >
-        {isCartOpen && <AddMenuItem />}
+
+        {/* Add menu items */}
+        <div
+          className={`border-l bg-background transition-all duration-300 ease-in-out ${
+            isCartOpen ? 'w-full lg:w-1/2' : 'w-0 opacity-0'
+          } sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto`}
+        >
+          {isCartOpen && <AddMenuItem />}
+        </div>
       </div>
     </div>
   )
