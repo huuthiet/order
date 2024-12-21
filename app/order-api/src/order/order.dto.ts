@@ -18,7 +18,13 @@ import {
 } from 'src/order-item/order-item.dto';
 import { Transform, Type } from 'class-transformer';
 import { InvoiceResponseDto } from 'src/invoice/invoice.dto';
-import { ORDER_TYPE_INVALID } from './order.validation';
+import {
+  INVALID_ORDER_APPROVAL_BY,
+  INVALID_ORDER_ITEMS,
+  INVALID_ORDER_OWNER,
+  ORDER_TYPE_INVALID,
+} from './order.validation';
+import { INVALID_BRANCH_SLUG } from 'src/branch/branch.validation';
 
 export class CreateOrderRequestDto {
   @AutoMap()
@@ -29,7 +35,7 @@ export class CreateOrderRequestDto {
 
   @AutoMap()
   @ApiProperty({ description: 'The slug of table', example: 'table-' })
-  @IsOptional({ message: 'Invalid slug of table' })
+  @IsOptional()
   table: string;
 
   @AutoMap()
@@ -37,7 +43,7 @@ export class CreateOrderRequestDto {
     description: 'The slug of branch',
     example: '',
   })
-  @IsNotEmpty({ message: 'Invalid slug of branch' })
+  @IsNotEmpty({ message: INVALID_BRANCH_SLUG })
   branch: string;
 
   @AutoMap()
@@ -45,7 +51,7 @@ export class CreateOrderRequestDto {
     description: 'The slug of user that creating order',
     example: '',
   })
-  @IsNotEmpty({ message: 'Invalid slug of user that creating order' })
+  @IsNotEmpty({ message: INVALID_ORDER_OWNER })
   owner: string;
 
   @ApiProperty({
@@ -58,11 +64,19 @@ export class CreateOrderRequestDto {
       },
     ],
   })
-  @IsArray({ message: 'Invalid order item list' })
-  @ArrayNotEmpty({ message: 'Invalid order item list' })
+  @IsArray({ message: INVALID_ORDER_ITEMS })
+  @ArrayNotEmpty({ message: INVALID_ORDER_ITEMS })
   @ValidateNested({ each: true })
   @Type(() => CreateOrderItemRequestDto)
   orderItems: CreateOrderItemRequestDto[];
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'The slug of user that creating order',
+    example: '',
+  })
+  @IsNotEmpty({ message: INVALID_ORDER_APPROVAL_BY })
+  approvalBy: string;
 }
 
 export class OwnerResponseDto extends BaseResponseDto {
@@ -76,16 +90,7 @@ export class OwnerResponseDto extends BaseResponseDto {
   lastName: string;
 }
 
-export class ApprovalUserResponseDto extends BaseResponseDto {
-  @AutoMap()
-  phonenumber: string;
-
-  @AutoMap()
-  firstName: string;
-
-  @AutoMap()
-  lastName: string;
-
+export class ApprovalUserResponseDto extends OwnerResponseDto {
   @AutoMap(() => BranchResponseDto)
   branch: BranchResponseDto;
 }
