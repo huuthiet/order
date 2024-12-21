@@ -5,16 +5,12 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { corsOptions } from './config/cors.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { DataSource } from 'typeorm';
+import { otelSDK } from './tracing';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
+  otelSDK.start();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  // const dataSource: DataSource = app.get(DataSource);
-
-  // Automatically run migrations
-  // await dataSource.runMigrations({});
 
   const configService = app.get(ConfigService);
   const port = configService.get('PORT') || 8080;
