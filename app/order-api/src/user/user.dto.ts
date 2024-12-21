@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 import { INVALID_USERID } from 'src/auth/auth.validation';
@@ -65,6 +65,20 @@ export class GetAllUserQueryRequestDto {
   @IsOptional()
   branch?: string;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
+  phonenumber: string;
+
+  @AutoMap()
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.split(',') : [value],
+  )
+  role: string[] = [];
+
   @AutoMap()
   @ApiProperty({
     example: 1,
@@ -86,4 +100,17 @@ export class GetAllUserQueryRequestDto {
   @Type(() => Number)
   @Min(1)
   size: number = 10;
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'Enable paging',
+    required: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === undefined || value === null) return true; // Default true
+    return value === 'true'; // Transform 'true' to `true` and others to `false`
+  })
+  hasPaging?: boolean;
 }

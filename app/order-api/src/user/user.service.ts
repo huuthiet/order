@@ -1,6 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  Like,
+  Repository,
+} from 'typeorm';
 import { User } from './user.entity';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
@@ -19,6 +25,7 @@ import { UserException } from './user.exception';
 import { UserValidation } from './user.validation';
 import { RoleValidation } from 'src/role/role.validation';
 import { RoleException } from 'src/role/role.exception';
+import * as _ from 'lodash';
 
 @Injectable()
 export class UserService {
@@ -95,29 +102,46 @@ export class UserService {
   async getAllUsers(
     query: GetAllUserQueryRequestDto,
   ): Promise<AppPaginatedResponseDto<UserResponseDto>> {
-    const [users, total] = await this.userRepository.findAndCount({
+    // Construct where options
+    const whereOptions: FindOptionsWhere<User> = {};
+    if (query.branch) whereOptions.branch = { slug: query.branch };
+    if (query.phonenumber)
+      whereOptions.phonenumber = Like(`%${query.phonenumber}%`);
+    if (!_.isEmpty(query.role)) whereOptions.role = { slug: In(query.role) };
+
+    // Construct find many options
+    const findManyOptions: FindManyOptions = {
       relations: ['branch', 'role'],
-      where: {
-        branch: { slug: query.branch },
-      },
+      where: whereOptions,
       order: { createdAt: 'DESC' },
       skip: (query.page - 1) * query.size,
       take: query.size,
-    });
+    };
+    if (query.hasPaging) {
+      findManyOptions.skip = (query.page - 1) * query.size;
+      findManyOptions.take = query.size;
+    }
+
+    // Exec query
+    const [users, total] =
+      await this.userRepository.findAndCount(findManyOptions);
 
     // Calculate total pages
-    const totalPages = Math.ceil(total / query.size);
+    const page = query.hasPaging ? query.page : 1;
+    const pageSize = query.hasPaging ? query.size : total;
+    const totalPages = Math.ceil(total / pageSize);
+
     // Determine hasNext and hasPrevious
-    const hasNext = query.page < totalPages;
-    const hasPrevious = query.page > 1;
+    const hasNext = page < totalPages;
+    const hasPrevious = page > 1;
 
     return {
       hasNext: hasNext,
       hasPrevios: hasPrevious,
       items: this.mapper.mapArray(users, User, UserResponseDto),
       total,
-      page: query.page,
-      pageSize: query.size,
+      page,
+      pageSize,
       totalPages,
     } as AppPaginatedResponseDto<UserResponseDto>;
   }

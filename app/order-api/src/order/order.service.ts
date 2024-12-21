@@ -42,8 +42,7 @@ import { MenuItem } from 'src/menu-item/menu-item.entity';
 import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
 import * as moment from 'moment';
-import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 @Injectable()
 export class OrderService {
@@ -170,6 +169,7 @@ export class OrderService {
    */
   async constructOrder(data: CreateOrderRequestDto): Promise<Order> {
     const context = `${OrderService.name}.${this.constructOrder.name}`;
+    // Get branch
     const branch = await this.branchRepository.findOneBy({ slug: data.branch });
     if (!branch) {
       this.logger.warn(
@@ -179,6 +179,7 @@ export class OrderService {
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
+    // Get table if order type is at table
     let table: Table = null;
     if (data.type === OrderType.AT_TABLE) {
       table = await this.tableRepository.findOne({
@@ -198,6 +199,7 @@ export class OrderService {
       }
     }
 
+    // Get owner
     const owner = await this.userRepository.findOneBy({ slug: data.owner });
     if (!owner) {
       this.logger.warn(
@@ -206,11 +208,24 @@ export class OrderService {
       );
       throw new OrderException(OrderValidation.OWNER_NOT_FOUND);
     }
+
+    // Get cashier
+    const approvalBy = await this.userRepository.findOne({
+      where: {
+        slug: data.approvalBy,
+      },
+    });
+    if (!approvalBy) {
+      this.logger.warn(`Approval ${data.approvalBy} is not found`, context);
+      throw new OrderException(OrderValidation.INVALID_ORDER_APPROVAL_BY);
+    }
+
     const order = this.mapper.map(data, CreateOrderRequestDto, Order);
     Object.assign(order, {
-      owner: owner,
-      branch: branch,
+      owner,
+      branch,
       table,
+      approvalBy,
     });
     return order;
   }
@@ -420,7 +435,7 @@ export class OrderService {
       },
     };
 
-    if (options.status.length > 0) {
+    if (!_.isEmpty(options.status)) {
       findOptionsWhere.status = In(options.status);
     }
 
