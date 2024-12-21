@@ -5,7 +5,7 @@ import { SquareMenu } from 'lucide-react'
 import { DataTable, ScrollArea } from '@/components/ui'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderStore, useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder } from '@/types'
+import { IOrder, OrderStatus } from '@/types'
 import { usePendingOrdersColumns } from './DataTable/columns'
 import { OrderItemDetailSheet } from '@/components/app/sheet'
 
@@ -31,7 +31,7 @@ export default function OrderManagementPage() {
     ownerSlug: userInfo?.slug,
     order: 'DESC',
     branchSlug: userInfo?.branch.slug,
-    // status: [OrderStatus.PAID, OrderStatus.SHIPPING].join(','),
+    status: [OrderStatus.PAID, OrderStatus.SHIPPING].join(','),
   })
 
   useEffect(() => {

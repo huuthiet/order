@@ -11,23 +11,23 @@ import {
   Input,
   Form,
   Button,
-  PasswordInput
-  // ScrollArea
+  PasswordInput,
 } from '@/components/ui'
 import { registerSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ButtonLoading } from '@/components/app/loading'
 import React from 'react'
-// import { useThemeStore } from '@/stores'
 
 interface IFormRegisterProps {
   onSubmit: (data: z.infer<typeof registerSchema>) => void
   isLoading: boolean
 }
 
-export const RegisterForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading }) => {
+export const RegisterForm: React.FC<IFormRegisterProps> = ({
+  onSubmit,
+  isLoading,
+}) => {
   const { t } = useTranslation(['auth'])
-  //   const { getTheme } = useThemeStore()
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -35,8 +35,8 @@ export const RegisterForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading
       password: '',
       confirmPassword: '',
       firstName: '',
-      lastName: ''
-    }
+      lastName: '',
+    },
   })
 
   const handleSubmit = (values: z.infer<typeof registerSchema>) => {
@@ -67,7 +67,10 @@ export const RegisterForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading
           <FormItem>
             <FormLabel>{t('login.password')}</FormLabel>
             <FormControl>
-              <PasswordInput placeholder={t('login.enterPassword')} {...field} />
+              <PasswordInput
+                placeholder={t('login.enterPassword')}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -82,7 +85,10 @@ export const RegisterForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading
           <FormItem>
             <FormLabel>{t('login.confirmPassword')}</FormLabel>
             <FormControl>
-              <PasswordInput placeholder={t('login.enterPassword')} {...field} />
+              <PasswordInput
+                placeholder={t('login.enterPassword')}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -118,14 +124,14 @@ export const RegisterForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading
           </FormItem>
         )}
       />
-    )
+    ),
   }
 
   return (
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-2 md:w-[36rem] text-white gap-2">
+          <div className="grid w-[20rem] grid-cols-1 gap-2 text-white">
             {/* <ScrollArea className="max-h-[16rem] gap-2 flex flex-1"> */}
             {Object.keys(formFields).map((key) => (
               <React.Fragment key={key}>
@@ -134,7 +140,7 @@ export const RegisterForm: React.FC<IFormRegisterProps> = ({ onSubmit, isLoading
             ))}
             {/* </ScrollArea> */}
           </div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex w-full items-center justify-between">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? <ButtonLoading /> : t('register.title')}
             </Button>

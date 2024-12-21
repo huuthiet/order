@@ -73,24 +73,21 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex justify-start w-fit" asChild>
-        <DialogTrigger asChild>
-          <Button
-            disabled={disabled}
-            className="items-center justify-center gap-1 text-sm rounded-full"
-            onClick={() => setIsOpen(true)}
-          >
-            {/* <ShoppingCart className="icon" /> */}
-            {t('order.create')}
-          </Button>
-        </DialogTrigger>
+      <DialogTrigger asChild>
+        <Button
+          disabled={disabled}
+          className="flex w-full items-center rounded-full text-sm"
+          onClick={() => setIsOpen(true)}
+        >
+          {t('order.create')}
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-[22rem] rounded-md px-6 font-beVietNam sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="pb-4 border-b">
+          <DialogTitle className="border-b pb-4">
             <div className="flex items-center gap-2 text-primary">
-              <ShoppingCart className="w-6 h-6" />
+              <ShoppingCart className="h-6 w-6" />
               {t('order.create')}
             </div>
           </DialogTitle>
@@ -101,7 +98,11 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
           </div>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-center gap-2">
-          <Button variant="outline" onClick={() => setIsOpen(false)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsOpen(false)}
+            className="min-w-24 border border-gray-300"
+          >
             {tCommon('common.cancel')}
           </Button>
           <Button onClick={() => order && handleSubmit(order)}>

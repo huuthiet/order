@@ -1,8 +1,5 @@
 'use client'
 
-import { ShoppingCart } from 'lucide-react'
-// import { Bar, BarChart, ResponsiveContainer } from 'recharts'
-
 import { Button } from '@/components/ui/button'
 import {
   Drawer,
@@ -16,8 +13,8 @@ import {
 } from '@/components/ui/drawer'
 import { useTranslation } from 'react-i18next'
 import { useCartItemStore } from '@/stores'
-import { ScrollArea, Label } from '@/components/ui'
-import { CartNoteInput, PromotionInput } from '@/components/app/input'
+import { Label } from '@/components/ui'
+import { CartNoteInput } from '@/components/app/input'
 import { publicFileURL } from '@/constants'
 // import { NavLink, useNavigate } from 'react-router-dom'
 import { CreateOrderDialog } from '../dialog'
@@ -41,26 +38,18 @@ export default function CheckoutCartDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild className="z-30">
-        <div>
-          {cartItems?.orderItems && cartItems.orderItems.length > 0 && (
-            <span className="absolute top-0 right-0 flex items-center justify-center p-2 text-xs font-semibold text-white rounded-full h-7 w-7 bg-primary">
-              {cartItems?.orderItems.length}
-            </span>
-          )}
-          <Button variant="outline">
-            <ShoppingCart className="icon" />
-          </Button>
-        </div>
+        <Button variant="default" className="bg-primary text-white">
+          {t('order.confirmation')}
+        </Button>
       </DrawerTrigger>
-      <DrawerContent>
-        <div className="w-full max-w-sm mx-auto">
+      <DrawerContent className="h-[90%]">
+        <div className="mx-4 overflow-y-auto pb-10">
           <DrawerHeader>
             <DrawerTitle>{t('order.orderInformation')}</DrawerTitle>
             <DrawerDescription>{t('menu.orderDescription')}</DrawerDescription>
           </DrawerHeader>
-          <div className="flex-1 overflow-hidden">
-            <ScrollArea className="h-[28rem]">
-              {/* <div className="flex flex-col gap-4 p-4 mt-6 border-b">
+          <div className="">
+            {/* <div className="flex flex-col gap-4 p-4 mt-6 border-b">
                 <div className="flex flex-col gap-2">
                   <Label>{t('order.customerName')}</Label>
                   <Input placeholder={t('order.enterCustomerName')} />
@@ -70,70 +59,69 @@ export default function CheckoutCartDrawer() {
                   <Input placeholder={t('order.enterPhoneNumber')} />
                 </div>
               </div> */}
-              <div className="flex flex-col gap-4 p-4 mt-5 border-b">
-                <div className="flex flex-col gap-2">
-                  <Label>{t('order.deliveryMethod')}</Label>
-                  <div className="flex flex-row items-center gap-4">
-                    <div className="flex items-center justify-center px-4 py-1 text-xs font-thin rounded-full w-fit bg-primary/15 text-primary">
-                      {t('order.dineIn')}
-                    </div>
-                    <div>
-                      <span className="text-xs text-muted-foreground">
-                        {t('order.tableNumber')}: 8
-                      </span>
-                    </div>
+            <div className="mt-5 flex flex-col gap-4 border-b p-4">
+              <div className="flex flex-col gap-2">
+                <Label>{t('order.deliveryMethod')}</Label>
+                <div className="flex flex-row items-center gap-4">
+                  <div className="flex w-fit items-center justify-center rounded-full bg-primary/15 px-4 py-1 text-xs font-thin text-primary">
+                    {t('order.dineIn')}
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground">
+                      {t('order.tableNumber')}: 8
+                    </span>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-4 p-4">
-                <div className="flex flex-col gap-4 py-2 space-y-2">
-                  {cartItems ? (
-                    cartItems?.orderItems?.map((item) => (
+            </div>
+            <div className="flex flex-col gap-4 p-4">
+              <div className="flex flex-col gap-4 space-y-2 py-2">
+                {cartItems ? (
+                  cartItems?.orderItems?.map((item) => (
+                    <div
+                      key={item.slug}
+                      className="flex flex-col gap-4 border-b pb-4"
+                    >
                       <div
-                        key={item.slug}
-                        className="flex flex-col gap-4 pb-4 border-b"
+                        key={`${item.slug}`}
+                        className="flex flex-row items-center gap-2 rounded-xl"
                       >
-                        <div
-                          key={`${item.slug}`}
-                          className="flex flex-row items-center gap-2 rounded-xl"
-                        >
-                          {/* Hình ảnh sản phẩm */}
-                          <img
-                            src={`${publicFileURL}/${item.image}`}
-                            alt={item.name}
-                            className="object-cover w-20 h-20 rounded-2xl"
-                          />
-                          <div className="flex flex-col flex-1 h-20 gap-2 py-2">
-                            <div className="flex flex-row items-start justify-between h-full">
-                              <div className="flex flex-col justify-between flex-1 h-full min-w-0">
-                                <span className="font-bold truncate">
-                                  {item.name}
+                        {/* Hình ảnh sản phẩm */}
+                        <img
+                          src={`${publicFileURL}/${item.image}`}
+                          alt={item.name}
+                          className="h-20 w-20 rounded-2xl object-cover"
+                        />
+                        <div className="flex h-20 flex-1 flex-col gap-2 py-2">
+                          <div className="flex h-full flex-row items-start justify-between">
+                            <div className="flex h-full min-w-0 flex-1 flex-col justify-between">
+                              <span className="truncate font-bold">
+                                {item.name}
+                              </span>
+                              <span className="flex items-center justify-between text-xs font-thin text-muted-foreground">
+                                {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                                <span className="text-muted-foreground">
+                                  x1
                                 </span>
-                                <span className="flex items-center justify-between text-xs font-thin text-muted-foreground">
-                                  {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
-                                  <span className="text-muted-foreground">
-                                    x1
-                                  </span>
-                                </span>
-                              </div>
+                              </span>
                             </div>
                           </div>
                         </div>
-                        <CartNoteInput cartItem={item} />
                       </div>
-                    ))
-                  ) : (
-                    <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
-                      {tCommon('common.noData')}
-                    </p>
-                  )}
-                </div>
-                <PromotionInput />
+                      <CartNoteInput cartItem={item} />
+                    </div>
+                  ))
+                ) : (
+                  <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
+                    {tCommon('common.noData')}
+                  </p>
+                )}
               </div>
-            </ScrollArea>
+              {/* <PromotionInput /> */}
+            </div>
           </div>
           <DrawerFooter>
-            <div className="p-4 mt-auto border-t bg-background">
+            <div className="mt-auto border-t bg-background p-4">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
@@ -149,7 +137,7 @@ export default function CheckoutCartDrawer() {
                     - {`${discount.toLocaleString('vi-VN')}đ`}
                   </span>
                 </div>
-                <div className="flex flex-col justify-start pt-2 border-t">
+                <div className="flex flex-col justify-start border-t pt-2">
                   <div className="flex justify-between">
                     <span className="font-semibold">
                       {t('order.grandTotal')}
@@ -164,19 +152,15 @@ export default function CheckoutCartDrawer() {
                 </div>
               </div>
             </div>
-            <div className="grid flex-row grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 flex-row gap-2">
               <DrawerClose asChild>
-                <Button variant="outline" className="w-full rounded-full">
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full border border-gray-400"
+                >
                   {tCommon('common.close')}
                 </Button>
               </DrawerClose>
-              {/* <Button
-                variant="outline"
-                className="rounded-full"
-                onClick={() => navigate(-1)}
-              >
-                {tCommon('common.back')}
-              </Button> */}
               <CreateOrderDialog disabled={!cartItems?.orderItems.length} />
             </div>
           </DrawerFooter>

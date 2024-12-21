@@ -37,18 +37,20 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
   return (
     <div
       key={order.slug}
-      className="grid grid-cols-5 gap-4 px-2 py-4 border-b cursor-pointer"
+      className="grid cursor-pointer grid-cols-5 gap-4 border-b px-2 py-4"
     >
-      <div className="justify-start col-span-1">
+      <div className="col-span-1 justify-start">
         <div className="flex items-center gap-2">
-          <div className='flex items-center justify-center p-2 w-9 h-9 rounded-xl bg-primary/10'>
-            <ShoppingCartIcon className="w-4 h-4 text-primary" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 p-2">
+            <ShoppingCartIcon className="h-4 w-4 text-primary" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-muted-foreground">
               {order.owner?.firstName} {order.owner?.lastName}
             </span>
-            <span className="text-xs text-muted-foreground">{order.table.name}</span>
+            <span className="text-xs text-muted-foreground">
+              {order.table.name}
+            </span>
           </div>
         </div>
       </div>
@@ -62,9 +64,9 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
           </span>
         </div>
       </div>
-      <div className="flex items-center col-span-1">
+      <div className="col-span-1 flex items-center">
         <div className="flex items-center gap-1">
-          <Clock className="w-3 h-3 text-muted-foreground" />
+          <Clock className="h-3 w-3 text-muted-foreground" />
           <span className="text-xs text-muted-foreground">
             {moment(order.createdAt).format('HH:mm DD/MM/YYYY')}
           </span>
@@ -73,16 +75,23 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       <div className="col-span-1">
         <OrderStatusBadge status={order.status} />
       </div>
-      <div className="flex justify-end col-span-1 gap-2">
+      <div className="col-span-1 flex justify-end gap-2">
         <NavLink to={`${ROUTE.STAFF_ORDER_HISTORY}/${order.slug}`}>
-          <Button variant="outline" className='text-xs border-primary text-primary hover:text-primary hover:bg-primary/10'>
+          <Button
+            variant="outline"
+            className="border-primary text-xs text-primary hover:bg-primary/10 hover:text-primary"
+          >
             {t('order.viewDetail')}
           </Button>
         </NavLink>
-        <Button onClick={handleExportInvoice} variant="outline" className='text-xs border-primary text-primary hover:text-primary hover:bg-primary/10'>
+        {/* Export invoice */}
+        <Button
+          onClick={handleExportInvoice}
+          variant="outline"
+          className="border-primary text-xs text-primary hover:bg-primary/10 hover:text-primary"
+        >
           {t('order.exportInvoice')}
         </Button>
-        {/* {order} */}
       </div>
     </div>
   )

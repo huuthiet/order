@@ -1,5 +1,3 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-
 import { Button } from '@/components/ui'
 
 interface QuantityButtonProps {
@@ -15,9 +13,9 @@ export default function CartToggleButton({
     <div>
       <Button
         onClick={() => setIsCartOpen(!isCartOpen)}
-        className="h-fit w-fit rounded-full p-2 text-white transition"
+        className="h-fit w-fit p-2 text-white transition"
       >
-        {isCartOpen ? <ChevronRight /> : <ChevronLeft />}
+        Thêm món vào thực đơn
       </Button>
     </div>
   )
