@@ -538,6 +538,7 @@ describe('OrderService', () => {
         branch: 'mock-branch-slug',
         owner: 'mock-owner-slug',
         orderItems: [createOrderItem],
+        approvalBy: 'mock-approval-by-slug',
       };
 
       jest
@@ -563,6 +564,7 @@ describe('OrderService', () => {
         branch: 'mock-branch-slug',
         owner: 'mock-owner-slug',
         orderItems: [createOrderItem],
+        approvalBy: 'mock-approval-by-slug',
       };
       const order = {
         subtotal: 100,
@@ -600,6 +602,7 @@ describe('OrderService', () => {
         branch: 'mock-branch-slug',
         owner: 'mock-owner-slug',
         orderItems: [createOrderItem],
+        approvalBy: 'mock-approval-by-slug',
       };
       const orderItem = {
         quantity: 1,
