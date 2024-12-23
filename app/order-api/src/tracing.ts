@@ -10,8 +10,10 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { OTLPExporterNodeConfigBase } from '@opentelemetry/otlp-exporter-base';
 import * as dotenv from 'dotenv';
 
+dotenv.config();
+
 const otlPExporterNodeConfigBase: OTLPExporterNodeConfigBase = {
-  url: 'http://localhost:14268/api/traces',
+  url: `${process.env.TRACING_URL}/api/traces`,
 };
 
 const oltpExporter = new OTLPTraceExporter(otlPExporterNodeConfigBase);
