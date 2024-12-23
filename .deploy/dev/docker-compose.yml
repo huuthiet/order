@@ -66,6 +66,9 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
+      # Tracing
+      TRACING_URL: ${TRACING_URL}
+
       TZ: Asia/Ho_Chi_Minh
     depends_on:
       mysql_db:
@@ -106,9 +109,9 @@ services:
       context: ../../.build/order-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
 
   roboflow:
     image: tuanvux01/roboflow:dev
@@ -118,9 +121,14 @@ services:
     environment:
       - ENV=development
       - PORT=8080
-      - POSTGRES_DSN=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+      - POSTGRES_DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable
     depends_on:
       - postgres
+
+  tracing:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - 16686:16686
 
 networks:
   default:
