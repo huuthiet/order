@@ -15,7 +15,6 @@ interface IMenuProps {
 export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
   const { t } = useTranslation('menu')
 
-
   const menuItems = menu?.menuItems
 
   const getPriceRange = (variants: IProduct['variants']) => {
@@ -63,17 +62,17 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
               <img
                 src={`${publicFileURL}/${item.product.image}`}
                 alt={item.product.name}
-                className="object-cover w-full h-24 rounded-t-md"
+                className="object-cover w-full h-28 rounded-t-md"
               />
             ) : (
               <div className="w-full h-24 rounded-t-md bg-muted/60" />
             )}
 
             {/* Discount Tag */}
-            {/* {dish.discount && (
+            {/* {item.discount && (
               <div className="absolute top-2 left-2">
                 <span className="px-2 py-1 text-xs font-medium text-white bg-red-500 rounded-full">
-                  Giảm {dish.discount}%
+                  Giảm {item.discount}%
                 </span>
               </div>
             )} */}
@@ -107,7 +106,7 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
                   </div>
                 ) : (
                   <span className="text-sm font-bold text-primary">
-                    Liên hệ
+                    {t('menu.contactForPrice')}
                   </span>
                 )}
               </div>
@@ -119,7 +118,7 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
                 className="flex items-center justify-center w-full py-2 text-sm font-semibold text-white bg-red-500 rounded-full"
                 disabled
               >
-                Hết hàng
+                {t('menu.outOfStock')}
               </Button>
             )}
           </div>

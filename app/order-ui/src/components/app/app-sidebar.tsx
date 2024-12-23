@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronRight, Sparkles } from 'lucide-react'
+import { ChevronRight, House, Sparkles } from 'lucide-react'
 import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSidebar } from '@/components/ui'
@@ -35,7 +35,6 @@ import {
 import { sidebarRoutes } from '@/router/routes'
 import { ISidebarRoute } from '@/types'
 import { Logo } from '@/assets/images'
-import { HomeIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib'
 
 export default function AppSidebar() {
@@ -79,10 +78,10 @@ export default function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="w-full">
-            <NavLink to="/" className="flex items-center justify-center p-3">
+            <NavLink to="/" className="flex items-center justify-center p-2">
               {state === 'collapsed' ? (
-                <div>
-                  <HomeIcon />
+                <div className="transition-colors duration-200 hover:text-primary">
+                  <House size={20} />
                 </div>
               ) : (
                 <img src={Logo} alt="logo" className="h-6" />

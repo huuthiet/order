@@ -1,5 +1,9 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Trash2 } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 import {
   Drawer,
@@ -11,17 +15,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { useTranslation } from 'react-i18next'
 import { useCartItemStore, useUserStore } from '@/stores'
 import { Input, Label } from '@/components/ui'
 import { CartNoteInput } from '@/components/app/input'
 import { publicFileURL } from '@/constants'
 // import { NavLink, useNavigate } from 'react-router-dom'
-import { CreateOrderDialog } from '../dialog'
-import { useEffect, useState } from 'react'
+import { CreateOrderDialog } from '@/components/app/dialog'
 import { useDebouncedInput, usePagination, useUsers } from '@/hooks'
 import { IUserInfo } from '@/types'
-import { Trash2 } from 'lucide-react'
 
 export default function CheckoutCartDrawer() {
   const { t: tCommon } = useTranslation(['common'])
@@ -78,7 +79,7 @@ export default function CheckoutCartDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild className="z-30">
-        <Button variant="default" className="text-white bg-primary">
+        <Button variant="default" disabled={!cartItems?.table || cartItems?.table === ""} className="text-white bg-primary">
           {t('order.confirmation')}
         </Button>
       </DrawerTrigger>
