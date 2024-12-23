@@ -27,8 +27,8 @@ export interface IBase {
 }
 
 export interface IApiErrorResponse {
-  code: number
-  error: boolean
+  statusCode: number
+  timestamp: boolean
   message: string
   method: string
   path: string

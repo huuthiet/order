@@ -121,7 +121,6 @@ export async function exportOrderInvoice(order: string): Promise<Blob> {
   const currentDate = moment(new Date()).toISOString()
   setFileName(`Invoice-${currentDate}.pdf`)
   setIsDownloading(true)
-
   try {
     const response = await http.post(
       `/invoice/export`, // Đổi từ GET sang POST

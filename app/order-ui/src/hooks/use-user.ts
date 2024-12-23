@@ -1,13 +1,14 @@
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 
 import { getUsers, resetPassword, updateUserRole } from '@/api'
-import { IQuery } from '@/types'
+import { IUserQuery } from '@/types'
 
-export const useUsers = (q: IQuery) => {
+export const useUsers = (q: IUserQuery | null) => {
   return useQuery({
     queryKey: ['users', JSON.stringify(q)],
-    queryFn: () => getUsers(q),
+    queryFn: () => (q ? getUsers(q) : Promise.resolve(null)),
     placeholderData: keepPreviousData,
+    enabled: !!q,
   })
 }
 

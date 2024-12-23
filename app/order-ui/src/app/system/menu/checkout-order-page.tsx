@@ -23,7 +23,6 @@ export default function ConfirmOrderPage() {
   const { state } = useSidebar()
   const isMobile = useIsMobile()
   const isCollapsed = state === 'collapsed'
-
   const cartItems = getCartItems()
 
   return (

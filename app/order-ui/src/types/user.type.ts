@@ -22,6 +22,15 @@ export interface IUserInfo {
   }
 }
 
+export interface IUserQuery {
+  branch?: string
+  phonenumber?: string
+  page: number | 1
+  pageSize: number | 10
+  order: 'ASC' | 'DESC'
+  hasPaging?: boolean
+}
+
 export interface IUpdateProfileRequest {
   firstName: string
   lastName: string

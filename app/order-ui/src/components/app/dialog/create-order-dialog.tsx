@@ -44,6 +44,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
       table: order.table || '',
       branch: order.branch || getUserInfo()?.branch?.name || '',
       owner: order.owner || '',
+      approvalBy: getUserInfo()?.slug || '',
       orderItems: order.orderItems.map((orderItem) => ({
         quantity: orderItem.quantity,
         variant: orderItem.variant,
