@@ -8,13 +8,12 @@ import {
 } from '@/app/system/order-management'
 import { useOrderBySlug, useOrders, usePagination } from '@/hooks'
 import { useOrderTrackingStore, useUserStore } from '@/stores'
-import { IOrder, IOrderType } from '@/types'
+import { IOrder, IOrderType, OrderStatus } from '@/types'
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  ScrollArea,
   Button,
 } from '@/components/ui'
 import {
@@ -74,6 +73,9 @@ export default function OrderItemDetailSheet({
     table: selectedOrder?.result?.table?.slug,
     hasPaging: false,
     enabled: shouldFetchOrders && !!selectedOrder?.result?.table?.slug,
+    status: [OrderStatus.PAID, OrderStatus.SHIPPING, OrderStatus.FAILED].join(
+      ',',
+    ),
   })
 
   useEffect(() => {
@@ -123,7 +125,7 @@ export default function OrderItemDetailSheet({
         return nextIndex < orderSlugs.length ? nextIndex : prevIndex
       })
     }
-  }, [currentOrderDetail])
+  }, [currentOrderDetail, orderSlugs.length])
 
   useEffect(() => {
     // Khi order thay đổi, xóa dữ liệu cũ
@@ -163,18 +165,17 @@ export default function OrderItemDetailSheet({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className='p-2'>
+      <SheetContent className="w-[90%] overflow-y-auto p-2">
         <SheetHeader>
-          <SheetTitle className="flex items-center justify-between mt-8 sm:mt-6">
+          <SheetTitle className="mt-8 flex items-center justify-between sm:mt-6">
             {t('order.orderDetail')}
-
           </SheetTitle>
           {getSelectedItems().length > 0 && (
             <div className="flex gap-2">
               {selectedOrder?.result?.type === IOrderType.TAKE_OUT ? (
                 <CreateOrderTrackingByStaffDialog />
               ) : (
-                <div className='flex gap-2'>
+                <div className="flex gap-2">
                   <CreateOrderTrackingByStaffDialog />
                   <CreateOrderTrackingByRobotDialog />
                 </div>
@@ -182,55 +183,57 @@ export default function OrderItemDetailSheet({
             </div>
           )}
         </SheetHeader>
-        <ScrollArea className="h-[32rem] min-h-fit">
-          <div className="mt-4">
-            {order ? (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2 p-2 border-2 rounded-lg sm:p-4 border-primary bg-primary/5">
-                  <div className="font-medium text-primary">
-                    {t('order.currentOrder')}
-                  </div>
-                  <CustomerInformation
-                    orderDetailData={selectedOrder?.result}
-                  />
-                  <OrderItemList orderDetailData={selectedOrder?.result} />
+        <div className="mt-4">
+          {order ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2 rounded-lg border-2 border-primary bg-primary/5 p-2 sm:p-4">
+                <div className="font-medium text-primary">
+                  {t('order.currentOrder')}
                 </div>
-                {orderDetails && orderDetails.length > 0 && (
-                  <div className="flex items-center gap-1">
-                    <CircleAlert size={14} className="text-blue-500" />
-                    <span className='text-xs sm:text-sm text-muted-foreground'>{t('order.refreshOrdersInTheSameTable')}</span>
-                  </div>
-                )}
-                <div className='flex justify-start'>
-                  <Button
-                    onClick={shouldFetchOrders ? handleRefetchAll : handleFetchOrders}
-                  >
-                    {shouldFetchOrders ? t('order.refresh') : t('order.loadOrdersInTheSameTable')}
-                  </Button>
-                </div>
-                {shouldFetchOrders && (
-                  <div className="flex flex-col gap-4">
-                    {orderDetails
-                      .filter((orderDetail) => orderDetail.slug !== order)
-                      .map((orderDetail) => (
-                        <div
-                          key={orderDetail.slug}
-                          className="flex flex-col gap-2 p-4 border rounded-lg"
-                        >
-                          <CustomerInformation orderDetailData={orderDetail} />
-                          <OrderItemList orderDetailData={orderDetail} />
-                        </div>
-                      ))}
-                  </div>
-                )}
+                <CustomerInformation orderDetailData={selectedOrder?.result} />
+                <OrderItemList orderDetailData={selectedOrder?.result} />
               </div>
-            ) : (
-              <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
-                {tCommon('common.noData')}
-              </p>
-            )}
-          </div>
-        </ScrollArea>
+              {orderDetails && orderDetails.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <CircleAlert size={14} className="text-blue-500" />
+                  <span className="text-xs text-muted-foreground sm:text-sm">
+                    {t('order.refreshOrdersInTheSameTable')}
+                  </span>
+                </div>
+              )}
+              <div className="flex justify-start">
+                <Button
+                  onClick={
+                    shouldFetchOrders ? handleRefetchAll : handleFetchOrders
+                  }
+                >
+                  {shouldFetchOrders
+                    ? t('order.refresh')
+                    : t('order.loadOrdersInTheSameTable')}
+                </Button>
+              </div>
+              {shouldFetchOrders && (
+                <div className="flex flex-col gap-4">
+                  {orderDetails
+                    .filter((orderDetail) => orderDetail.slug !== order)
+                    .map((orderDetail) => (
+                      <div
+                        key={orderDetail.slug}
+                        className="flex flex-col gap-2 rounded-lg border p-4"
+                      >
+                        <CustomerInformation orderDetailData={orderDetail} />
+                        <OrderItemList orderDetailData={orderDetail} />
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
+              {tCommon('common.noData')}
+            </p>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   )

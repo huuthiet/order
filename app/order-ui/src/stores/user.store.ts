@@ -8,7 +8,6 @@ export const useUserStore = create<IUserStore>()(
     (set, get) => ({
       userInfo: null,
       setUserInfo: (userInfo: IUserInfo) => {
-        console.log('setUserInfo', userInfo)
         set({ userInfo })
       },
       getUserInfo: () => get().userInfo,
