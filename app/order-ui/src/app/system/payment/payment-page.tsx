@@ -13,6 +13,7 @@ import { ButtonLoading } from '@/components/app/loading'
 
 export default function PaymentPage() {
   const { t } = useTranslation(['menu'])
+  const { t: tToast } = useTranslation(['toast'])
   const { slug } = useParams()
   const navigate = useNavigate()
   const [paymentMethod, setPaymentMethod] = useState<string>('')
@@ -66,13 +67,6 @@ export default function PaymentPage() {
             setQrCode(data.result.qrCode)
             setIsPolling(true) // Bắt đầu polling khi thanh toán qua chuyển khoản ngân hàng
           },
-          // onError: (error) => {
-          //   if (isAxiosError(error)) {
-          //     const axiosError = error as AxiosError<IApiResponse<void>>
-          //     if (axiosError.response?.data.code)
-          //       showErrorToast(axiosError.response.data.code)
-          //   }
-          // },
         },
       )
     } else if (paymentMethod === PaymentMethod.CASH) {
@@ -98,7 +92,7 @@ export default function PaymentPage() {
     if (!slug) return
     exportPayment(paymentSlug, {
       onSuccess: (data: Blob) => {
-        showToast(t('paymentMethod.exportPaymentSuccess'))
+        showToast(tToast('toast.exportPaymentSuccess'))
         // Load data to print
         loadDataToPrinter(data)
       },
@@ -116,12 +110,12 @@ export default function PaymentPage() {
     <div className="flex flex-row h-full gap-2">
       <ScrollArea className="flex-1">
         <div className={`transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
             <div className="flex flex-col w-full gap-3">
               {order && (
                 <div className="w-full space-y-2">
                   {/* Thông tin khách hàng */}
-                  <div className="grid items-center justify-between grid-cols-1 p-4 border rounded-sm sm:grid-cols-2">
+                  <div className="grid items-center justify-between grid-cols-1 p-4 rounded-sm bg-background sm:grid-cols-2">
                     <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
                       <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
@@ -171,19 +165,17 @@ export default function PaymentPage() {
                     </div>
                   </div>
                   {/* Thông tin đơn hàng */}
-                  <div>
-                    <div className="grid w-full grid-cols-4 px-4 py-3 text-sm font-thin rounded-md bg-muted/60">
-                      <span className="col-span-1">{t('order.product')}</span>
-                      <span className="col-span-1">{t('order.unitPrice')}</span>
-                      <span className="col-span-1 text-center">
-                        {t('order.quantity')}
-                      </span>
-                      <span className="col-span-1 text-center">
-                        {t('order.grandTotal')}
-                      </span>
-                    </div>
+                  <div className="grid w-full grid-cols-4 px-4 py-3 text-sm font-thin rounded-md bg-background">
+                    <span className="col-span-1">{t('order.product')}</span>
+                    <span className="col-span-1">{t('order.unitPrice')}</span>
+                    <span className="col-span-1 text-center">
+                      {t('order.quantity')}
+                    </span>
+                    <span className="col-span-1 text-center">
+                      {t('order.grandTotal')}
+                    </span>
                   </div>
-                  <div className="flex flex-col w-full border rounded-md">
+                  <div className="flex flex-col w-full rounded-md bg-background">
                     {order?.result.orderItems.map((item) => (
                       <div
                         key={item.slug}

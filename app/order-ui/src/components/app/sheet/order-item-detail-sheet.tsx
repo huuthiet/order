@@ -40,7 +40,7 @@ export default function OrderItemDetailSheet({
   const [orderSlugs, setOrderSlugs] = useState<string[]>([])
   const [orderDetails, setOrderDetails] = useState<IOrder[]>([])
   const [currentFetchIndex, setCurrentFetchIndex] = useState(0)
-  const { getSelectedItems } = useOrderTrackingStore()
+  const { getSelectedItems, clearSelectedItems } = useOrderTrackingStore()
 
   // Polling: Order chính
   const { data: selectedOrder, refetch: refetchSelectedOrder } = useOrderBySlug(
@@ -127,14 +127,24 @@ export default function OrderItemDetailSheet({
     }
   }, [currentOrderDetail, orderSlugs.length])
 
+  useEffect(() => {
+    // Khi order thay đổi, xóa dữ liệu cũ
+    setOrderDetails([]);
+    setShouldFetchOrders(false);
+    setCurrentFetchIndex(0);
+    clearSelectedItems();
+  }, [order]);
+
   const handleFetchOrders = () => {
     setShouldFetchOrders(true)
+    clearSelectedItems()
     setOrderDetails([])
     setCurrentFetchIndex(0)
   }
 
   const handleRefetchAll = async () => {
     setOrderDetails([])
+    clearSelectedItems()
     setCurrentFetchIndex(0)
     await allOrderRefetch()
   }

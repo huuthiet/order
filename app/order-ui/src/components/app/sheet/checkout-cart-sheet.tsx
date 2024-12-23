@@ -76,6 +76,7 @@ export default function CheckoutCartSheet() {
 
   const handleAddOwner = (user: IUserInfo) => () => {
     addCustomerInfo(user)
+    setInputValue('')
     setUsers([])
     setSelectedUser(user)
   }
@@ -216,7 +217,7 @@ export default function CheckoutCartSheet() {
           </ScrollArea>
 
           {/* Order Summary and Checkout */}
-          <div className="px-4">
+          <div className="p-4 border-t">
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">
@@ -232,27 +233,29 @@ export default function CheckoutCartSheet() {
                   - {`${discount.toLocaleString('vi-VN')}đ`}
                 </span>
               </div>
-              <div className="flex flex-col justify-start pt-2 border-t">
+              <div className="flex flex-col justify-start">
                 <div className="flex justify-between">
-                  <span className="font-semibold">{t('order.grandTotal')}</span>
-                  <span className="text-lg font-bold text-primary">
+                  <span className="text-lg font-semibold">{t('order.grandTotal')}</span>
+                  <span className="text-xl font-bold text-primary">
                     {`${total.toLocaleString('vi-VN')}đ`}
                   </span>
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground/60">
                   {t('order.vat')}
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between gap-2 py-4">
-              <Button
-                variant="outline"
-                className="rounded-full"
-                onClick={() => navigate(-1)}
-              >
-                {tCommon('common.back')}
-              </Button>
-              <CreateOrderDialog disabled={!cartItems?.orderItems.length} />
+            <div className="grid items-center justify-between grid-cols-2 gap-2 py-4">
+              <div className='col-span-1'>
+                <Button
+                  variant="outline"
+                  className="rounded-full"
+                  onClick={() => navigate(-1)}
+                >
+                  {tCommon('common.back')}
+                </Button>
+              </div>
+              <CreateOrderDialog disabled={Boolean(!cartItems?.orderItems?.length || !cartItems?.approvalBy)} />
             </div>
           </div>
         </div>

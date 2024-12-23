@@ -1,6 +1,8 @@
 {
   "menu": {
     "noData": "Không có dữ liệu",
+    "outOfStock": "Hết hàng",
+    "contactForPrice": "Liên hệ",
     "chooseDishCategory": "Chọn loại món",
 
     "addToCart": "Thêm vào giỏ",

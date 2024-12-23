@@ -5,8 +5,8 @@ import { useTables } from '@/hooks'
 import { useCartItemStore } from '@/stores'
 import { useUserStore } from '@/stores'
 import { ITable } from '@/types'
-import { TableItem } from '../table/table-item'
 import SelectReservedTableDialog from '@/components/app/dialog/select-reserved-table-dialog'
+import { NonResizableTableItem } from '../table'
 
 export default function TableSelect() {
   const { t } = useTranslation(['table'])
@@ -66,7 +66,7 @@ export default function TableSelect() {
       </div>
       <div className="relative flex min-h-[26rem] flex-col overflow-x-auto">
         {tables?.result.map((table) => (
-          <TableItem
+          <NonResizableTableItem
             key={table.slug}
             table={table}
             isSelected={selectedTableId === table.slug}
