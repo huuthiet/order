@@ -23,6 +23,7 @@ export interface ICartItem {
   id: string
   slug: string
   owner?: string
+  ownerFullName?: string
   ownerPhoneNumber?: string
   type: string
   branch?: string
@@ -30,6 +31,7 @@ export interface ICartItem {
   table?: string
   tableName?: string
   note?: string
+  approvalBy?: string
 }
 
 export interface IOrderItem {
@@ -181,6 +183,7 @@ export interface ICreateOrderRequest {
     variant: string
     note: string
   }[]
+  approvalBy: string
 }
 
 export interface IInitiatePaymentRequest {

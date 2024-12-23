@@ -33,7 +33,7 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
   const handleExportPayment = (slug: string) => {
     exportPayment(slug, {
       onSuccess: (data: Blob) => {
-        showToast(t('paymentMethod.exportPaymentSuccess'))
+        showToast(tToast('toast.exportPaymentSuccess'))
         // Load data to print
         loadDataToPrinter(data)
       },

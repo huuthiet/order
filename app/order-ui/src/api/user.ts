@@ -1,8 +1,13 @@
 import { http } from '@/utils'
-import { IApiResponse, IUserInfo, IPaginationResponse, IQuery } from '@/types'
+import {
+  IApiResponse,
+  IUserInfo,
+  IPaginationResponse,
+  IUserQuery,
+} from '@/types'
 
 export async function getUsers(
-  params: IQuery,
+  params: IUserQuery | null,
 ): Promise<IApiResponse<IPaginationResponse<IUserInfo>>> {
   const response = await http.get<IApiResponse<IPaginationResponse<IUserInfo>>>(
     '/user',
