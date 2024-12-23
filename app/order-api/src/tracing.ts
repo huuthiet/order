@@ -6,14 +6,15 @@ import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { NestInstrumentation } from '@opentelemetry/instrumentation-nestjs-core';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { Resource } from '@opentelemetry/resources';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { OTLPExporterNodeConfigBase } from '@opentelemetry/otlp-exporter-base';
 import * as dotenv from 'dotenv';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 
 dotenv.config();
 
 const otlPExporterNodeConfigBase: OTLPExporterNodeConfigBase = {
-  url: `${process.env.TRACING_URL}/api/traces`,
+  url: `${process.env.TRACING_URL}/v1/traces`,
+  headers: {},
 };
 
 const oltpExporter = new OTLPTraceExporter(otlPExporterNodeConfigBase);

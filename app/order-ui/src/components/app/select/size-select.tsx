@@ -8,9 +8,17 @@ interface SelectSizeProps {
   onChange: (value: string) => void
 }
 
-export default function SizeSelect({ defaultValue, onChange }: SelectSizeProps) {
-  const [allSizes, setAllSizes] = useState<{ value: string; label: string }[]>([])
-  const [selectedSize, setSelectedSize] = useState<{ value: string; label: string } | null>(null)
+export default function SizeSelect({
+  defaultValue,
+  onChange,
+}: SelectSizeProps) {
+  const [allSizes, setAllSizes] = useState<{ value: string; label: string }[]>(
+    [],
+  )
+  const [selectedSize, setSelectedSize] = useState<{
+    value: string
+    label: string
+  } | null>(null)
   //   const { pagination, handlePageChange } = usePagination({ isSearchParams: false })
   const { data } = useSize()
 
@@ -25,10 +33,10 @@ export default function SizeSelect({ defaultValue, onChange }: SelectSizeProps) 
     if (data?.result) {
       const newSizes = data.result.map((item) => ({
         value: item.slug || '',
-        label: item.name || ''
+        label: item.name || '',
       }))
       // Append new users to the previous users
-      setAllSizes((prevSizes) => [...prevSizes, ...newSizes])
+      setAllSizes(newSizes)
     }
   }, [data])
 
@@ -42,7 +50,9 @@ export default function SizeSelect({ defaultValue, onChange }: SelectSizeProps) 
     }
   }, [defaultValue, allSizes])
 
-  const handleChange = (selectedOption: SingleValue<{ value: string; label: string }>) => {
+  const handleChange = (
+    selectedOption: SingleValue<{ value: string; label: string }>,
+  ) => {
     if (selectedOption) {
       setSelectedSize(selectedOption)
       onChange(selectedOption.value) // Only pass the value (slug)
