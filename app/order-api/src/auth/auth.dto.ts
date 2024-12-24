@@ -38,7 +38,7 @@ export class RegisterAuthRequestDto extends LoginAuthRequestDto {
   @ApiProperty({ example: '' })
   @AutoMap()
   @IsOptional()
-  branchSlug: string;
+  branchSlug?: string;
 }
 
 export class LoginAuthResponseDto {
