@@ -71,11 +71,8 @@ export class CreateOrderRequestDto {
   orderItems: CreateOrderItemRequestDto[];
 
   @AutoMap()
-  @ApiProperty({
-    description: 'The slug of user that creating order',
-    example: '',
-  })
-  @IsNotEmpty({ message: INVALID_ORDER_APPROVAL_BY })
+  @ApiProperty()
+  @IsOptional()
   approvalBy: string;
 }
 

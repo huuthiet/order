@@ -58,7 +58,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
     // Gọi API để tạo đơn hàng.
     createOrder(createOrderRequest, {
       onSuccess: (data) => {
-        navigate(`${ROUTE.STAFF_ORDER_PAYMENT}/${data.result.slug}`) // Điều hướng đến trang thành công.
+        navigate(`${ROUTE.ORDER_PAYMENT}/${data.result.slug}`) // Điều hướng đến trang thành công.
         setIsOpen(false) // Đóng dialog.
         clearCart() // Xóa giỏ hàng.
         showToast(tToast('toast.createOrderSuccess')) // Thông báo thành công.

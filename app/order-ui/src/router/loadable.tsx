@@ -33,7 +33,8 @@ export const ForgotPasswordAndResetPasswordPage = React.lazy(() =>
 )
 
 //Views
-
+//----------------------------------------------//
+//Admin
 //Home page
 export const HomePage = React.lazy(() =>
   import('@/app/system/home').then((module) => ({
@@ -158,5 +159,37 @@ export const BankConfigPage = React.lazy(() =>
 export const ConfigPage = React.lazy(() =>
   import('@/app/system/config').then((module) => ({
     default: module.ConfigPage,
+  })),
+)
+
+
+
+//----------------------------------------------//
+//Client
+//Home page
+export const ClientHomePage = React.lazy(() =>
+  import('@/app/client/home').then((module) => ({
+    default: module.HomePage,
+  })),
+)
+
+//Menu page
+export const ClientMenuPage = React.lazy(() =>
+  import('@/app/client/menu').then((module) => ({
+    default: module.MenuPage,
+  })),
+)
+
+//Product detail page
+export const ClientProductDetailPage = React.lazy(() =>
+  import('@/app/client/dishes').then((module) => ({
+    default: module.ProductDetail,
+  })),
+)
+
+//Cart page
+export const ClientCartPage = React.lazy(() =>
+  import('@/app/client/cart').then((module) => ({
+    default: module.CartPage,
   })),
 )

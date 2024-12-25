@@ -21,7 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ButtonLoading } from '@/components/app/loading'
 import { useLogin, useProfile } from '@/hooks'
 import { useAuthStore, useUserStore } from '@/stores'
-import { ROUTE } from '@/constants'
+import { Role, ROUTE } from '@/constants'
 import { showErrorToast, showToast } from '@/utils'
 
 export const LoginForm: React.FC = () => {
@@ -45,6 +45,25 @@ export const LoginForm: React.FC = () => {
     },
   })
 
+  const navigateBasedOnRole = (roleName: string) => {
+    switch (roleName) {
+      case Role.CUSTOMER:
+        navigate(ROUTE.CLIENT_MENU);
+        break;
+      case Role.ADMIN:
+      case Role.MANAGER:
+        navigate(ROUTE.STAFF_MENU);
+        break;
+      case Role.STAFF:
+        navigate(ROUTE.STAFF_MENU);
+        break;
+      // default:
+      //   navigate(ROUTE.DEFAULT); // Route mặc định khi không có role phù hợp
+      //   break;
+    }
+  };
+
+
   const handleSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       login(data, {
@@ -57,9 +76,9 @@ export const LoginForm: React.FC = () => {
           const profile = await refetchProfile()
           if (profile.data) {
             setUserInfo(profile.data.result)
+            const roleName = profile.data.result.role.name;
+            navigateBasedOnRole(roleName); // Điều hướng dựa trên role
           }
-
-          navigate(ROUTE.STAFF_MENU, { replace: true })
           showToast(t('toast.loginSuccess'))
         },
       })
