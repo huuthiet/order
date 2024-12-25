@@ -35,7 +35,10 @@ export class BranchScheduler {
     await this.branchRepository.manager.transaction(async (manager) => {
       try {
         await manager.save(defaultBranch);
-        this.logger.log(`Default branch created ${branch.slug}`, context);
+        this.logger.log(
+          `Default branch created ${defaultBranch.slug}`,
+          context,
+        );
       } catch (error) {
         this.logger.error(
           `Error while creating default branch ${error.message}`,
