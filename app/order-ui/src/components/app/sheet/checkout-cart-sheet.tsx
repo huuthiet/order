@@ -28,7 +28,7 @@ export default function CheckoutCartSheet() {
   const { getUserInfo } = useUserStore()
   const { inputValue, setInputValue, debouncedInputValue } = useDebouncedInput()
   const [, setSelectedUser] = useState<IUserInfo | null>(null)
-  const { getCartItems, removeCartItem, addCustomerInfo } = useCartItemStore()
+  const { getCartItems, removeCartItem, addCustomerInfo, addApprovalBy } = useCartItemStore()
   const [users, setUsers] = useState<IUserInfo[]>([])
 
   // Fetch users with debounced phone number
@@ -54,6 +54,10 @@ export default function CheckoutCartSheet() {
       setUsers(userByPhoneNumber.result.items)
     }
   }, [debouncedInputValue, userByPhoneNumber])
+
+  useEffect(() => {
+    addApprovalBy(getUserInfo()?.slug || '')
+  }, [])
 
   const navigate = useNavigate()
 
@@ -255,8 +259,7 @@ export default function CheckoutCartSheet() {
                   {tCommon('common.back')}
                 </Button>
               </div>
-              <CreateOrderDialog disabled={Boolean(!cartItems?.orderItems?.length || !cartItems?.approvalBy)} />
-            </div>
+              <CreateOrderDialog disabled={Boolean(!cartItems?.orderItems?.length || !cartItems?.approvalBy)} />            </div>
           </div>
         </div>
       </SheetContent>
