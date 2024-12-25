@@ -1,5 +1,5 @@
 export const ROUTE = {
-  // HOME: '/',
+  HOME: '/',
   PERSONAL_ACCOUNT: '/personal-account',
   ADMIN: '/admin',
   LOGIN: '/auth/login',
@@ -10,10 +10,10 @@ export const ROUTE = {
   PROFILE: '/profile',
 
   // Staff Routes
-  STAFF_HOME: '/',
-  STAFF_MENU: '/menu',
+  DASHBOARD: '/dashboard',
+  STAFF_MENU: '/staff/menu',
   STAFF_CHECKOUT_ORDER: '/checkout-order',
-  STAFF_ORDER_PAYMENT: '/order-payment',
+  ORDER_PAYMENT: '/order-payment',
   STAFF_ORDER_MANAGEMENT: '/order-management',
   STAFF_ORDER_HISTORY: '/order-history',
   STAFF_ORDER_PREPARATION: '/order-preparation',
@@ -28,7 +28,7 @@ export const ROUTE = {
   STAFF_BANK_CONFIG: '/bank-config',
 
   // Admin Routes
-  ADMIN_DASHBOARD: '/dashboard',
+  // ADMIN_DASHBOARD: '/dashboard',
   ADMIN_MENU_MANAGEMENT: '/menu-management',
   // ADMIN_ADD_PRODUCT: '/add-product',
   ADMIN_PRODUCT_DETAIL: '/product',
@@ -38,6 +38,14 @@ export const ROUTE = {
   ADMIN_USER_MANAGEMENT: '/user-management',
   ADMIN_FINANCIAL_REPORT: '/financial-report',
   ADMIN_CONFIG: '/config',
+
+  //Client Routes
+  CLIENT_HOME: '/',
+  CLIENT_MENU: '/menu',
+  CLIENT_PRODUCT_DETAIL: '/product',
+  CLIENT_CART: '/cart',
+  CLIENT_CHECKOUT_ORDER: '/checkout-order',
+  CLIENT_ORDER_PAYMENT: '/order-payment',
 
   // General Routes
   ABOUT: '/about',

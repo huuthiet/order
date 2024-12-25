@@ -64,7 +64,7 @@ export default function TableSelect() {
           </div>
         </div>
       </div>
-      <div className="relative flex min-h-[26rem] flex-col overflow-x-auto">
+      <div className="relative flex min-h-[27rem] flex-col overflow-x-auto">
         {tables?.result.map((table) => (
           <NonResizableTableItem
             key={table.slug}

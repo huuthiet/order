@@ -16,7 +16,7 @@ export default function DateInput({ menu }: ICurrentDateInputProps) {
   const dayOfWeek = t(`dayOfWeek.${menu?.dayIndex}`)
 
   return (
-    <div className="relative grid items-center grid-cols-1">
+    <div className="relative grid items-center grid-cols-1 bg-gray-50">
       {/* Icon Calendar */}
       <Calendar className="absolute w-5 h-5 text-gray-500 pointer-events-none left-2" />
 

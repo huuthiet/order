@@ -6,7 +6,6 @@ import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
 import { Role, ROUTE, RoutePermissions } from '@/constants'
 import {
-  HomePage,
   MenuPage,
   StaffLayout,
   LoginPage,
@@ -29,8 +28,13 @@ import {
   ForgotPasswordPage,
   ConfigPage,
   ForgotPasswordAndResetPasswordPage,
+  ClientMenuPage,
+  ClientProductDetailPage,
+  ClientHomePage,
+  ClientCartPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
+import { ClientLandingLayout, ClientLayout } from '@/app/layouts/client'
 
 export const router = createBrowserRouter([
   { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
@@ -45,21 +49,6 @@ export const router = createBrowserRouter([
   {
     path: `${ROUTE.RESET_PASSWORD}`,
     element: <SuspenseElement component={ForgotPasswordAndResetPasswordPage} />,
-  },
-  {
-    path: ROUTE.STAFF_HOME,
-    element: <StaffLayout />,
-    children: [
-      {
-        index: true,
-        element: (
-          <ProtectedElement
-            allowedRoles={RoutePermissions[ROUTE.STAFF_HOME]}
-            element={<HomePage />}
-          />
-        ),
-      },
-    ],
   },
   {
     path: ROUTE.STAFF_MENU,
@@ -100,7 +89,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: `${ROUTE.STAFF_ORDER_PAYMENT}/:slug`,
+    path: `${ROUTE.ORDER_PAYMENT}/:slug`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />
@@ -111,7 +100,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN, Role.STAFF]}
+            allowedRoles={[Role.ADMIN, Role.STAFF, Role.CUSTOMER]}
             element={<SuspenseElement component={OrderPaymentPage} />}
           />
         ),
@@ -379,6 +368,97 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={[Role.ADMIN]}
             element={<SuspenseElement component={ConfigPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.CLIENT_HOME,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLandingLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientHomePage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.CLIENT_MENU,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientMenuPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.CLIENT_MENU}/:slug`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientProductDetailPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.CLIENT_CART,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientCartPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.HOME,
+    element: <ClientLandingLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={RoutePermissions[ROUTE.HOME]}
+            element={<ClientHomePage />}
           />
         ),
       },
