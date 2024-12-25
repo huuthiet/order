@@ -3,6 +3,7 @@ import {
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
+  ObjectLiteral,
   UpdateEvent,
 } from 'typeorm';
 import { Table } from './table.entity';
@@ -13,6 +14,7 @@ import {
 } from 'src/robot-connector/robot-connector.dto';
 import { Inject, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import * as _ from 'lodash';
 
 @EventSubscriber()
 export class TableSubscriber implements EntitySubscriberInterface<Table> {
@@ -35,7 +37,7 @@ export class TableSubscriber implements EntitySubscriberInterface<Table> {
       `Table location updated: ${event.entity.location}`,
       context,
     );
-    await this.updateLocationStatus(event.entity);
+    await this.updateAssignedLocationStatus(event.entity);
   }
 
   async afterUpdate(event: UpdateEvent<Table>): Promise<void> {
@@ -44,14 +46,15 @@ export class TableSubscriber implements EntitySubscriberInterface<Table> {
       event.updatedColumns.some((column) => column.propertyName === 'location')
     ) {
       this.logger.log(
-        `Table location updated: ${event.databaseEntity.location}`,
+        `Table location updated: ${event.entity.location}`,
         context,
       );
-      await this.updateLocationStatus(event.databaseEntity);
+      await this.updateAssignedLocationStatus(event.entity);
+      await this.updateUnAssignedLocationStatus(event.databaseEntity.location);
     }
   }
 
-  async updateLocationStatus(table: Table) {
+  async updateAssignedLocationStatus(table: ObjectLiteral) {
     const location = await this.robotConnectorClient.getQRLocationById(
       table.location,
     );
@@ -62,10 +65,33 @@ export class TableSubscriber implements EntitySubscriberInterface<Table> {
     const requestData = {
       ...location,
       metadata: {
-        ...location.metadata,
+        // ...location.metadata,
         isAssigned: true,
       },
     } as UpdateQRLocationRequestDto;
     await this.robotConnectorClient.updateQRLocation(location.id, requestData);
+  }
+
+  async updateUnAssignedLocationStatus(
+    locationId: string
+  ) {
+    console.log({locationId})
+    try {
+      const location = await this.robotConnectorClient.getQRLocationById(locationId);
+      if(!location) return;
+
+      const { isAssigned } = location.metadata;
+      if(!isAssigned) return;
+
+      const requestData = {
+        ...location,
+        metadata: {
+          isAssigned: false
+        },
+      } as UpdateQRLocationRequestDto;
+      await this.robotConnectorClient.updateQRLocation(location.id, requestData);
+    } catch (error) {
+      return;
+    }
   }
 }
