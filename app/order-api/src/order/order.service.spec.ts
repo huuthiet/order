@@ -250,6 +250,7 @@ describe('OrderService', () => {
         table: 'mock-table-slug',
         branch: 'mock-branch-slug',
         owner: 'mock-user-slug',
+        orderItems: [],
       } as CreateOrderRequestDto;
       const mockBranch = {
         name: 'mock-branch-name',
@@ -307,6 +308,7 @@ describe('OrderService', () => {
         table: 'mock-table-slug',
         branch: 'mock-branch-slug',
         owner: 'mock-user-slug',
+        orderItems: [],
       } as CreateOrderRequestDto;
       const mockBranch = {
         name: 'mock-branch-name',
@@ -586,7 +588,7 @@ describe('OrderService', () => {
         );
 
       await expect(service.createOrder(mockInput)).rejects.toThrow(
-        VariantException,
+        OrderException,
       );
     });
 

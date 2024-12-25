@@ -51,7 +51,6 @@ export class ProductController {
     type: ProductResponseDto,
   })
   @ApiOperation({ summary: 'Create new product' })
-  @ApiResponse({ status: 200, description: 'Create new product successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Chef)
   async createProduct(

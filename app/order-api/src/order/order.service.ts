@@ -112,27 +112,14 @@ export class OrderService {
     const context = `${OrderService.name}.${this.createOrder.name}`;
 
     const order: Order = await this.constructOrder(requestData);
-    const orderItems = await this.constructOrderItem(
-      requestData.branch,
-      requestData.orderItems,
-    );
-    this.logger.log(`Number of order items: ${orderItems.length}`, context);
-
-    const orderSubtotal = await this.getOrderSubtotal(orderItems);
     let createdOrder: Order;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      Object.assign(order, {
-        orderItems: orderItems,
-        subtotal: orderSubtotal,
-      });
-
       // Created order
       createdOrder = await queryRunner.manager.save(order);
-
       // Update current stock of menu items
       const currentMenuItems = await this.getCurrentMenuItems(createdOrder);
       await queryRunner.manager.save(currentMenuItems);
@@ -158,8 +145,7 @@ export class OrderService {
       await queryRunner.release();
     }
 
-    const orderDto = this.mapper.map(createdOrder, Order, OrderResponseDto);
-    return orderDto;
+    return this.mapper.map(createdOrder, Order, OrderResponseDto);
   }
 
   /**
@@ -217,8 +203,18 @@ export class OrderService {
     });
     if (!approvalBy) {
       this.logger.warn(`Approval ${data.approvalBy} is not found`, context);
-      throw new OrderException(OrderValidation.INVALID_ORDER_APPROVAL_BY);
+      // throw new OrderException(OrderValidation.INVALID_ORDER_APPROVAL_BY);
     }
+
+    // Get order items
+    const orderItems = await this.constructOrderItem(
+      data.branch,
+      data.orderItems,
+    );
+    this.logger.log(`Number of order items: ${orderItems.length}`, context);
+
+    // Get subtotal
+    const subtotal = await this.getOrderSubtotal(orderItems);
 
     const order = this.mapper.map(data, CreateOrderRequestDto, Order);
     Object.assign(order, {
@@ -226,6 +222,8 @@ export class OrderService {
       branch,
       table,
       approvalBy,
+      orderItems,
+      subtotal,
     });
     return order;
   }
