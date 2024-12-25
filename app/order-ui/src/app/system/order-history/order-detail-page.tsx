@@ -5,7 +5,6 @@ import moment from 'moment'
 
 import {
   Button,
-  ScrollArea,
   Separator,
   Table,
   TableBody,
@@ -18,7 +17,7 @@ import {
 import { useOrderBySlug } from '@/hooks'
 import { publicFileURL } from '@/constants'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-import { IOrderType, OrderStatus } from '@/types'
+import { IOrderType } from '@/types'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 
 export default function OrderDetailPage() {
@@ -28,97 +27,91 @@ export default function OrderDetailPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-row flex-1 gap-2">
-      <ScrollArea className="flex-1">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col">
-            <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
-              <span className="flex items-center justify-start w-full gap-1 text-lg">
-                <SquareMenu />
-                {t('order.orderDetail')}{' '}
-                <span className="text-muted-foreground">
-                  #{orderDetail?.result?.slug}
-                </span>
+    <div className="mb-10 flex flex-1 flex-row gap-2">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
+            <span className="flex w-full items-center justify-start gap-1 text-lg">
+              <SquareMenu />
+              {t('order.orderDetail')}{' '}
+              <span className="text-muted-foreground">
+                #{orderDetail?.result?.slug}
               </span>
-            </div>
+            </span>
           </div>
-          {/* <CustomerInformation orderDetailData={orderDetail?.result} /> */}
-          <div className="flex gap-2">
-            {/* Left, info */}
-            <div className="flex flex-col w-3/4 gap-4">
-              {/* Order info */}
-              <div className="flex items-center justify-between p-3 border border-gray-200 rounded-sm bg-slate-100">
-                <div className="">
-                  <p className="flex items-center gap-2 pb-2">
-                    <span className="font-bold">Đơn hàng:</span>{' '}
-                    <span className="text-primary">
-                      {orderDetail?.result?.slug}
+        </div>
+        <div className="flex flex-col gap-4 lg:flex-row">
+          {/* Left, info */}
+          <div className="flex w-full flex-col gap-4 lg:w-3/4">
+            {/* Order info */}
+            <div className="flex items-center justify-between rounded-sm border border-gray-200 bg-slate-100 p-3">
+              <div className="">
+                <p className="flex items-center gap-2 pb-2">
+                  <span className="font-bold">Đơn hàng:</span>{' '}
+                  <span className="text-primary">
+                    {orderDetail?.result?.slug}
+                  </span>
+                  <OrderStatusBadge order={orderDetail?.result || undefined} />
+                </p>
+                <div className="flex items-center gap-1 text-sm font-thin">
+                  <p>
+                    {moment(orderDetail?.result?.createdAt).format(
+                      'hh:mm:ss DD/MM/YYYY',
+                    )}
+                  </p>{' '}
+                  |
+                  <p className="flex items-center gap-1">
+                    <span>Thu ngân:</span>
+                    <span className="text-muted-foreground">
+                      {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName} - ${orderDetail?.result?.owner?.phonenumber}`}
                     </span>
-                    <OrderStatusBadge
-                      status={orderDetail?.result?.status || OrderStatus.PENDING}
-                    />
                   </p>
-                  <div className="flex items-center gap-1 text-sm font-thin">
-                    <p>
-                      {moment(orderDetail?.result?.createdAt).format(
-                        'hh:mm:ss DD/MM/YYYY',
-                      )}
-                    </p>{' '}
-                    |
-                    <p className="flex items-center gap-1">
-                      <span>Thu ngân:</span>
-                      <span className="text-muted-foreground">
-                        {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName} - ${orderDetail?.result?.owner?.phonenumber}`}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-              {/* Order owner info */}
-              <div className="flex gap-2">
-                <div className="w-1/2 border border-gray-200 rounded-sm">
-                  <div className="px-3 py-2 font-bold uppercase bg-slate-100">
-                    Khách hàng
-                  </div>
-                  <div className="px-3 py-2">
-                    <p className='font-bold'>
-                      {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName}`}
-                    </p>
-                    <p className='text-sm'>{orderDetail?.result?.owner?.phonenumber}</p>
-                  </div>
-                </div>
-                <div className="w-1/2 border border-gray-200 rounded-sm">
-                  <div className="px-3 py-2 font-bold uppercase bg-slate-100">
-                    Loại đơn hàng
-                  </div>
-                  <div className="px-3 py-2">
-                    <p>
-                      {orderDetail?.result?.type === IOrderType.AT_TABLE
-                        ? t('order.dineIn')
-                        : t('order.takeAway')}
-                    </p>
-                    <p className="flex gap-1">
-                      <span className="col-span-2">
-                        {t('order.tableNumber')}
-                      </span>
-                      <span className="col-span-1">
-                        {orderDetail?.result?.table?.name}
-                      </span>
-                    </p>
-                  </div>
                 </div>
               </div>
-              {/* Order table */}
-              <Table>
+            </div>
+            {/* Order owner info */}
+            <div className="flex gap-2">
+              <div className="w-1/2 rounded-sm border border-gray-200">
+                <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                  Khách hàng
+                </div>
+                <div className="px-3 py-2 text-xs">
+                  <p className="font-bold">
+                    {`${orderDetail?.result?.owner?.firstName} ${orderDetail?.result?.owner?.lastName}`}
+                  </p>
+                  <p className="text-sm">
+                    {orderDetail?.result?.owner?.phonenumber}
+                  </p>
+                </div>
+              </div>
+              <div className="w-1/2 rounded-sm border border-gray-200">
+                <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                  Loại đơn hàng
+                </div>
+                <div className="px-3 py-2 text-sm">
+                  <p>
+                    {orderDetail?.result?.type === IOrderType.AT_TABLE
+                      ? t('order.dineIn')
+                      : t('order.takeAway')}
+                  </p>
+                  <p className="flex gap-1">
+                    <span className="col-span-2">{t('order.tableNumber')}</span>
+                    <span className="col-span-1">
+                      {orderDetail?.result?.table?.name}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Order table */}
+            <div className="overflow-x-auto">
+              <Table className="min-w-full table-auto border-collapse border border-gray-300">
                 <TableCaption>A list of orders.</TableCaption>
-                <TableHeader className="bg-gray-200 rounded">
+                <TableHeader className="rounded bg-gray-200">
                   <TableRow>
-                    <TableHead className="w-[100px]">
-                      {t('order.product')}
-                    </TableHead>
+                    <TableHead className="">{t('order.product')}</TableHead>
                     <TableHead>{t('order.size')}</TableHead>
-                    <TableHead> {t('order.quantity')}</TableHead>
+                    <TableHead>{t('order.quantity')}</TableHead>
                     <TableHead className="text-right">
                       {t('order.unitPrice')}
                     </TableHead>
@@ -130,11 +123,11 @@ export default function OrderDetailPage() {
                 <TableBody>
                   {orderDetail?.result.orderItems?.map((item) => (
                     <TableRow key={item.slug}>
-                      <TableCell className="flex items-center gap-1 font-bold w-96">
+                      <TableCell className="flex items-center gap-1 font-bold">
                         <img
                           src={`${publicFileURL}/${item.variant.product.image}`}
                           alt={item.variant.product.image}
-                          className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
+                          className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
                         />
                         {item.variant.product.name}
                       </TableCell>
@@ -151,81 +144,81 @@ export default function OrderDetailPage() {
                 </TableBody>
               </Table>
             </div>
+          </div>
 
-            {/* Right, payment*/}
-            <div className="flex flex-col w-1/4 gap-2">
-              {/* Payment method, status */}
-              <div className="border border-gray-200 rounded-sm">
-                <div className="px-3 py-2 font-bold uppercase bg-slate-100">
-                  Phương thức thanh toán
-                </div>
-                <div className="px-3 py-2">
-                  <p className="flex items-center gap-1 pb-2">
-                    <span className="col-span-1 text-xs font-semibold">
-                      {t('paymentMethod.title')}
-                    </span>
-                    <span className="text-xs">
-                      {orderDetail?.result?.payment?.paymentMethod && (
-                        <>
-                          {orderDetail?.result?.payment.paymentMethod ===
-                            'bank-transfer' && (
-                              <span>{t('paymentMethod.bankTransfer')}</span>
-                            )}
-                          {orderDetail?.result?.payment.paymentMethod ===
-                            'cash' && <span>{t('paymentMethod.cash')}</span>}
-                        </>
-                      )}
-                    </span>
-                  </p>
-                  <p className="flex items-center gap-1">
-                    <span className="col-span-1 text-xs font-semibold">
-                      {t('paymentMethod.status')}
-                    </span>
-                    <span className="col-span-1 text-xs">
-                      {orderDetail?.result?.payment && (
-                        <PaymentStatusBadge
-                          status={orderDetail?.result?.payment?.statusCode}
-                        />
-                      )}
-                    </span>
-                  </p>
-                </div>
+          {/* Right, payment*/}
+          <div className="flex w-full flex-col gap-2 lg:w-1/4">
+            {/* Payment method, status */}
+            <div className="rounded-sm border border-gray-200">
+              <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+                Phương thức thanh toán
               </div>
-              {/* Total */}
-              <div className="flex flex-col gap-2 p-2 border border-gray-200 rounded-sm">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-500">Tạm tính</p>
-                  <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-500">Thành tiền</p>
-                  <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
-                </div>
-                <Separator />
-                <div className="flex items-center justify-between">
-                  <p className="text-gray-500">Cần thanh toán</p>
-                  <p className="text-2xl font-bold text-primary">{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-500">
-                    ({orderDetail?.result?.orderItems?.length} sản phẩm )
-                  </p>
-                  <p className="text-sm">(Đã bao gồm VAT)</p>
-                </div>
+              <div className="px-3 py-2">
+                <p className="flex items-center gap-1 pb-2">
+                  <span className="col-span-1 text-xs font-semibold">
+                    {t('paymentMethod.title')}
+                  </span>
+                  <span className="text-xs">
+                    {orderDetail?.result?.payment?.paymentMethod && (
+                      <>
+                        {orderDetail?.result?.payment.paymentMethod ===
+                          'bank-transfer' && (
+                          <span>{t('paymentMethod.bankTransfer')}</span>
+                        )}
+                        {orderDetail?.result?.payment.paymentMethod ===
+                          'cash' && <span>{t('paymentMethod.cash')}</span>}
+                      </>
+                    )}
+                  </span>
+                </p>
+                <p className="flex items-center gap-1">
+                  <span className="col-span-1 text-xs font-semibold">
+                    {t('paymentMethod.status')}
+                  </span>
+                  <span className="col-span-1 text-xs">
+                    {orderDetail?.result?.payment && (
+                      <PaymentStatusBadge
+                        status={orderDetail?.result?.payment?.statusCode}
+                      />
+                    )}
+                  </span>
+                </p>
               </div>
-              {/* Return order button */}
-              <Button
-                className="w-full bg-primary"
-                onClick={() => {
-                  navigate('/order-history')
-                }}
-              >
-                Quay lại
-              </Button>
             </div>
+            {/* Total */}
+            <div className="flex flex-col gap-2 rounded-sm border border-gray-200 p-2">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500">Tạm tính</p>
+                <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500">Thành tiền</p>
+                <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <p className="text-gray-500">Cần thanh toán</p>
+                <p className="text-2xl font-bold text-primary">{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500">
+                  ({orderDetail?.result?.orderItems?.length} sản phẩm )
+                </p>
+                <p className="text-sm">(Đã bao gồm VAT)</p>
+              </div>
+            </div>
+            {/* Return order button */}
+            <Button
+              className="w-full bg-primary"
+              onClick={() => {
+                navigate('/order-history')
+              }}
+            >
+              Quay lại
+            </Button>
           </div>
         </div>
-      </ScrollArea>
+      </div>
     </div>
   )
 }

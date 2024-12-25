@@ -45,7 +45,7 @@ export const CreateSizeForm: React.FC<IFormCreateSizeProps> = ({ onSubmit }) => 
         onSubmit(false)
         form.reset()
         showToast(t('toast.createSizeSuccess'))
-      }
+      },
     })
   }
 

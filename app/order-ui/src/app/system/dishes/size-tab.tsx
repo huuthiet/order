@@ -6,7 +6,7 @@ import { SizeActionOptions } from './DataTable/actions'
 export default function SizeTab() {
   const { data: sizes, isLoading } = useSize()
   return (
-    <div className="flex h-full flex-row gap-2">
+    <div className="grid h-full grid-cols-1 gap-2">
       <DataTable
         columns={useSizeColumns()}
         data={sizes?.result || []}

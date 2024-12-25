@@ -1,15 +1,12 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { exec } from 'child_process';
 import * as fs from 'fs';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as path from 'path';
 import { GoogleDriveService } from './google-drive.service';
+import { DbException } from './db.exception';
+import { DbValidation } from './db.validation';
 
 @Injectable()
 export class DbService {
@@ -59,7 +56,7 @@ export class DbService {
       exec(dumpCommand, (error, stdout, stderr) => {
         if (error) {
           this.logger.error(`Error: ${error.message}`, error.stack, context);
-          return reject(new BadRequestException('Error exporting database'));
+          return reject(new DbException(DbValidation.EXPORT_DATABASE_ERROR));
         }
         if (stderr) {
           this.logger.error(`stderr: ${stderr}`, null, context);

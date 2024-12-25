@@ -1,12 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CatalogController } from './catalog.controller';
 import { CatalogService } from './catalog.service';
-import { BadRequestException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import {
   CatalogResponseDto,
   CreateCatalogRequestDto,
   UpdateCatalogRequestDto,
 } from './catalog.dto';
+import { CatalogException } from './catalog.exception';
+import { CatalogValidation } from './catalog.validation';
 
 describe('CatalogController', () => {
   let controller: CatalogController;
@@ -49,11 +51,11 @@ describe('CatalogController', () => {
       } as CreateCatalogRequestDto;
 
       (service.createCatalog as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new CatalogException(CatalogValidation.CATALOG_EXITS),
       );
 
       await expect(controller.createCatalog(mockInput)).rejects.toThrow(
-        BadRequestException
+        CatalogException,
       );
     });
 
@@ -66,7 +68,7 @@ describe('CatalogController', () => {
         slug: 'mock-catalog-slug',
         name: 'Mock catalog name',
         description: 'Description of catalog',
-        createdAt: (new Date()).toString(),
+        createdAt: new Date().toString(),
       } as CatalogResponseDto;
 
       (service.createCatalog as jest.Mock).mockResolvedValue(mockOutput);
@@ -86,7 +88,7 @@ describe('CatalogController', () => {
         slug: 'mock-catalog-slug',
         name: 'Mock catalog name',
         description: 'Description of catalog',
-        createdAt: (new Date()).toString(),
+        createdAt: new Date().toString(),
       } as CatalogResponseDto;
       const mockOutput = [catalog];
 
@@ -98,10 +100,12 @@ describe('CatalogController', () => {
 
     it('should return error when service.getAllCatalogs throws', async () => {
       (service.getAllCatalogs as jest.Mock).mockRejectedValue(
-        new InternalServerErrorException()
+        new InternalServerErrorException(),
       );
 
-      await expect(controller.getAllCatalogs()).rejects.toThrow(InternalServerErrorException);
+      await expect(controller.getAllCatalogs()).rejects.toThrow(
+        InternalServerErrorException,
+      );
       expect(service.getAllCatalogs).toHaveBeenCalled();
     });
   });
@@ -122,7 +126,7 @@ describe('CatalogController', () => {
         slug: 'mock-catalog-slug',
         name: 'Mock catalog name',
         description: 'The description of catalog',
-        createdAt: (new Date()).toString(),
+        createdAt: new Date().toString(),
       } as CatalogResponseDto;
       (service.updateCatalog as jest.Mock).mockResolvedValue(mockOutput);
 
@@ -138,12 +142,12 @@ describe('CatalogController', () => {
       } as UpdateCatalogRequestDto;
 
       (service.updateCatalog as jest.Mock).mockRejectedValue(
-        new BadRequestException()
+        new CatalogException(CatalogValidation.CATALOG_NOT_FOUND),
       );
 
       await expect(
         controller.updateCatalog(slug, updateCatalogDto),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(CatalogException);
       expect(service.updateCatalog).toHaveBeenCalled();
     });
   });
@@ -165,11 +169,11 @@ describe('CatalogController', () => {
       const slug: string = 'mock-catalog-slug';
 
       (service.deleteCatalog as jest.Mock).mockRejectedValue(
-        new BadRequestException(),
+        new CatalogException(CatalogValidation.DELETE_CATALOG_ERROR),
       );
 
       await expect(controller.deleteCatalog(slug)).rejects.toThrow(
-        BadRequestException
+        CatalogException,
       );
       expect(service.deleteCatalog).toHaveBeenCalled();
     });

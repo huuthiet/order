@@ -1,30 +1,41 @@
+import { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button, ScrollArea } from '@/components/ui'
 import { QuantitySelector } from '@/components/app/button'
-import { CartNoteInput, PromotionInput } from '@/components/app/input'
+import { CartNoteInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
 import { publicFileURL, ROUTE } from '@/constants'
+import { IOrderType } from '@/types'
+import { CreateOrderDialog } from '@/components/app/dialog'
 
 export default function CartContent() {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
-  const { getCartItems, removeCartItem } = useCartItemStore()
+  const { getCartItems, removeCartItem, addOrderType } = useCartItemStore()
 
   const cartItems = getCartItems()
 
   // Tính tổng tiền
-  const subtotal = cartItems?.orderItems?.reduce((acc, orderItem) => {
-    return acc + (orderItem.price || 0) * orderItem.quantity
-  }, 0)
+  const subtotal = useMemo(() => {
+    return cartItems?.orderItems?.reduce((acc, orderItem) => {
+      return acc + (orderItem.price || 0) * orderItem.quantity
+    }, 0)
+  }, [cartItems])
 
   const discount = 0 // Giả sử giảm giá là 0
-  const total = subtotal ? subtotal - discount : 0
+  const total = useMemo(() => {
+    return subtotal ? subtotal - discount : 0
+  }, [subtotal, discount])
 
   const handleRemoveCartItem = (id: string) => {
     removeCartItem(id)
+  }
+
+  const handleAddDeliveryMethod = (orderType: IOrderType) => {
+    addOrderType(orderType)
   }
 
   return (
@@ -33,6 +44,29 @@ export default function CartContent() {
       <div className="z-30 px-4 pt-2 pb-2 border-b bg-background">
         <h1 className="text-lg font-medium">{t('menu.order')}</h1>
       </div>
+      {/* Order type selection */}
+      {cartItems && (
+        <div className="z-30 grid w-full grid-cols-2 gap-2 px-4 pt-4 bg-background">
+          <div
+            onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
+            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.AT_TABLE
+              ? 'border-primary bg-primary text-white'
+              : 'border'
+              } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
+          >
+            {t('menu.dineIn')}
+          </div>
+          <div
+            onClick={() => handleAddDeliveryMethod(IOrderType.TAKE_OUT)}
+            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.TAKE_OUT
+              ? 'border-primary bg-primary text-white'
+              : 'border'
+              } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
+          >
+            {t('menu.takeAway')}
+          </div>
+        </div>
+      )}
 
       {/* Cart Items - Scrollable */}
       <div className="flex-1 overflow-hidden">
@@ -90,7 +124,7 @@ export default function CartContent() {
                 </p>
               )}
             </div>
-            <PromotionInput />
+            {/* <PromotionInput /> */}
           </div>
         </ScrollArea>
       </div>
@@ -108,21 +142,33 @@ export default function CartContent() {
               - {`${discount.toLocaleString('vi-VN')}đ`}
             </span>
           </div>
-          <div className="flex justify-between pt-2 font-medium border-t">
+          <div className="flex justify-between py-4 font-medium border-t">
             <span className="font-semibold">{t('menu.subTotal')}</span>
-            <span className="text-lg font-bold text-primary">
+            <span className="text-2xl font-bold text-primary">
               {`${total.toLocaleString('vi-VN')}đ`}
             </span>
           </div>
         </div>
-        <NavLink to={ROUTE.STAFF_CHECKOUT_ORDER}>
-          <Button
-            disabled={!cartItems}
-            className="w-full mt-4 text-white rounded-full bg-primary"
-          >
-            {t('menu.continue')}
-          </Button>
-        </NavLink>
+        {cartItems && getCartItems()?.type === IOrderType.AT_TABLE ? (
+          <NavLink to={ROUTE.STAFF_CHECKOUT_ORDER}>
+            <Button
+              disabled={!cartItems}
+              className="w-full text-white rounded-full bg-primary"
+            >
+              {t('menu.continue')}
+            </Button>
+          </NavLink>
+        ) : (
+          <div className="flex justify-end w-full">
+            {cartItems ? (
+              <CreateOrderDialog />
+            ) : (
+              <Button className="rounded-full" disabled>
+                {t('order.create')}
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

@@ -78,10 +78,6 @@ export const CreateOrderTrackingByRobotForm: React.FC<
           onSubmit(false)
         }
       },
-      onError: () => {
-        showToast(t('toast.createOrderTrackingFailed'))
-        onSubmit(false)
-      },
     })
   }
 
@@ -89,10 +85,9 @@ export const CreateOrderTrackingByRobotForm: React.FC<
     products: (
       <FormField
         control={form.control}
-        name="productName" // Base on `productName` as both `productName` and `productQuantity` will be rendered in rows
+        name="productName"
         render={() => (
           <FormItem>
-            {/* <FormLabel>{t('order.productName')}</FormLabel> */}
             <FormControl>
               <div className="space-y-2">
                 {form.getValues('productName').map((name, index) => (
@@ -103,7 +98,8 @@ export const CreateOrderTrackingByRobotForm: React.FC<
                     <div className="flex flex-col col-span-3 gap-1">
                       <Label>{t('order.productName')}</Label>
                       <Input
-                        className="flex-1"
+                        readOnly
+                        className="flex-1 px-1 font-semibold border-none shadow-none"
                         value={name}
                         onChange={(e) => {
                           const updatedNames = [
@@ -119,18 +115,10 @@ export const CreateOrderTrackingByRobotForm: React.FC<
                       <Label>{t('order.quantity')}</Label>
                       <Input
                         readOnly
+                        className="flex-1 px-1 font-semibold border-none shadow-none"
                         value={form.getValues('productQuantity')[index]}
-                        // onChange={(e) => {
-                        //     const updatedQuantities = [
-                        //         ...form.getValues('productQuantity'),
-                        //     ]
-                        //     updatedQuantities[index] =
-                        //         parseInt(e.target.value, 10) || 0
-                        //     form.setValue('productQuantity', updatedQuantities)
-                        // }}
                         placeholder="Quantity"
                         type="number"
-                      // min={0}
                       />
                     </div>
                   </div>

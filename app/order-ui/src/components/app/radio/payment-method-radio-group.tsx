@@ -21,7 +21,7 @@ export default function PaymentMethodRadioGroup({
   return (
     <RadioGroup
       defaultValue="internalWallet"
-      className="gap-6"
+      className="min-w-full gap-6"
       onValueChange={handlePaymentMethodChange}
     >
       <div className="flex items-center space-x-2">

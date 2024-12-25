@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectMapper } from '@automapper/nestjs';
@@ -24,7 +24,7 @@ export class SizeService {
   ) {}
 
   /**
-   * Create a new size 
+   * Create a new size
    * @param  {CreateSizeRequestDto} createSizeDto The data to create a new size
    * @returns {Promise<SizeResponseDto>} The size data is created
    * @throws {SizeException} If size name does exist
@@ -41,13 +41,10 @@ export class SizeService {
       this.logger.warn(`Size name ${createSizeDto.name} does exists`, context);
       throw new SizeException(SizeValidation.SIZE_NAME_DOES_EXIST);
     }
-    
+
     const newSize = this.sizeRepository.create(sizeData);
     const createdSize = await this.sizeRepository.save(newSize);
-    this.logger.log(
-      `Size ${createSizeDto.name} created successfully`,
-      context,
-    );
+    this.logger.log(`Size ${createSizeDto.name} created successfully`, context);
     const sizeDto = this.mapper.map(createdSize, Size, SizeResponseDto);
     return sizeDto;
   }
@@ -64,7 +61,7 @@ export class SizeService {
 
   /**
    * Update size by slug
-   * @param {string} slug The slug of size 
+   * @param {string} slug The slug of size
    * @param {UpdateSizeRequestDto} requestData The data to update size
    * @returns {Promise<SizeResponseDto>} The updated size
    * @throws {SizeException} If size is not found
@@ -82,17 +79,17 @@ export class SizeService {
     }
     const sizeData = this.mapper.map(requestData, UpdateSizeRequestDto, Size);
     const isExist = await this.isExistUpdatedName(sizeData.name, size.name);
-    if(isExist) {
-      this.logger.warn(`The updated name ${sizeData.name} does exists`, context);
+    if (isExist) {
+      this.logger.warn(
+        `The updated name ${sizeData.name} does exists`,
+        context,
+      );
       throw new SizeException(SizeValidation.SIZE_NAME_DOES_EXIST);
     }
 
     Object.assign(size, sizeData);
     const updatedSize = await this.sizeRepository.save(size);
-    this.logger.log(
-      `Size ${slug} updated successfully`,
-      context,
-    );
+    this.logger.log(`Size ${slug} updated successfully`, context);
     const sizeDto = this.mapper.map(updatedSize, Size, SizeResponseDto);
     return sizeDto;
   }
@@ -100,20 +97,20 @@ export class SizeService {
   /**
    * Check the updated name does exist or not
    * @param {string} updatedName The name to update for size
-   * @param currentName The current name of size 
+   * @param currentName The current name of size
    * @returns {Promise<Boolean>} The result of checking is true or false
    */
   async isExistUpdatedName(
     updatedName: string,
-    currentName: string
+    currentName: string,
   ): Promise<Boolean> {
-    if(updatedName === currentName) return false; 
+    if (updatedName === currentName) return false;
 
     const sizeExist = await this.sizeRepository.findOne({
-      where: { name: updatedName }
+      where: { name: updatedName },
     });
-    if(sizeExist) return true;
-    
+    if (sizeExist) return true;
+
     return false;
   }
 
@@ -135,17 +132,17 @@ export class SizeService {
 
     if (!size) throw new SizeException(SizeValidation.SIZE_NOT_FOUND);
     if (size.variants.length > 0) {
-      this.logger.warn(`Must change size of variants before delete size ${slug}`, context);
+      this.logger.warn(
+        `Must change size of variants before delete size ${slug}`,
+        context,
+      );
       throw new SizeException(
-        SizeValidation.MUST_CHANGE_SIZE_OF_VARIANTS_BEFORE_DELETE
+        SizeValidation.MUST_CHANGE_SIZE_OF_VARIANTS_BEFORE_DELETE,
       );
     }
 
     const deleted = await this.sizeRepository.softDelete({ slug });
-    this.logger.log(
-      `Size ${slug} deleted successfully`,
-      context,
-    );
+    this.logger.log(`Size ${slug} deleted successfully`, context);
     return deleted.affected || 0;
   }
 

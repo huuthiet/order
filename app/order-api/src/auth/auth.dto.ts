@@ -8,7 +8,6 @@ import {
 } from './auth.validation';
 import { AutoMap } from '@automapper/classes';
 import { BranchResponseDto } from 'src/branch/branch.dto';
-import { INVALID_BRANCH_SLUG } from 'src/menu/menu.validation';
 import { RoleResponseDto } from 'src/role/role.dto';
 
 export class LoginAuthRequestDto {
@@ -39,7 +38,7 @@ export class RegisterAuthRequestDto extends LoginAuthRequestDto {
   @ApiProperty({ example: '' })
   @AutoMap()
   @IsOptional()
-  branchSlug: string;
+  branchSlug?: string;
 }
 
 export class LoginAuthResponseDto {

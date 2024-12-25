@@ -7,18 +7,21 @@ import { Button, ScrollArea } from '@/components/ui'
 import { useExportPayment, useInitiatePayment, useOrderBySlug } from '@/hooks'
 import { PaymentMethod, ROUTE } from '@/constants'
 import { PaymentMethodSelect } from '@/app/system/payment'
-import { showToast } from '@/utils'
+import { loadDataToPrinter, showToast } from '@/utils'
 import { ButtonLoading } from '@/components/app/loading'
 // import { QrCodeDialog } from '@/components/app/dialog'
 
 export default function PaymentPage() {
   const { t } = useTranslation(['menu'])
+  const { t: tToast } = useTranslation(['toast'])
   const { slug } = useParams()
   const navigate = useNavigate()
   const [paymentMethod, setPaymentMethod] = useState<string>('')
   const { data: order, refetch: refetchOrder } = useOrderBySlug(slug as string)
-  const { mutate: initiatePayment, isPending } = useInitiatePayment()
-  const { mutate: exportPayment } = useExportPayment()
+  const { mutate: initiatePayment, isPending: isPendingInitiatePayment } =
+    useInitiatePayment()
+  const { mutate: exportPayment, isPending: isPendingExportPayment } =
+    useExportPayment()
   const [qrCode, setQrCode] = useState<string>('')
   const [paymentSlug, setPaymentSlug] = useState<string>('')
   const [isPolling, setIsPolling] = useState<boolean>(false)
@@ -73,6 +76,13 @@ export default function PaymentPage() {
           onSuccess: () => {
             navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
           },
+          // onError: (error) => {
+          //   if (isAxiosError(error)) {
+          //     const axiosError = error as AxiosError<IApiResponse<void>>
+          //     if (axiosError.response?.data.code)
+          //       showErrorToast(axiosError.response.data.code)
+          //   }
+          // },
         },
       )
     }
@@ -80,26 +90,32 @@ export default function PaymentPage() {
 
   const handleExportPayment = () => {
     if (!slug) return
-    exportPayment(
-      paymentSlug,
-      {
-        onSuccess: () => {
-          showToast(t('paymentMethod.exportPaymentSuccess'))
-        },
+    exportPayment(paymentSlug, {
+      onSuccess: (data: Blob) => {
+        showToast(tToast('toast.exportPaymentSuccess'))
+        // Load data to print
+        loadDataToPrinter(data)
       },
-    )
+      // onError: (error) => {
+      //   if (isAxiosError(error)) {
+      //     const axiosError = error as AxiosError<IApiResponse<void>>
+      //     if (axiosError.response?.data.code)
+      //       showErrorToast(axiosError.response.data.code)
+      //   }
+      // },
+    })
   }
 
   return (
     <div className="flex flex-row h-full gap-2">
       <ScrollArea className="flex-1">
         <div className={`transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
             <div className="flex flex-col w-full gap-3">
               {order && (
                 <div className="w-full space-y-2">
                   {/* Thông tin khách hàng */}
-                  <div className="grid items-center justify-between grid-cols-1 p-4 border rounded-sm sm:grid-cols-2">
+                  <div className="grid items-center justify-between grid-cols-1 p-4 rounded-sm bg-background sm:grid-cols-2">
                     <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
                       <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
@@ -143,25 +159,23 @@ export default function PaymentPage() {
                           {t('order.location')}
                         </h3>
                         <p className="col-span-1 text-sm font-semibold">
-                          {order.result.table.name}
+                          {order.result.table ? order.result.table.name : ''}
                         </p>
                       </div>
                     </div>
                   </div>
                   {/* Thông tin đơn hàng */}
-                  <div>
-                    <div className="grid w-full grid-cols-4 px-4 py-3 text-sm font-thin rounded-md bg-muted/60">
-                      <span className="col-span-1">{t('order.product')}</span>
-                      <span className="col-span-1">{t('order.unitPrice')}</span>
-                      <span className="col-span-1 text-center">
-                        {t('order.quantity')}
-                      </span>
-                      <span className="col-span-1 text-center">
-                        {t('order.grandTotal')}
-                      </span>
-                    </div>
+                  <div className="grid w-full grid-cols-4 px-4 py-3 text-sm font-thin rounded-md bg-background">
+                    <span className="col-span-1">{t('order.product')}</span>
+                    <span className="col-span-1">{t('order.unitPrice')}</span>
+                    <span className="col-span-1 text-center">
+                      {t('order.quantity')}
+                    </span>
+                    <span className="col-span-1 text-center">
+                      {t('order.grandTotal')}
+                    </span>
                   </div>
-                  <div className="flex flex-col w-full border rounded-md">
+                  <div className="flex flex-col w-full rounded-md bg-background">
                     {order?.result.orderItems.map((item) => (
                       <div
                         key={item.slug}
@@ -200,8 +214,8 @@ export default function PaymentPage() {
                         </div>
                       </div>
                     ))}
-                    <div className="flex flex-col items-start justify-center w-full gap-2 p-4 sm:items-end sm:justify-end">
-                      <div className="flex w-[20rem] flex-col justify-start gap-2">
+                    <div className="flex flex-col items-end w-full gap-2 p-4 pr-10">
+                      <div className="flex w-[20rem] flex-col gap-2">
                         <div className="flex justify-between w-full pb-4 border-b">
                           <h3 className="text-sm font-medium">
                             {t('order.total')}
@@ -210,7 +224,7 @@ export default function PaymentPage() {
                             {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
                           </p>
                         </div>
-                        <div className="flex flex-col justify-start">
+                        <div className="flex flex-col">
                           <div className="flex justify-between w-full">
                             <h3 className="font-semibold text-md">
                               {t('order.totalPayment')}
@@ -227,31 +241,37 @@ export default function PaymentPage() {
                     </div>
                   </div>
                   {/* Lựa chọn phương thức thanh toán */}
-                  <PaymentMethodSelect qrCode={qrCode ? qrCode : ''} total={order.result ? order.result.subtotal : ''} onSubmit={handleSelectPaymentMethod} />
+                  <PaymentMethodSelect
+                    qrCode={qrCode ? qrCode : ''}
+                    total={order.result ? order.result.subtotal : ''}
+                    onSubmit={handleSelectPaymentMethod}
+                  />
                 </div>
               )}
               <div className="flex justify-end py-6">
-                {(paymentMethod === PaymentMethod.BANK_TRANSFER || paymentMethod === PaymentMethod.CASH) && (
-                  <div className='flex gap-2'>
-                    <Button
-                      disabled={isDisabled || isPending}
-                      className="w-fit"
-                      onClick={handleConfirmPayment}
-                    >
-                      {isPending ? <ButtonLoading /> : t('paymentMethod.confirmPayment')}
-                    </Button>
-                    {paymentSlug && (
+                {(paymentMethod === PaymentMethod.BANK_TRANSFER ||
+                  paymentMethod === PaymentMethod.CASH) && (
+                    <div className="flex gap-2">
                       <Button
-                        disabled={isDisabled}
+                        disabled={isDisabled || isPendingInitiatePayment}
                         className="w-fit"
-                        onClick={handleExportPayment}
+                        onClick={handleConfirmPayment}
                       >
-                        {t('paymentMethod.exportPayment')}
+                        {isPendingInitiatePayment && <ButtonLoading />}
+                        {t('paymentMethod.confirmPayment')}
                       </Button>
-                    )}
-                  </div>
-                )}
-
+                      {paymentSlug && (
+                        <Button
+                          disabled={isDisabled || isPendingExportPayment}
+                          className="w-fit"
+                          onClick={handleExportPayment}
+                        >
+                          {isPendingExportPayment && <ButtonLoading />}
+                          {t('paymentMethod.exportPayment')}
+                        </Button>
+                      )}
+                    </div>
+                  )}
               </div>
               {/* {qrCode && <QrCodeDialog qrCode={qrCode} />} */}
             </div>

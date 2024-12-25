@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AxiosError, isAxiosError } from 'axios'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart } from 'lucide-react'
 
@@ -14,20 +13,19 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { IApiResponse, ICartItem, ICreateOrderRequest } from '@/types'
+import { ICartItem, ICreateOrderRequest } from '@/types'
 
 import { useCreateOrder } from '@/hooks'
-import { showErrorToast, showToast } from '@/utils'
+import { showToast } from '@/utils'
 import { ROUTE } from '@/constants'
 import { useCartItemStore, useUserStore } from '@/stores'
-// import { useQueryClient } from '@tanstack/react-query'
 
 interface IPlaceOrderDialogProps {
   disabled?: boolean
 }
 
 export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
-  //   const queryClient = useQueryClient()
+  console.log("Check PlaceOrderDialog: ", disabled)
   const navigate = useNavigate()
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation('common')
@@ -42,52 +40,42 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
   const handleSubmit = (order: ICartItem) => {
     if (!order) return // Nếu giỏ hàng trống, thoát sớm.
 
-    // const firstItem = order[0] // Lấy item đầu tiên làm cơ sở cho các trường chung.
-
     const createOrderRequest: ICreateOrderRequest = {
-      type: order.type || 'take-out', // Lấy `type` từ item đầu tiên hoặc mặc định là 'dine-in'.
-      table: order.table || '', // Lấy `table` từ item đầu tiên, hoặc để trống nếu không có.
-      branch: order.branch || getUserInfo()?.branch?.name || '', // Lấy `branch` từ item hoặc thông tin người dùng.
-      owner: order.owner || '', // Lấy `owner` từ item đầu tiên hoặc để trống nếu không có.
+      type: order.type,
+      table: order.table || '',
+      branch: order.branch || getUserInfo()?.branch?.name || '',
+      owner: order.owner || '',
+      approvalBy: getUserInfo()?.slug || '',
       orderItems: order.orderItems.map((orderItem) => ({
-        quantity: orderItem.quantity, // Lấy số lượng từ `orderItem`.
-        variant: orderItem.variant, // Lấy mã `variant` từ `orderItem`.
-        note: orderItem.note || '', // Ghi chú có thể để trống nếu không có.
+        quantity: orderItem.quantity,
+        variant: orderItem.variant,
+        note: orderItem.note || '',
       })),
     }
+
+    console.log("Check order: ", createOrderRequest)
 
     // Gọi API để tạo đơn hàng.
     createOrder(createOrderRequest, {
       onSuccess: (data) => {
-        navigate(`${ROUTE.STAFF_ORDER_PAYMENT}/${data.result.slug}`) // Điều hướng đến trang thành công.
+        navigate(`${ROUTE.ORDER_PAYMENT}/${data.result.slug}`) // Điều hướng đến trang thành công.
         setIsOpen(false) // Đóng dialog.
         clearCart() // Xóa giỏ hàng.
         showToast(tToast('toast.createOrderSuccess')) // Thông báo thành công.
-      },
-      onError: (error) => {
-        if (isAxiosError(error)) {
-          const axiosError = error as AxiosError<IApiResponse<void>>
-          if (axiosError.response?.data.code) {
-            showErrorToast(axiosError.response.data.code) // Hiển thị lỗi từ API.
-          }
-        }
       },
     })
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex justify-start w-fit" asChild>
-        <DialogTrigger asChild>
-          <Button
-            disabled={disabled}
-            className="items-center justify-center gap-1 text-sm rounded-full"
-            onClick={() => setIsOpen(true)}
-          >
-            <ShoppingCart className="icon" />
-            {t('order.create')}
-          </Button>
-        </DialogTrigger>
+      <DialogTrigger asChild>
+        <Button
+          disabled={disabled}
+          className="flex items-center w-full text-sm rounded-full"
+          onClick={() => setIsOpen(true)}
+        >
+          {t('order.create')}
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-[22rem] rounded-md px-6 font-beVietNam sm:max-w-[32rem]">
@@ -105,11 +93,15 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
           </div>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-center gap-2">
-          <Button variant="outline" onClick={() => setIsOpen(false)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsOpen(false)}
+            className="border border-gray-300 min-w-24"
+          >
             {tCommon('common.cancel')}
           </Button>
           <Button onClick={() => order && handleSubmit(order)}>
-            {tCommon('common.createOrder')}
+            {t('order.create')}
           </Button>
         </DialogFooter>
       </DialogContent>

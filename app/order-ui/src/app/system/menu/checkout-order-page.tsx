@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Trash2 } from 'lucide-react'
+import { CircleAlert, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { QuantitySelector } from '@/components/app/button'
@@ -23,14 +23,12 @@ export default function ConfirmOrderPage() {
   const { state } = useSidebar()
   const isMobile = useIsMobile()
   const isCollapsed = state === 'collapsed'
-
   const cartItems = getCartItems()
 
   return (
     <div
-      className={`mb-10 flex flex-col ${
-        isCartOpen && !isMobile ? 'w-full' : 'w-full'
-      } ${isCollapsed ? 'pl-2' : ''}`}
+      className={`mb-10 flex flex-col ${isCartOpen && !isMobile ? 'w-full' : 'w-full'
+        } ${isCollapsed ? 'pl-2' : ''}`}
     >
       <div className="sticky top-0 z-10 flex items-center justify-end gap-2 py-3">
         {isMobile && <CheckoutCartDrawer />}
@@ -39,7 +37,7 @@ export default function ConfirmOrderPage() {
       <ScrollArea className="flex flex-col gap-2 pb-4">
         {/* Table list order items */}
         <div className="mb-4">
-          <div className="mb-4 grid grid-cols-7 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
+          <div className="grid grid-cols-7 px-4 py-3 mb-4 text-sm font-thin rounded-md bg-muted/60">
             <span className="col-span-2">{t('order.product')}</span>
             <span className="col-span-2 text-center">
               {t('order.quantity')}
@@ -47,37 +45,37 @@ export default function ConfirmOrderPage() {
             <span className="col-span-2 text-center">
               {t('order.grandTotal')}
             </span>
-            <span className="col-span-1 flex justify-center">
+            <span className="flex justify-center col-span-1">
               <Trash2 size={18} />
             </span>
           </div>
 
-          <div className="flex flex-col rounded-md border">
+          <div className="flex flex-col border rounded-md">
             {cartItems?.orderItems.map((item) => (
               <div
                 key={item.slug}
-                className="grid w-full items-center gap-4 rounded-md p-4 pb-4"
+                className="grid items-center w-full gap-4 p-4 pb-4 rounded-md"
               >
                 <div
                   key={`${item.slug}`}
-                  className="grid w-full grid-cols-7 flex-row items-center"
+                  className="grid flex-row items-center w-full grid-cols-7"
                 >
-                  <div className="col-span-2 flex w-full gap-2">
+                  <div className="flex w-full col-span-2 gap-2">
                     <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
                       <img
                         src={`${publicFileURL}/${item.image}`}
                         alt={item.name}
-                        className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                        className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                       />
                       <div className="flex flex-col">
-                        <span className="truncate font-bold">{item.name}</span>
+                        <span className="font-bold truncate">{item.name}</span>
                         <span className="text-sm text-muted-foreground">
                           {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="col-span-2 flex justify-center">
+                  <div className="flex justify-center col-span-2">
                     <QuantitySelector cartItem={item} />
                   </div>
                   <div className="col-span-2 text-center">
@@ -85,7 +83,7 @@ export default function ConfirmOrderPage() {
                       {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
                     </span>
                   </div>
-                  <div className="col-span-1 flex justify-center">
+                  <div className="flex justify-center col-span-1">
                     <DeleteCartItemDialog cartItem={item} />
                   </div>
                 </div>
@@ -97,9 +95,9 @@ export default function ConfirmOrderPage() {
 
         {/* Checkout cart */}
         <div className="flex items-end justify-between">
-          <div className="flex flex-col gap-1 text-xs italic text-red-600">
-            <p>Lưu ý: Lựa chọn bàn trước khi nhấn xác nhận đơn hàng.</p>
-            <p className="pl-8">Nhiều đơn hàng có thể đặt chung 1 bàn.</p>
+          <div className="flex items-center gap-1">
+            <CircleAlert size={14} className="text-destructive" />
+            <span className='text-xs italic text-destructive'>{t('order.selectTableNote')}</span>
           </div>
           {!isMobile && (
             <div className="flex justify-end">

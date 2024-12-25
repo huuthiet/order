@@ -22,6 +22,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { File } from 'src/file/file.entity';
 import { ProductException } from './product.exception';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { CatalogException } from 'src/catalog/catalog.exception';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -125,7 +126,7 @@ describe('ProductService', () => {
       (productRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       await expect(service.createProduct(mockInput)).rejects.toThrow(
-        BadRequestException,
+        CatalogException,
       );
     });
 
@@ -240,7 +241,7 @@ describe('ProductService', () => {
       (catalogRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(null);
       await expect(
         service.updateProduct(productSlug, mockInput),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(CatalogException);
     });
 
     it('should update success and return updated product', async () => {
@@ -295,7 +296,7 @@ describe('ProductService', () => {
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
       await expect(service.deleteProduct(productSlug)).rejects.toThrow(
-        BadRequestException,
+        ProductException,
       );
     });
 
@@ -378,25 +379,26 @@ describe('ProductService', () => {
 
     it('should throw exception when product not found', async () => {
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
-      
-      await expect(service.deleteProductImage(
-        'mock-product-slug', 
-        'mock-name-image'
-      )).rejects.toThrow(ProductException);
+
+      await expect(
+        service.deleteProductImage('mock-product-slug', 'mock-name-image'),
+      ).rejects.toThrow(ProductException);
     });
 
     it('should delete success', async () => {
       const product = {
         name: '',
-        images: JSON.stringify(['mock-name-image-1', 'mock-name-image-2'])
+        images: JSON.stringify(['mock-name-image-1', 'mock-name-image-2']),
       } as Product;
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(product);
 
-      expect(await (service.deleteProductImage(
-        'mock-product-slug', 
-        'mock-name-image-1'
-      ))).toEqual(1);
+      expect(
+        await service.deleteProductImage(
+          'mock-product-slug',
+          'mock-name-image-1',
+        ),
+      ).toEqual(1);
     });
   });
 
@@ -411,16 +413,15 @@ describe('ProductService', () => {
         destination: '',
         filename: 'mock-name-image-add',
         path: '',
-        buffer: undefined
+        buffer: undefined,
       } as Express.Multer.File;
       const mockFiles = [mockFile];
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.uploadMultiProductImages(
-        'mock-product-slug',
-        mockFiles
-      )).rejects.toThrow(ProductException);
+      await expect(
+        service.uploadMultiProductImages('mock-product-slug', mockFiles),
+      ).rejects.toThrow(ProductException);
     });
 
     it('should upload success', async () => {
@@ -436,7 +437,7 @@ describe('ProductService', () => {
         destination: '',
         filename: 'mock-name-image-add',
         path: '',
-        buffer: undefined
+        buffer: undefined,
       } as Express.Multer.File;
       const mockFiles = [mockFile];
       const file = {
@@ -451,15 +452,16 @@ describe('ProductService', () => {
       const files = [file];
 
       (productRepositoryMock.findOne as jest.Mock).mockResolvedValue(product);
-      (fileService.handleDuplicateFilesName as jest.Mock).mockReturnValue(mockFiles);
+      (fileService.handleDuplicateFilesName as jest.Mock).mockReturnValue(
+        mockFiles,
+      );
       (fileService.uploadFiles as jest.Mock).mockResolvedValue(files);
       (productRepositoryMock.save as jest.Mock).mockResolvedValue(product);
       (mapperMock.map as jest.Mock).mockReturnValue(product);
 
-      expect(await service.uploadMultiProductImages(
-        'mock-product-slug',
-        mockFiles
-      )).toEqual(product);
+      expect(
+        await service.uploadMultiProductImages('mock-product-slug', mockFiles),
+      ).toEqual(product);
     });
   });
 });

@@ -14,6 +14,7 @@ import { MenuException } from './menu.exception';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { GetAllMenuQueryRequestDto } from './menu.dto';
+import { BranchException } from 'src/branch/branch.exception';
 
 describe('MenuService', () => {
   let service: MenuService;
@@ -142,7 +143,7 @@ describe('MenuService', () => {
       branchRepositoryMock.findOne.mockReturnValue(null);
 
       // Assertions
-      expect(service.createMenu(mockMenu)).rejects.toThrow(MenuException);
+      expect(service.createMenu(mockMenu)).rejects.toThrow(BranchException);
     });
 
     it('should create a menu', async () => {

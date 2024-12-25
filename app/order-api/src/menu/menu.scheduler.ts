@@ -8,6 +8,7 @@ import { getDayIndex } from 'src/helper';
 import { Branch } from 'src/branch/branch.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as moment from 'moment';
+import { MenuItem } from 'src/menu-item/menu-item.entity';
 
 @Injectable()
 export class MenuScheduler {
@@ -48,10 +49,12 @@ export class MenuScheduler {
         date: today,
         isTemplate: false,
         id: undefined,
+        slug: undefined,
         branch: menu.branch,
-        menuItems: menu.menuItems.map((item) => {
+        menuItems: menu.menuItems.map((item: MenuItem) => {
           const newItem = _.cloneDeep(item);
           newItem.id = undefined;
+          newItem.slug = undefined;
           newItem.currentStock = newItem.defaultStock;
           newItem.product = newItem.product;
           return newItem;
@@ -61,11 +64,19 @@ export class MenuScheduler {
     });
 
     this.menuRepository.manager.transaction(async (manager) => {
-      await manager.save(newMenus);
-      this.logger.log(
-        `Menu generated ${newMenus.map((item) => `${item.slug}, `)}`,
-        context,
-      );
+      try {
+        await manager.save(newMenus);
+        this.logger.log(
+          `Menu generated ${newMenus.map((item) => `${item.slug}, `)}`,
+          context,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Error when generating menu: ${error.message}`,
+          error.stack,
+          context,
+        );
+      }
     });
   }
 

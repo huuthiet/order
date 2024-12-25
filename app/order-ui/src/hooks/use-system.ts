@@ -33,8 +33,8 @@ export const useUpdateSystemConfig = () => {
 
 export const useDeleteSystemConfig = () => {
   return useMutation({
-    mutationFn: async () => {
-      return deleteSystemConfigs()
+    mutationFn: async (params: { key: string; slug: string }) => {
+      return deleteSystemConfigs(params)
     },
   })
 }

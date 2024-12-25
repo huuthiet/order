@@ -45,6 +45,7 @@ jobs:
           docker compose -f .deploy/prod/docker-compose.yml down
           docker compose -f .deploy/prod/docker-compose.yml up -d --build
           docker image prune -f  # clean up none image after built
+          docker volume prune -f # clean up none volumn after built
 
 # jobs:
 #   terraform:

@@ -1,11 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   ACBInitiateQRCodeRequestDto,
   ACBInitiateQRCodeResponseDto,
@@ -17,6 +11,8 @@ import { AxiosError } from 'axios';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
+import { ACBConnectorConfigException } from './acb-connector.exception';
+import { ACBConnectorValidation } from './acb-connector.validation';
 
 @Injectable()
 export class ACBConnectorClient {
@@ -59,7 +55,10 @@ export class ACBConnectorClient {
               error.stack,
               context,
             );
-            throw new BadRequestException(error.message);
+            throw new ACBConnectorConfigException(
+              ACBConnectorValidation.GET_ACB_TOKEN_FAIL,
+              error.message,
+            );
           }),
         ),
     );
@@ -96,7 +95,10 @@ export class ACBConnectorClient {
               error.stack,
               context,
             );
-            throw new BadRequestException(error.message);
+            throw new ACBConnectorConfigException(
+              ACBConnectorValidation.INITIATE_QR_CODE_FAIL,
+              error.message,
+            );
           }),
         ),
     );

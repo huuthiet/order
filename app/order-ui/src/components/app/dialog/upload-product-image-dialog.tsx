@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react'
-import { isAxiosError } from 'axios'
 import { useTranslation } from 'react-i18next'
 import { Upload } from 'lucide-react'
 import { PlusCircledIcon } from '@radix-ui/react-icons'
@@ -16,7 +15,7 @@ import {
 
 import { useUploadProductImage } from '@/hooks'
 import { IProduct } from '@/types'
-import { showErrorToast, showToast } from '@/utils'
+import { showToast } from '@/utils'
 
 interface ICreateProductDialogProps {
   product: IProduct
@@ -43,19 +42,6 @@ export default function UploadProductImageDialog({ product }: ICreateProductDial
           setIsOpen(false)
           setPreviewImage(null)
         },
-        onError: (error) => {
-          if (isAxiosError(error)) {
-            if (error.code === 'ECONNABORTED') {
-              showToast(error.response?.data?.errorCode)
-              return
-            }
-            if (error.code === 'ERR_NETWORK') {
-              showErrorToast(error.response?.data?.errorCode)
-              return
-            }
-            showErrorToast(error.response?.data?.statusCode)
-          }
-        }
       }
     )
   }

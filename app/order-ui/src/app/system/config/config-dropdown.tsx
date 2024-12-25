@@ -1,3 +1,4 @@
+import React from "react";
 import {
     MoreHorizontal,
     PenSquare,
@@ -14,12 +15,12 @@ import {
     DropdownMenuTrigger,
     Button
 } from "@/components/ui"
-import { UpdateSystemConfigDialog } from "@/components/app/dialog"
+import { DeleteSystemConfigDialog, UpdateSystemConfigDialog } from "@/components/app/dialog"
 import { ISystemConfig } from "@/types"
-import React from "react";
 
 export default function ConfigDropdown({ systemConfig }: { systemConfig: ISystemConfig }) {
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
     return (
         <DropdownMenu>
@@ -41,7 +42,11 @@ export default function ConfigDropdown({ systemConfig }: { systemConfig: ISystem
                         <PenSquare className="mr-2 icon" />
                         <span>Chỉnh sửa</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                        onSelect={(e) => {
+                            e.preventDefault(); // Ngăn dropdown bị đóng
+                            setIsDeleteDialogOpen(true); // Mở dialog
+                        }}>
                         <Trash className="mr-2 icon" />
                         <span>Xóa</span>
                     </DropdownMenuItem>
@@ -51,6 +56,12 @@ export default function ConfigDropdown({ systemConfig }: { systemConfig: ISystem
                 <UpdateSystemConfigDialog
                     systemConfig={systemConfig}
                     onClose={() => setIsDialogOpen(false)} // Đóng dialog khi cần
+                />
+            )}
+            {isDeleteDialogOpen && (
+                <DeleteSystemConfigDialog
+                    systemConfig={systemConfig}
+                    onClose={() => setIsDeleteDialogOpen(false)} // Đóng dialog khi cần
                 />
             )}
         </DropdownMenu>

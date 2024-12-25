@@ -3,7 +3,13 @@ import { persist } from 'zustand/middleware'
 import i18next from 'i18next'
 
 import { showToast } from '@/utils'
-import { ICartItemStore, ICartItem, ITable } from '@/types'
+import {
+  ICartItemStore,
+  ICartItem,
+  ITable,
+  IOrderType,
+  IUserInfo,
+} from '@/types'
 
 export const useCartItemStore = create<ICartItemStore>()(
   persist(
@@ -12,11 +18,26 @@ export const useCartItemStore = create<ICartItemStore>()(
 
       getCartItems: () => get().cartItems,
 
-      addCustomerInfo: (owner: string) => {
+      addCustomerInfo: (owner: IUserInfo) => {
+        console.log(owner)
         const { cartItems } = get()
         if (cartItems) {
           set({
-            cartItems: { ...cartItems, owner }, // Cập nhật owner cho cartItems
+            cartItems: {
+              ...cartItems,
+              owner: owner.slug,
+              ownerPhoneNumber: owner.phonenumber,
+              ownerFullName: `${owner.firstName} ${owner.lastName}`,
+            },
+          })
+        }
+      },
+
+      addApprovalBy: (approvalBy: string) => {
+        const { cartItems } = get()
+        if (cartItems) {
+          set({
+            cartItems: { ...cartItems, approvalBy }, // Cập nhật approvalBy cho cartItems
           })
         }
       },
@@ -116,6 +137,15 @@ export const useCartItemStore = create<ICartItemStore>()(
         if (cartItems) {
           set({
             cartItems: { ...cartItems },
+          })
+        }
+      },
+
+      addOrderType: (orderType: IOrderType) => {
+        const { cartItems } = get()
+        if (cartItems) {
+          set({
+            cartItems: { ...cartItems, type: orderType },
           })
         }
       },

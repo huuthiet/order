@@ -15,6 +15,7 @@ interface OrderItemDetailProps {
 }
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
+  console.log('OrderItemDetail', order)
   const { t } = useTranslation(['menu'])
   const { mutate: exportInvoice } = useExportOrderInvoice()
 
@@ -23,9 +24,13 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       onSuccess: () => {
         showToast(t('toast.exportInvoiceSuccess'))
       },
-      onError: (error) => {
-        console.log('Export invoice error', error)
-      }
+      // onError: (error) => {
+      //   if (isAxiosError(error)) {
+      //     const axiosError = error as AxiosError<IApiResponse<void>>
+      //     if (axiosError.response?.data.code)
+      //       showErrorToast(axiosError.response.data.code)
+      //   }
+      // },
     })
   }
 
@@ -36,14 +41,16 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
     >
       <div className="justify-start col-span-1">
         <div className="flex items-center gap-2">
-          <div className='flex items-center justify-center p-2 w-9 h-9 rounded-xl bg-primary/10'>
+          <div className="flex items-center justify-center p-2 h-9 w-9 rounded-xl bg-primary/10">
             <ShoppingCartIcon className="w-4 h-4 text-primary" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-muted-foreground">
               {order.owner?.firstName} {order.owner?.lastName}
             </span>
-            <span className="text-xs text-muted-foreground">{order.table.name}</span>
+            <span className="text-xs text-muted-foreground">
+              {order.table.name}
+            </span>
           </div>
         </div>
       </div>
@@ -66,18 +73,25 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         </div>
       </div>
       <div className="col-span-1">
-        <OrderStatusBadge status={order.status} />
+        <OrderStatusBadge order={order} />
       </div>
       <div className="flex justify-end col-span-1 gap-2">
         <NavLink to={`${ROUTE.STAFF_ORDER_HISTORY}/${order.slug}`}>
-          <Button variant="outline" className='text-xs border-primary text-primary hover:text-primary hover:bg-primary/10'>
+          <Button
+            variant="outline"
+            className="text-xs border-primary text-primary hover:bg-primary/10 hover:text-primary"
+          >
             {t('order.viewDetail')}
           </Button>
         </NavLink>
-        <Button onClick={handleExportInvoice} variant="outline" className='text-xs border-primary text-primary hover:text-primary hover:bg-primary/10'>
+        {/* Export invoice */}
+        <Button
+          onClick={handleExportInvoice}
+          variant="outline"
+          className="text-xs border-primary text-primary hover:bg-primary/10 hover:text-primary"
+        >
           {t('order.exportInvoice')}
         </Button>
-        {/* {order} */}
       </div>
     </div>
   )

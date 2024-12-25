@@ -77,6 +77,7 @@
     "enterPrice": "Nhập giá",
     "size": "Kích thước",
     "selectSize": "Chọn kích thước",
+    "selectQuantity": "Chọn số lượng",
 
     "updateVariant": "Cập nhật phân loại",
     "deleteVariant": "Xóa phân loại",
@@ -88,7 +89,9 @@
     "catalog": "Danh mục",
     "description": "Mô tả",
     "rating": "Đánh giá",
-    "variant": "Phân loại"
+    "variant": "Phân loại",
+
+    "productDetail": "Chi tiết món"
   },
   "productVariant": {
     "title": "Quản lý phân loại",

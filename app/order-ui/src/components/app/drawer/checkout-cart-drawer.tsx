@@ -1,7 +1,8 @@
 'use client'
 
-import { ShoppingCart } from 'lucide-react'
-// import { Bar, BarChart, ResponsiveContainer } from 'recharts'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -14,19 +15,36 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { useTranslation } from 'react-i18next'
-import { useCartItemStore } from '@/stores'
-import { ScrollArea, Label } from '@/components/ui'
-import { CartNoteInput, PromotionInput } from '@/components/app/input'
+import { useCartItemStore, useUserStore } from '@/stores'
+import { Input, Label } from '@/components/ui'
+import { CartNoteInput } from '@/components/app/input'
 import { publicFileURL } from '@/constants'
 // import { NavLink, useNavigate } from 'react-router-dom'
-import { CreateOrderDialog } from '../dialog'
+import { CreateOrderDialog } from '@/components/app/dialog'
+import { useDebouncedInput, usePagination, useUsers } from '@/hooks'
+import { IUserInfo } from '@/types'
 
 export default function CheckoutCartDrawer() {
-  const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
-  //   const navigate = useNavigate()
-  const { getCartItems } = useCartItemStore()
+  const { t } = useTranslation('menu')
+  const { pagination } = usePagination()
+  const { getUserInfo } = useUserStore()
+  const { inputValue, setInputValue, debouncedInputValue } = useDebouncedInput()
+  const [, setSelectedUser] = useState<IUserInfo | null>(null)
+  const { getCartItems, removeCartItem, addCustomerInfo } = useCartItemStore()
+  const [users, setUsers] = useState<IUserInfo[]>([])
+
+  // Fetch users with debounced phone number
+  const { data: userByPhoneNumber } = useUsers(
+    debouncedInputValue
+      ? {
+        order: 'DESC',
+        page: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        phonenumber: debouncedInputValue,
+      }
+      : null // Không gọi hook nếu không có số điện thoại
+  )
 
   const cartItems = getCartItems()
 
@@ -38,99 +56,162 @@ export default function CheckoutCartDrawer() {
   const discount = 0 // Giả sử giảm giá là 0
   const total = subtotal ? subtotal - discount : 0
 
+  useEffect(() => {
+    if (debouncedInputValue === '') {
+      // Reset danh sách user khi giá trị số điện thoại bị xóa
+      setUsers([])
+    } else if (userByPhoneNumber?.result?.items) {
+      // Cập nhật danh sách user khi fetch thành công
+      setUsers(userByPhoneNumber.result.items)
+    }
+  }, [debouncedInputValue, userByPhoneNumber])
+
+  const handleRemoveCartItem = (orderItemId: string) => {
+    removeCartItem(orderItemId)
+  }
+
+  const handleAddOwner = (user: IUserInfo) => () => {
+    addCustomerInfo(user)
+    setUsers([])
+    setSelectedUser(user)
+  }
+
   return (
     <Drawer>
       <DrawerTrigger asChild className="z-30">
-        <div>
-          {cartItems?.orderItems && cartItems.orderItems.length > 0 && (
-            <span className="absolute top-0 right-0 flex items-center justify-center p-2 text-xs font-semibold text-white rounded-full h-7 w-7 bg-primary">
-              {cartItems?.orderItems.length}
-            </span>
-          )}
-          <Button variant="outline">
-            <ShoppingCart className="icon" />
-          </Button>
-        </div>
+        <Button variant="default" disabled={!cartItems?.table || cartItems?.table === ""} className="text-white bg-primary">
+          {t('order.confirmation')}
+        </Button>
       </DrawerTrigger>
-      <DrawerContent>
-        <div className="w-full max-w-sm mx-auto">
+      <DrawerContent className="h-[90%]">
+        <div className="pb-10 mx-4 overflow-y-auto">
           <DrawerHeader>
             <DrawerTitle>{t('order.orderInformation')}</DrawerTitle>
             <DrawerDescription>{t('menu.orderDescription')}</DrawerDescription>
           </DrawerHeader>
-          <div className="flex-1 overflow-hidden">
-            <ScrollArea className="h-[28rem]">
-              {/* <div className="flex flex-col gap-4 p-4 mt-6 border-b">
-                <div className="flex flex-col gap-2">
-                  <Label>{t('order.customerName')}</Label>
-                  <Input placeholder={t('order.enterCustomerName')} />
+          <div className="">
+            {/* Customer Information */}
+            <div className="flex flex-col gap-4 pb-6 mt-6 border-b sm:relative">
+              <div className="flex flex-col gap-4">
+                <Label>{t('order.phoneNumber')}</Label>
+                <div className='flex gap-2'>
+                  <Input
+                    placeholder={t('order.enterPhoneNumber')}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                  />
+                  <Button onClick={handleAddOwner(getUserInfo() as IUserInfo)}>
+                    {t('order.defaultApprover')}
+                  </Button>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label>{t('order.phoneNumber')}</Label>
-                  <Input placeholder={t('order.enterPhoneNumber')} />
+                {cartItems && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold ">
+                      {cartItems.ownerFullName}
+                    </span>
+                    <span className="text-sm">
+                      {cartItems.ownerPhoneNumber}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown danh sách user */}
+              {users.length > 0 && (
+                <div className="absolute z-10 w-full p-2 mt-16 bg-white border rounded-md shadow-lg">
+                  {users.map((user, index) => (
+                    <div
+                      key={user.slug}
+                      onClick={handleAddOwner(user)}
+                      className={`p-2 hover:bg-gray-100 cursor-pointer ${index < users.length - 1 ? 'border-b' : ''
+                        }`}
+                    >
+                      <div className="font-medium">
+                        {user.firstName} {user.lastName}
+                      </div>
+                      <div className="text-sm text-gray-500">{user.phonenumber}</div>
+                    </div>
+                  ))}
                 </div>
-              </div> */}
-              <div className="flex flex-col gap-4 p-4 mt-5 border-b">
-                <div className="flex flex-col gap-2">
-                  <Label>{t('order.deliveryMethod')}</Label>
-                  <div className="flex flex-row items-center gap-4">
-                    <div className="flex items-center justify-center px-4 py-1 text-xs font-thin rounded-full w-fit bg-primary/15 text-primary">
-                      {t('order.dineIn')}
-                    </div>
-                    <div>
-                      <span className="text-xs text-muted-foreground">
-                        {t('order.tableNumber')}: 8
-                      </span>
-                    </div>
+              )}
+            </div>
+            <div className="flex flex-col gap-4 p-4 mt-5 border-b">
+              <div className="flex flex-col gap-2">
+                <Label>{t('order.deliveryMethod')}</Label>
+                <div className="flex flex-row items-center gap-4">
+                  <div className="flex items-center justify-center px-4 py-1 text-xs font-thin rounded-full w-fit bg-primary/15 text-primary">
+                    {t('order.dineIn')}
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground">
+                      {t('order.tableNumber')}: 8
+                    </span>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-4 p-4">
-                <div className="flex flex-col gap-4 py-2 space-y-2">
-                  {cartItems ? (
-                    cartItems?.orderItems?.map((item) => (
+            </div>
+            <div className="flex flex-col gap-4 p-4">
+              <div className="flex flex-col gap-4 py-2 space-y-2">
+                {cartItems ? (
+                  cartItems?.orderItems?.map((item) => (
+                    <div
+                      key={item.slug}
+                      className="flex flex-col gap-4 pb-4 border-b"
+                    >
                       <div
-                        key={item.slug}
-                        className="flex flex-col gap-4 pb-4 border-b"
+                        key={`${item.slug}`}
+                        className="flex flex-row items-center gap-2 rounded-xl"
                       >
-                        <div
-                          key={`${item.slug}`}
-                          className="flex flex-row items-center gap-2 rounded-xl"
-                        >
-                          {/* Hình ảnh sản phẩm */}
-                          <img
-                            src={`${publicFileURL}/${item.image}`}
-                            alt={item.name}
-                            className="object-cover w-20 h-20 rounded-2xl"
-                          />
-                          <div className="flex flex-col flex-1 h-20 gap-2 py-2">
-                            <div className="flex flex-row items-start justify-between h-full">
-                              <div className="flex flex-col justify-between flex-1 h-full min-w-0">
-                                <span className="font-bold truncate">
-                                  {item.name}
-                                </span>
-                                <span className="flex items-center justify-between text-xs font-thin text-muted-foreground">
-                                  {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
-                                  <span className="text-muted-foreground">
-                                    x1
-                                  </span>
-                                </span>
-                              </div>
+                        {/* Hình ảnh sản phẩm */}
+                        <img
+                          src={`${publicFileURL}/${item.image}`}
+                          alt={item.name}
+                          className="object-cover w-20 h-20 rounded-2xl"
+                        />
+                        <div className="flex flex-col flex-1 h-20 gap-2 py-2">
+                          <div className="flex flex-row items-start justify-between h-full">
+                            <div className="flex flex-col justify-between flex-1 h-full min-w-0">
+                              <span className="font-bold truncate">
+                                {item.name}
+                              </span>
+                              <span className="flex items-center justify-between text-xs font-thin text-muted-foreground">
+                                {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                                {/* <span className="text-muted-foreground">
+                                  x1
+                                </span> */}
+                              </span>
                             </div>
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleRemoveCartItem(item.id)}
+                            >
+                              <Trash2
+                                size={20}
+                                className="text-muted-foreground"
+                              />
+                            </Button>
+                          </div>
+                          <div className="flex items-center justify-between w-full text-sm font-medium">
+                            <span>
+                              {t('order.quantity')} {item.quantity}
+                            </span>
+                            <span className="font-semibold text-muted-foreground">
+                              {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                            </span>
                           </div>
                         </div>
-                        <CartNoteInput cartItem={item} />
                       </div>
-                    ))
-                  ) : (
-                    <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
-                      {tCommon('common.noData')}
-                    </p>
-                  )}
-                </div>
-                <PromotionInput />
+                      <CartNoteInput cartItem={item} />
+                    </div>
+                  ))
+                ) : (
+                  <p className="flex min-h-[12rem] items-center justify-center text-muted-foreground">
+                    {tCommon('common.noData')}
+                  </p>
+                )}
               </div>
-            </ScrollArea>
+              {/* <PromotionInput /> */}
+            </div>
           </div>
           <DrawerFooter>
             <div className="p-4 mt-auto border-t bg-background">
@@ -166,17 +247,13 @@ export default function CheckoutCartDrawer() {
             </div>
             <div className="grid flex-row grid-cols-2 gap-2">
               <DrawerClose asChild>
-                <Button variant="outline" className="w-full rounded-full">
+                <Button
+                  variant="outline"
+                  className="w-full border border-gray-400 rounded-full"
+                >
                   {tCommon('common.close')}
                 </Button>
               </DrawerClose>
-              {/* <Button
-                variant="outline"
-                className="rounded-full"
-                onClick={() => navigate(-1)}
-              >
-                {tCommon('common.back')}
-              </Button> */}
               <CreateOrderDialog disabled={!cartItems?.orderItems.length} />
             </div>
           </DrawerFooter>

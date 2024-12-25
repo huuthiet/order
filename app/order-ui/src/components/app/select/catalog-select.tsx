@@ -36,7 +36,7 @@ export default function CatalogSelect({
         label: item.name || '',
       }))
       // Append new users to the previous users
-      setAllCatalogs((prevCatalogs) => [...prevCatalogs, ...newCatalogs])
+      setAllCatalogs(newCatalogs)
     }
   }, [data])
 

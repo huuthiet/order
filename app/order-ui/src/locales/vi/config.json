@@ -2,6 +2,8 @@
   "config": {
     "title": "Cấu hình",
 
+    "save": "Lưu",
+
     "update": "Cập nhật",
     "updateSystemConfigDescription": "Cập nhật cấu hình hệ thống",
     "key": "Từ khóa",
@@ -9,6 +11,12 @@
     "value": "Giá trị",
     "enterValue": "Nhập giá trị",
     "description": "Mô tả",
-    "enterDescription": "Nhập mô tả"
+    "enterDescription": "Nhập mô tả",
+
+    "delete": "Xóa",
+    "deleteSystemConfig": "Xóa cấu hình hệ thống",
+    "deleteContent": "Bạn có chắc muốn xóa cấu hình với key ",
+    "deleteContent2": " và giá trị ",
+    "deleteContent3": " không?"
   }
 }

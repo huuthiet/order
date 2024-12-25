@@ -25,10 +25,6 @@ export const useRegister = () => {
     mutationFn: async (data: IRegisterRequest) => {
       return register(data)
     },
-    onSuccess: () => {
-      // After register success, fetch user info
-      // queryClient.invalidateQueries({ queryKey: ['user-info-permission'] })
-    },
   })
 }
 

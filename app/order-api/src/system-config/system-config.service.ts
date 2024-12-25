@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   CreateSystemConfigDto,
   DeleteSystemConfigDto,
@@ -18,6 +13,8 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as _ from 'lodash';
+import { SystemConfigException } from './system-config.exception';
+import { SystemConfigValidation } from './system-config.validation';
 
 @Injectable()
 export class SystemConfigService {
@@ -54,7 +51,8 @@ export class SystemConfigService {
         `Error when creating system config ${JSON.stringify(error)}`,
         context,
       );
-      throw new BadRequestException(
+      throw new SystemConfigException(
+        SystemConfigValidation.CREATE_SYSTEM_CONFIG_ERROR,
         `Error when creating system config ${error.message}`,
       );
     }
@@ -87,7 +85,10 @@ export class SystemConfigService {
 
   async findOne(query: GetSystemConfigQueryDto) {
     if (_.isEmpty(query))
-      throw new BadRequestException('Query must not be empty');
+      throw new SystemConfigException(
+        SystemConfigValidation.SYSTEM_CONFIG_QUERY_INVALID,
+        'Query must not be empty',
+      );
 
     const systemConfig = await this.systemConfigRepository.findOne({
       where: {
@@ -95,7 +96,10 @@ export class SystemConfigService {
         slug: query.slug,
       },
     });
-    if (!systemConfig) throw new BadRequestException('System config not found');
+    if (!systemConfig)
+      throw new SystemConfigException(
+        SystemConfigValidation.SYSTEM_CONFIG_NOT_FOUND,
+      );
     return this.mapper.map(systemConfig, SystemConfig, SystemConfigResponseDto);
   }
 
@@ -105,7 +109,10 @@ export class SystemConfigService {
         slug,
       },
     });
-    if (!systemConfig) throw new BadRequestException('System config not found');
+    if (!systemConfig)
+      throw new SystemConfigException(
+        SystemConfigValidation.SYSTEM_CONFIG_NOT_FOUND,
+      );
 
     Object.assign(systemConfig, {
       ...updateSystemConfigDto,
@@ -127,7 +134,10 @@ export class SystemConfigService {
         slug: requestData.slug,
       },
     });
-    if (!systemConfig) throw new BadRequestException('System config not found');
+    if (!systemConfig)
+      throw new SystemConfigException(
+        SystemConfigValidation.SYSTEM_CONFIG_NOT_FOUND,
+      );
 
     const deletedSystemConfig =
       await this.systemConfigRepository.remove(systemConfig);

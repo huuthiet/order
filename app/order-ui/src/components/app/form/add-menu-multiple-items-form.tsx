@@ -71,15 +71,15 @@ export const AddMenuMultipleItemsForm: React.FC<
     return {
       ...acc,
       [product.productSlug]: (
-        <div className="flex items-center justify-between gap-2 rounded-md p-2">
-          <FormLabel className="w-full rounded-md border p-2 text-sm">
+        <div className="flex items-center justify-between gap-2 p-2 rounded-md">
+          <FormLabel className="w-full p-2 text-sm border rounded-md">
             {product.productName}
           </FormLabel>
           <FormField
             control={form.control}
             name={product.productSlug}
             render={({ field }) => (
-              <FormItem className="w-32 flex-shrink-0">
+              <FormItem className="flex-shrink-0 w-32">
                 <FormControl>
                   <Input
                     type="number"

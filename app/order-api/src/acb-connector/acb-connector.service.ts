@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ACBConnectorConfig } from './acb-connector.entity';
 import { Repository } from 'typeorm';
@@ -16,6 +11,8 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as _ from 'lodash';
+import { ACBConnectorConfigException } from './acb-connector.exception';
+import { ACBConnectorValidation } from './acb-connector.validation';
 
 @Injectable()
 export class ACBConnectorService {
@@ -46,7 +43,9 @@ export class ACBConnectorService {
     const hasConfig = await this.acbConnectorConfigRepository.find({ take: 1 });
     if (hasConfig.length > 0) {
       this.logger.error('ACB Config already exists', null, context);
-      throw new BadRequestException('ACB Config already exists');
+      throw new ACBConnectorConfigException(
+        ACBConnectorValidation.ACB_CONNECTOR_CONFIG_EXIST,
+      );
     }
     const config = this.mapper.map(
       requestData,
@@ -71,7 +70,9 @@ export class ACBConnectorService {
     });
     if (!config) {
       this.logger.error('ACB Config not found', null, context);
-      throw new BadRequestException('ACB Config not found');
+      throw new ACBConnectorConfigException(
+        ACBConnectorValidation.ACB_CONNECTOR_CONFIG_NOT_FOUND,
+      );
     }
 
     Object.assign(config, { ...requestData });

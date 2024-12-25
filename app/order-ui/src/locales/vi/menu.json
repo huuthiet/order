@@ -1,9 +1,13 @@
 {
   "menu": {
     "noData": "Không có dữ liệu",
+    "outOfStock": "Hết hàng",
+    "contactForPrice": "Liên hệ",
     "chooseDishCategory": "Chọn loại món",
 
     "addToCart": "Thêm vào giỏ",
+    "buyNow": "Mua ngay",
+    "viewDetails": "Xem chi tiết",
     "confirmProduct": "Xác nhận thông tin sản phẩm",
     "confirmProductDescription": "Vui lòng kiểm tra thông tin sản phẩm trước khi thêm vào giỏ hàng",
     "selectSize": "Chọn kích thước",
@@ -76,7 +80,7 @@
     "orderInformation": "Thông tin đơn hàng",
     "customerName": "Tên khách hàng",
     "enterCustomerName": "Nhập tên khách hàng",
-    "phoneNumber": "Số điện thoại",
+    "phoneNumber": "Số điện thoại khách hàng",
     "enterPhoneNumber": "Nhập số điện thoại",
     "orderDate": "Ngày đặt hàng",
     "note": "Ghi chú",
@@ -84,6 +88,7 @@
     "deliveryMethod": "Phương thức giao hàng",
     "dineIn": "Tại quán",
     "takeAway": "Mang đi",
+    "defaultApprover": "Mặc định",
     "location": "Vị trí",
     "tableNumber": "Số bàn",
     "promotion": "Mã giảm giá",
@@ -100,9 +105,10 @@
     "orderSuccess": "Đặt hàng thành công",
 
     "paymentStatus": "Thanh toán",
+    "orderStatus": "Trạng thái",
     "cash": "Tiền mặt",
     "bankTransfer": "Chuyển khoản ngân hàng",
-    "pending": "Chờ thanh toán",
+    "pending": "Chưa được giao",
     "paid": "Đã thanh toán",
     "completed": "Đã hoàn tất",
     "shipping": "Đang giao hàng",
@@ -113,11 +119,14 @@
     "deleteContent": "Bạn có chắc muốn xóa sản phẩm ",
     "deleteContent2": " khỏi giỏ hàng không?",
 
-    "create": "Tạo đơn hàng",
-    "confirmOrder": "Bạn có chắc muốn tạo đơn hàng này không?",
+    "selectTableNote": "Lưu ý: Lựa chọn bàn trước khi nhấn xác nhận đơn hàng.  Nhiều đơn hàng có thể đặt chung một bàn.",
+
+    "create": "Đặt hàng",
+    "confirmOrder": "Bạn có chắc muốn đặt hàng?",
 
     "viewDetail": "Xem chi tiết",
     "updatePayment": "Cập nhật thanh toán",
+    "exportPayment": "Xuất QR code thanh toán",
     "exportInvoice": "Xuất hóa đơn",
     "backToMenu": "Quay lại menu",
 
@@ -155,7 +164,7 @@
     "currentOrder": "Đơn hàng chính",
     "refreshOrdersInTheSameTable": "Lưu ý: Bạn nên làm mới trang để lấy dữ liệu mới nhất",
     "refresh": "Làm mới dữ liệu",
-    "loadOrdersInTheSameTable": "Lấy các đơn hàng cùng bàn"
+    "loadOrdersInTheSameTable": "Lấy các đơn cùng bàn"
   },
   "table": {
     "title": "Danh sách bàn"

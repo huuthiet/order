@@ -47,7 +47,7 @@ export const UpdateCatalogForm: React.FC<IFormUpdateCatalogProps> = ({ catalog, 
         onSubmit(false)
         form.reset()
         showToast(t('toast.updateCatalogSuccess'))
-      }
+      },
     })
   }
 

@@ -95,6 +95,13 @@ export default function TablePage() {
           })
           showToast(tToast('toast.updateTableStatusSuccess'))
         },
+        // onError: (error) => {
+        //   if (isAxiosError(error)) {
+        //     const axiosError = error as AxiosError<IApiResponse<void>>
+        //     if (axiosError.response?.data.code)
+        //       showErrorToast(axiosError.response.data.code)
+        //   }
+        // },
       },
     )
     setContextMenu({ show: false, x: 0, y: 0, tableId: '' })

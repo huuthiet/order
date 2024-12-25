@@ -3,7 +3,6 @@ import {
   Inject,
   Injectable,
   Logger,
-  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -22,7 +21,14 @@ import {
 } from './auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
-import { DataSource, MoreThan, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindOneOptions,
+  FindOptionsWhere,
+  Like,
+  MoreThan,
+  Repository,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { InjectMapper } from '@automapper/nestjs';
@@ -49,6 +55,9 @@ import { RoleEnum } from 'src/role/role.enum';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
 import * as _ from 'lodash';
+import { RoleException } from 'src/role/role.exception';
+import { RoleValidation } from 'src/role/role.validation';
+import { DefaultBranchName } from 'src/branch/branch.constants';
 
 @Injectable()
 export class AuthService {
@@ -382,14 +391,20 @@ export class AuthService {
     requestData: RegisterAuthRequestDto,
   ): Promise<RegisterAuthResponseDto> {
     const context = `${AuthService.name}.${this.register.name}`;
-    // Validation
+    // construct options where
+    const branchFindOptionsWhere: FindOptionsWhere<Branch> = {};
+    if (requestData.branchSlug) {
+      branchFindOptionsWhere.slug = requestData.branchSlug;
+    } else {
+      branchFindOptionsWhere.name = Like(`%${DefaultBranchName}%`);
+    }
+
+    // Find branch
     const branch = await this.branchRepository.findOne({
-      where: {
-        slug: requestData.branchSlug,
-      },
+      where: branchFindOptionsWhere,
     });
     if (!branch) {
-      this.logger.warn(`Branch ${requestData.branchSlug} not found`, context);
+      this.logger.warn(`Branch not found`, context);
       throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
     }
 
@@ -412,7 +427,10 @@ export class AuthService {
       },
     });
     if (!role)
-      throw new BadRequestException(`Role ${RoleEnum.Customer} not found`);
+      throw new RoleException(
+        RoleValidation.ROLE_NOT_FOUND,
+        `Role ${RoleEnum.Customer} not found`,
+      );
 
     const user = this.mapper.map(requestData, RegisterAuthRequestDto, User);
 

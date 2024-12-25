@@ -1,20 +1,21 @@
 {
   "route": {
-    "home": "Trang chủ",
-    "menu": "Thực đơn",
+    "bank-config": "Cấu hình ngân hàng",
     "checkout-order": "Xác nhận đơn hàng",
+    "config": "Cấu hình",
+    "details": "Chi tiết",
+    "home": "Trang chủ",
+    "log-management": "Quản lý log",
+    "menu": "Thực đơn",
+    "menu-management": "Quản lý thực đơn",
     "order-payment": "Thanh toán",
     "order-management": "Quản lý giao hàng",
     "order-history": "Quản lý đơn hàng",
-    "table-management": "Quản lý bàn",
-    "product-management": "Quản lý món",
-    "menu-management": "Quản lý thực đơn",
-    "product": "Món",
     "profile": "Trang cá nhân",
+    "product": "Món",
     "product-detail": "Chi tiết món",
-    "user-management": "Quản lý người dùng",
-    "log-management": "Quản lý log",
-    "bank-config": "Cấu hình ngân hàng",
-    "config": "Cấu hình"
+    "product-management": "Quản lý món",
+    "table-management": "Quản lý bàn",
+    "user-management": "Quản lý người dùng"
   }
 }

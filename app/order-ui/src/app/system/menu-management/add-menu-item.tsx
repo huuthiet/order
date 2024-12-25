@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { Button, DataTable, ScrollArea } from '@/components/ui'
+import { Button, DataTable } from '@/components/ui'
 import { useProducts } from '@/hooks'
 import { useProductColumns } from './DataTable/columns'
 import { useMenuItemStore } from '@/stores'
@@ -30,30 +30,28 @@ export default function AddMenuItem() {
       </div>
 
       {/* Product List */}
-      <ScrollArea className="mt-2 flex-1">
-        <div className="flex flex-1 flex-col gap-4 px-4 pb-8">
-          <div className="flex flex-col gap-4 space-y-2 py-2">
-            <DataTable
-              columns={useProductColumns()}
-              data={productsData || []}
-              isLoading={isLoading}
-              pages={1}
-              onPageChange={() => {}}
-              onPageSizeChange={() => {}}
-            />
-          </div>
-
-          {/* Hiển thị nút thêm khi có items được chọn */}
-          {menuItems.length > 0 && (
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => clearMenuItems()}>
-                {tCommon('common.cancel')}
-              </Button>
-              <AddMultipleItemsDialog products={menuItems} />
-            </div>
-          )}
+      <div className="flex flex-1 flex-col gap-4 px-4 pb-8">
+        <div className="grid h-full grid-cols-1 gap-2">
+          <DataTable
+            columns={useProductColumns()}
+            data={productsData || []}
+            isLoading={isLoading}
+            pages={1}
+            onPageChange={() => {}}
+            onPageSizeChange={() => {}}
+          />
         </div>
-      </ScrollArea>
+
+        {/* Hiển thị nút thêm khi có items được chọn */}
+        {menuItems.length > 0 && (
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => clearMenuItems()}>
+              {tCommon('common.cancel')}
+            </Button>
+            <AddMultipleItemsDialog products={menuItems} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

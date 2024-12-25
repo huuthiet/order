@@ -5,8 +5,8 @@ import { useTables } from '@/hooks'
 import { useCartItemStore } from '@/stores'
 import { useUserStore } from '@/stores'
 import { ITable } from '@/types'
-import { TableItem } from '../table/table-item'
 import SelectReservedTableDialog from '@/components/app/dialog/select-reserved-table-dialog'
+import { NonResizableTableItem } from '../table'
 
 export default function TableSelect() {
   const { t } = useTranslation(['table'])
@@ -47,26 +47,26 @@ export default function TableSelect() {
 
   return (
     <div className="flex flex-col w-full mt-6 border rounded-md">
-      <div className="flex items-center justify-between p-4 bg-muted/60">
+      <div className="flex flex-col items-start justify-between gap-2 p-4 sm:flex-row bg-muted/60">
         <span className="font-medium text-md">{t('table.title')}</span>
-        <div className="flex flex-row gap-4 px-4">
+        <div className="flex gap-2 text-xs sm:gap-4 sm:px-4 sm:flex-row">
           <div className="flex flex-row items-center gap-2">
             <div className="w-4 h-4 border rounded-sm bg-muted-foreground/10" />
-            <span className="text-sm">{t('table.available')}</span>
+            <span className="sm:text-sm">{t('table.available')}</span>
           </div>
           <div className="flex flex-row items-center gap-2">
             <div className="w-4 h-4 bg-yellow-500 rounded-sm" />
-            <span className="text-sm">{t('table.reserved')}</span>
+            <span className="sm:text-sm">{t('table.reserved')}</span>
           </div>
           <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 border-2 rounded-sm border-primary bg-muted-foreground/10" />
-            <span className="text-sm">{t('table.selected')}</span>
+            <div className="w-4 h-4 border-2 border-green-500 rounded-sm bg-muted-foreground/10" />
+            <span className="sm:text-sm">{t('table.selected')}</span>
           </div>
         </div>
       </div>
-      <div className="relative flex min-h-[26rem] flex-col overflow-x-auto">
+      <div className="relative flex min-h-[27rem] flex-col overflow-x-auto">
         {tables?.result.map((table) => (
-          <TableItem
+          <NonResizableTableItem
             key={table.slug}
             table={table}
             isSelected={selectedTableId === table.slug}

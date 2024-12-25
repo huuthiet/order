@@ -1,13 +1,10 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DbService } from './db.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { catchError, from, retry, tap } from 'rxjs';
+import { DbException } from './db.exception';
+import { DbValidation } from './db.validation';
 
 @Injectable()
 export class DbScheduler {
@@ -31,9 +28,7 @@ export class DbScheduler {
             context,
           );
           return Promise.reject(
-            new BadRequestException(
-              `Error when backing up data: ${error.message}`,
-            ),
+            new DbException(DbValidation.EXPORT_DATABASE_ERROR, error.message),
           );
         }),
       )

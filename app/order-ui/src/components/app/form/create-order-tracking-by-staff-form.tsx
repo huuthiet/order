@@ -83,9 +83,6 @@ export const CreateOrderTrackingByStaffForm: React.FC<
           showToast(t('toast.errorUpdatingOrder'))
         }
       },
-      onError: () => {
-        showToast(t('toast.createOrderTrackingFailed'))
-      },
     })
   }
 

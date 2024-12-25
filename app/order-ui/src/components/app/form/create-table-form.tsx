@@ -24,7 +24,6 @@ import { BranchSelect } from '@/components/app/select'
 import { TableStatus } from '@/constants'
 import TableLocationSelect from '../select/table-location-select'
 import { useUserStore } from '@/stores'
-// import { IsEmptySwitch } from '../switch'
 
 interface IFormCreateTableProps {
   onSubmit: (isOpen: boolean) => void
@@ -37,7 +36,6 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
   const { t } = useTranslation(['table'])
   const { userInfo } = useUserStore()
   const { mutate: createTable } = useCreateTable()
-  // const {data: tableLocations} = useGetTableLocations()
   const form = useForm<TCreateTableSchema>({
     resolver: zodResolver(createTableSchema),
     defaultValues: {
@@ -118,7 +116,11 @@ export const CreateTableForm: React.FC<IFormCreateTableProps> = ({
           <FormItem>
             <FormLabel>{t('table.status')}</FormLabel>
             <FormControl>
-              <Input {...field} value={t(`table.${field.value}`)} placeholder={t('table.enterStatus')} />
+              <Input
+                {...field}
+                value={t(`table.${field.value}`)}
+                placeholder={t('table.enterStatus')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

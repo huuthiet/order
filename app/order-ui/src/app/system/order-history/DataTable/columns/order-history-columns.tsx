@@ -18,27 +18,49 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui'
 import { IOrder } from '@/types'
-import { PaymentMethod, ROUTE } from '@/constants'
-import { useExportOrderInvoice } from '@/hooks'
-import { showToast } from '@/utils'
-// import OrderStatusBadge from '@/components/app/badge/order-status-badge'
+import { PaymentMethod, paymentStatus, ROUTE } from '@/constants'
+import { useExportOrderInvoice, useExportPayment } from '@/hooks'
+import { loadDataToPrinter, showToast } from '@/utils'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-// import axios from 'axios';
 
 export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
   const { t } = useTranslation(['menu'])
   const { t: tToast } = useTranslation(['toast'])
   const { t: tCommon } = useTranslation(['common'])
   const { mutate: exportOrderInvoice } = useExportOrderInvoice()
+  const { mutate: exportPayment } = useExportPayment()
+
+  const handleExportPayment = (slug: string) => {
+    exportPayment(slug, {
+      onSuccess: (data: Blob) => {
+        showToast(tToast('toast.exportPaymentSuccess'))
+        // Load data to print
+        loadDataToPrinter(data)
+      },
+      // onError: (error) => {
+      //   if (isAxiosError(error)) {
+      //     const axiosError = error as AxiosError<IApiResponse<void>>
+      //     if (axiosError.response?.data.code)
+      //       showErrorToast(axiosError.response.data.code)
+      //   }
+      // },
+    })
+  }
 
   const handleExportOrderInvoice = (slug: string) => {
     exportOrderInvoice(slug, {
-      onSuccess: () => {
+      onSuccess: (data: Blob) => {
         showToast(tToast('toast.exportInvoiceSuccess'))
+        // Load data to print
+        loadDataToPrinter(data)
       },
-      onError: (error) => {
-        console.log('Create order invoice error', error)
-      },
+      // onError: (error) => {
+      //   if (isAxiosError(error)) {
+      //     const axiosError = error as AxiosError<IApiResponse<void>>
+      //     if (axiosError.response?.data.code)
+      //       showErrorToast(axiosError.response.data.code)
+      //   }
+      // },
     })
   }
   return [
@@ -80,7 +102,7 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
           <div className="flex flex-col">
             <span className="text-[0.8rem]">
               {order?.payment &&
-              order?.payment.paymentMethod === PaymentMethod.CASH
+                order?.payment.paymentMethod === PaymentMethod.CASH
                 ? t('order.cash')
                 : t('order.bankTransfer')}
             </span>
@@ -93,14 +115,14 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={t('order.paymentStatus')}
+          title={t('order.orderStatus')}
         />
       ),
       cell: ({ row }) => {
         const order = row.original
         return (
           <div className="flex flex-col">
-            <OrderStatusBadge status={order?.status} />
+            <OrderStatusBadge order={order} />
           </div>
         )
       },
@@ -140,9 +162,9 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
           <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
+                <Button variant="ghost" className="w-8 h-8 p-0">
                   <span className="sr-only">{tCommon('common.action')}</span>
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -151,11 +173,11 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                 </DropdownMenuLabel>
                 <NavLink
                   to={`${ROUTE.STAFF_ORDER_HISTORY}/${order.slug}`}
-                  className="flex w-full items-center justify-start"
+                  className="flex items-center justify-start w-full"
                 >
                   <Button
                     variant="ghost"
-                    className="flex w-full justify-start gap-1 px-2 text-sm"
+                    className="flex justify-start w-full gap-1 px-2 text-sm"
                   >
                     <SquareMousePointer className="icon" />
                     {tCommon('common.viewDetail')}
@@ -163,23 +185,37 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                 </NavLink>
                 {!order.payment && (
                   <NavLink
-                    to={`${ROUTE.STAFF_ORDER_PAYMENT}/${order.slug}`}
-                    className="flex w-full items-center justify-start"
+                    to={`${ROUTE.ORDER_PAYMENT}/${order.slug}`}
+                    className="flex items-center justify-start w-full"
                   >
                     <Button
                       variant="ghost"
-                      className="flex w-full justify-start gap-1 px-2 text-sm"
+                      className="flex justify-start w-full gap-1 px-2 text-sm"
                     >
                       <CreditCard className="icon" />
                       {t('order.updatePayment')}
                     </Button>
                   </NavLink>
                 )}
+
+                {/* Export payment */}
                 {order.payment && (
+                  <Button
+                    onClick={() => handleExportPayment(order.payment?.slug)}
+                    variant="ghost"
+                    className="flex justify-start w-full px-2"
+                  >
+                    <DownloadIcon />
+                    {t('order.exportPayment')}
+                  </Button>
+                )}
+
+                {/* Export invoice */}
+                {order.payment?.statusCode === paymentStatus.COMPLETED && (
                   <Button
                     onClick={() => handleExportOrderInvoice(order.slug)}
                     variant="ghost"
-                    className="flex w-full justify-start px-2"
+                    className="flex justify-start w-full px-2"
                   >
                     <DownloadIcon />
                     {t('order.exportInvoice')}

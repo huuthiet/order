@@ -1,9 +1,10 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, Min } from 'class-validator';
-import { INVALID_BRANCH_SLUG, INVALID_DAY } from './menu.validation';
+import { INVALID_DAY } from './menu.validation';
 import { Transform, Type } from 'class-transformer';
 import { MenuItemResponseDto } from 'src/menu-item/menu-item.dto';
+import { INVALID_BRANCH_SLUG } from 'src/branch/branch.validation';
 
 export class CreateMenuDto {
   @AutoMap()

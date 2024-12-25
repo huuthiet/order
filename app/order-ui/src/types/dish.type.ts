@@ -1,6 +1,6 @@
 import { paymentStatus } from '@/constants'
 import { IBase } from './base.type'
-import { ICatalog } from './catalog.type'
+// import { ICatalog } from './catalog.type'
 import { IProduct, IProductVariant } from './product.type'
 import { ISize } from './size.type'
 import { ITable } from './table.type'
@@ -23,6 +23,7 @@ export interface ICartItem {
   id: string
   slug: string
   owner?: string
+  ownerFullName?: string
   ownerPhoneNumber?: string
   type: string
   branch?: string
@@ -30,6 +31,7 @@ export interface ICartItem {
   table?: string
   tableName?: string
   note?: string
+  approvalBy?: string
 }
 
 export interface IOrderItem {
@@ -42,7 +44,7 @@ export interface IOrderItem {
   price: number
   description: string
   isLimit: boolean
-  catalog: ICatalog
+  // catalog: ICatalog
   note?: string
 }
 
@@ -142,7 +144,7 @@ export enum OrderItemStatus {
 
 export enum IOrderType {
   AT_TABLE = 'at-table',
-  TAKE_AWAY = 'take-away',
+  TAKE_OUT = 'take-out',
 }
 
 export interface ICreateOrderResponse extends IBase {
@@ -181,6 +183,7 @@ export interface ICreateOrderRequest {
     variant: string
     note: string
   }[]
+  approvalBy: string
 }
 
 export interface IInitiatePaymentRequest {

@@ -1,12 +1,14 @@
-import { ICartItem, ITable } from '@/types'
+import { ICartItem, IOrderType, ITable, IUserInfo } from '@/types'
 
 export interface ICartItemStore {
   cartItems: ICartItem | null
   getCartItems: () => ICartItem | null
-  addCustomerInfo: (owner: string) => void
+  addCustomerInfo: (owner: IUserInfo) => void
+  addApprovalBy: (approvalBy: string) => void
   addCartItem: (item: ICartItem) => void
   updateCartItemQuantity: (id: string, quantity: number) => void
   addNote: (id: string, note: string) => void
+  addOrderType: (orderType: IOrderType) => void
   addTable: (table: ITable) => void
   removeTable: () => void
   addPaymentMethod: (paymentMethod: string) => void

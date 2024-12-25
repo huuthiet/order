@@ -12,25 +12,25 @@ export default function CustomerInformation({
 }: ICustomerInfoProps) {
   const { t } = useTranslation(['menu'])
   return (
-    <div className="grid grid-cols-2 gap-2 pb-6 border-b-2">
-      <div className="flex flex-col col-span-1 gap-1 border-r-2 text-muted-foreground">
-        <div className="grid grid-cols-2">
-          <span>
+    <div className="grid grid-cols-1 gap-2 pb-6 border-b-2 sm:grid-cols-2">
+      <div className="flex flex-col col-span-1 gap-1 sm:border-r-2 text-muted-foreground">
+        <div className="grid grid-cols-5 gap-1">
+          {/* <span>
             {orderDetailData?.slug}
-          </span>
-          <span className="col-span-1 text-xs font-semibold">
+          </span> */}
+          <span className="col-span-3 text-xs font-semibold ">
             {t('order.customerName')}
           </span>
-          <span className="col-span-1 text-xs">
+          <span className="col-span-2 text-xs ">
             {orderDetailData?.owner?.firstName}{' '}
             {orderDetailData?.owner?.lastName}
           </span>
         </div>
-        <div className="grid grid-cols-2">
-          <span className="col-span-1 text-xs font-semibold">
+        <div className="grid grid-cols-5 gap-1">
+          <span className="col-span-3 text-xs font-semibold ">
             {t('order.orderDate')}
           </span>
-          <span className="col-span-1 text-xs">
+          <span className="col-span-2 text-xs ">
             {orderDetailData?.createdAt ? moment(orderDetailData?.createdAt).format('hh:mm DD/MM/YYYY') : ''}
           </span>
         </div>
@@ -44,11 +44,11 @@ export default function CustomerInformation({
         </div> */}
       </div>
       <div className="col-span-1 text-muted-foreground">
-        <div className="grid grid-cols-3">
-          <span className="col-span-2 text-xs font-semibold">
+        <div className="grid grid-cols-5 gap-1">
+          <span className="col-span-3 text-xs font-semibold ">
             {t('order.deliveryMethod')}
           </span>
-          <span className="col-span-1 text-xs">
+          <span className="col-span-2 text-xs ">
             {orderDetailData?.type
               ? orderDetailData.type === IOrderType.AT_TABLE
                 ? t('order.dineIn')
@@ -56,14 +56,15 @@ export default function CustomerInformation({
               : null}
           </span>
         </div>
-        <div className="grid grid-cols-3">
-          <span className="col-span-2 text-xs font-semibold">
-            {t('order.tableNumber')}
-          </span>
-          <span className="col-span-1 text-xs">
-            {orderDetailData?.table?.name}
-          </span>
-        </div>
+        {orderDetailData?.type === IOrderType.AT_TABLE && (
+          <div className="grid grid-cols-5 gap-1">
+            <span className="col-span-3 text-xs font-semibold ">
+              {t('order.tableNumber')}
+            </span>
+            <span className="col-span-2 text-xs ">
+              {orderDetailData?.table?.name}
+            </span>
+          </div>)}
       </div>
     </div>
   )

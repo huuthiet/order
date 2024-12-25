@@ -23,7 +23,7 @@ import { BranchSelect } from '@/components/app/select'
 import { cn } from '@/lib'
 import { useUserStore } from '@/stores'
 import moment from 'moment'
-import { IsTemplateSwitch } from '../switch'
+import { IsTemplateSwitch } from '@/components/app/switch'
 
 interface IFormUpdateMenuProps {
   menu: IMenu

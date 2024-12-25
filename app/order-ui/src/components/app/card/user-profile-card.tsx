@@ -19,7 +19,14 @@ export default function UserProfileCard() {
       onSuccess: (data) => {
         showToast(t('toast.uploadProfilePictureSuccess'))
         setUserInfo(data.result)
-      }
+      },
+      // onError: (error) => {
+      //   if (isAxiosError(error)) {
+      //     const axiosError = error as AxiosError<IApiResponse<void>>
+      //     if (axiosError.response?.data.code)
+      //       showErrorToast(axiosError.response.data.code)
+      //   }
+      // },
     })
   }
 
