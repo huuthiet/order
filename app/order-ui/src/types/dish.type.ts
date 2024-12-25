@@ -1,6 +1,6 @@
 import { paymentStatus } from '@/constants'
 import { IBase } from './base.type'
-import { ICatalog } from './catalog.type'
+// import { ICatalog } from './catalog.type'
 import { IProduct, IProductVariant } from './product.type'
 import { ISize } from './size.type'
 import { ITable } from './table.type'
@@ -44,7 +44,7 @@ export interface IOrderItem {
   price: number
   description: string
   isLimit: boolean
-  catalog: ICatalog
+  // catalog: ICatalog
   note?: string
 }
 

@@ -21,11 +21,12 @@ export default function CartNoteInput({ cartItem }: CartNoteInputProps) {
 
   return (
     <div className="flex w-full flex-row items-center justify-center gap-2.5">
-      <div className="flex w-full flex-1 flex-row items-center justify-between gap-2">
+      <div className="flex flex-row items-center justify-between flex-1 w-full gap-2">
         <NotepadText className="text-muted-foreground" />
         <Input
           defaultValue={cartItem?.note || ''}
           type="text"
+          className='shadow-none'
           placeholder={t('order.enterNote')}
           onChange={handleNoteChange}
         />

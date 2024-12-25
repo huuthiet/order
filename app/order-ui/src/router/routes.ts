@@ -9,13 +9,14 @@ import {
   LayoutGrid,
   Users,
 } from 'lucide-react'
+
 import type { ISidebarRoute } from '@/types'
 import { Role, ROUTE } from '@/constants'
 
 export const sidebarRoutes: ISidebarRoute[] = [
   // {
   //   title: 'sidebar.home',
-  //   path: ROUTE.STAFF_HOME,
+  //   path: ROUTE.HOME,
   //   icon: SquareTerminal,
   //   roles: [Role.ADMIN, Role.CUSTOMER],
   // },
@@ -51,11 +52,13 @@ export const sidebarRoutes: ISidebarRoute[] = [
   {
     title: 'sidebar.menuManagement',
     path: ROUTE.STAFF_MENU_MANAGEMENT,
+    roles: [Role.MANAGER, Role.ADMIN],
     icon: ClipboardList,
   },
   {
     title: 'sidebar.dishManagement',
     path: ROUTE.STAFF_PRODUCT_MANAGEMENT,
+    roles: [Role.MANAGER, Role.ADMIN],
     icon: CookingPot,
   },
   {
@@ -67,16 +70,19 @@ export const sidebarRoutes: ISidebarRoute[] = [
   {
     title: 'sidebar.logManagement',
     path: ROUTE.STAFF_LOG_MANAGEMENT,
+    roles: [Role.ADMIN, Role.SUPER_ADMIN],
     icon: FileChartColumnIncreasing,
   },
   {
     title: 'sidebar.bankConfig',
     path: ROUTE.STAFF_BANK_CONFIG,
+    roles: [Role.ADMIN, Role.SUPER_ADMIN],
     icon: Banknote,
   },
   {
     title: 'sidebar.config',
     path: ROUTE.ADMIN_CONFIG,
+    roles: [Role.ADMIN, Role.SUPER_ADMIN],
     icon: Bolt,
   },
 ]

@@ -65,7 +65,7 @@ export default function AddToCartDialog({
           price: selectedVariant.price,
           description: product.description,
           isLimit: product.isLimit,
-          catalog: product.catalog,
+          // catalog: product.catalog,
           note: note,
         },
       ],
@@ -83,7 +83,7 @@ export default function AddToCartDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="flex flex-row items-center justify-center gap-1 px-4 text-white rounded-full shadow-none">
+          <Button className="flex flex-row items-center justify-center w-full gap-1 px-4 text-white rounded-full shadow-none">
             <ShoppingCart size={12} />
             {t('menu.addToCart')}
           </Button>
