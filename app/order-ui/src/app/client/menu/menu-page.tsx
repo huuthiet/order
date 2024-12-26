@@ -1,10 +1,8 @@
-import moment from 'moment'
-
-import MenuList from './menu-list'
-import { CurrentDateInput } from '@/components/app/input'
-import { ScrollArea } from '@/components/ui'
-import { useSpecificMenu } from '@/hooks'
-import { useUserStore } from '@/stores'
+import { useUserStore } from "@/stores";
+import moment from "moment";
+import { useSpecificMenu } from "@/hooks";
+import { MenuList } from "../menu";
+import { CurrentDateInput } from "@/components/app/input";
 
 export default function MenuPage() {
   const { userInfo } = useUserStore()
@@ -15,28 +13,22 @@ export default function MenuPage() {
     date: getCurrentDate(),
     branch: userInfo?.branch.slug,
   })
-
   return (
-    <div className="flex flex-row gap-2 h-dvh">
-      <div
-        className={`flex pr-2 flex-col transition-all duration-300 ease-in-out w-full pl-2`}
-      >
-        {/* Fixed Header Section */}
-        <div className="sticky top-0 z-10 flex flex-row items-center justify-between py-3 pr-4">
+    <div className="flex flex-col w-full">
+      <div className="flex flex-col">
+        {/* Thực đơn */}
+        <div className="sticky top-0 z-10 flex flex-row items-center justify-between gap-2 p-4">
           <CurrentDateInput menu={specificMenu?.result} />
         </div>
-
-        {/* Scrollable Content Section */}
-        <ScrollArea className="flex-1">
-          {/* <div className='flex justify-center w-full'>
-            <CarouselItem />
-          </div> */}
-          <MenuList
-            menu={specificMenu?.result}
-            isLoading={isLoading}
-          />
-        </ScrollArea>
+        <div className="flex flex-col items-start w-full h-screen px-4">
+          <div className="gap-4">
+            <MenuList
+              menu={specificMenu?.result}
+              isLoading={isLoading}
+            />
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
