@@ -27,19 +27,19 @@ export default function OrderDetailPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="mb-10 flex flex-1 flex-row gap-2">
+    <div className="mb-10">
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col">
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
-            <span className="flex w-full items-center justify-start gap-1 text-lg">
-              <SquareMenu />
-              {t('order.orderDetail')}{' '}
-              <span className="text-muted-foreground">
-                #{orderDetail?.result?.slug}
-              </span>
+        {/* Title */}
+        <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-gray-50 pb-4">
+          <span className="flex w-full items-center justify-start gap-1 text-lg">
+            <SquareMenu />
+            {t('order.orderDetail')}{' '}
+            <span className="text-muted-foreground">
+              #{orderDetail?.result?.slug}
             </span>
-          </div>
+          </span>
         </div>
+
         <div className="flex flex-col gap-4 lg:flex-row">
           {/* Left, info */}
           <div className="flex w-full flex-col gap-4 lg:w-3/4">
