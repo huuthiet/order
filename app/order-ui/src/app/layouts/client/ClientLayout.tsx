@@ -7,7 +7,6 @@ import { cn } from '@/lib';
 import { DownloadProgress } from '@/components/app/progress';
 import { useDownloadStore } from '@/stores';
 // import { ROUTE } from '@/constants';
-import { CoffeeBackground } from '@/assets/images';
 // import { DropdownHeader, ModeToggle } from '@/components/app/dropdown';
 
 export default function ClientLayout() {
@@ -19,11 +18,6 @@ export default function ClientLayout() {
     <SidebarProvider defaultOpen={!isMobile}>
       <div
         className="box-border flex flex-1 min-h-screen"
-        style={{
-          backgroundImage: `url(${CoffeeBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
       >
         {/* Sidebar - Hidden on mobile by default */}
         {isMobile && <AppSidebar />}
@@ -36,7 +30,7 @@ export default function ClientLayout() {
           </div>
 
           {/* Breadcrumb - Responsive padding */}
-          <div className={cn('sticky z-20', isMobile ? 'px-3 py-2' : 'p-4')}>
+          <div className={cn('sticky z-20', isMobile ? 'px-3 py-2' : '')}>
             {/* <BreadcrumbComponent /> */}
           </div>
 
@@ -45,7 +39,7 @@ export default function ClientLayout() {
             <main
               className={cn(
                 'min-h-full',
-                isMobile ? 'px-2 pb-[env(safe-area-inset-bottom)]' : 'px-4'
+                isMobile ? 'pb-[env(safe-area-inset-bottom)]' : ''
               )}
             >
               <Outlet />

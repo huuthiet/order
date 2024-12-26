@@ -10,10 +10,10 @@ import { Logo } from '@/assets/images'
 import { ROUTE } from '@/constants'
 import { Button, SidebarTrigger } from '../ui'
 
-export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
+export default function ClientLandingHeader({ isMobile }: { isMobile: boolean }) {
     const { getCartItems } = useCartItemStore()
     return (
-        <header className="sticky top-0 z-20 w-full px-3 backdrop-blur supports-[backdrop-filter]:bg-transparent border-b text-muted-foreground border-muted-border">
+        <header className="sticky top-0 z-20 w-full px-3 backdrop-blur supports-[backdrop-filter]:bg-black">
             <div className="flex items-center justify-between flex-1 w-full gap-6 h-14">
                 {isMobile && (
                     <SidebarTrigger />
@@ -39,10 +39,10 @@ export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
                         >
                             <span className="text-sm">Thực đơn</span>
                         </NavLink>
-                        <div className='text-sm'>
+                        <div className='text-sm text-white'>
                             Về chúng tôi
                         </div>
-                        <div className='text-sm'>
+                        <div className='text-sm text-white'>
                             Điều khoản
                         </div>
                     </div>
