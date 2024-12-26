@@ -45,14 +45,9 @@ export class RevenueController {
     const result = await this.revenueService.findAll(query);
     return {
       message: 'Revenues have been retrieved successfully',
-      statusCode: HttpStatus.CREATED,
+      statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
     } as AppResponseDto<RevenueResponseDto[]>;
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.revenueService.findOne(+id);
   }
 }

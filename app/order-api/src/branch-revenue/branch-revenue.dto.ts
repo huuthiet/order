@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { BaseResponseDto } from 'src/app/base.dto';
 
-export class RevenueQueryResponseDto {
+export class BranchRevenueQueryResponseDto {
   @AutoMap()
   branchId: string;
 
@@ -17,7 +17,7 @@ export class RevenueQueryResponseDto {
   totalOrder: string;
 }
 
-export class GetRevenueQueryDto {
+export class GetBranchRevenueQueryDto {
   @AutoMap()
   @ApiProperty({ required: false, example: '2024-12-26' })
   @Type(() => Date)
@@ -29,7 +29,7 @@ export class GetRevenueQueryDto {
   endDate: Date;
 }
 
-export class RevenueResponseDto extends BaseResponseDto {
+export class BranchRevenueResponseDto extends BaseResponseDto {
   @ApiProperty()
   @AutoMap()
   branchId: string;

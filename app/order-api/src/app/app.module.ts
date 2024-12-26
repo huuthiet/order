@@ -45,6 +45,7 @@ import { SystemConfigModule } from 'src/system-config/system-config.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConnectionOptions, RedisConnection } from 'bullmq';
 import { RevenueModule } from 'src/revenue/revenue.module';
+import { BranchRevenueModule } from 'src/branch-revenue/branch-revenue.module';
 
 @Module({
   imports: [
@@ -106,6 +107,7 @@ import { RevenueModule } from 'src/revenue/revenue.module';
     RoleModule,
     SystemConfigModule,
     RevenueModule,
+    BranchRevenueModule,
   ],
   controllers: [AppController],
   providers: [

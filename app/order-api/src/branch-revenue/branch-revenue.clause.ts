@@ -1,5 +1,6 @@
-export const getCurrentRevenueClause = `
+export const getCurrentBranchRevenueClause = `
     SELECT 
+        order_tbl.branch_column AS branchId,
         DATE(order_tbl.created_at_column) AS date,
         SUM(payment_tbl.amount_column) AS totalAmount,
         COUNT(order_tbl.id_column) AS totalOrder
@@ -16,5 +17,6 @@ export const getCurrentRevenueClause = `
     AND
         order_tbl.created_at_column < CURRENT_DATE() + INTERVAL 1 DAY
     GROUP BY 
+        order_tbl.branch_column,
         DATE(order_tbl.created_at_column)
 `;

@@ -5,10 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Revenue } from './revenue.entity';
 import { RevenueProfile } from './revenue.mapper';
 import { RevenueScheduler } from './revenue.scheduler';
-import { Branch } from 'src/branch/branch.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Revenue, Branch])],
+  imports: [TypeOrmModule.forFeature([Revenue])],
   controllers: [RevenueController],
   providers: [RevenueService, RevenueProfile, RevenueScheduler],
 })

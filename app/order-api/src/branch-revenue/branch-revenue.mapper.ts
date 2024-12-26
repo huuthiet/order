@@ -7,13 +7,16 @@ import {
   Mapper,
 } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
-import { RevenueQueryResponseDto, RevenueResponseDto } from './revenue.dto';
-import { Revenue } from './revenue.entity';
 import { baseMapper } from 'src/app/base.mapper';
 import * as moment from 'moment';
+import {
+  BranchRevenueQueryResponseDto,
+  BranchRevenueResponseDto,
+} from './branch-revenue.dto';
+import { BranchRevenue } from './branch-revenue.entity';
 
 @Injectable()
-export class RevenueProfile extends AutomapperProfile {
+export class BranchRevenueProfile extends AutomapperProfile {
   constructor(@InjectMapper() mapper: Mapper) {
     super(mapper);
   }
@@ -22,8 +25,8 @@ export class RevenueProfile extends AutomapperProfile {
     return (mapper: Mapper) => {
       createMap(
         mapper,
-        RevenueQueryResponseDto,
-        Revenue,
+        BranchRevenueQueryResponseDto,
+        BranchRevenue,
         forMember(
           (destination) => destination.totalAmount,
           mapFrom((source) => +source.totalAmount),
@@ -45,8 +48,8 @@ export class RevenueProfile extends AutomapperProfile {
 
       createMap(
         mapper,
-        Revenue,
-        RevenueResponseDto,
+        BranchRevenue,
+        BranchRevenueResponseDto,
         extend(baseMapper(mapper)),
       );
     };
