@@ -27,7 +27,6 @@ export default function ProductManagementPage() {
   const [note, setNote] = useState<string>('')
   const [quantity, setQuantity] = useState<number>(1)
   const [selectedVariant, setSelectedVariant] = useState<IProductVariant | null>(productDetail?.variants[0] || null)
-  console.log(productDetail)
 
   const generateCartItemId = () => {
     return Date.now().toString(36)

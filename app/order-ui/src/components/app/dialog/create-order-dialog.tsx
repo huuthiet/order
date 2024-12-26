@@ -25,7 +25,6 @@ interface IPlaceOrderDialogProps {
 }
 
 export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
-  console.log("Check PlaceOrderDialog: ", disabled)
   const navigate = useNavigate()
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation('common')
@@ -52,8 +51,6 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
         note: orderItem.note || '',
       })),
     }
-
-    console.log("Check order: ", createOrderRequest)
 
     // Gọi API để tạo đơn hàng.
     createOrder(createOrderRequest, {

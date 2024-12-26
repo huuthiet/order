@@ -383,12 +383,13 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <ProtectedElement
-            allowedRoles={[Role.CUSTOMER]}
-            element={<SuspenseElement component={ClientHomePage} />}
-          />
-        ),
+        element: <SuspenseElement component={ClientHomePage} />,
+        // element: (
+        //   <ProtectedElement
+        //     allowedRoles={[Role.CUSTOMER]}
+        //     element={<SuspenseElement component={ClientHomePage} />}
+        //   />
+        // ),
       },
     ],
   },

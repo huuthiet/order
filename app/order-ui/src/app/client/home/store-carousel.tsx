@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CarouselApi } from "@/components/ui/carousel";
+
 import {
     Card,
     Carousel,
@@ -7,6 +7,7 @@ import {
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
+    CarouselApi
 } from "@/components/ui";
 
 import { Store1, Store2, Store3, Store4 } from "@/assets/images";
@@ -38,7 +39,7 @@ export default function StoreCarousel() {
             <CarouselContent>
                 {images.map((image, index) => (
                     <CarouselItem key={index} className="w-full md:basis-1/1">
-                        <div className="flex w-full h-[28rem] p-1">
+                        <div className="flex w-full h-[12rem] sm:h-[28rem] p-1">
                             <Card className="w-full">
                                 <img
                                     src={image}
