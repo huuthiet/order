@@ -27,6 +27,7 @@ import {
 } from './menu-item.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('menu-item')
 @ApiTags('Menu Item')
@@ -104,6 +105,7 @@ export class MenuItemController {
     type: MenuItemResponseDto,
     description: 'Retrieve specific menu item',
   })
+  @Public()
   async findOne(@Param('slug') slug: string) {
     const result = await this.menuItemService.findOne(slug);
     return {

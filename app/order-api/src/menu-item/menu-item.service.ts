@@ -140,6 +140,7 @@ export class MenuItemService {
   async findOne(slug: string): Promise<MenuItemResponseDto> {
     const menuItem = await this.menuItemRepository.findOne({
       where: { slug },
+      relations: ['product.catalog', 'product.variants.size'],
     });
     if (!menuItem)
       throw new MenuItemException(MenuItemValidation.MENU_ITEM_NOT_FOUND);
