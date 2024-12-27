@@ -13,6 +13,7 @@ import ProductValidation from 'src/product/product.validation';
 import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.validation';
 import { RoleValidation } from 'src/role/role.validation';
 import { SizeValidation } from 'src/size/size.validation';
+import { StaticPageValidation } from 'src/static-page/static-page.validation';
 import { SystemConfigValidation } from 'src/system-config/system-config.validation';
 import { TableValidation } from 'src/table/table.validation';
 import { TrackingValidation } from 'src/tracking/tracking.validation';
@@ -56,6 +57,7 @@ export const AppValidation: TErrorCode = {
   ...UserValidation,
   ...RoleValidation,
   ...SystemConfigValidation,
+  ...StaticPageValidation
 };
 
 const errorCodeKeys = Object.keys(AppValidation);
