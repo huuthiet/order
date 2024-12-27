@@ -6,7 +6,7 @@ import { ShoppingCart } from 'lucide-react'
 import { DropdownHeader, ModeToggle } from '@/components/app/dropdown'
 import { useCartItemStore } from '@/stores'
 // import { Button } from '@/components/ui'
-import { Logo } from '@/assets/images'
+import { Logo, LogoWhite } from '@/assets/images'
 import { ROUTE } from '@/constants'
 import { Button, SidebarTrigger } from '../ui'
 
@@ -16,10 +16,10 @@ export default function ClientLandingHeader({ isMobile }: { isMobile: boolean })
         <header className="sticky top-0 z-20 w-full px-3 backdrop-blur supports-[backdrop-filter]:bg-black">
             <div className="flex items-center justify-between flex-1 w-full gap-6 h-14">
                 {isMobile && (
-                    <SidebarTrigger />
+                    <SidebarTrigger className={`${isMobile ? 'text-white' : ''}`} />
                 )}
                 <NavLink to="/" className="flex items-center gap-2">
-                    {!isMobile ? <img src={Logo} alt="logo" className="h-6 w-fit" /> : ''}
+                    {!isMobile ? <img src={Logo} alt="logo" className="h-6 w-fit" /> : <img src={LogoWhite} alt="logo" className="h-6 w-fit" />}
                 </NavLink>
                 {!isMobile && (
                     <div className="flex flex-row items-center justify-center gap-6">

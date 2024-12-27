@@ -48,7 +48,7 @@ export const LoginForm: React.FC = () => {
   const navigateBasedOnRole = (roleName: string) => {
     switch (roleName) {
       case Role.CUSTOMER:
-        navigate(ROUTE.CLIENT_MENU);
+        navigate(ROUTE.CLIENT_HOME);
         break;
       case Role.ADMIN:
       case Role.MANAGER:

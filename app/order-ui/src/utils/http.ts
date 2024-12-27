@@ -122,7 +122,6 @@ axiosInstance.interceptors.request.use(
 
     if (currentToken) {
       config.headers['Authorization'] = `Bearer ${currentToken}`
-      // console.log('Token set in headers:', currentToken)
 
       if (!config?.doNotShowLoading) {
         const requestStore = useRequestStore.getState()

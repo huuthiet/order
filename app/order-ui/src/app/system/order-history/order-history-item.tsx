@@ -15,7 +15,6 @@ interface OrderItemDetailProps {
 }
 
 export default function OrderItemDetail({ order }: OrderItemDetailProps) {
-  console.log('OrderItemDetail', order)
   const { t } = useTranslation(['menu'])
   const { mutate: exportInvoice } = useExportOrderInvoice()
 
@@ -24,13 +23,6 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
       onSuccess: () => {
         showToast(t('toast.exportInvoiceSuccess'))
       },
-      // onError: (error) => {
-      //   if (isAxiosError(error)) {
-      //     const axiosError = error as AxiosError<IApiResponse<void>>
-      //     if (axiosError.response?.data.code)
-      //       showErrorToast(axiosError.response.data.code)
-      //   }
-      // },
     })
   }
 

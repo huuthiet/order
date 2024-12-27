@@ -9,7 +9,6 @@ interface IOrderStatusBadgeProps {
 
 export default function OrderStatusBadge({ order }: IOrderStatusBadgeProps) {
   const { t } = useTranslation(['menu'])
-  console.log(order)
 
   const getBadgeColor = (status: OrderStatus) => {
     switch (status) {
@@ -27,7 +26,6 @@ export default function OrderStatusBadge({ order }: IOrderStatusBadgeProps) {
   }
 
   const getBadgeText = (order: IOrder) => {
-    console.log(order?.status, order?.payment?.statusCode)
     if (order?.status === OrderStatus.PENDING && order?.payment?.statusCode === paymentStatus.PENDING) {
       return t('order.pending');
     } else if (order?.status === OrderStatus.PENDING && order?.payment?.statusCode === paymentStatus.COMPLETED) {

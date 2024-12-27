@@ -19,7 +19,6 @@ export const useCartItemStore = create<ICartItemStore>()(
       getCartItems: () => get().cartItems,
 
       addCustomerInfo: (owner: IUserInfo) => {
-        console.log(owner)
         const { cartItems } = get()
         if (cartItems) {
           set({
