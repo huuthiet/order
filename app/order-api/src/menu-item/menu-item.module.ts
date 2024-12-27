@@ -6,9 +6,10 @@ import { MenuItem } from './menu-item.entity';
 import { MenuItemProfile } from './menu-item.mapper';
 import { Menu } from 'src/menu/menu.entity';
 import { Product } from 'src/product/product.entity';
+import { Catalog } from 'src/catalog/catalog.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MenuItem, Menu, Product])],
+  imports: [TypeOrmModule.forFeature([MenuItem, Menu, Product, Catalog])],
   controllers: [MenuItemController],
   providers: [MenuItemService, MenuItemProfile],
 })
