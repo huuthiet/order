@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart, SquareMenu } from 'lucide-react'
@@ -7,11 +8,11 @@ import { useSpecificMenuItem } from '@/hooks'
 import { publicFileURL, ROUTE } from '@/constants'
 import { ProductRating } from '.'
 import { ProductDetailSkeleton } from '@/components/app/skeleton'
-import { useState } from 'react'
 import { NonPropQuantitySelector } from '@/components/app/button'
 import { useCartItemStore, useCurrentUrlStore, useUserStore } from '@/stores'
 import { ICartItem, IOrderType, IProductVariant } from '@/types'
 import { showErrorToast } from '@/utils'
+import { ProductImageCarousel } from '.'
 
 export default function ProductManagementPage() {
   const { t } = useTranslation(['product'])
@@ -22,7 +23,6 @@ export default function ProductManagementPage() {
   const navigate = useNavigate()
 
   const { data: product, isLoading } = useSpecificMenuItem(slug as string)
-  console.log('product', product?.result.product)
   const { addCartItem } = useCartItemStore()
 
   const productDetail = product?.result.product
@@ -31,6 +31,7 @@ export default function ProductManagementPage() {
   const [note, setNote] = useState<string>('')
   const [quantity, setQuantity] = useState<number>(1)
   const [selectedVariant, setSelectedVariant] = useState<IProductVariant | null>(productDetail?.variants[0] || null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const generateCartItemId = () => {
     return Date.now().toString(36)
@@ -51,14 +52,12 @@ export default function ProductManagementPage() {
   }
 
   const handleAddToCart = () => {
-    console.log('Add to cart')
     const currentUrl = window.location.pathname;
     if (!getUserInfo()?.slug) return (
       showErrorToast(1042),
       setCurrentUrl(currentUrl),
       navigate(ROUTE.LOGIN)
     )
-    console.log('selectedVariant', selectedVariant)
     if (!selectedVariant) return
     const cartItem: ICartItem = {
       id: generateCartItemId(),
@@ -83,7 +82,6 @@ export default function ProductManagementPage() {
       ],
       table: '', // will be set later via addTable
     }
-    console.log('cartItem', cartItem)
     addCartItem(cartItem)
     // Reset states
     setNote('')
@@ -108,11 +106,17 @@ export default function ProductManagementPage() {
                   <div className="flex flex-col h-full col-span-1 gap-2">
                     {productDetail && (
                       <img
-                        src={`${publicFileURL}/${productDetail.image}`}
+                        src={`${publicFileURL}/${selectedImage || productDetail.image}`}
                         alt={productDetail.name}
-                        className="object-cover w-full rounded-md"
+                        className="object-cover w-full h-[20rem] transition-opacity duration-300 ease-in-out rounded-xl"
                       />
                     )}
+                    <div className='flex items-center justify-center'>
+                      <ProductImageCarousel
+                        images={productDetail ? [productDetail.image, ...(productDetail.images || [])] : []}
+                        onImageClick={setSelectedImage}
+                      />
+                    </div>
                     {/* Product images */}
                     {/* <div className="grid grid-cols-4">
                       {productDetail && (
