@@ -61,10 +61,12 @@ export class MenuService {
    */
   async getMenu(query: GetMenuRequestDto): Promise<MenuResponseDto> {
     const context = `${MenuService.name}.${this.getMenu.name}`;
+
     if (_.isEmpty(query)) {
       this.logger.warn(`Query is empty`, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
+
     const menu = await this.menuRepository.findOne({
       where: {
         slug: query.slug,
@@ -72,11 +74,22 @@ export class MenuService {
         branch: { slug: query.branch },
       },
       relations: ['menuItems.product.variants.size'],
+      order: {
+        menuItems: {
+          product: {
+            variants: {
+              price: 'ASC',
+            },
+          },
+        },
+      },
     });
+
     if (!menu) {
       this.logger.warn(`Menu not found`, context);
       throw new MenuException(MenuValidation.MENU_NOT_FOUND);
     }
+
     return this.mapper.map(menu, Menu, MenuResponseDto);
   }
 

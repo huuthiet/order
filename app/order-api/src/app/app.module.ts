@@ -44,6 +44,9 @@ import { RolesGuard } from 'src/role/roles.guard';
 import { SystemConfigModule } from 'src/system-config/system-config.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConnectionOptions, RedisConnection } from 'bullmq';
+import { RevenueModule } from 'src/revenue/revenue.module';
+import { BranchRevenueModule } from 'src/branch-revenue/branch-revenue.module';
+import { StaticPageModule } from 'src/static-page/static-page.module';
 
 @Module({
   imports: [
@@ -104,6 +107,9 @@ import { ConnectionOptions, RedisConnection } from 'bullmq';
     DbModule,
     RoleModule,
     SystemConfigModule,
+    RevenueModule,
+    BranchRevenueModule,
+    StaticPageModule,
   ],
   controllers: [AppController],
   providers: [

@@ -9,6 +9,7 @@ import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Menu } from 'src/menu/menu.entity';
 import { Product } from 'src/product/product.entity';
+import { Catalog } from 'src/catalog/catalog.entity';
 
 describe('MenuItemController', () => {
   let controller: MenuItemController;
@@ -24,6 +25,10 @@ describe('MenuItemController', () => {
         },
         {
           provide: getRepositoryToken(Menu),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Catalog),
           useFactory: repositoryMockFactory,
         },
         {

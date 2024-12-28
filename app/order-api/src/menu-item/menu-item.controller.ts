@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpCode,
   ParseArrayPipe,
+  Query,
 } from '@nestjs/common';
 import { MenuItemService } from './menu-item.service';
 import {
@@ -22,11 +23,13 @@ import {
 } from '@nestjs/swagger';
 import {
   CreateMenuItemDto,
+  GetMenuItemQueryDto,
   MenuItemResponseDto,
   UpdateMenuItemDto,
 } from './menu-item.dto';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('menu-item')
 @ApiTags('Menu Item')
@@ -88,8 +91,11 @@ export class MenuItemController {
     isArray: true,
     description: 'Retrieve all menu items',
   })
-  async findAll() {
-    const result = await this.menuItemService.findAll();
+  @Public()
+  async findAll(
+    @Query(new ValidationPipe({ transform: true })) query: GetMenuItemQueryDto,
+  ) {
+    const result = await this.menuItemService.findAll(query);
     return {
       message: 'Retrieve all menu items successfully',
       statusCode: HttpStatus.OK,
@@ -104,6 +110,7 @@ export class MenuItemController {
     type: MenuItemResponseDto,
     description: 'Retrieve specific menu item',
   })
+  @Public()
   async findOne(@Param('slug') slug: string) {
     const result = await this.menuItemService.findOne(slug);
     return {

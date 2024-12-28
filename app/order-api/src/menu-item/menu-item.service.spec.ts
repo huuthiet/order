@@ -8,6 +8,7 @@ import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { Product } from 'src/product/product.entity';
 import { Menu } from 'src/menu/menu.entity';
+import { Catalog } from 'src/catalog/catalog.entity';
 
 describe('MenuItemService', () => {
   let service: MenuItemService;
@@ -22,6 +23,10 @@ describe('MenuItemService', () => {
         },
         {
           provide: getRepositoryToken(Menu),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Catalog),
           useFactory: repositoryMockFactory,
         },
         {
