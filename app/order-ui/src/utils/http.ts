@@ -62,13 +62,17 @@ axiosInstance.interceptors.request.use(
 
     // Allow requests to public routes (login, register, etc.)
     const publicRoutes = [
-      '/auth/login',
-      '/auth/register',
-      '/auth/refresh',
-      '/auth/forgot-password',
-      '/auth/forgot-password/token',
+      /^\/auth\/login$/,
+      /^\/auth\/register$/,
+      /^\/auth\/refresh$/,
+      /^\/auth\/forgot-password$/,
+      /^\/auth\/forgot-password\/token$/,
+      /^\/menu\/specific$/,
+      /^\/products\/[^/]+$/, // Matches /product/:slug where :slug is any non-empty string
+      /^\/branch$/, // Matches /branch
     ]
-    if (publicRoutes.includes(config.url || '')) {
+
+    if (publicRoutes.some((route) => route.test(config.url || ''))) {
       return config
     }
 

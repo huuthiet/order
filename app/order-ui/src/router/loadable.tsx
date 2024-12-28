@@ -193,3 +193,16 @@ export const ClientCartPage = React.lazy(() =>
     default: module.CartPage,
   })),
 )
+
+//Order history page
+export const ClientOrderHistoryPage = React.lazy(() =>
+  import('@/app/client/order-history').then((module) => ({
+    default: module.OrderHistoryPage,
+  })),
+)
+
+export const ClientOrderDetailPage = React.lazy(() =>
+  import('@/app/client/order-history').then((module) => ({
+    default: module.OrderDetailPage,
+  })),
+)

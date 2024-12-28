@@ -46,7 +46,7 @@ export const RoutePermissions: Record<string, Role[]> = {
   ],
 
   // Customer routes
-  [ROUTE.CLIENT_MENU]: [Role.CUSTOMER],
+  // [ROUTE.CLIENT_MENU]: [Role.CUSTOMER],
   [ROUTE.CLIENT_CART]: [Role.CUSTOMER],
   [ROUTE.CLIENT_CHECKOUT_ORDER]: [Role.CUSTOMER],
 

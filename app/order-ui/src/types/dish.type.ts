@@ -128,6 +128,7 @@ export interface ITrackingOrderItems extends IBase {
 }
 
 export enum OrderStatus {
+  ALL = 'all',
   PENDING = 'pending',
   SHIPPING = 'shipping',
   FAILED = 'FAILED',

@@ -1,5 +1,6 @@
 export * from './auth.store'
 export * from './cart.store'
+export * from './currentUrlStore'
 export * from './download.store'
 export * from './loading.store'
 export * from './menu.store'

@@ -37,6 +37,13 @@ export async function getSpecificMenu(
   return response.data
 }
 
+export async function getSpecificMenuItem(
+  slug: string,
+): Promise<IApiResponse<IMenuItem>> {
+  const response = await http.get<IApiResponse<IMenuItem>>(`/menu-item/${slug}`)
+  return response.data
+}
+
 export async function createMenu(
   data: ICreateMenuRequest,
 ): Promise<IApiResponse<IMenu>> {

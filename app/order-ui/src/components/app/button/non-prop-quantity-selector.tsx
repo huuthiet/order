@@ -4,15 +4,16 @@ import { Minus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui';
 
 interface NonPropQuantitySelectorProps {
-    onChange?: (quantity: number) => void;
+    currentQuantity: number; // Giá trị tối đa
+    onChange?: (quantity: number) => void; // Callback khi giá trị thay đổi
 }
 
-export default function NonPropQuantitySelector({ onChange }: NonPropQuantitySelectorProps) {
+export default function NonPropQuantitySelector({ currentQuantity, onChange }: NonPropQuantitySelectorProps) {
     const [quantity, setQuantity] = useState(1);
 
     const handleIncrement = () => {
         setQuantity((prev) => {
-            const newQuantity = prev + 1;
+            const newQuantity = Math.min(prev + 1, currentQuantity); // Giới hạn bởi currentQuantity
             onChange?.(newQuantity);
             return newQuantity;
         });
@@ -20,7 +21,7 @@ export default function NonPropQuantitySelector({ onChange }: NonPropQuantitySel
 
     const handleDecrement = () => {
         setQuantity((prev) => {
-            const newQuantity = Math.max(prev - 1, 1);
+            const newQuantity = Math.max(prev - 1, 1); // Giá trị nhỏ nhất là 1
             onChange?.(newQuantity);
             return newQuantity;
         });

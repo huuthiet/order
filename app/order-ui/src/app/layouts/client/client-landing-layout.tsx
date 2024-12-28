@@ -38,40 +38,102 @@ export default function ClientLandingLayout() {
                                 <DownloadProgress progress={progress} fileName={fileName} />
                             )}
                         </main>
-                        <footer className="grid grid-cols-1 gap-8 px-4 py-6 text-center text-white bg-black sm:grid-cols-4">
-                            <div className='grid items-start justify-center grid-cols-2 col-span-1'>
-                                <div className='flex flex-col items-start justify-center gap-2 w-fit'>
-                                    <span className='font-bold'>
-                                        Giới thiệu
-                                    </span>
-                                    <span className='text-sm'>
-                                        Về chúng tôi
-                                    </span>
-                                    <span className='text-sm'>
-                                        Sản phẩm
-                                    </span>
-                                    <span className='text-sm'>
-                                        Khuyến mãi
-                                    </span>
-                                    <span className='text-sm'>
-                                        Cửa hàng
-                                    </span>
-                                    <span className='text-sm'>
-                                        Tuyển dụng
-                                    </span>
+                        <footer className="px-4 py-6 text-center text-white bg-black">
+                            {!isMobile ? (
+                                <div className='grid sm:grid-cols-4'>
+                                    <div className='flex flex-col items-start justify-center gap-2 w-fit'>
+                                        <span className='font-bold'>
+                                            Giới thiệu
+                                        </span>
+                                        <span className='text-sm'>
+                                            Về chúng tôi
+                                        </span>
+                                        <span className='text-sm'>
+                                            Sản phẩm
+                                        </span>
+                                        <span className='text-sm'>
+                                            Khuyến mãi
+                                        </span>
+                                        <span className='text-sm'>
+                                            Cửa hàng
+                                        </span>
+                                        <span className='text-sm'>
+                                            Tuyển dụng
+                                        </span>
+                                    </div>
+                                    <div className='flex flex-col items-start justify-start gap-2 w-fit'>
+                                        <span className='font-bold'>
+                                            Điều khoản
+                                        </span>
+                                        <span className='text-sm'>
+                                            Điều khoản sử dụng
+                                        </span>
+                                        <span className='text-sm'>
+                                            Chính sách bảo mật
+                                        </span>
+                                    </div>
+                                    <div className='flex flex-col items-start justify-start gap-2 w-fit'>
+                                        <span className='flex items-center gap-2 text-sm'>
+                                            <Phone size={18} /> Hotline: 0123 456 789
+                                        </span>
+                                        <span className='flex items-center gap-2 text-sm'>
+                                            <MapPin size={18} /> Liên hệ
+                                        </span>
+                                        <span className='text-xs'>
+                                            01 Võ Văn Ngân, Thủ Đức, TP. Hồ Chí Minh
+                                        </span>
+                                    </div>
+                                    {!isMobile && (
+                                        <div className="relative flex flex-col items-end justify-start w-full col-span-1 gap-2">
+                                            <div className='flex flex-col justify-start gap-2 w-fit'>
+                                                <div className="relative">
+                                                    <img src={Store1} alt="store" className="h-32 rounded-sm" />
+                                                    <img
+                                                        src={Logo}
+                                                        alt="logo"
+                                                        className="absolute top-0 left-0 w-auto h-5 m-2" // Đặt Logo ở góc trên trái với margin
+                                                    />
+                                                </div>
+                                                <Facebook />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className='flex flex-col items-start justify-center gap-2 w-fit'>
-                                    <span className='font-bold'>
-                                        Điều khoản
-                                    </span>
-                                    <span className='text-sm'>
-                                        Điều khoản sử dụng
-                                    </span>
-                                    <span className='text-sm'>
-                                        Chính sách bảo mật
-                                    </span>
+                            ) : (
+                                <div className='grid items-start justify-center grid-cols-2 col-span-1'>
+                                    <div className='flex flex-col items-start justify-center gap-2 w-fit'>
+                                        <span className='font-bold'>
+                                            Giới thiệu
+                                        </span>
+                                        <span className='text-sm'>
+                                            Về chúng tôi
+                                        </span>
+                                        <span className='text-sm'>
+                                            Sản phẩm
+                                        </span>
+                                        <span className='text-sm'>
+                                            Khuyến mãi
+                                        </span>
+                                        <span className='text-sm'>
+                                            Cửa hàng
+                                        </span>
+                                        <span className='text-sm'>
+                                            Tuyển dụng
+                                        </span>
+                                    </div>
+                                    <div className='flex flex-col items-start justify-center gap-2 w-fit'>
+                                        <span className='font-bold'>
+                                            Điều khoản
+                                        </span>
+                                        <span className='text-sm'>
+                                            Điều khoản sử dụng
+                                        </span>
+                                        <span className='text-sm'>
+                                            Chính sách bảo mật
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             {isMobile && (
                                 <div className="relative flex flex-col items-start justify-center col-span-1 gap-4">
@@ -94,34 +156,7 @@ export default function ClientLandingLayout() {
                                 </div>
                             )}
 
-                            <div className='flex flex-col w-full gap-2'>
-                                <div className='flex items-start justify-center w-full col-span-1'>
-                                    <div className='flex flex-col items-start justify-center w-full gap-2'>
-                                        <span className='flex items-center gap-2 text-sm'>
-                                            <Phone size={18} /> Hotline: 0123 456 789
-                                        </span>
-                                        <span className='flex items-center gap-2 text-sm'>
-                                            <MapPin size={18} /> Liên hệ
-                                        </span>
-                                        <span className='text-xs'>
-                                            01 Võ Văn Ngân, Thủ Đức, TP. Hồ Chí Minh
-                                        </span>
-                                    </div>
-                                </div>
-                                {!isMobile && (
-                                    <div className="relative flex flex-col items-start justify-center col-span-1 gap-2">
-                                        <div className="relative">
-                                            <img src={Store1} alt="store" className="w-full h-32 rounded-sm" />
-                                            <img
-                                                src={Logo}
-                                                alt="logo"
-                                                className="absolute top-0 left-0 w-auto h-5 m-2" // Đặt Logo ở góc trên trái với margin
-                                            />
-                                        </div>
-                                        <Facebook />
-                                    </div>
-                                )}
-                            </div>
+
                         </footer>
                     </ScrollArea>
                 </div>

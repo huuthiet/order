@@ -6,6 +6,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib';
 import { DownloadProgress } from '@/components/app/progress';
 import { useDownloadStore } from '@/stores';
+import { BreadcrumbComponent } from '@/components/app/breadcrumb';
 // import { ROUTE } from '@/constants';
 // import { DropdownHeader, ModeToggle } from '@/components/app/dropdown';
 
@@ -31,7 +32,7 @@ export default function ClientLayout() {
 
           {/* Breadcrumb - Responsive padding */}
           <div className={cn('sticky z-20', isMobile ? 'px-3 py-2' : '')}>
-            {/* <BreadcrumbComponent /> */}
+            <BreadcrumbComponent />
           </div>
 
           {/* Main scrollable area */}

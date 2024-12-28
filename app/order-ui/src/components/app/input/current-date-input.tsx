@@ -13,7 +13,7 @@ export default function DateInput({ menu }: ICurrentDateInputProps) {
   const { t } = useTranslation('common')
 
   const currentDate = moment(new Date()).format('DD/MM/YYYY')
-  const dayOfWeek = t(`dayOfWeek.${menu?.dayIndex}`)
+  const dayOfWeek = menu?.dayIndex !== undefined ? t(`dayOfWeek.${menu?.dayIndex}`) : ''
 
   return (
     <div className="relative grid items-center grid-cols-1 bg-gray-50">
@@ -25,7 +25,7 @@ export default function DateInput({ menu }: ICurrentDateInputProps) {
         type="text"
         id="date-input"
         readOnly
-        value={`${dayOfWeek}, ${currentDate}`}
+        value={`${dayOfWeek} ${currentDate}`}
         className="pr-2 cursor-not-allowed text-muted-foreground pl-9 h-9"
       />
     </div>

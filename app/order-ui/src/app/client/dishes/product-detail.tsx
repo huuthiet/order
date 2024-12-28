@@ -1,27 +1,31 @@
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart, SquareMenu } from 'lucide-react'
 
 import { Button, ScrollArea } from '@/components/ui'
-import { useProductBySlug } from '@/hooks'
-import { publicFileURL } from '@/constants'
+import { useSpecificMenuItem } from '@/hooks'
+import { publicFileURL, ROUTE } from '@/constants'
 import { ProductRating } from '.'
 import { ProductDetailSkeleton } from '@/components/app/skeleton'
 import { useState } from 'react'
 import { NonPropQuantitySelector } from '@/components/app/button'
-import { useCartItemStore, useUserStore } from '@/stores'
+import { useCartItemStore, useCurrentUrlStore, useUserStore } from '@/stores'
 import { ICartItem, IOrderType, IProductVariant } from '@/types'
+import { showErrorToast } from '@/utils'
 
 export default function ProductManagementPage() {
   const { t } = useTranslation(['product'])
   const { t: tMenu } = useTranslation(['menu'])
   const { slug } = useParams()
   const { getUserInfo } = useUserStore()
+  const { setCurrentUrl } = useCurrentUrlStore()
+  const navigate = useNavigate()
 
-  const { data: product, isLoading } = useProductBySlug(slug as string)
+  const { data: product, isLoading } = useSpecificMenuItem(slug as string)
+  console.log('product', product?.result.product)
   const { addCartItem } = useCartItemStore()
 
-  const productDetail = product?.result
+  const productDetail = product?.result.product
   const [size, setSize] = useState<string | null>(productDetail?.variants[0]?.size.name || null)
   const [price, setPrice] = useState<number | null>(productDetail?.variants[0]?.price || null)
   const [note, setNote] = useState<string>('')
@@ -36,9 +40,10 @@ export default function ProductManagementPage() {
     return <ProductDetailSkeleton />
   }
 
-  const handleSizeChange = (size: string, price: number) => {
-    setSize(size)
-    setPrice(price)
+  const handleSizeChange = (variant: IProductVariant) => {
+    setSelectedVariant(variant)
+    setSize(variant.size.name)
+    setPrice(variant.price)
   }
 
   const handleQuantityChange = (quantity: number) => {
@@ -46,13 +51,20 @@ export default function ProductManagementPage() {
   }
 
   const handleAddToCart = () => {
+    console.log('Add to cart')
+    const currentUrl = window.location.pathname;
+    if (!getUserInfo()?.slug) return (
+      showErrorToast(1042),
+      setCurrentUrl(currentUrl),
+      navigate(ROUTE.LOGIN)
+    )
+    console.log('selectedVariant', selectedVariant)
     if (!selectedVariant) return
-
     const cartItem: ICartItem = {
       id: generateCartItemId(),
       slug: productDetail?.slug || '',
       owner: getUserInfo()?.slug,
-      type: IOrderType.AT_TABLE, // default value, can be modified based on requirements
+      type: IOrderType.AT_TABLE, // default value
       branch: getUserInfo()?.branch.slug, // get branch from user info
       orderItems: [
         {
@@ -60,7 +72,7 @@ export default function ProductManagementPage() {
           slug: productDetail?.slug || '',
           image: productDetail?.image || '',
           name: productDetail?.name || '',
-          quantity: 1,
+          quantity: quantity,
           variant: selectedVariant.slug,
           price: selectedVariant.price,
           description: productDetail?.description || '',
@@ -71,7 +83,7 @@ export default function ProductManagementPage() {
       ],
       table: '', // will be set later via addTable
     }
-
+    console.log('cartItem', cartItem)
     addCartItem(cartItem)
     // Reset states
     setNote('')
@@ -98,7 +110,7 @@ export default function ProductManagementPage() {
                       <img
                         src={`${publicFileURL}/${productDetail.image}`}
                         alt={productDetail.name}
-                        className="w-[calc(100%-1rem)] rounded-xl object-cover"
+                        className="object-cover w-full rounded-md"
                       />
                     )}
                     {/* Product images */}
@@ -168,7 +180,7 @@ export default function ProductManagementPage() {
                                   // variant="outline"
                                   className={`flex items-center justify-center w-10 h-10 p-2 border rounded-full ${size === variant.size.name ? 'bg-primary border-primary text-white' : 'bg-transparent'}`}
                                   key={variant.slug}
-                                  onClick={() => handleSizeChange(variant.size.name, variant.price)}
+                                  onClick={() => handleSizeChange(variant)}
                                 >
                                   {variant.size.name.toUpperCase()}
                                 </div>
@@ -183,9 +195,9 @@ export default function ProductManagementPage() {
                               {t('product.selectQuantity')}
                             </label>
                             <div className='flex flex-row items-center justify-start gap-2'>
-                              <NonPropQuantitySelector onChange={handleQuantityChange} />
-                              <div>
-                                {/* Số lượng có sẵn: {productDetail.} */}
+                              <NonPropQuantitySelector currentQuantity={product.result.currentStock} onChange={handleQuantityChange} />
+                              <div className='text-xs text-muted-foreground'>
+                                {product.result.currentStock}/{product.result.defaultStock} sản phẩm có sẵn
                               </div>
                             </div>
                           </div>

@@ -43,7 +43,7 @@ export default function ProtectedElement({
       showToast(t('toast.sessionExpired'))
     } else if (!hasRequiredPermissions()) {
       showToast(t('toast.accessDenied'))
-      navigate(ROUTE.LOGIN)
+      // navigate(ROUTE.LOGIN)
     }
   }, [isAuthenticated, navigate, handleLogout, hasRequiredPermissions, t])
 
