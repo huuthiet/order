@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpCode,
   ParseArrayPipe,
+  Query,
 } from '@nestjs/common';
 import { MenuItemService } from './menu-item.service';
 import {
@@ -22,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import {
   CreateMenuItemDto,
+  GetMenuItemQueryDto,
   MenuItemResponseDto,
   UpdateMenuItemDto,
 } from './menu-item.dto';
@@ -89,8 +91,11 @@ export class MenuItemController {
     isArray: true,
     description: 'Retrieve all menu items',
   })
-  async findAll() {
-    const result = await this.menuItemService.findAll();
+  @Public()
+  async findAll(
+    @Query(new ValidationPipe({ transform: true })) query: GetMenuItemQueryDto,
+  ) {
+    const result = await this.menuItemService.findAll(query);
     return {
       message: 'Retrieve all menu items successfully',
       statusCode: HttpStatus.OK,
