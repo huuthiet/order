@@ -59,13 +59,13 @@ export default function OrderList({ filter }: { filter: OrderStatus }) {
                                     className="grid items-center grid-cols-12 gap-2 p-4"
                                 >
                                     <div className="relative col-span-4">
-                                        <div className="relative w-full h-16">
+                                        <div className="relative w-full h-16 sm:w-1/2 sm:h-full">
                                             <img
                                                 src={`${publicFileURL}/${product.variant.product.image}`}
                                                 alt={product.variant.product.name}
                                                 className="object-cover w-full h-full rounded-md"
                                             />
-                                            <div className="absolute flex items-center justify-center text-xs text-white rounded-full -right-3 -bottom-2 w-7 h-7 bg-primary">
+                                            <div className="absolute flex items-center justify-center text-xs text-white rounded-full -right-3 -bottom-2 w-7 h-7 sm:w-10 sm:h-10 bg-primary">
                                                 x{product.quantity}
                                             </div>
                                         </div>
@@ -94,7 +94,7 @@ export default function OrderList({ filter }: { filter: OrderStatus }) {
                                 <Button variant='outline' onClick={() => navigate(`${ROUTE.CLIENT_ORDER_HISTORY}/${orderItem.slug}`)}>{t('order.viewDetail')}</Button>
                                 <div>
                                     {t('order.subtotal')}:&nbsp;
-                                    <span className='font-semibold text-primary text-md'>{`${orderItem.subtotal.toLocaleString()}đ`}</span>
+                                    <span className='font-semibold text-primary text-md sm:text-2xl'>{`${orderItem.subtotal.toLocaleString()}đ`}</span>
                                 </div>
                             </div>
                             <div className='flex justify-end'>

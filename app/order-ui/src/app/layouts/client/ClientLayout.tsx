@@ -31,7 +31,7 @@ export default function ClientLayout() {
           </div>
 
           {/* Breadcrumb - Responsive padding */}
-          <div className={cn('sticky z-20', isMobile ? 'px-3 py-2' : '')}>
+          <div className={cn('sticky z-20', isMobile ? 'px-3 py-2' : 'p-4')}>
             <BreadcrumbComponent />
           </div>
 

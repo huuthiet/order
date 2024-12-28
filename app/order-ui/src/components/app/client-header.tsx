@@ -32,10 +32,18 @@ export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
                         <NavLink
                             to={ROUTE.CLIENT_MENU}
                             className={({ isActive }) =>
-                                `flex items-center gap-2 ${isActive ? "text-primary" : "text-white"}`
+                                `flex items-center gap-2 ${isActive ? "text-primary" : "text-muted-foreground"}`
                             }
                         >
                             <span className="text-sm">Thực đơn</span>
+                        </NavLink>
+                        <NavLink
+                            to={ROUTE.CLIENT_ORDER_HISTORY}
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 ${isActive ? "text-primary" : "text-muted-foreground"}`
+                            }
+                        >
+                            <span className="text-sm">Lịch sử đơn hàng</span>
                         </NavLink>
                         <div className='text-sm'>
                             Về chúng tôi

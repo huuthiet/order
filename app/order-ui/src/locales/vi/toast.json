@@ -26,6 +26,7 @@
     "deleteProductSuccess": "Xóa món ăn thành công",
     "uploadImageSuccess": "Tải hình ảnh thành công",
     "uploadImageError": "Tải hình ảnh thất bại",
+    "deleteProductImageSuccess": "Xóa hình ảnh món ăn thành công",
 
     "createProductVariantSuccess": "Tạo phân loại món ăn thành công",
     "updateProductVariantSuccess": "Cập nhật phân loại món ăn thành công",

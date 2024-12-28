@@ -91,6 +91,9 @@
     "rating": "Đánh giá",
     "variant": "Phân loại",
 
+    "upload": "Tải lên",
+    "deleteImage": "Xóa hình ảnh",
+    "deleteProductImageConfirmation": "Bạn có chắc muốn xóa hình ảnh này?",
     "productDetail": "Chi tiết món"
   },
   "productVariant": {

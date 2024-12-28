@@ -7,7 +7,7 @@ export default function OrderHistoryPage() {
   const { t } = useTranslation(['menu']);
 
   return (
-    <div className="flex flex-col gap-1 px-2">
+    <div className="flex flex-col gap-1 px-2 sm:px-4">
       <div className="sticky top-0 z-10 flex flex-col items-center bg-white">
         <span className="flex items-center justify-start w-full gap-1 text-lg">
           <SquareMenu />
