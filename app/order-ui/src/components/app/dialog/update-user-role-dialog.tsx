@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PlusCircledIcon } from '@radix-ui/react-icons'
+import { UserCog } from 'lucide-react'
 
 import {
     Button,
@@ -12,17 +12,18 @@ import {
     DialogTrigger,
 } from '@/components/ui'
 
+
+import { UpdateUserRoleForm } from '@/components/app/form'
+import { IUserInfo } from '@/types'
+
 interface IUpdateUserRoleDialogProps {
-    productVariant: IProductVariant
+    user: IUserInfo
 }
 
-import { UpdateProductVariantForm } from '@/components/app/form'
-import { IProductVariant } from '@/types'
-
 export default function UpdateUserRoleDialog({
-    productVariant,
+    user,
 }: IUpdateUserRoleDialogProps) {
-    const { t } = useTranslation(['product'])
+    const { t } = useTranslation(['user'])
     const [isOpen, setIsOpen] = useState(false)
     const handleSubmit = (isOpen: boolean) => {
         setIsOpen(isOpen)
@@ -36,19 +37,19 @@ export default function UpdateUserRoleDialog({
                     className="h-10 gap-1 px-2 text-sm"
                     onClick={() => setIsOpen(true)}
                 >
-                    <PlusCircledIcon className="icon" />
-                    {t('productVariant.update')}
+                    <UserCog className="icon" />
+                    {t('users.updateRole')}
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
                 <DialogHeader>
-                    <DialogTitle>{t('productVariant.create')}</DialogTitle>
+                    <DialogTitle>{t('users.updateRole')}</DialogTitle>
                     <DialogDescription>
-                        {t('productVariant.updateVariantDescription')}
+                        {t('users.updateRoleDescription')}
                     </DialogDescription>
                 </DialogHeader>
-                <UpdateProductVariantForm
-                    productVariant={productVariant}
+                <UpdateUserRoleForm
+                    user={user}
                     onSubmit={handleSubmit}
                 />
             </DialogContent>

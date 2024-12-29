@@ -69,6 +69,8 @@
     "forgotPasswordSuccess": "Gửi email đặt lại mật khẩu thành công",
     "resetPasswordSuccess": "Đặt lại mật khẩu thành công",
 
+    "updateUserRoleSuccess": "Cập nhật chức danh người dùng thành công",
+
     "accessDenied": "Truy cập bị từ chối",
     "sessionExpired": "Phiên làm việc đã hết hạn",
 

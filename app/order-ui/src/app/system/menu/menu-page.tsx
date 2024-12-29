@@ -22,7 +22,7 @@ export default function MenuPage() {
   }
   const { data: specificMenu, isLoading } = useSpecificMenu({
     date: getCurrentDate(),
-    branch: userInfo?.branch.slug,
+    branch: userInfo?.branch.slug || '',
   })
 
   return (
