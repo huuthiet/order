@@ -85,4 +85,10 @@ export const sidebarRoutes: ISidebarRoute[] = [
     roles: [Role.ADMIN, Role.SUPER_ADMIN],
     icon: Bolt,
   },
+  {
+    title: 'sidebar.orderHistory',
+    path: ROUTE.CLIENT_ORDER_HISTORY,
+    roles: [Role.CUSTOMER],
+    icon: FileText,
+  },
 ]

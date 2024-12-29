@@ -43,3 +43,8 @@ export interface IUpdatePasswordRequest {
   oldPassword: string
   newPassword: string
 }
+
+export interface IUpdateUserRoleRequest {
+  slug: string
+  role: string
+}

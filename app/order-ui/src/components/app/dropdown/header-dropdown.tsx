@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { User } from 'lucide-react'
+import { LogIn, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -15,9 +15,11 @@ import {
 import { ProfileAvatar } from '@/components/app/avatar'
 import { LogoutDialog } from '@/components/app/dialog'
 import { ROUTE } from '@/constants'
+import { useAuthStore } from '@/stores'
 
 export default function HeaderDropdown() {
   const { t } = useTranslation(['sidebar'])
+  const { isAuthenticated } = useAuthStore()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -52,7 +54,16 @@ export default function HeaderDropdown() {
           <span>Support</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator /> */}
-        <LogoutDialog />
+        {isAuthenticated() ? (
+          <LogoutDialog />
+        ) : (
+          <NavLink to={ROUTE.LOGIN}>
+            <Button variant="ghost" className="flex items-center justify-start w-full gap-2">
+              <LogIn />
+              {t('header.login')}
+            </Button>
+          </NavLink>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

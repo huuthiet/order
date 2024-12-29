@@ -54,7 +54,7 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
       {menuItems.map((item) => (
         <NavLink
           key={item.slug}
-          to={`${ROUTE.CLIENT_MENU}/${item.product.slug}`}>
+          to={`${ROUTE.CLIENT_MENU}/${item.slug}`}>
           <div
             key={item.slug}
             className="flex flex-col min-h-[20rem] transition-all duration-300 bg-white border hover:shadow-xl hover:scale-105 rounded-xl backdrop-blur-md"

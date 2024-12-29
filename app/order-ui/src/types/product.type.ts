@@ -7,6 +7,7 @@ export interface IProduct {
   isActive: boolean
   isLimit: boolean
   image: string
+  images: string[]
   rating: number
   catalog: ICatalog
   variants: IProductVariant[]

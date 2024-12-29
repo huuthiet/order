@@ -22,8 +22,8 @@ export const useResetPassword = () => {
 
 export const useUpdateUserRole = () => {
   return useMutation({
-    mutationFn: async ({ user, role }: { user: string; role: string }) => {
-      return updateUserRole(user, role)
+    mutationFn: async ({ slug, role }: { slug: string; role: string }) => {
+      return updateUserRole(slug, role)
     },
   })
 }

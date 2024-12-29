@@ -20,7 +20,7 @@ import { loginSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ButtonLoading } from '@/components/app/loading'
 import { useLogin, useProfile } from '@/hooks'
-import { useAuthStore, useUserStore } from '@/stores'
+import { useAuthStore, useCurrentUrlStore, useUserStore } from '@/stores'
 import { Role, ROUTE } from '@/constants'
 import { showErrorToast, showToast } from '@/utils'
 
@@ -34,6 +34,7 @@ export const LoginForm: React.FC = () => {
   } = useAuthStore()
   const navigate = useNavigate()
   const { setUserInfo } = useUserStore()
+  const { currentUrl, clearUrl } = useCurrentUrlStore()
   const { mutate: login, isPending } = useLogin()
   const { refetch: refetchProfile } = useProfile()
 
@@ -48,7 +49,8 @@ export const LoginForm: React.FC = () => {
   const navigateBasedOnRole = (roleName: string) => {
     switch (roleName) {
       case Role.CUSTOMER:
-        navigate(ROUTE.CLIENT_HOME);
+        navigate(currentUrl || ROUTE.HOME);
+        clearUrl();
         break;
       case Role.ADMIN:
       case Role.MANAGER:
@@ -57,9 +59,6 @@ export const LoginForm: React.FC = () => {
       case Role.STAFF:
         navigate(ROUTE.STAFF_MENU);
         break;
-      // default:
-      //   navigate(ROUTE.DEFAULT); // Route mặc định khi không có role phù hợp
-      //   break;
     }
   };
 

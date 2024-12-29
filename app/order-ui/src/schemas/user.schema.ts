@@ -12,4 +12,11 @@ export const userInfoSchema = z.object({
   branch: z.string(),
 })
 
+export const userRoleSchema = z.object({
+  slug: z.string(),
+  name: z.string(),
+  role: z.string(),
+})
+
 export type TUserInfoSchema = z.infer<typeof userInfoSchema>
+export type TUserRoleSchema = z.infer<typeof userRoleSchema>

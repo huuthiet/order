@@ -25,6 +25,8 @@ export interface ISpecificMenuRequest {
   slug?: string // This is the slug of the menu
   date?: string
   branch?: string
+  minPrice?: number
+  maxPrice?: number
 }
 
 export interface IUpdateMenuRequest {
@@ -78,4 +80,11 @@ export interface IMenuItemStore {
   addMenuItem: (item: IAddMenuItemRequest) => void
   removeMenuItem: (productSlug: string) => void
   clearMenuItems: () => void
+}
+
+export interface IPriceRangeStore {
+  minPrice: number
+  maxPrice: number
+  setPriceRange: (minPrice: number, maxPrice: number) => void
+  clearPriceRange: () => void
 }

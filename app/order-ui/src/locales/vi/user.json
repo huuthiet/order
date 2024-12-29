@@ -13,7 +13,12 @@
     "name": "Tên",
     "email": "Email",
     "phoneNumber": "Số điện thoại",
+    "role": "Chức danh",
     "address": "Địa chỉ",
+
+    "updateRole": "Cập nhật chức danh",
+    "updateRoleDescription": "Cập nhật chức danh cho người dùng",
+    "update": "Cập nhật",
 
     "resetPassword": "Đặt lại mật khẩu",
     "resetPasswordDescription": "Đặt lại mật khẩu cho người dùng",
