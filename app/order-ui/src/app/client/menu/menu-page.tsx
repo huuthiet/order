@@ -43,8 +43,8 @@ export default function MenuPage() {
   return (
     <div className="flex flex-col w-full">
       <div className="flex flex-col">
-        <div className="sticky top-0 z-10 grid items-start justify-start grid-cols-2 gap-2 p-4 sm:items-center sm:justify-between sm:flex-row">
-          <div className="flex w-2/3 gap-4">
+        <div className="sticky top-0 z-10 grid items-start justify-start grid-cols-2 gap-2 p-4 bg-white sm:items-center sm:justify-between sm:flex-row">
+          <div className="flex w-2/3 col-span-1 gap-4">
             <CurrentDateInput menu={specificMenu?.result} />
             {minPrice !== 0 && maxPrice !== 0 && (
               <div className="flex items-center gap-1 px-2 border rounded-full border-primary bg-primary/10 text-primary">
@@ -55,9 +55,12 @@ export default function MenuPage() {
               </div>
             )}
           </div>
-          <div className="flex justify-end w-full gap-4">
-            <BranchSelect onChange={handleSelectBranch} />
-            <PriceRangeFilter onApply={handlePriceRangeFilter} />
+          <div className="grid justify-end w-full grid-cols-3 col-span-1 gap-4">
+            <div className="w-full col-span-1" />
+            <div className="flex justify-end w-full col-span-2 gap-2">
+              <BranchSelect onChange={handleSelectBranch} />
+              <PriceRangeFilter onApply={handlePriceRangeFilter} />
+            </div>
           </div>
         </div>
         <div className="flex flex-col items-start w-full h-screen px-4">
