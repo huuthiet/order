@@ -41,8 +41,11 @@ export class ProductAnalysisScheduler {
   @Timeout(5000)
   async initProductAnalysis() {
     const context = `${ProductAnalysisScheduler.name}.${this.initProductAnalysis.name}`;
-    const hasProductAnalysis = this.productAnalysisRepository.find();
-    if (!_.isEmpty(hasProductAnalysis)) return;
+    const hasProductAnalysis = await this.productAnalysisRepository.find({});
+    if (!_.isEmpty(hasProductAnalysis)) {
+      this.logger.log(`Product analysis existed`, context);
+      return;
+    }
 
     const results: any[] = await this.productAnalysisRepository.query(
       getAllProductAnalysisClause,

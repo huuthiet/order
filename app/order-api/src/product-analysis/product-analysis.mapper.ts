@@ -2,7 +2,10 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, forMember, mapFrom, Mapper } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 
-import { ProductAnalysisQueryDto } from './product-analysis.dto';
+import {
+  ProductAnalysisQueryDto,
+  ProductAnalysisResponseDto,
+} from './product-analysis.dto';
 import { ProductAnalysis } from './product-analysis.entity';
 import * as moment from 'moment';
 
@@ -14,6 +17,8 @@ export class ProductAnalysisProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper: Mapper) => {
+      createMap(mapper, ProductAnalysis, ProductAnalysisResponseDto);
+
       // Map entity to response
       createMap(
         mapper,

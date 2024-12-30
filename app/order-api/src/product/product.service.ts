@@ -32,6 +32,8 @@ export class ProductService {
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
+  async getPopularProducts() {}
+
   /**
    * Get product by slug
    * @param {string} slug The product slug is retrieved
