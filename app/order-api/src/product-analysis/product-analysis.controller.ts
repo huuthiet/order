@@ -1,10 +1,21 @@
-import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Query,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ProductAnalysisService } from './product-analysis.service';
 import { Public } from 'src/auth/public.decorator';
 import { ApiResponseWithType } from 'src/app/app.decorator';
-import { ProductAnalysisResponseDto } from './product-analysis.dto';
+import {
+  GetProductAnalysisQueryDto,
+  ProductAnalysisResponseDto,
+} from './product-analysis.dto';
 import { ApiOperation } from '@nestjs/swagger';
-import { AppResponseDto } from 'src/app/app.dto';
+import { AppPaginatedResponseDto, AppResponseDto } from 'src/app/app.dto';
 
 @Controller('product-analysis')
 export class ProductAnalysisController {
@@ -22,16 +33,17 @@ export class ProductAnalysisController {
     isArray: true,
   })
   @ApiOperation({ summary: 'Get top-sell products' })
-  async getTopSellProducts(): Promise<
-    AppResponseDto<ProductAnalysisResponseDto[]>
-  > {
-    const result = await this.productAnalysisService.getTopSellProducts();
+  async getTopSellProducts(
+    @Query(new ValidationPipe({ transform: true }))
+    query: GetProductAnalysisQueryDto,
+  ) {
+    const result = await this.productAnalysisService.getTopSellProducts(query);
     return {
       message: 'The top-sellers product were retrieved successfully.',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<ProductAnalysisResponseDto[]>;
+    } as AppResponseDto<AppPaginatedResponseDto<ProductAnalysisResponseDto>>;
   }
 
   @Get('top-sell/branch/:branch')
@@ -46,14 +58,18 @@ export class ProductAnalysisController {
   @ApiOperation({ summary: 'Get top-sell products by branch' })
   async getTopSellProductsByBranch(
     @Param('branch') branchSlug: string,
-  ): Promise<AppResponseDto<ProductAnalysisResponseDto[]>> {
-    const result =
-      await this.productAnalysisService.getTopSellProductsByBranch(branchSlug);
+    @Query(new ValidationPipe({ transform: true }))
+    query: GetProductAnalysisQueryDto,
+  ) {
+    const result = await this.productAnalysisService.getTopSellProductsByBranch(
+      branchSlug,
+      query,
+    );
     return {
       message: 'The top-sellers product were retrieved successfully.',
       statusCode: HttpStatus.OK,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<ProductAnalysisResponseDto[]>;
+    } as AppResponseDto<AppPaginatedResponseDto<ProductAnalysisResponseDto>>;
   }
 }

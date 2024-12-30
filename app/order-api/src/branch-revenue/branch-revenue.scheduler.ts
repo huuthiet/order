@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BranchRevenue } from './branch-revenue.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -14,6 +9,8 @@ import { BranchRevenueQueryResponseDto } from './branch-revenue.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { plainToInstance } from 'class-transformer';
+import { BranchRevenueException } from './branch-revenue.exception';
+import { BranchRevenueValidation } from './branch-revenue.validation';
 
 @Injectable()
 export class BranchRevenueScheduler {
@@ -61,11 +58,14 @@ export class BranchRevenueScheduler {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.logger.error(
-        `Error when creating revenues: ${JSON.stringify(error)}`,
+        `Error when creating branch revenues: ${JSON.stringify(error)}`,
         error.stack,
         context,
       );
-      throw new BadRequestException(error.message);
+      throw new BranchRevenueException(
+        BranchRevenueValidation.CREATE_BRANCH_REVENUE_ERROR,
+        error.message,
+      );
     } finally {
       await queryRunner.release();
     }

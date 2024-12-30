@@ -1,11 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductAnalysis } from './product-analysis.entity';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import {
+  GetProductAnalysisQueryDto,
   ProductAnalysisQueryDto,
   ProductAnalysisResponseDto,
 } from './product-analysis.dto';
@@ -15,6 +16,7 @@ import ProductValidation from 'src/product/product.validation';
 import { BranchException } from 'src/branch/branch.exception';
 import { BranchValidation } from 'src/branch/branch.validation';
 import { Branch } from 'src/branch/branch.entity';
+import { AppPaginatedResponseDto } from 'src/app/app.dto';
 
 @Injectable()
 export class ProductAnalysisService {
@@ -31,19 +33,31 @@ export class ProductAnalysisService {
     private readonly branchRepository: Repository<Branch>,
   ) {}
 
-  async getTopSellProductsByBranch(branchSlug: string) {
-    // Get top 10 products that are the best seller base on specific branch
-    const results: ProductAnalysisQueryDto[] =
-      await this.productAnalysisRepository
-        .createQueryBuilder('pa')
-        .select('pa.product', 'productId') // Include the product id
-        .addSelect('pa.branch', 'branchId') // Include branch id
-        .addSelect('COUNT(pa.product)', 'totalProducts') // Count occurrences of each product
-        .groupBy('pa.product') // Group by product
-        .addGroupBy('pa.branch')
-        .orderBy('totalProducts', 'DESC') // Order by count in descending order
-        .limit(10) // Limit to top 10
-        .getRawMany();
+  async getTopSellProductsByBranch(
+    branchSlug: string,
+    query: GetProductAnalysisQueryDto,
+  ) {
+    const branch = await this.branchRepository.findOne({
+      where: {
+        slug: branchSlug,
+      },
+    });
+    if (!branch) throw new BranchException(BranchValidation.BRANCH_NOT_FOUND);
+
+    const queryBuilder = this.productAnalysisRepository
+      .createQueryBuilder('pa')
+      .select('pa.product', 'productId')
+      .addSelect('pa.branch', 'branchId')
+      .addSelect('SUM(pa.totalQuantity)', 'totalProducts')
+      .where('pa.branch = :branchId', { branchId: branch.id })
+      .groupBy('pa.product')
+      .addGroupBy('pa.branch')
+      .orderBy('totalProducts', 'DESC');
+
+    if (query.hasPaging)
+      queryBuilder.take(query.size).skip((query.page - 1) * query.size);
+
+    const results: ProductAnalysisQueryDto[] = await queryBuilder.getRawMany();
 
     const productAnalyses: ProductAnalysis[] = await Promise.all(
       results.map(async (item) => {
@@ -51,6 +65,7 @@ export class ProductAnalysisService {
           where: {
             id: item.productId,
           },
+          relations: ['catalog', 'variants.size'],
         });
         if (!product)
           throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
@@ -71,24 +86,22 @@ export class ProductAnalysisService {
       }),
     );
 
-    return this.mapper.mapArray(
-      productAnalyses,
-      ProductAnalysis,
-      ProductAnalysisResponseDto,
-    );
+    return await this.getPaginatedResults(productAnalyses, query);
   }
 
-  async getTopSellProducts() {
+  async getTopSellProducts(query: GetProductAnalysisQueryDto) {
     // Get top 10 products that are the best seller in all branch
-    const results: ProductAnalysisQueryDto[] =
-      await this.productAnalysisRepository
-        .createQueryBuilder('pa')
-        .select('pa.product', 'productId') // Include the product object
-        .addSelect('COUNT(pa.product)', 'totalProducts') // Count occurrences of each product
-        .groupBy('pa.product') // Group by product
-        .orderBy('totalProducts', 'DESC') // Order by count in descending order
-        .limit(10) // Limit to top 10
-        .getRawMany();
+    const queryBuilder = this.productAnalysisRepository
+      .createQueryBuilder('pa')
+      .select('pa.product', 'productId')
+      .addSelect('SUM(pa.totalQuantity)', 'totalProducts')
+      .groupBy('pa.product')
+      .orderBy('totalProducts', 'DESC');
+
+    if (query.hasPaging)
+      queryBuilder.take(query.size).skip((query.page - 1) * query.size);
+
+    const results: ProductAnalysisQueryDto[] = await queryBuilder.getRawMany();
 
     const productAnalyses: ProductAnalysis[] = await Promise.all(
       results.map(async (item) => {
@@ -96,6 +109,7 @@ export class ProductAnalysisService {
           where: {
             id: item.productId,
           },
+          relations: ['catalog', 'variants.size'],
         });
         if (!product)
           throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
@@ -109,10 +123,35 @@ export class ProductAnalysisService {
       }),
     );
 
-    return this.mapper.mapArray(
-      productAnalyses,
-      ProductAnalysis,
-      ProductAnalysisResponseDto,
-    );
+    return await this.getPaginatedResults(productAnalyses, query);
+  }
+
+  private async getPaginatedResults(
+    productAnalyses: ProductAnalysis[],
+    query: GetProductAnalysisQueryDto,
+  ) {
+    const total = productAnalyses.length;
+    const page = query.hasPaging ? query.page : 1;
+    const pageSize = query.hasPaging ? query.size : total;
+
+    // Calculate total pages
+    const totalPages = Math.ceil(total / pageSize);
+    // Determine hasNext and hasPrevious
+    const hasNext = query.page < totalPages;
+    const hasPrevious = query.page > 1;
+
+    return {
+      hasNext: hasNext,
+      hasPrevios: hasPrevious,
+      items: this.mapper.mapArray(
+        productAnalyses,
+        ProductAnalysis,
+        ProductAnalysisResponseDto,
+      ),
+      total,
+      page,
+      pageSize,
+      totalPages,
+    } as AppPaginatedResponseDto<ProductAnalysisResponseDto>;
   }
 }
