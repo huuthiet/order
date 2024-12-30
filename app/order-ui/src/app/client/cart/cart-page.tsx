@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { QuantitySelector } from '@/components/app/button'
 import { ScrollArea } from '@/components/ui'
 import {
-  // PaymentMethodSelect,
   TableSelect,
 } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
@@ -12,14 +11,10 @@ import { CartNoteInput } from '@/components/app/input'
 import { CreateOrderDialog, DeleteCartItemDialog } from '@/components/app/dialog'
 import { publicFileURL } from '@/constants'
 import { IOrderType } from '@/types'
-// import { useIsMobile } from '@/hooks'
 
 export default function CartPage() {
   const { t } = useTranslation('menu')
-  // const [isCartOpen] = useState(true)
   const { getCartItems, addOrderType } = useCartItemStore()
-  // const isMobile = useIsMobile()
-  // const isCollapsed = state === 'collapsed'
   const cartItems = getCartItems()
 
   const handleAddDeliveryMethod = (orderType: IOrderType) => {
@@ -30,14 +25,11 @@ export default function CartPage() {
     <div
       className={`mb-10 flex flex-col w-full px-2`}
     >
-      {/* <div className="sticky top-0 z-10 flex items-center justify-end gap-2 py-3">
-        {isMobile && <CheckoutCartDrawer />}
-      </div> */}
 
       <ScrollArea className="flex flex-col gap-2 pb-4">
         {/* Order type selection */}
         {cartItems && (
-          <div className="z-30 grid w-full grid-cols-2 gap-2 p-4 bg-background">
+          <div className="z-30 grid w-full max-w-lg grid-cols-2 gap-2 py-4 bg-background">
             <div
               onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
               className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.AT_TABLE
@@ -122,18 +114,15 @@ export default function CartPage() {
             <CircleAlert size={14} className="text-destructive" />
             <span className='text-xs italic text-destructive'>{t('order.selectTableNote')}</span>
           </div>
-
         </div>
 
         {/* Table select */}
         <TableSelect />
-        {/* {!isMobile && ( */}
         <div className="flex justify-end py-4">
-          {/* <div className='w-1/2'> */}
-          <CreateOrderDialog />
-          {/* </div> */}
+          <div className='w-full sm:max-w-[10rem]'>
+            <CreateOrderDialog />
+          </div>
         </div>
-        {/* )} */}
       </ScrollArea>
     </div>
   )

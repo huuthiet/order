@@ -52,7 +52,7 @@ export default function BranchSelect({
 
   return (
     <ReactSelect
-      className="rounded-lg w-fit border-muted-foreground" // Độ rộng của component
+      className="w-full rounded-lg border-muted-foreground" // Độ rộng của component
       value={selectedBranch} // Hiển thị giá trị mặc định đã chọn
       options={allBranches} // Danh sách options
       onChange={handleChange}

@@ -33,7 +33,7 @@ export default function ProductImageCarousel({
         >
             <CarouselContent>
                 {images.map((image, index) => (
-                    <CarouselItem key={index} className="w-full md:basis-1/3">
+                    <CarouselItem key={index} className="w-full basis-1/2 md:basis-1/3">
                         <div className="flex w-full p-1">
                             <Card
                                 className={`relative w-full cursor-pointer group transition-all duration-300 ease-in-out hover:ring-2 hover:ring-primary ${selectedIndex === index ? 'ring-2 ring-primary' : ''
