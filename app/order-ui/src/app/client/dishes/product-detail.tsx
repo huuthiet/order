@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart, SquareMenu } from 'lucide-react'
 
-import { Button, ScrollArea } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { useSpecificMenuItem } from '@/hooks'
 import { publicFileURL, ROUTE } from '@/constants'
 import { ProductRating } from '.'
@@ -91,139 +91,106 @@ export default function ProductManagementPage() {
   return (
     <div className="flex flex-row h-full gap-2">
       {/* Menu Section - Scrollable */}
-      <ScrollArea className="flex-1">
-        <div className={`pl-4 transition-all duration-300 ease-in-out`}>
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 pr-4">
-            <div className="flex flex-col flex-1 w-full mt-1">
-              <div className="flex flex-row items-center justify-between">
-                <span className="flex items-center gap-1 text-lg">
-                  <SquareMenu />
-                  {t('product.productDetail')}
-                </span>
-              </div>
-              <div className="flex flex-col gap-4">
-                <div className="grid w-full grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
-                  <div className="flex flex-col h-full col-span-1 gap-2">
-                    {productDetail && (
-                      <img
-                        src={`${publicFileURL}/${selectedImage || productDetail.image}`}
-                        alt={productDetail.name}
-                        className="object-cover w-full h-[20rem] transition-opacity duration-300 ease-in-out rounded-xl"
-                      />
-                    )}
-                    <div className='flex items-center justify-center'>
-                      <ProductImageCarousel
-                        images={productDetail ? [productDetail.image, ...(productDetail.images || [])] : []}
-                        onImageClick={setSelectedImage}
-                      />
-                    </div>
-                    {/* Product images */}
-                    {/* <div className="grid grid-cols-4">
-                      {productDetail && (
-                        <img
-                          src={`${publicFileURL}/${productDetail.image}`}
-                          alt={productDetail.name}
-                          className="w-[calc(100%-1rem)] rounded-md object-cover"
-                        />
-                      )}
-                      {productDetail && (
-                        <img
-                          src={`${publicFileURL}/${productDetail.image}`}
-                          alt={productDetail.name}
-                          className="w-[calc(100%-1rem)] rounded-md object-cover"
-                        />
-                      )}
-                      {productDetail && (
-                        <img
-                          src={`${publicFileURL}/${productDetail.image}`}
-                          alt={productDetail.name}
-                          className="w-[calc(100%-1rem)] rounded-md object-cover"
-                        />
-                      )}
-                      {productDetail && (
-                        <img
-                          src={`${publicFileURL}/${productDetail.image}`}
-                          alt={productDetail.name}
-                          className="w-[calc(100%-1rem)] rounded-md object-cover"
-                        />
-                      )}
-                    </div> */}
+      <div className={`transition-all duration-300 ease-in-out`}>
+        <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
+          <div className="flex flex-col flex-1 w-full mt-1">
+            <div className="flex flex-row items-center justify-between">
+              <span className="flex items-center gap-1 text-lg">
+                <SquareMenu />
+                {t('product.productDetail')}
+              </span>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div className="grid w-full grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
+                <div className="flex flex-col h-full col-span-1 gap-2">
+                  {productDetail && (
+                    <img
+                      src={`${publicFileURL}/${selectedImage || productDetail.image}`}
+                      alt={productDetail.name}
+                      className="object-cover w-full h-[20rem] transition-opacity duration-300 ease-in-out rounded-xl"
+                    />
+                  )}
+                  <div className='flex items-center justify-center'>
+                    <ProductImageCarousel
+                      images={productDetail ? [productDetail.image, ...(productDetail.images || [])] : []}
+                      onImageClick={setSelectedImage}
+                    />
                   </div>
-                  <div className="flex flex-col col-span-1 gap-4">
-                    {productDetail && (
-                      <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1">
-                          <div>
-                            <span className="text-3xl font-semibold">
-                              {productDetail.name}
-                            </span>
+                </div>
+                <div className="flex flex-col col-span-1 gap-4">
+                  {productDetail && (
+                    <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-1">
+                        <div>
+                          <span className="text-3xl font-semibold">
+                            {productDetail.name}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-md text-muted-foreground">
+                            {productDetail.description}
+                          </span>
+                        </div>
+                        {price && (
+                          <div className="text-2xl font-semibold text-primary">
+                            {`${price.toLocaleString()}đ`}
                           </div>
-                          <div>
-                            <span className="text-md text-muted-foreground">
-                              {productDetail.description}
-                            </span>
-                          </div>
-                          {price && (
-                            <div className="text-2xl font-semibold text-primary">
-                              {`${price.toLocaleString()}đ`}
-                            </div>
-                          )}
-                          {/* Product Rating */}
-                          <div className="mt-2">
-                            <ProductRating rating={productDetail.rating} />
+                        )}
+                        {/* Product Rating */}
+                        <div className="mt-2">
+                          <ProductRating rating={productDetail.rating} />
+                        </div>
+                      </div>
+                      {productDetail.variants.length > 0 && (
+                        <div className="flex flex-row items-center w-full gap-6">
+                          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            {t('product.selectSize')}
+                          </label>
+                          <div className='flex flex-row items-center justify-start gap-2'>
+                            {productDetail.variants.map((variant) => (
+                              <div
+                                // variant="outline"
+                                className={`flex items-center justify-center w-10 h-10 p-2 border rounded-full ${size === variant.size.name ? 'bg-primary border-primary text-white' : 'bg-transparent'}`}
+                                key={variant.slug}
+                                onClick={() => handleSizeChange(variant)}
+                              >
+                                {variant.size.name.toUpperCase()}
+                              </div>
+                            ))}
                           </div>
                         </div>
-                        {productDetail.variants.length > 0 && (
-                          <div className="flex flex-row items-center w-full gap-6">
-                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                              {t('product.selectSize')}
-                            </label>
-                            <div className='flex flex-row items-center justify-start gap-2'>
-                              {productDetail.variants.map((variant) => (
-                                <div
-                                  // variant="outline"
-                                  className={`flex items-center justify-center w-10 h-10 p-2 border rounded-full ${size === variant.size.name ? 'bg-primary border-primary text-white' : 'bg-transparent'}`}
-                                  key={variant.slug}
-                                  onClick={() => handleSizeChange(variant)}
-                                >
-                                  {variant.size.name.toUpperCase()}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                      )}
 
-                        {productDetail.variants.length > 0 && (
-                          <div className="flex flex-row items-center w-full gap-6">
-                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                              {t('product.selectQuantity')}
-                            </label>
-                            <div className='flex flex-row items-center justify-start gap-2'>
-                              <NonPropQuantitySelector currentQuantity={product.result.currentStock} onChange={handleQuantityChange} />
-                              <div className='text-xs text-muted-foreground'>
-                                {product.result.currentStock}/{product.result.defaultStock} sản phẩm có sẵn
-                              </div>
+                      {productDetail.variants.length > 0 && (
+                        <div className="flex flex-row items-center w-full gap-6">
+                          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            {t('product.selectQuantity')}
+                          </label>
+                          <div className='flex flex-row items-center justify-start gap-2'>
+                            <NonPropQuantitySelector currentQuantity={product.result.currentStock} onChange={handleQuantityChange} />
+                            <div className='text-xs text-muted-foreground'>
+                              {product.result.currentStock}/{product.result.defaultStock} sản phẩm có sẵn
                             </div>
                           </div>
-                        )}
-                      </div>
-                    )}
-                    <div className="grid grid-cols-2 gap-4">
-                      <Button onClick={handleAddToCart} variant="outline" className='bg-transparent' disabled={!size || quantity <= 0}>
-                        <ShoppingCart />
-                        {tMenu('menu.addToCart')}
-                      </Button>
-                      <Button>
-                        {tMenu('menu.buyNow')}
-                      </Button>
+                        </div>
+                      )}
                     </div>
+                  )}
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button onClick={handleAddToCart} variant="outline" className='bg-transparent' disabled={!size || quantity <= 0}>
+                      <ShoppingCart />
+                      {tMenu('menu.addToCart')}
+                    </Button>
+                    <Button>
+                      {tMenu('menu.buyNow')}
+                    </Button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </ScrollArea>
+      </div>
     </div>
   )
 }

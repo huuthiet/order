@@ -36,7 +36,7 @@ export default function PriceRangeFilter({ onApply }: PriceRangeFilterProps) {
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="outline" className="w-fit">
+                <Button variant="outline">
                     <Settings2 />
                     {t("menu.priceRangeFilter")}
                 </Button>

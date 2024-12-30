@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LogIn, User } from 'lucide-react'
+import { LogIn, ShoppingBag, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -44,6 +44,20 @@ export default function HeaderDropdown() {
               >
                 <User className="icon" />
                 {t('header.profile')}
+              </Button>
+            </NavLink>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="px-0 h-9">
+            <NavLink
+              to={`${ROUTE.CLIENT_ORDER_HISTORY}`}
+              className="flex justify-start w-full h-9"
+            >
+              <Button
+                variant="ghost"
+                className="flex justify-start w-full gap-1 text-sm"
+              >
+                <ShoppingBag className="icon" />
+                {t('header.myOrders')}
               </Button>
             </NavLink>
           </DropdownMenuItem>

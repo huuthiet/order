@@ -1,11 +1,9 @@
-import { useState } from 'react'
 import { CircleAlert, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { QuantitySelector } from '@/components/app/button'
-import { ScrollArea, useSidebar } from '@/components/ui'
+import { ScrollArea } from '@/components/ui'
 import {
-  // PaymentMethodSelect,
   TableSelect,
 } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
@@ -18,17 +16,13 @@ import { CheckoutCartDrawer } from '@/components/app/drawer'
 
 export default function ConfirmOrderPage() {
   const { t } = useTranslation('menu')
-  const [isCartOpen] = useState(true)
   const { getCartItems } = useCartItemStore()
-  const { state } = useSidebar()
   const isMobile = useIsMobile()
-  const isCollapsed = state === 'collapsed'
   const cartItems = getCartItems()
 
   return (
     <div
-      className={`mb-10 flex flex-col ${isCartOpen && !isMobile ? 'w-full' : 'w-full'
-        } ${isCollapsed ? 'pl-2' : ''}`}
+      className={`mb-10 flex flex-col w-full`}
     >
       <div className="sticky top-0 z-10 flex items-center justify-end gap-2 py-3">
         {isMobile && <CheckoutCartDrawer />}

@@ -24,19 +24,19 @@ export default function ClientLayout() {
         {isMobile && <AppSidebar />}
 
         {/* Main content */}
-        <div className="relative flex h-[100dvh] flex-1 flex-col overflow-hidden">
+        <div className="relative flex h-[100dvh] flex-1 px-2 flex-col overflow-hidden">
           {/* Header - Fixed on mobile */}
           <div className="sticky top-0 z-3">
             <ClientHeader isMobile={isMobile} />
           </div>
 
           {/* Breadcrumb - Responsive padding */}
-          <div className={cn('sticky z-20', isMobile ? 'px-3 py-2' : 'p-4')}>
+          <div className={cn('sticky z-20 mx-auto container', isMobile ? 'py-2' : 'p-4')}>
             <BreadcrumbComponent />
           </div>
 
           {/* Main scrollable area */}
-          <ScrollArea className="flex-1">
+          <ScrollArea className="container flex-1 px-2 mx-auto">
             <main
               className={cn(
                 'min-h-full',

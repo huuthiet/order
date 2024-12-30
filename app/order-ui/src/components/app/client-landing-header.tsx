@@ -13,7 +13,7 @@ import { Button, SidebarTrigger } from '../ui'
 export default function ClientLandingHeader({ isMobile }: { isMobile: boolean }) {
     const { getCartItems } = useCartItemStore()
     return (
-        <header className="sticky top-0 z-20 w-full px-3 backdrop-blur supports-[backdrop-filter]:bg-white">
+        <header className="sticky container mx-auto top-0 z-20 w-full px-3 backdrop-blur supports-[backdrop-filter]:bg-white">
             <div className="flex items-center justify-between flex-1 w-full gap-6 h-14">
                 {isMobile && (
                     <SidebarTrigger className={`${isMobile ? '' : ''}`} />

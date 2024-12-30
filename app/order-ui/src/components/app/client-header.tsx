@@ -11,7 +11,7 @@ import { Button, SidebarTrigger } from '../ui'
 export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
     const { getCartItems } = useCartItemStore()
     return (
-        <header className="sticky top-0 z-20 w-full px-3 backdrop-blur supports-[backdrop-filter]:bg-transparent border-b text-muted-foreground border-muted-border">
+        <header className="sticky mx-auto container top-0 z-20 w-full backdrop-blur supports-[backdrop-filter]:bg-transparent border-b text-muted-foreground border-muted-border">
             <div className="flex items-center justify-between flex-1 w-full gap-6 h-14">
                 {isMobile && (
                     <SidebarTrigger />
@@ -37,14 +37,14 @@ export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
                         >
                             <span className="text-sm">Thực đơn</span>
                         </NavLink>
-                        <NavLink
+                        {/* <NavLink
                             to={ROUTE.CLIENT_ORDER_HISTORY}
                             className={({ isActive }) =>
                                 `flex items-center gap-2 ${isActive ? "text-primary" : "text-muted-foreground"}`
                             }
                         >
                             <span className="text-sm">Lịch sử đơn hàng</span>
-                        </NavLink>
+                        </NavLink> */}
                         <div className='text-sm'>
                             Về chúng tôi
                         </div>

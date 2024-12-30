@@ -7,6 +7,8 @@ import {
   FileText,
   Grid2x2,
   LayoutGrid,
+  Phone,
+  ShoppingBag,
   Users,
 } from 'lucide-react'
 
@@ -86,9 +88,21 @@ export const sidebarRoutes: ISidebarRoute[] = [
     icon: Bolt,
   },
   {
-    title: 'sidebar.orderHistory',
+    title: 'sidebar.myOrders',
     path: ROUTE.CLIENT_ORDER_HISTORY,
     roles: [Role.CUSTOMER],
+    icon: ShoppingBag,
+  },
+  {
+    title: 'sidebar.aboutMe',
+    path: ROUTE.ABOUT,
+    roles: [Role.CUSTOMER],
     icon: FileText,
+  },
+  {
+    title: 'sidebar.contact',
+    path: ROUTE.CONTACT,
+    roles: [Role.CUSTOMER],
+    icon: Phone,
   },
 ]
