@@ -89,7 +89,7 @@ export default function ProductManagementPage() {
   }
 
   return (
-    <div className="flex flex-row h-full gap-2">
+    <div className="container flex flex-row h-full gap-2 mx-auto">
       {/* Menu Section - Scrollable */}
       <div className={`transition-all duration-300 ease-in-out`}>
         <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">

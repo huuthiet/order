@@ -206,3 +206,9 @@ export const ClientOrderDetailPage = React.lazy(() =>
     default: module.OrderDetailPage,
   })),
 )
+
+export const ClientProfilePage = React.lazy(() =>
+  import('@/app/client/profile').then((module) => ({
+    default: module.ProfilePage,
+  })),
+)

@@ -56,6 +56,17 @@ export default function BranchSelect({
       value={selectedBranch} // Hiển thị giá trị mặc định đã chọn
       options={allBranches} // Danh sách options
       onChange={handleChange}
+      menuPortalTarget={document.body}
+      styles={{
+        menuPortal: (base) => ({
+          ...base,
+          zIndex: 9999
+        }),
+        menu: (base) => ({
+          ...base,
+          zIndex: 9999
+        })
+      }}
     />
   );
 }

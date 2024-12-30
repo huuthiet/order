@@ -7,10 +7,11 @@ export const ROUTE = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/reset-password',
   ORDER_SUCCESS: '/order-success',
-  PROFILE: '/profile',
+  // PROFILE: '/profile',
 
   // Staff Routes
   DASHBOARD: '/dashboard',
+  STAFF_PROFILE: '/staff/profile',
   STAFF_MENU: '/staff/menu',
   STAFF_CHECKOUT_ORDER: '/checkout-order',
   ORDER_PAYMENT: '/order-payment',
@@ -47,6 +48,7 @@ export const ROUTE = {
   CLIENT_CHECKOUT_ORDER: '/checkout-order',
   CLIENT_ORDER_PAYMENT: '/order-payment',
   CLIENT_ORDER_HISTORY: '/order-history',
+  CLIENT_PROFILE: '/profile',
 
   // General Routes
   ABOUT: '/about',

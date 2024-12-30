@@ -31,12 +31,12 @@ export default function ClientLayout() {
           </div>
 
           {/* Breadcrumb - Responsive padding */}
-          <div className={cn('sticky z-20 mx-auto container', isMobile ? 'py-2' : 'p-4')}>
+          <div className={cn('sticky z-20 mx-auto container', isMobile ? 'py-2' : 'py-4')}>
             <BreadcrumbComponent />
           </div>
 
           {/* Main scrollable area */}
-          <ScrollArea className="container flex-1 px-2 mx-auto">
+          <ScrollArea className="flex-1 px-2">
             <main
               className={cn(
                 'min-h-full',

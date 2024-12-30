@@ -1,7 +1,7 @@
+import { Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
 // import { Authority, ROUTE } from '@/constants'
-import { Suspense } from 'react'
 import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
 import { Role, ROUTE, RoutePermissions } from '@/constants'
@@ -34,6 +34,7 @@ import {
   ClientCartPage,
   ClientOrderHistoryPage,
   ClientOrderDetailPage,
+  ClientProfilePage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 import { ClientLandingLayout, ClientLayout } from '@/app/layouts/client'
@@ -319,7 +320,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: ROUTE.PROFILE,
+    path: ROUTE.STAFF_PROFILE,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />
@@ -502,6 +503,25 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={RoutePermissions[ROUTE.HOME]}
             element={<ClientHomePage />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.CLIENT_PROFILE,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientProfilePage} />}
           />
         ),
       },

@@ -7,9 +7,8 @@ import { Button } from "@/components/ui";
 import { LandingPageBackground, LandingPageBackgroundMobile } from "@/assets/images";
 import { useUserStore } from "@/stores";
 import { useIsMobile, useSpecificMenu } from "@/hooks";
-import { MenuList } from "../menu";
 import { ROUTE } from "@/constants";
-import { StoreCarousel } from ".";
+import { BestSellerCarousel, StoreCarousel } from ".";
 import { LandingPageSkeleton } from "@/components/app/skeleton";
 
 export default function MenuPage() {
@@ -75,7 +74,7 @@ export default function MenuPage() {
         {/* Section 2: Sản phẩm bán chạy */}
         <div className="container mx-auto">
           <motion.div
-            className="flex flex-col items-start w-full p-4 h-fit"
+            className="flex flex-col items-start w-full gap-4 p-4 h-fit"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
@@ -98,9 +97,11 @@ export default function MenuPage() {
                 {isMobile ? <ChevronRight size={13} /> : <ChevronRight size={20} />}
               </NavLink>
             </div>
-            <div className="gap-4 mt-4">
+            <BestSellerCarousel menu={specificMenu?.result} isLoading={isLoading} />
+
+            {/* <div className="gap-4 mt-4">
               <MenuList menu={specificMenu?.result} isLoading={isLoading} />
-            </div>
+            </div> */}
           </motion.div>
         </div>
 

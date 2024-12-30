@@ -35,7 +35,7 @@ export default function HeaderDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem className="px-0 h-9">
             <NavLink
-              to={`${ROUTE.PROFILE}`}
+              to={`${ROUTE.STAFF_PROFILE}`}
               className="flex justify-start w-full h-9"
             >
               <Button
