@@ -13,6 +13,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { BranchRevenueQueryResponseDto } from './branch-revenue.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BranchRevenueScheduler {
@@ -29,10 +30,16 @@ export class BranchRevenueScheduler {
   @Cron(CronExpression.EVERY_DAY_AT_11PM)
   async refreshBranchRevenue() {
     const context = `${BranchRevenue.name}.${this.refreshBranchRevenue.name}`;
-    const results: BranchRevenueQueryResponseDto[] =
-      await this.branchRevenueRepository.query(getCurrentBranchRevenueClause);
+    const results: any[] = await this.branchRevenueRepository.query(
+      getCurrentBranchRevenueClause,
+    );
 
-    const revenues = results.map((item) => {
+    const branchRevenueQueryResponseDtos = plainToInstance(
+      BranchRevenueQueryResponseDto,
+      results,
+    );
+
+    const revenues = branchRevenueQueryResponseDtos.map((item) => {
       return this.mapper.map(
         item,
         BranchRevenueQueryResponseDto,
