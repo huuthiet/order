@@ -17,8 +17,8 @@ export default function UserListPage() {
 
   return (
     <div className="flex flex-col">
-      <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-background">
-        <span className="flex w-full items-center justify-start gap-1 text-lg">
+      <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-transparent">
+        <span className="flex items-center justify-start w-full gap-1 text-lg">
           <SquareMenu />
           {t('users.title')}
         </span>

@@ -5,6 +5,12 @@
     "contactForPrice": "Liên hệ",
     "chooseDishCategory": "Chọn loại món",
 
+    "priceRangeFilter": "Lọc giá",
+    "priceRange": "Khoảng giá",
+    "priceRangeDescription": "Chọn khoảng giá để lọc sản phẩm",
+    "fromPrice": "Từ giá",
+    "toPrice": "Đến giá",
+
     "addToCart": "Thêm vào giỏ",
     "buyNow": "Mua ngay",
     "viewDetails": "Xem chi tiết",

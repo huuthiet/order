@@ -1,9 +1,8 @@
-import { useState } from 'react'
 import { CircleAlert, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { QuantitySelector } from '@/components/app/button'
-import { ScrollArea, useSidebar } from '@/components/ui'
+import { ScrollArea } from '@/components/ui'
 import {
   // PaymentMethodSelect,
   TableSelect,
@@ -12,27 +11,53 @@ import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
 import { CreateOrderDialog, DeleteCartItemDialog } from '@/components/app/dialog'
 import { publicFileURL } from '@/constants'
-import { useIsMobile } from '@/hooks'
+import { IOrderType } from '@/types'
+// import { useIsMobile } from '@/hooks'
 
 export default function CartPage() {
   const { t } = useTranslation('menu')
-  const [isCartOpen] = useState(true)
-  const { getCartItems } = useCartItemStore()
-  const { state } = useSidebar()
-  const isMobile = useIsMobile()
-  const isCollapsed = state === 'collapsed'
+  // const [isCartOpen] = useState(true)
+  const { getCartItems, addOrderType } = useCartItemStore()
+  // const isMobile = useIsMobile()
+  // const isCollapsed = state === 'collapsed'
   const cartItems = getCartItems()
+
+  const handleAddDeliveryMethod = (orderType: IOrderType) => {
+    addOrderType(orderType)
+  }
 
   return (
     <div
-      className={`mb-10 flex flex-col ${isCartOpen && !isMobile ? 'w-full' : 'w-full'
-        } ${isCollapsed ? 'pl-2' : ''}`}
+      className={`mb-10 flex flex-col w-full px-2`}
     >
       {/* <div className="sticky top-0 z-10 flex items-center justify-end gap-2 py-3">
         {isMobile && <CheckoutCartDrawer />}
       </div> */}
 
       <ScrollArea className="flex flex-col gap-2 pb-4">
+        {/* Order type selection */}
+        {cartItems && (
+          <div className="z-30 grid w-full grid-cols-2 gap-2 p-4 bg-background">
+            <div
+              onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
+              className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.AT_TABLE
+                ? 'border-primary bg-primary text-white'
+                : 'border'
+                } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
+            >
+              {t('menu.dineIn')}
+            </div>
+            <div
+              onClick={() => handleAddDeliveryMethod(IOrderType.TAKE_OUT)}
+              className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.TAKE_OUT
+                ? 'border-primary bg-primary text-white'
+                : 'border'
+                } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
+            >
+              {t('menu.takeAway')}
+            </div>
+          </div>
+        )}
         {/* Table list order items */}
         <div className="mb-4">
           <div className="grid grid-cols-7 px-4 py-3 mb-4 text-sm font-thin rounded-md bg-muted/60">
@@ -104,9 +129,9 @@ export default function CartPage() {
         <TableSelect />
         {/* {!isMobile && ( */}
         <div className="flex justify-end py-4">
-          <div className='w-1/2'>
-            <CreateOrderDialog />
-          </div>
+          {/* <div className='w-1/2'> */}
+          <CreateOrderDialog />
+          {/* </div> */}
         </div>
         {/* )} */}
       </ScrollArea>

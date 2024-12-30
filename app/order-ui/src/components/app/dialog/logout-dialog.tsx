@@ -13,7 +13,7 @@ import {
   Button,
   DialogFooter
 } from '@/components/ui'
-import { useAuthStore } from '@/stores'
+import { useAuthStore, useUserStore } from '@/stores'
 import { showToast } from '@/utils'
 import { ROUTE } from '@/constants'
 
@@ -22,12 +22,13 @@ export default function LogoutDialog() {
   const { t: tToast } = useTranslation('toast')
   const [isOpen, setIsOpen] = useState(false)
   const { setLogout } = useAuthStore()
+  const { removeUserInfo } = useUserStore()
   const navigate = useNavigate()
   // const { removeUserInfo, userInfo } = useUserStore()
 
   const handleLogout = () => {
     setLogout()
-    // removeUserInfo()
+    removeUserInfo()
     // clearUserRoles()
     navigate(ROUTE.LOGIN, { replace: true })
     showToast(tToast('toast.logoutSuccess'))

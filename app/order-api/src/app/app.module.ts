@@ -46,6 +46,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConnectionOptions, RedisConnection } from 'bullmq';
 import { RevenueModule } from 'src/revenue/revenue.module';
 import { BranchRevenueModule } from 'src/branch-revenue/branch-revenue.module';
+import { StaticPageModule } from 'src/static-page/static-page.module';
+import { ProductAnalysisModule } from 'src/product-analysis/product-analysis.module';
 
 @Module({
   imports: [
@@ -108,6 +110,8 @@ import { BranchRevenueModule } from 'src/branch-revenue/branch-revenue.module';
     SystemConfigModule,
     RevenueModule,
     BranchRevenueModule,
+    StaticPageModule,
+    ProductAnalysisModule,
   ],
   controllers: [AppController],
   providers: [

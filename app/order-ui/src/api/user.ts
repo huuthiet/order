@@ -26,10 +26,10 @@ export async function resetPassword(user: string): Promise<IApiResponse<null>> {
 }
 
 export async function updateUserRole(
-  user: string,
+  slug: string,
   role: string,
 ): Promise<IApiResponse<null>> {
-  const response = await http.post<IApiResponse<null>>(`/user/${user}/role`, {
+  const response = await http.post<IApiResponse<null>>(`/user/${slug}/role`, {
     role,
   })
   return response.data

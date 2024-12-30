@@ -3,7 +3,7 @@ import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { NameCronTracking, WorkflowStatus } from './tracking.constants';
+import { TrackingCronEnum, WorkflowStatus } from './tracking.constants';
 import { Tracking } from './tracking.entity';
 import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
 import * as _ from 'lodash';
@@ -33,7 +33,7 @@ export class TrackingScheduler {
    * Update status of tracking every 30 seconds
    */
   @Cron(CronExpression.EVERY_5_SECONDS, {
-    name: NameCronTracking.UPDATE_STATUS_TRACKING,
+    name: TrackingCronEnum.UPDATE_STATUS_TRACKING,
   })
   async UpdateStatusTracking() {
     const context = `${TrackingScheduler.name}.${this.UpdateStatusTracking.name}`;
@@ -90,66 +90,64 @@ export class TrackingScheduler {
     const context = `${TrackingScheduler.name}.${this.updateStatusOrder.name}`;
 
     const orders: Order[] = await this.getAllOrdersByTrackingId(trackingId);
-    
+
     // check by total quantity each order item
-    await Promise.all(orders.map(async (order) => {
-      const totalBase = order.orderItems.reduce(
-        (sum, item) => sum + item.quantity,
-        0,
-      );
-      const totalQuantity = this.calculateTotalQuantity(order.orderItems);
-  
-      if (totalBase > totalQuantity[WorkflowStatus.COMPLETED]) {
-        if (totalQuantity[WorkflowStatus.RUNNING] > 0) {
-          Object.assign(order, { status: OrderStatus.SHIPPING });
+    await Promise.all(
+      orders.map(async (order) => {
+        const totalBase = order.orderItems.reduce(
+          (sum, item) => sum + item.quantity,
+          0,
+        );
+        const totalQuantity = this.calculateTotalQuantity(order.orderItems);
+
+        if (totalBase > totalQuantity[WorkflowStatus.COMPLETED]) {
+          if (totalQuantity[WorkflowStatus.RUNNING] > 0) {
+            Object.assign(order, { status: OrderStatus.SHIPPING });
+            await this.orderRepository.save(order);
+          }
+        } else if (totalBase === totalQuantity[WorkflowStatus.COMPLETED]) {
+          Object.assign(order, { status: OrderStatus.COMPLETED });
           await this.orderRepository.save(order);
         }
-      } else if (totalBase === totalQuantity[WorkflowStatus.COMPLETED]) {
-        Object.assign(order, { status: OrderStatus.COMPLETED });
-        await this.orderRepository.save(order);
-      }
-      this.logger.log(`Order status ${order.slug} has been updated`, context);
-    }));
+        this.logger.log(`Order status ${order.slug} has been updated`, context);
+      }),
+    );
   }
 
   /**
-   * 
+   *
    * @param {string} trackingId The id of tracking
    * @returns {Promise<Order[]>} The array of orders
    */
-  async getAllOrdersByTrackingId (
-    trackingId: string
-  ): Promise<Order[]> {
+  async getAllOrdersByTrackingId(trackingId: string): Promise<Order[]> {
     const trackingOrderItems = await this.trackingOrderItemRepository.find({
       where: {
-        tracking: { id: trackingId }
-      }
+        tracking: { id: trackingId },
+      },
     });
     const orderItems: OrderItem[] = await Promise.all(
-      trackingOrderItems.map(trackingOrderItem => 
+      trackingOrderItems.map((trackingOrderItem) =>
         this.orderItemRepository.findOne({
           where: {
-            trackingOrderItems: { id: trackingOrderItem.id }
+            trackingOrderItems: { id: trackingOrderItem.id },
           },
-        })
-      )
+        }),
+      ),
     );
     const orderItemIds = orderItems.map((orderItem) => orderItem.id);
     const orders: Order[] = await this.orderRepository.find({
       where: {
-        orderItems: { id: In(orderItemIds) }
+        orderItems: { id: In(orderItemIds) },
       },
     });
 
     const results: Order[] = await Promise.all(
-      orders.map(order => 
+      orders.map((order) =>
         this.orderRepository.findOne({
           where: { id: order.id },
-          relations: [
-            'orderItems.trackingOrderItems.tracking',
-          ],
-        })
-      )
+          relations: ['orderItems.trackingOrderItems.tracking'],
+        }),
+      ),
     );
 
     return results;
@@ -203,28 +201,23 @@ export class TrackingScheduler {
   stopUpdateStatusTracking() {
     const context = `${TrackingScheduler.name}.${this.stopUpdateStatusTracking.name}`;
     const job = this.schedulerRegistry.getCronJob(
-      NameCronTracking.UPDATE_STATUS_TRACKING,
+      TrackingCronEnum.UPDATE_STATUS_TRACKING,
     );
     job.stop();
-    this.logger.log(
-      `Cron job "${NameCronTracking.UPDATE_STATUS_TRACKING}" has been stopped.`,
-      context,
-    );
+    this.logger.log(`Update tracking status job has been stopped.`, context);
   }
 
   /**
    * Restart a specific cron function
-   * @param {string} name The name of cron function
-   * @param {string} trackingId The id of tracking
    */
   startUpdateStatusTracking() {
     const context = `${TrackingScheduler.name}.${this.startUpdateStatusTracking.name}`;
     const job = this.schedulerRegistry.getCronJob(
-      NameCronTracking.UPDATE_STATUS_TRACKING,
+      TrackingCronEnum.UPDATE_STATUS_TRACKING,
     );
     job.start();
     this.logger.log(
-      `Cron job "${NameCronTracking.UPDATE_STATUS_TRACKING}" has been restarted.`,
+      `Cron job "${TrackingCronEnum.UPDATE_STATUS_TRACKING}" has been restarted.`,
       context,
     );
   }

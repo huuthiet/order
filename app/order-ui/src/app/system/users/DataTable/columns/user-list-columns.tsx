@@ -13,10 +13,14 @@ import {
 } from '@/components/ui'
 import { IUserInfo } from '@/types'
 import { ResetPasswordDialog, UserInfoDialog } from '@/components/app/dialog'
+import UpdateUserRoleDialog from '@/components/app/dialog/update-user-role-dialog'
+import { useUserStore } from '@/stores'
+import { Role } from '@/constants'
 
 export const useUserListColumns = (): ColumnDef<IUserInfo>[] => {
   const { t } = useTranslation(['user', 'common'])
   const { t: tCommon } = useTranslation(['common'])
+  const { userInfo } = useUserStore()
   return [
     {
       accessorKey: 'createdAt',
@@ -89,6 +93,20 @@ export const useUserListColumns = (): ColumnDef<IUserInfo>[] => {
       },
     },
     {
+      accessorKey: 'role',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('users.role')} />
+      ),
+      cell: ({ row }) => {
+        const user = row.original
+        return (
+          <div className='text-sm'>
+            {user?.role?.name}
+          </div>
+        )
+      },
+    },
+    {
       id: 'actions',
       header: tCommon('common.action'),
       cell: ({ row }) => {
@@ -107,7 +125,12 @@ export const useUserListColumns = (): ColumnDef<IUserInfo>[] => {
                   {tCommon('common.action')}
                 </DropdownMenuLabel>
                 <UserInfoDialog user={user} />
-                <ResetPasswordDialog user={user} />
+                {userInfo?.role.name === Role.SUPER_ADMIN && (
+                  <div>
+                    <ResetPasswordDialog user={user} />
+                    <UpdateUserRoleDialog user={user} />
+                  </div>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -32,6 +32,8 @@ import {
   ClientProductDetailPage,
   ClientHomePage,
   ClientCartPage,
+  ClientOrderHistoryPage,
+  ClientOrderDetailPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 import { ClientLandingLayout, ClientLayout } from '@/app/layouts/client'
@@ -119,7 +121,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN, Role.STAFF]}
+            allowedRoles={[Role.ADMIN, Role.STAFF, Role.CUSTOMER]}
             element={<SuspenseElement component={OrderSuccessPage} />}
           />
         ),
@@ -397,18 +399,19 @@ export const router = createBrowserRouter([
     path: ROUTE.CLIENT_MENU,
     element: (
       <Suspense fallback={<SkeletonCart />}>
-        <SuspenseElement component={ClientLayout} />
+        <ClientLayout />
       </Suspense>
     ),
     children: [
       {
         index: true,
-        element: (
-          <ProtectedElement
-            allowedRoles={[Role.CUSTOMER]}
-            element={<SuspenseElement component={ClientMenuPage} />}
-          />
-        ),
+        element: <SuspenseElement component={ClientMenuPage} />,
+        // element: (
+        //   <ProtectedElement
+        //     allowedRoles={[Role.CUSTOMER]}
+        //     element={<SuspenseElement component={ClientMenuPage} />}
+        //   />
+        // ),
       },
     ],
   },
@@ -422,12 +425,13 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <ProtectedElement
-            allowedRoles={[Role.CUSTOMER]}
-            element={<SuspenseElement component={ClientProductDetailPage} />}
-          />
-        ),
+        element: <SuspenseElement component={ClientProductDetailPage} />,
+        // element: (
+        //   <ProtectedElement
+        //     allowedRoles={[Role.CUSTOMER]}
+        //     element={<SuspenseElement component={ClientProductDetailPage} />}
+        //   />
+        // ),
       },
     ],
   },
@@ -445,6 +449,44 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={[Role.CUSTOMER]}
             element={<SuspenseElement component={ClientCartPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.CLIENT_ORDER_HISTORY,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientOrderHistoryPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.CLIENT_ORDER_HISTORY}/:slug`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientOrderDetailPage} />}
           />
         ),
       },

@@ -27,7 +27,7 @@ export default function ModeToggle() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
-          <Settings className="text-white h-[1.1rem] w-[1.1rem]" />
+          <Settings className='h-[1.1rem] w-[1.1rem]' />
           <span className="sr-only">Open settings</span>
         </Button>
       </DropdownMenuTrigger>

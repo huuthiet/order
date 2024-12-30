@@ -26,6 +26,7 @@
     "deleteProductSuccess": "Xóa món ăn thành công",
     "uploadImageSuccess": "Tải hình ảnh thành công",
     "uploadImageError": "Tải hình ảnh thất bại",
+    "deleteProductImageSuccess": "Xóa hình ảnh món ăn thành công",
 
     "createProductVariantSuccess": "Tạo phân loại món ăn thành công",
     "updateProductVariantSuccess": "Cập nhật phân loại món ăn thành công",
@@ -68,6 +69,8 @@
     "forgotPasswordSuccess": "Gửi email đặt lại mật khẩu thành công",
     "resetPasswordSuccess": "Đặt lại mật khẩu thành công",
 
+    "updateUserRoleSuccess": "Cập nhật chức danh người dùng thành công",
+
     "accessDenied": "Truy cập bị từ chối",
     "sessionExpired": "Phiên làm việc đã hết hạn",
 
@@ -75,6 +78,7 @@
     "updateSystemConfigSuccess": "Cập nhật cấu hình hệ thống thành công",
     "deleteSystemConfigSuccess": "Xóa cấu hình hệ thống thành công",
 
+    "unloggedIn": "Vui lòng đăng nhập",
     "catalogNameInvalid": "Tên danh mục không hợp lệ",
     "branchSlugInvalid": "Slug chi nhánh không hợp lệ",
     "dayInvalid": "Ngày không hợp lệ",

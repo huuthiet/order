@@ -1,5 +1,6 @@
 import { ACBConnectorValidation } from 'src/acb-connector/acb-connector.validation';
 import AuthValidation from 'src/auth/auth.validation1';
+import { BranchRevenueValidation } from 'src/branch-revenue/branch-revenue.validation';
 import { CatalogValidation } from 'src/catalog/catalog.validation';
 import { DbValidation } from 'src/db/db.validation';
 import FileValidation from 'src/file/file.validation';
@@ -9,10 +10,13 @@ import { MenuValidation } from 'src/menu/menu.validation';
 import { OrderItemValidation } from 'src/order-item/order-item.validation';
 import { OrderValidation } from 'src/order/order.validation';
 import { PaymentValidation } from 'src/payment/payment.validation';
+import { ProductAnalysisValidation } from 'src/product-analysis/product-analysis.validation';
 import ProductValidation from 'src/product/product.validation';
+import { RevenueValidation } from 'src/revenue/revenue.validation';
 import { RobotConnectorValidation } from 'src/robot-connector/robot-connector.validation';
 import { RoleValidation } from 'src/role/role.validation';
 import { SizeValidation } from 'src/size/size.validation';
+import { StaticPageValidation } from 'src/static-page/static-page.validation';
 import { SystemConfigValidation } from 'src/system-config/system-config.validation';
 import { TableValidation } from 'src/table/table.validation';
 import { TrackingValidation } from 'src/tracking/tracking.validation';
@@ -56,6 +60,10 @@ export const AppValidation: TErrorCode = {
   ...UserValidation,
   ...RoleValidation,
   ...SystemConfigValidation,
+  ...StaticPageValidation,
+  ...ProductAnalysisValidation,
+  ...BranchRevenueValidation,
+  ...RevenueValidation,
 };
 
 const errorCodeKeys = Object.keys(AppValidation);

@@ -15,7 +15,7 @@ export const ROUTE = {
   STAFF_CHECKOUT_ORDER: '/checkout-order',
   ORDER_PAYMENT: '/order-payment',
   STAFF_ORDER_MANAGEMENT: '/order-management',
-  STAFF_ORDER_HISTORY: '/order-history',
+  STAFF_ORDER_HISTORY: '/staff/order-history',
   STAFF_ORDER_PREPARATION: '/order-preparation',
   STAFF_TABLE_MANAGEMENT: '/table-management',
   STAFF_PRODUCT_MANAGEMENT: '/product-management',
@@ -46,6 +46,7 @@ export const ROUTE = {
   CLIENT_CART: '/cart',
   CLIENT_CHECKOUT_ORDER: '/checkout-order',
   CLIENT_ORDER_PAYMENT: '/order-payment',
+  CLIENT_ORDER_HISTORY: '/order-history',
 
   // General Routes
   ABOUT: '/about',

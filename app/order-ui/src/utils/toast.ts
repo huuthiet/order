@@ -6,6 +6,7 @@ const errorCodes: { [key: number]: string } = {
   1: 'toast.invalidQuery',
   1031: 'toast.orderItemNotFound',
   1041: 'toast.createTrackingFailed',
+  1042: 'toast.unloggedIn',
   101000: 'toast.ownerNotFound',
   101001: 'toast.orderNotFound',
   101002: 'toast.orderStatusInvalid',
