@@ -2,7 +2,7 @@
 import { NavLink } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
 
-import { DropdownHeader, ModeToggle } from '@/components/app/dropdown'
+import { DropdownClientHeader, ModeToggle } from '@/components/app/dropdown'
 import { useCartItemStore } from '@/stores'
 import { Logo } from '@/assets/images'
 import { ROUTE } from '@/constants'
@@ -66,7 +66,7 @@ export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
                         </Button>
                     </NavLink>
                     <ModeToggle />
-                    <DropdownHeader />
+                    <DropdownClientHeader />
                 </div>
             </div>
         </header>

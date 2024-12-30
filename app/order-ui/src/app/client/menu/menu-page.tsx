@@ -41,12 +41,10 @@ export default function MenuPage() {
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="container flex flex-col w-full mx-auto">
       <div className="flex flex-col">
-        {/* <ScrollArea className="border rounded-md whitespace-nowrap"> */}
         <div className="sticky z-10 flex items-start justify-start w-full gap-2 py-4 overflow-hidden overflow-x-auto bg-white -top-1 sm:items-center sm:justify-between sm:flex-row">
           <div className="flex w-2/3 gap-4 sm:w-auto">
-            {/* Các phần tử con cần đảm bảo có chiều rộng phù hợp */}
             <div className="flex-shrink-0 w-full sm:w-auto">
               <CurrentDateInput menu={specificMenu?.result} />
             </div>
@@ -66,9 +64,6 @@ export default function MenuPage() {
             </div>
           </div>
         </div>
-
-        {/* <ScrollBar orientation="horizontal" /> */}
-        {/* </ScrollArea> */}
 
         <div className="flex flex-col items-start w-full h-screen">
           <div className="gap-4">

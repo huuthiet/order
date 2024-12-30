@@ -1,11 +1,9 @@
 'use client'
 import { NavLink } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
-// import { ShoppingCart } from 'lucide-react'
 
-import { DropdownHeader, ModeToggle } from '@/components/app/dropdown'
+import { DropdownClientHeader, ModeToggle } from '@/components/app/dropdown'
 import { useCartItemStore } from '@/stores'
-// import { Button } from '@/components/ui'
 import { Logo } from '@/assets/images'
 import { ROUTE } from '@/constants'
 import { Button, SidebarTrigger } from '../ui'
@@ -64,7 +62,7 @@ export default function ClientLandingHeader({ isMobile }: { isMobile: boolean })
 
                     {/* {!isMobile && ( */}
                     <ModeToggle />
-                    <DropdownHeader />
+                    <DropdownClientHeader />
                     {/* <span className="flex-col hidden sm:flex">
                             <span className="ml-2 text-sm font-semibold">
                                 {userInfo?.firstName} {userInfo?.lastName}
