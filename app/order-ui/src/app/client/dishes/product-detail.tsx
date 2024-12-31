@@ -26,11 +26,16 @@ export default function ProductManagementPage() {
   const { addCartItem } = useCartItemStore()
 
   const productDetail = product?.result.product
-  const [size, setSize] = useState<string | null>(productDetail?.variants[0]?.size.name || null)
-  const [price, setPrice] = useState<number | null>(productDetail?.variants[0]?.price || null)
+  const [size, setSize] = useState<string | null>(
+    productDetail?.variants[0]?.size.name || null,
+  )
+  const [price, setPrice] = useState<number | null>(
+    productDetail?.variants[0]?.price || null,
+  )
   const [note, setNote] = useState<string>('')
   const [quantity, setQuantity] = useState<number>(1)
-  const [selectedVariant, setSelectedVariant] = useState<IProductVariant | null>(productDetail?.variants[0] || null)
+  const [selectedVariant, setSelectedVariant] =
+    useState<IProductVariant | null>(productDetail?.variants[0] || null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const generateCartItemId = () => {
@@ -52,12 +57,11 @@ export default function ProductManagementPage() {
   }
 
   const handleAddToCart = () => {
-    const currentUrl = window.location.pathname;
-    if (!getUserInfo()?.slug) return (
-      showErrorToast(1042),
-      setCurrentUrl(currentUrl),
-      navigate(ROUTE.LOGIN)
-    )
+    const currentUrl = window.location.pathname
+    if (!getUserInfo()?.slug)
+      return (
+        showErrorToast(1042), setCurrentUrl(currentUrl), navigate(ROUTE.LOGIN)
+      )
     if (!selectedVariant) return
     const cartItem: ICartItem = {
       id: generateCartItemId(),
@@ -89,11 +93,11 @@ export default function ProductManagementPage() {
   }
 
   return (
-    <div className="container flex flex-row h-full gap-2 px-2 mx-auto">
+    <div className="container mx-auto flex h-full flex-row gap-2 px-2">
       {/* Menu Section - Scrollable */}
       <div className={`transition-all duration-300 ease-in-out`}>
         <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
-          <div className="flex flex-col flex-1 w-full mt-1">
+          <div className="mt-1 flex w-full flex-1 flex-col">
             <div className="flex flex-row items-center justify-between">
               <span className="flex items-center gap-1 text-lg">
                 <SquareMenu />
@@ -101,23 +105,30 @@ export default function ProductManagementPage() {
               </span>
             </div>
             <div className="flex flex-col gap-4">
-              <div className="grid w-full grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
-                <div className="flex flex-col h-full col-span-1 gap-2">
+              <div className="mt-4 grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="col-span-1 flex h-full flex-col gap-2">
                   {productDetail && (
                     <img
                       src={`${publicFileURL}/${selectedImage || productDetail.image}`}
                       alt={productDetail.name}
-                      className="object-cover w-full h-[20rem] transition-opacity duration-300 ease-in-out rounded-xl"
+                      className="h-[20rem] w-full rounded-xl object-cover transition-opacity duration-300 ease-in-out"
                     />
                   )}
-                  <div className='flex items-center justify-center'>
+                  <div className="flex items-center justify-center">
                     <ProductImageCarousel
-                      images={productDetail ? [productDetail.image, ...(productDetail.images || [])] : []}
+                      images={
+                        productDetail
+                          ? [
+                              productDetail.image,
+                              ...(productDetail.images || []),
+                            ]
+                          : []
+                      }
                       onImageClick={setSelectedImage}
                     />
                   </div>
                 </div>
-                <div className="flex flex-col col-span-1 gap-4">
+                <div className="col-span-1 flex flex-col gap-4">
                   {productDetail && (
                     <div className="flex flex-col gap-4">
                       <div className="flex flex-col gap-1">
@@ -142,15 +153,15 @@ export default function ProductManagementPage() {
                         </div>
                       </div>
                       {productDetail.variants.length > 0 && (
-                        <div className="flex flex-row items-center w-full gap-6">
+                        <div className="flex w-full flex-row items-center gap-6">
                           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                             {t('product.selectSize')}
                           </label>
-                          <div className='flex flex-row items-center justify-start gap-2'>
+                          <div className="flex flex-row items-center justify-start gap-2">
                             {productDetail.variants.map((variant) => (
                               <div
                                 // variant="outline"
-                                className={`flex items-center justify-center w-10 h-10 p-2 border rounded-full ${size === variant.size.name ? 'bg-primary border-primary text-white' : 'bg-transparent'}`}
+                                className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border p-2 transition-colors hover:bg-primary hover:text-white ${size === variant.size.name ? 'border-primary bg-primary text-white' : 'bg-transparent'}`}
                                 key={variant.slug}
                                 onClick={() => handleSizeChange(variant)}
                               >
@@ -162,14 +173,18 @@ export default function ProductManagementPage() {
                       )}
 
                       {productDetail.variants.length > 0 && (
-                        <div className="flex flex-row items-center w-full gap-6">
+                        <div className="flex w-full flex-row items-center gap-6">
                           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                             {t('product.selectQuantity')}
                           </label>
-                          <div className='flex flex-row items-center justify-start gap-2'>
-                            <NonPropQuantitySelector currentQuantity={product.result.currentStock} onChange={handleQuantityChange} />
-                            <div className='text-xs text-muted-foreground'>
-                              {product.result.currentStock}/{product.result.defaultStock} sản phẩm có sẵn
+                          <div className="flex flex-row items-center justify-start gap-2">
+                            <NonPropQuantitySelector
+                              currentQuantity={product.result.currentStock}
+                              onChange={handleQuantityChange}
+                            />
+                            <div className="text-xs text-muted-foreground">
+                              {product.result.currentStock}/
+                              {product.result.defaultStock} sản phẩm có sẵn
                             </div>
                           </div>
                         </div>
@@ -177,13 +192,16 @@ export default function ProductManagementPage() {
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-4">
-                    <Button onClick={handleAddToCart} variant="outline" className='bg-transparent' disabled={!size || quantity <= 0}>
+                    <Button
+                      onClick={handleAddToCart}
+                      variant="outline"
+                      className="bg-transparent"
+                      disabled={!size || quantity <= 0}
+                    >
                       <ShoppingCart />
                       {tMenu('menu.addToCart')}
                     </Button>
-                    <Button>
-                      {tMenu('menu.buyNow')}
-                    </Button>
+                    <Button>{tMenu('menu.buyNow')}</Button>
                   </div>
                 </div>
               </div>

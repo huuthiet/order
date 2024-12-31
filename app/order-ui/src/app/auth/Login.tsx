@@ -18,7 +18,6 @@ import { ROUTE } from '@/constants'
 
 export default function Login() {
   const { t } = useTranslation(['auth'])
-  //   const { getTheme } = useThemeStore()
   const { isAuthenticated } = useAuthStore()
 
   const navigate = useNavigate()
@@ -31,20 +30,19 @@ export default function Login() {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen">
+    <div className="relative flex min-h-screen items-center justify-center">
       <img
         src={LoginBackground}
-        className="absolute top-0 left-0 object-cover w-full h-full sm:object-fill"
+        className="absolute left-0 top-0 h-full w-full object-cover sm:object-fill"
       />
 
-      <div className="relative z-10 flex items-center justify-center w-full h-full">
-        <Card className="border border-muted-foreground bg-white bg-opacity-10 shadow-xl backdrop-blur-xl min-w-[22rem] sm:min-w-[24rem]">
+      <div className="relative z-10 flex h-full w-full items-center justify-center">
+        <Card className="min-w-[22rem] border border-muted-foreground bg-white bg-opacity-10 shadow-xl backdrop-blur-xl sm:min-w-[24rem]">
           <CardHeader>
-            <CardTitle className='text-2xl text-center text-white'>
+            <CardTitle className="text-center text-2xl text-white">
               {t('login.welcome')}{' '}
             </CardTitle>
             <CardDescription className="text-center text-white">
-              {' '}
               {t('login.description')}{' '}
             </CardDescription>
           </CardHeader>
@@ -52,13 +50,19 @@ export default function Login() {
             <LoginForm />
           </CardContent>
           <CardFooter className="flex justify-between gap-1 text-white">
-            <div className='flex gap-1'>
-              <span className='text-xs sm:text-sm'>{t('login.noAccount')}</span>
-              <NavLink to={ROUTE.REGISTER} className="text-xs text-center sm:text-sm text-primary">
+            <div className="flex gap-1">
+              <span className="text-xs sm:text-sm">{t('login.noAccount')}</span>
+              <NavLink
+                to={ROUTE.REGISTER}
+                className="text-center text-xs text-primary sm:text-sm"
+              >
                 {t('login.register')}
               </NavLink>
             </div>
-            <NavLink to={ROUTE.FORGOT_PASSWORD} className="text-xs sm:text-sm text-primary">
+            <NavLink
+              to={ROUTE.FORGOT_PASSWORD}
+              className="text-xs text-primary sm:text-sm"
+            >
               {t('login.forgotPassword')}
             </NavLink>
           </CardFooter>

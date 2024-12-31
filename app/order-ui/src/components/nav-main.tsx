@@ -1,5 +1,3 @@
-'use client'
-
 import { ChevronRight, type LucideIcon } from 'lucide-react'
 
 import {
@@ -14,11 +12,11 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
-  SidebarMenuSubItem
+  SidebarMenuSubItem,
 } from '@/components/ui'
 
 export function NavMain({
-  items
+  items,
 }: {
   items: {
     title: string

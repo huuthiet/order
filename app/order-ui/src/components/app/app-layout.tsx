@@ -1,5 +1,3 @@
-// 'use client'
-
 // import { SidebarProvider } from '@/components/ui'
 // import { AppHeader, AppSidebar } from '@/components/app'
 

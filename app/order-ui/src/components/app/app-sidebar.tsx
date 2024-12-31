@@ -1,5 +1,3 @@
-'use client'
-
 import { ChevronRight, House, Sparkles } from 'lucide-react'
 import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -72,7 +70,7 @@ export default function AppSidebar() {
   return (
     <Sidebar
       variant="inset"
-      className="z-50 border-r shadow-2xl bg-slate-50 shadow-gray-300"
+      className="z-50 border-r bg-slate-50 shadow-2xl shadow-gray-300"
       collapsible="icon"
     >
       <SidebarHeader>
