@@ -11,7 +11,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { Catalog } from 'src/catalog/catalog.entity';
-import { BadRequestException } from '@nestjs/common';
 import {
   CreateProductRequestDto,
   UpdateProductRequestDto,
@@ -108,6 +107,7 @@ describe('ProductService', () => {
         slug: 'mock-product-slug',
         createdAt: new Date(),
         updatedAt: new Date(),
+        productAnalyses: [],
       };
 
       (productRepositoryMock.findOneBy as jest.Mock).mockResolvedValue(product);

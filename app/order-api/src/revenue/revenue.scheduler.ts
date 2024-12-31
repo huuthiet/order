@@ -13,6 +13,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { RevenueQueryResponseDto } from './revenue.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { RevenueException } from './revenue.exception';
+import { RevenueValidation } from './revenue.validation';
 
 @Injectable()
 export class RevenueScheduler {
@@ -54,7 +56,10 @@ export class RevenueScheduler {
         error.stack,
         context,
       );
-      throw new BadRequestException(error.message);
+      throw new RevenueException(
+        RevenueValidation.CREATE_REVENUE_ERROR,
+        error.message,
+      );
     } finally {
       await queryRunner.release();
     }
