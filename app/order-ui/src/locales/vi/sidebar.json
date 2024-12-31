@@ -4,6 +4,7 @@
     "menu": "Thực đơn",
     "orderManagement": "Quản lý giao hàng",
     "orderHistory": "Quản lý đơn hàng",
+    "myOrders": "Đơn hàng của tôi",
     "tableManagement": "Quản lý bàn",
     "internalWallet": "Ví nội bộ",
     "menuManagement": "Quản lý thực đơn",
@@ -11,12 +12,15 @@
     "userManagement": "Quản lý người dùng",
     "logManagement": "Quản lý log",
     "bankConfig": "Cấu hình ngân hàng",
-    "config": "Cấu hình"
+    "config": "Cấu hình",
+    "aboutMe": "Về chúng tôi",
+    "contact": "Liên hệ"
   },
   "header": {
     "search": "Tìm kiếm",
     "notification": "Thông báo",
     "myProfile": "Hồ sơ của tôi",
+    "myOrders": "Đơn hàng của tôi",
     "profile": "Hồ sơ",
     "logout": "Đăng xuất",
     "login": "Đăng nhập"

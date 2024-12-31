@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { LogIn, ShoppingBag, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -17,9 +17,22 @@ import { LogoutDialog } from '@/components/app/dialog'
 import { ROUTE } from '@/constants'
 import { useAuthStore } from '@/stores'
 
-export default function HeaderDropdown() {
+export default function ClientHeaderDropdown() {
   const { t } = useTranslation(['sidebar'])
   const { isAuthenticated } = useAuthStore()
+  const navigate = useNavigate()
+
+  if (!isAuthenticated())
+    return (
+      <Button
+        variant="default"
+        className="flex items-center gap-1"
+        onClick={() => navigate(ROUTE.LOGIN)}
+      >
+        <LogIn />
+        {t('header.login')}
+      </Button>
+    )
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,28 +46,28 @@ export default function HeaderDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="px-0 h-9">
+          <DropdownMenuItem className="h-9 px-0">
             <NavLink
-              to={`${ROUTE.STAFF_PROFILE}`}
-              className="flex justify-start w-full h-9"
+              to={`${ROUTE.CLIENT_PROFILE}`}
+              className="flex h-9 w-full justify-start"
             >
               <Button
                 variant="ghost"
-                className="flex justify-start w-full gap-1 text-sm"
+                className="flex w-full justify-start gap-1 text-sm"
               >
                 <User className="icon" />
                 {t('header.profile')}
               </Button>
             </NavLink>
           </DropdownMenuItem>
-          <DropdownMenuItem className="px-0 h-9">
+          <DropdownMenuItem className="h-9 px-0">
             <NavLink
               to={`${ROUTE.CLIENT_ORDER_HISTORY}`}
-              className="flex justify-start w-full h-9"
+              className="flex h-9 w-full justify-start"
             >
               <Button
                 variant="ghost"
-                className="flex justify-start w-full gap-1 text-sm"
+                className="flex w-full justify-start gap-1 text-sm"
               >
                 <ShoppingBag className="icon" />
                 {t('header.myOrders')}
@@ -63,21 +76,7 @@ export default function HeaderDropdown() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        {/* <DropdownMenuItem>
-          <LifeBuoy />
-          <span>Support</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator /> */}
-        {isAuthenticated() ? (
-          <LogoutDialog />
-        ) : (
-          <NavLink to={ROUTE.LOGIN}>
-            <Button variant="ghost" className="flex items-center justify-start w-full gap-2">
-              <LogIn />
-              {t('header.login')}
-            </Button>
-          </NavLink>
-        )}
+        <LogoutDialog />
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -1,74 +1,78 @@
-'use client'
 import { NavLink } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
 
-import { DropdownHeader, ModeToggle } from '@/components/app/dropdown'
+import { DropdownClientHeader, ModeToggle } from '@/components/app/dropdown'
 import { useCartItemStore } from '@/stores'
 import { Logo } from '@/assets/images'
 import { ROUTE } from '@/constants'
-import { Button, SidebarTrigger } from '../ui'
+import { Button } from '../ui'
 
 export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
-    const { getCartItems } = useCartItemStore()
-    return (
-        <header className="sticky top-0 z-20 w-full px-3 backdrop-blur supports-[backdrop-filter]:bg-transparent border-b text-muted-foreground border-muted-border">
-            <div className="flex items-center justify-between flex-1 w-full gap-6 h-14">
-                {isMobile && (
-                    <SidebarTrigger />
-                )}
-                <NavLink to="/" className="flex items-center gap-2">
-                    {<img src={Logo} alt="logo" className="h-6 w-fit" />}
-                </NavLink>
-                {!isMobile && (
-                    <div className="flex flex-row items-center justify-center gap-6">
-                        <NavLink
-                            to="/"
-                            className={({ isActive }) =>
-                                `flex items-center gap-2 ${isActive ? "text-primary" : "text-muted-foreground"}`
-                            }
-                        >
-                            <span className="text-sm">Trang chủ</span>
-                        </NavLink>
-                        <NavLink
-                            to={ROUTE.CLIENT_MENU}
-                            className={({ isActive }) =>
-                                `flex items-center gap-2 ${isActive ? "text-primary" : "text-muted-foreground"}`
-                            }
-                        >
-                            <span className="text-sm">Thực đơn</span>
-                        </NavLink>
-                        <NavLink
-                            to={ROUTE.CLIENT_ORDER_HISTORY}
-                            className={({ isActive }) =>
-                                `flex items-center gap-2 ${isActive ? "text-primary" : "text-muted-foreground"}`
-                            }
-                        >
-                            <span className="text-sm">Lịch sử đơn hàng</span>
-                        </NavLink>
-                        <div className='text-sm'>
-                            Về chúng tôi
-                        </div>
-                        <div className='text-sm'>
-                            Điều khoản
-                        </div>
-                    </div>
-                )}
+  const { getCartItems } = useCartItemStore()
+  return (
+    <header className="sticky top-0 z-30 w-full bg-white text-muted-foreground shadow-md backdrop-blur">
+      <div className="container">
+        <div className="flex h-14 w-full flex-1 items-center justify-between gap-6">
+          {/* Trigger */}
+          {/* {isMobile && <SidebarTrigger />} */}
 
-                <div className="flex items-center justify-end gap-2">
-                    <NavLink to="/cart" className="relative flex items-center gap-2">
-                        <Button variant="ghost" className="relative hover:bg-primary/10 text-muted-foreground hover:text-primary">
-                            <ShoppingCart />
-                            {getCartItems()?.orderItems?.length ? (
-                                <span className="absolute flex items-center justify-center w-4 h-4 text-xs font-bold text-white transform translate-x-1/2 -translate-y-1/2 rounded-full right-2 top-2 bg-primary">
-                                    {getCartItems()?.orderItems.length}
-                                </span>
-                            ) : null}
-                        </Button>
-                    </NavLink>
-                    <ModeToggle />
-                    <DropdownHeader />
-                </div>
+          {/* Left content*/}
+          <NavLink to={ROUTE.HOME} className="flex items-center gap-2">
+            {<img src={Logo} alt="logo" className="h-6 w-fit" />}
+          </NavLink>
+
+          {/* center content */}
+          {!isMobile && (
+            <div className="flex flex-row items-center justify-center gap-6">
+              <NavLink
+                to={ROUTE.HOME}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+                }
+              >
+                <span className="text-sm">Trang chủ</span>
+              </NavLink>
+              <NavLink
+                to={ROUTE.CLIENT_MENU}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+                }
+              >
+                <span className="text-sm">Thực đơn</span>
+              </NavLink>
+              <div className="cursor-pointer text-sm">Về chúng tôi</div>
+              <div className="cursor-pointer text-sm">Điều khoản</div>
             </div>
-        </header>
-    )
+          )}
+
+          {/* Right content */}
+          <div className="flex items-center justify-end gap-2">
+            {/* Cart */}
+            <NavLink
+              to={ROUTE.CLIENT_CART}
+              className="relative flex items-center gap-2"
+            >
+              <Button
+                variant="ghost"
+                className="relative text-muted-foreground hover:bg-primary/10 hover:text-primary"
+              >
+                <ShoppingCart />
+                {getCartItems()?.orderItems?.length ? (
+                  <span className="absolute right-2 top-2 flex h-4 w-4 -translate-y-1/2 translate-x-1/2 transform items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                    {getCartItems()?.orderItems.length}
+                  </span>
+                ) : null}
+              </Button>
+            </NavLink>
+
+            {/* Settings */}
+            <ModeToggle />
+
+            {/* Login + Profile */}
+            <DropdownClientHeader />
+          </div>
+        </div>
+      </div>
+    </header>
+  )
 }
