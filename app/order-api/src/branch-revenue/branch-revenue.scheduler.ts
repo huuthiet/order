@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BranchRevenue } from './branch-revenue.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -13,6 +8,9 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { BranchRevenueQueryResponseDto } from './branch-revenue.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { plainToInstance } from 'class-transformer';
+import { BranchRevenueException } from './branch-revenue.exception';
+import { BranchRevenueValidation } from './branch-revenue.validation';
 
 @Injectable()
 export class BranchRevenueScheduler {
@@ -29,10 +27,16 @@ export class BranchRevenueScheduler {
   @Cron(CronExpression.EVERY_DAY_AT_11PM)
   async refreshBranchRevenue() {
     const context = `${BranchRevenue.name}.${this.refreshBranchRevenue.name}`;
-    const results: BranchRevenueQueryResponseDto[] =
-      await this.branchRevenueRepository.query(getCurrentBranchRevenueClause);
+    const results: any[] = await this.branchRevenueRepository.query(
+      getCurrentBranchRevenueClause,
+    );
 
-    const revenues = results.map((item) => {
+    const branchRevenueQueryResponseDtos = plainToInstance(
+      BranchRevenueQueryResponseDto,
+      results,
+    );
+
+    const revenues = branchRevenueQueryResponseDtos.map((item) => {
       return this.mapper.map(
         item,
         BranchRevenueQueryResponseDto,
@@ -54,11 +58,14 @@ export class BranchRevenueScheduler {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.logger.error(
-        `Error when creating revenues: ${JSON.stringify(error)}`,
+        `Error when creating branch revenues: ${JSON.stringify(error)}`,
         error.stack,
         context,
       );
-      throw new BadRequestException(error.message);
+      throw new BranchRevenueException(
+        BranchRevenueValidation.CREATE_BRANCH_REVENUE_ERROR,
+        error.message,
+      );
     } finally {
       await queryRunner.release();
     }

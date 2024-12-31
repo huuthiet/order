@@ -6,6 +6,7 @@ import { Table } from 'src/table/table.entity';
 import { User } from 'src/user/user.entity';
 import { Order } from 'src/order/order.entity';
 import { Workflow } from 'src/workflow/workflow.entity';
+import { ProductAnalysis } from 'src/product-analysis/product-analysis.entity';
 
 @Entity('branch_tbl')
 export class Branch extends Base {
@@ -36,4 +37,8 @@ export class Branch extends Base {
   // one to many with workflow
   @OneToMany(() => Workflow, (workflow) => workflow.branch)
   workflows: Workflow[];
+
+  // one to many with product analysis
+  @OneToMany(() => ProductAnalysis, (p) => p.branch)
+  productAnalyses: ProductAnalysis[];
 }
