@@ -11,6 +11,7 @@ import {
   Query,
   UploadedFile,
   UploadedFiles,
+  UseFilters,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
@@ -36,6 +37,7 @@ import { AppResponseDto } from 'src/app/app.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { RoleEnum } from 'src/role/role.enum';
 import { HasRoles } from 'src/role/roles.decorator';
+import { CustomFileInterceptor, CustomFilesInterceptor } from 'src/file/custom-interceptor';
 
 @ApiTags('Product')
 @Controller('products')
@@ -172,6 +174,7 @@ export class ProductController {
 
   @Patch(':slug/upload')
   @HttpCode(HttpStatus.OK)
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Chef, RoleEnum.Staff)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -184,6 +187,7 @@ export class ProductController {
       },
     },
   })
+
   @ApiResponseWithType({
     status: HttpStatus.OK,
     description: 'Product image have been uploaded successfully',
@@ -191,8 +195,11 @@ export class ProductController {
   })
   @ApiOperation({ summary: 'Upload product image' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Chef, RoleEnum.Staff)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(new CustomFileInterceptor('file', {
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+    }
+  }))
   async uploadProductImage(
     @Param('slug') slug: string,
     @UploadedFile() file: Express.Multer.File,
@@ -208,6 +215,7 @@ export class ProductController {
 
   @Patch(':slug/uploads')
   @HttpCode(HttpStatus.OK)
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Chef, RoleEnum.Staff)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -234,7 +242,12 @@ export class ProductController {
     description: 'Product image have been uploaded successfully',
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(new CustomFilesInterceptor('files', 20, {
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+      files: 20
+    }
+  }))
   async uploadMultiProductImages(
     @Param('slug') slug: string,
     @UploadedFiles() files: Express.Multer.File[],
