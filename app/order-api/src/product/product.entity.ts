@@ -4,6 +4,7 @@ import { Catalog } from 'src/catalog/catalog.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { AutoMap } from '@automapper/classes';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
+import { ProductAnalysis } from 'src/product-analysis/product-analysis.entity';
 
 @Entity('product_tbl')
 export class Product extends Base {
@@ -29,7 +30,7 @@ export class Product extends Base {
   image?: string;
 
   @AutoMap()
-  @Column('text' ,{ name: 'images_column', nullable: true })
+  @Column('text', { name: 'images_column', nullable: true })
   images?: string;
 
   @AutoMap()
@@ -48,4 +49,8 @@ export class Product extends Base {
   // one to many with menu item
   @OneToMany(() => MenuItem, (menuItem) => menuItem.product)
   menuItems: MenuItem[];
+
+  // one to many with product analysis
+  @OneToMany(() => ProductAnalysis, (p) => p.product)
+  productAnalyses: ProductAnalysis[];
 }
