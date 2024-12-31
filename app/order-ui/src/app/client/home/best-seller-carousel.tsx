@@ -84,15 +84,15 @@ export default function BestSellerCarousel({ menu, isLoading }: BestSellerCarous
             >
                 <CarouselContent>
                     {menu?.menuItems.map((item) => (
-                        <CarouselItem key={item.slug} className="basis-1/4">
-                            <div className="w-full p-2">
+                        <CarouselItem key={item.slug} className="basis-1/3 sm:basis-1/4">
+                            <div className="w-full sm:p-2">
                                 <NavLink
                                     key={item.slug}
                                     className="block w-full"
                                     to={`${ROUTE.CLIENT_MENU}/${item.slug}`}>
                                     <div
                                         key={item.slug}
-                                        className="flex flex-col h-[20rem] w-full transition-all duration-300 bg-white border hover:scale-105 rounded-xl backdrop-blur-md"
+                                        className="flex flex-col h-[12rem] sm:h-[20rem] w-full transition-all duration-300 bg-white border hover:scale-105 rounded-xl backdrop-blur-md"
                                     >
                                         {/* Image Section with Discount Tag */}
                                         <div className="relative">
@@ -100,20 +100,20 @@ export default function BestSellerCarousel({ menu, isLoading }: BestSellerCarous
                                                 <img
                                                     src={`${publicFileURL}/${item.product.image}`}
                                                     alt={item.product.name}
-                                                    className="object-cover w-full h-36 rounded-t-md"
+                                                    className="object-cover w-full h-16 sm:h-36 rounded-t-md"
                                                 />
                                             ) : (
-                                                <div className="w-full h-24 rounded-t-md bg-muted/60" />
+                                                <div className="w-full sm:h-36 h-28 rounded-t-md bg-muted/60" />
                                             )}
                                         </div>
 
                                         {/* Content Section - More compact */}
                                         <div className="flex flex-1 flex-col space-y-1.5  justify-between p-2">
                                             <div>
-                                                <h3 className="text-lg font-bold line-clamp-1">
+                                                <h3 className="text-sm font-bold sm:text-lg line-clamp-1">
                                                     {item.product.name}
                                                 </h3>
-                                                <p className="text-xs text-gray-500 line-clamp-2">
+                                                <p className="text-[0.5rem] sm:text-xs text-gray-500 line-clamp-2">
                                                     {item.product.description}
                                                 </p>
                                             </div>
@@ -122,7 +122,7 @@ export default function BestSellerCarousel({ menu, isLoading }: BestSellerCarous
                                                 <div className="flex flex-col">
                                                     {item.product.variants.length > 0 ? (
                                                         <div className='flex flex-col items-start justify-start gap-1'>
-                                                            <span className="text-lg font-bold text-primary">
+                                                            <span className="text-xs font-bold sm:text-lg text-primary">
                                                                 {(() => {
                                                                     const range = getPriceRange(item.product.variants)
                                                                     if (!range) return '0đ'

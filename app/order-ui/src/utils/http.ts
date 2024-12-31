@@ -70,6 +70,7 @@ axiosInstance.interceptors.request.use(
       /^\/menu\/specific$/,
       /^\/products\/[^/]+$/, // Matches /product/:slug where :slug is any non-empty string
       /^\/branch$/, // Matches /branch
+      /^\/menu-item\/[^/]+$/, // Matches /menu-item/:slug where :slug is any non-empty string
     ]
 
     if (publicRoutes.some((route) => route.test(config.url || ''))) {

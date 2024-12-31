@@ -95,13 +95,13 @@ export default function PaymentPage() {
   return (
     <div className="flex flex-row h-full gap-2">
       <div className={`transition-all duration-300 ease-in-out`}>
-        <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
+        <div className="sticky top-0 z-10 flex flex-col items-center gap-2">
           <div className="flex flex-col w-full gap-3">
             {order && (
               <div className="w-full space-y-2">
                 {/* Thông tin khách hàng */}
                 <div className="grid items-center justify-between grid-cols-1 p-4 rounded-sm bg-background sm:grid-cols-2">
-                  <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
+                  <div className="flex flex-col col-span-1 gap-1 sm:border-r sm:px-4">
                     <div className="grid grid-cols-2 gap-2">
                       <h3 className="col-span-1 text-sm font-medium">
                         {t('order.customerName')}
@@ -128,7 +128,7 @@ export default function PaymentPage() {
                     </div>
                   </div>
                   {/* Thông tin vận chuyển */}
-                  <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
+                  <div className="flex flex-col col-span-1 gap-1 sm:px-4">
                     <div className="grid grid-cols-2 gap-2">
                       <h3 className="col-span-1 text-sm font-medium">
                         {t('order.deliveryMethod')}

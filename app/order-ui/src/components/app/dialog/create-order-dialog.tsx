@@ -17,7 +17,7 @@ import { ICartItem, ICreateOrderRequest } from '@/types'
 
 import { useCreateOrder } from '@/hooks'
 import { showToast } from '@/utils'
-import { ROUTE } from '@/constants'
+import { Role, ROUTE } from '@/constants'
 import { useCartItemStore, useUserStore } from '@/stores'
 
 interface IPlaceOrderDialogProps {
@@ -32,7 +32,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
   const { getCartItems, clearCart } = useCartItemStore()
   const { mutate: createOrder } = useCreateOrder()
   const [isOpen, setIsOpen] = useState(false)
-  const { getUserInfo } = useUserStore()
+  const { getUserInfo, userInfo } = useUserStore()
 
   const order = getCartItems()
 
@@ -55,10 +55,13 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
     // Gọi API để tạo đơn hàng.
     createOrder(createOrderRequest, {
       onSuccess: (data) => {
-        navigate(`${ROUTE.ORDER_PAYMENT}/${data.result.slug}`) // Điều hướng đến trang thành công.
-        setIsOpen(false) // Đóng dialog.
-        clearCart() // Xóa giỏ hàng.
-        showToast(tToast('toast.createOrderSuccess')) // Thông báo thành công.
+        const orderPath = userInfo?.role.name === Role.CUSTOMER
+          ? `${ROUTE.CLIENT_ORDER_PAYMENT}/${data.result.slug}`
+          : `${ROUTE.STAFF_ORDER_PAYMENT}/${data.result.slug}`;
+        navigate(orderPath);
+        setIsOpen(false);
+        clearCart();
+        showToast(tToast('toast.createOrderSuccess'));
       },
     })
   }

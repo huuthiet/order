@@ -141,7 +141,7 @@ export default function MenuPage() {
         {/* Section 4: Thông tin thêm */}
         <div>
           <motion.div
-            className="flex h-[16rem] px-4 text-white bg-gray-900 sm:h-screen sm:justify-center items-center"
+            className="flex h-[16rem] px-4 text-muted-foreground sm:h-screen sm:justify-center items-center"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}

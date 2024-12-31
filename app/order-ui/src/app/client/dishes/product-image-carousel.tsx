@@ -77,16 +77,17 @@ export default function ProductImageCarousel({
                     ))}
                 </CarouselContent>
             </Carousel>
-            <div className="flex gap-2 mt-4">
-                {images?.map((_, index) => (
-                    <button
-                        key={index}
-                        className={`w-2 h-2 rounded-full transition-all ${current === index ? "bg-primary w-4" : "bg-gray-300"
-                            }`}
-                        onClick={() => api?.scrollTo(index)}
-                    />
-                ))}
-            </div>
+            {images.length > 1 && (
+                <div className="flex gap-2 mt-4">
+                    {images?.map((_, index) => (
+                        <button
+                            key={index}
+                            className={`w-2 h-2 rounded-full transition-all ${current === index ? "bg-primary w-4" : "bg-gray-300"}`}
+                            onClick={() => api?.scrollTo(index)}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
