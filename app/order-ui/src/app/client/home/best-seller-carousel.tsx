@@ -6,8 +6,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   CarouselApi,
   Button,
 } from '@/components/ui'
@@ -15,7 +13,6 @@ import {
 import { IProduct, ISpecificMenu } from '@/types'
 import { publicFileURL, ROUTE } from '@/constants'
 import { SkeletonMenuList } from '@/components/app/skeleton'
-import { useIsMobile } from '@/hooks'
 
 interface BestSellerCarouselProps {
   isLoading: boolean

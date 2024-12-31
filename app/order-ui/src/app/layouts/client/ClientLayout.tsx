@@ -5,8 +5,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib'
 import { DownloadProgress } from '@/components/app/progress'
 import { useDownloadStore } from '@/stores'
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
-import { ClientFooter } from './footer'
+import { ClientFooter } from './client-footer'
 
 export default function ClientLayout() {
   const isMobile = useIsMobile()
@@ -14,9 +13,6 @@ export default function ClientLayout() {
 
   return (
     <div className="">
-      {/* Sidebar - Hidden on mobile by default */}
-      {/* {isMobile && <AppSidebar />} */}
-
       {/* Main content */}
       <div className="">
         {/* Header */}

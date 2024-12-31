@@ -131,20 +131,16 @@ export const RegisterForm: React.FC<IFormRegisterProps> = ({
     <div className="mt-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid w-[20rem] grid-cols-1 gap-2 text-white">
-            {/* <ScrollArea className="max-h-[16rem] gap-2 flex flex-1"> */}
+          <div className="grid grid-cols-1 gap-2 text-white">
             {Object.keys(formFields).map((key) => (
               <React.Fragment key={key}>
                 {formFields[key as keyof typeof formFields]}
               </React.Fragment>
             ))}
-            {/* </ScrollArea> */}
           </div>
-          <div className="flex w-full items-center justify-between">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? <ButtonLoading /> : t('register.title')}
-            </Button>
-          </div>
+          <Button type="submit" className="mt-5 w-full" disabled={isLoading}>
+            {isLoading ? <ButtonLoading /> : t('register.title')}
+          </Button>
         </form>
       </Form>
     </div>

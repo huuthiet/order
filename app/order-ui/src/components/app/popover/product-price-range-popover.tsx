@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Settings2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
     Button,
     Input,
@@ -7,15 +9,10 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui";
-import { Settings2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+
 import { usePriceRangeStore } from "@/stores";
 
-interface PriceRangeFilterProps {
-    onApply: (minPrice: number, maxPrice: number) => void;
-}
-
-export default function PriceRangeFilter({ onApply }: PriceRangeFilterProps) {
+export default function PriceRangeFilter() {
     const { t } = useTranslation(["menu"]);
     const { setPriceRange, minPrice: storedMinPrice, maxPrice: storedMaxPrice } = usePriceRangeStore();
     const [minPrice, setMinPrice] = useState<number>(storedMinPrice);
@@ -30,7 +27,6 @@ export default function PriceRangeFilter({ onApply }: PriceRangeFilterProps) {
         const min = Number(minPrice) || 0;
         const max = Number(maxPrice) || 0;
         setPriceRange(min, max); // Lưu giá trị vào store
-        onApply(min, max); // Gọi callback để cập nhật dữ liệu bên ngoài
     };
 
     return (

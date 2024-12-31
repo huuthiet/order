@@ -1,7 +1,6 @@
 import moment from 'moment'
 import { NavLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ChevronRight } from 'lucide-react'
 
 import { Button } from '@/components/ui'
 import {

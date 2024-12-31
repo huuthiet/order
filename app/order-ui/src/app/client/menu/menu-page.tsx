@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import moment from 'moment'
 import { CircleX } from 'lucide-react'
 
@@ -30,23 +30,28 @@ export default function MenuPage() {
     }))
   }, [minPrice, maxPrice])
 
-  const handleSelectBranch = (value: string) => {
+  const handleSelectBranch = useCallback((value: string) => {
     setBranch(value)
     setFilters((prev) => ({ ...prev, branch: value }))
-  }
-
-  const handlePriceRangeFilter = (minPrice: number, maxPrice: number) => {
-    // Không cần xử lý thêm vì đã lưu trong store
-    console.log(`Price range applied: ${minPrice} - ${maxPrice}`)
-  }
+  }, [])
 
   return (
-    <div className="container mt-5">
-      <div className="flex items-start gap-5">
-        <div className="sticky top-10 z-10 w-1/4">
+    <div className="container my-10">
+      <div className="flex flex-col items-start gap-5 lg:flex-row">
+        {/* Left - sidebar */}
+        <div className="w-full lg:sticky lg:top-20 lg:z-10 lg:w-1/4">
           <div className="flex flex-col gap-4">
-            <div className="w-full flex-shrink-0 sm:w-auto">
+            {/* Title */}
+            <div className="flex w-full items-center gap-1">
               <CurrentDateInput menu={specificMenu?.result} />
+            </div>
+            {/* Branch select */}
+            <div className="w-full flex-shrink-0 sm:w-auto">
+              <BranchSelect onChange={handleSelectBranch} />
+            </div>
+            {/* Price filter */}
+            <div className="w-full flex-shrink-0 sm:w-auto">
+              <PriceRangeFilter />
             </div>
             {minPrice !== 0 && maxPrice !== 0 && (
               <div className="flex flex-shrink-0 items-center gap-1 rounded-full border border-primary bg-primary/10 px-2 text-primary">
@@ -56,19 +61,11 @@ export default function MenuPage() {
                 <CircleX onClick={() => clearPriceRange()} />
               </div>
             )}
-            <div className="w-full flex-shrink-0 sm:w-auto">
-              <BranchSelect onChange={handleSelectBranch} />
-            </div>
-            <div className="w-full flex-shrink-0 sm:w-auto">
-              <PriceRangeFilter onApply={handlePriceRangeFilter} />
-            </div>
           </div>
         </div>
 
-        <div className="w-3/4">
-          <div className="gap-4">
-            <MenuList menu={specificMenu?.result} isLoading={isLoading} />
-          </div>
+        <div className="w-full lg:w-3/4">
+          <MenuList menu={specificMenu?.result} isLoading={isLoading} />
         </div>
       </div>
     </div>

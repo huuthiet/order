@@ -33,7 +33,7 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
 
   if (isLoading) {
     return (
-      <div className={`grid grid-cols-1 gap-3 sm:grid-cols-6`}>
+      <div className={`grid grid-cols-2 gap-3 lg:grid-cols-3`}>
         {[...Array(8)].map((_, index) => (
           <SkeletonMenuList key={index} />
         ))}
@@ -46,7 +46,7 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
   }
 
   return (
-    <div className={`grid grid-cols-3 gap-4 py-4`}>
+    <div className={`grid grid-cols-2 gap-4 lg:grid-cols-3`}>
       {menuItems.map((item) => (
         <NavLink key={item.slug} to={`${ROUTE.CLIENT_MENU}/${item.slug}`}>
           <div

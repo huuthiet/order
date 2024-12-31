@@ -5,8 +5,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   CarouselApi,
 } from '@/components/ui'
 

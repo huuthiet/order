@@ -16,10 +16,10 @@ import { useCartItemStore, useUserStore } from '@/stores'
 import { Input, Label } from '@/components/ui'
 import { CartNoteInput } from '@/components/app/input'
 import { publicFileURL } from '@/constants'
-// import { NavLink, useNavigate } from 'react-router-dom'
 import { CreateOrderDialog } from '@/components/app/dialog'
 import { useDebouncedInput, usePagination, useUsers } from '@/hooks'
 import { IUserInfo } from '@/types'
+import { useEffect, useState } from 'react'
 
 export default function CheckoutCartDrawer() {
   const { t: tCommon } = useTranslation(['common'])

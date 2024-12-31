@@ -67,15 +67,13 @@ export default function Register() {
         src={LoginBackground}
         className="absolute left-0 top-0 h-full w-full sm:object-fill"
       />
-      <div className="relative z-10 flex h-full w-full items-center justify-center">
-        <Card className="mx-auto border border-muted-foreground bg-white bg-opacity-10 shadow-xl backdrop-blur-xl sm:min-w-[24rem]">
+      <div className="flex h-full w-full items-center justify-center py-10">
+        <Card className="mx-auto w-96 border border-muted-foreground bg-white bg-opacity-10 shadow-xl backdrop-blur-xl">
           <CardHeader>
             <CardTitle className={cn('text-center text-2xl text-white')}>
               {t('register.welcome')}{' '}
             </CardTitle>
-            {/* <CardTitle className={cn('text-2xl text-white')}>{t('login.title')} </CardTitle> */}
             <CardDescription className="text-center text-white">
-              {' '}
               {t('register.description')}{' '}
             </CardDescription>
           </CardHeader>
@@ -84,7 +82,10 @@ export default function Register() {
           </CardContent>
           <CardFooter className="flex gap-1 text-white">
             <span>{t('register.haveAccount')}</span>
-            <NavLink to={ROUTE.LOGIN} className="text-center text-primary">
+            <NavLink
+              to={ROUTE.LOGIN}
+              className="text-center text-xs text-primary"
+            >
               {t('register.login')}
             </NavLink>
           </CardFooter>

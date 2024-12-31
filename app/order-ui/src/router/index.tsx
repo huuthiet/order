@@ -34,9 +34,10 @@ import {
   ClientOrderHistoryPage,
   ClientOrderDetailPage,
   ClientProfilePage,
+  ClientPaymentPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
-import { ClientLandingLayout, ClientLayout } from '@/app/layouts/client'
+import { ClientLayout } from '@/app/layouts/client'
 
 export const router = createBrowserRouter([
   { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
@@ -91,7 +92,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: `${ROUTE.ORDER_PAYMENT}/:slug`,
+    path: `${ROUTE.STAFF_ORDER_PAYMENT}/:slug`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={StaffLayout} />
@@ -449,6 +450,25 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: `${ROUTE.CLIENT_ORDER_PAYMENT}/:slug`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientPaymentPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
     path: ROUTE.CLIENT_ORDER_HISTORY,
     element: (
       <Suspense fallback={<SkeletonCart />}>
@@ -488,7 +508,7 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTE.HOME,
-    element: <ClientLandingLayout />,
+    element: <ClientLayout />,
     children: [
       {
         index: true,
