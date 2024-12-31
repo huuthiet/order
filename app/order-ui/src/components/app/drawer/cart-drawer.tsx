@@ -1,5 +1,3 @@
-'use client'
-
 import { ShoppingCart, Trash2 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'

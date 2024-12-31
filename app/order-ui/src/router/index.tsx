@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
-// import { Authority, ROUTE } from '@/constants'
 import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
 import { Role, ROUTE, RoutePermissions } from '@/constants'
@@ -380,19 +379,13 @@ export const router = createBrowserRouter([
     path: ROUTE.CLIENT_HOME,
     element: (
       <Suspense fallback={<SkeletonCart />}>
-        <SuspenseElement component={ClientLandingLayout} />
+        <SuspenseElement component={ClientLayout} />
       </Suspense>
     ),
     children: [
       {
         index: true,
         element: <SuspenseElement component={ClientHomePage} />,
-        // element: (
-        //   <ProtectedElement
-        //     allowedRoles={[Role.CUSTOMER]}
-        //     element={<SuspenseElement component={ClientHomePage} />}
-        //   />
-        // ),
       },
     ],
   },
