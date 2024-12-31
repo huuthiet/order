@@ -76,13 +76,6 @@ export default function PaymentPage() {
           onSuccess: () => {
             navigate(`${ROUTE.ORDER_SUCCESS}/${slug}`)
           },
-          // onError: (error) => {
-          //   if (isAxiosError(error)) {
-          //     const axiosError = error as AxiosError<IApiResponse<void>>
-          //     if (axiosError.response?.data.code)
-          //       showErrorToast(axiosError.response.data.code)
-          //   }
-          // },
         },
       )
     }
@@ -96,18 +89,11 @@ export default function PaymentPage() {
         // Load data to print
         loadDataToPrinter(data)
       },
-      // onError: (error) => {
-      //   if (isAxiosError(error)) {
-      //     const axiosError = error as AxiosError<IApiResponse<void>>
-      //     if (axiosError.response?.data.code)
-      //       showErrorToast(axiosError.response.data.code)
-      //   }
-      // },
     })
   }
 
   return (
-    <div className="flex flex-row h-full gap-2">
+    <div className="flex flex-row h-full gap-2 px-2 container-layout">
       <ScrollArea className="flex-1">
         <div className={`transition-all duration-300 ease-in-out`}>
           <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
@@ -115,8 +101,8 @@ export default function PaymentPage() {
               {order && (
                 <div className="w-full space-y-2">
                   {/* Thông tin khách hàng */}
-                  <div className="grid items-center justify-between grid-cols-1 p-4 rounded-sm bg-background sm:grid-cols-2">
-                    <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
+                  <div className="grid items-center justify-between grid-cols-1 p-4 border rounded-sm bg-background sm:grid-cols-2">
+                    <div className="flex flex-col col-span-1 gap-1 sm:border-r sm:px-4">
                       <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.customerName')}
@@ -143,7 +129,7 @@ export default function PaymentPage() {
                       </div>
                     </div>
                     {/* Thông tin vận chuyển */}
-                    <div className="flex flex-col col-span-1 gap-1 border-r sm:px-4">
+                    <div className="flex flex-col col-span-1 gap-1 sm:px-4">
                       <div className="grid grid-cols-2 gap-2">
                         <h3 className="col-span-1 text-sm font-medium">
                           {t('order.deliveryMethod')}
@@ -165,24 +151,24 @@ export default function PaymentPage() {
                     </div>
                   </div>
                   {/* Thông tin đơn hàng */}
-                  <div className="grid w-full grid-cols-4 px-4 py-3 text-sm font-thin rounded-md bg-background">
-                    <span className="col-span-1">{t('order.product')}</span>
-                    <span className="col-span-1">{t('order.unitPrice')}</span>
-                    <span className="col-span-1 text-center">
+                  <div className="grid w-full grid-cols-5 px-4 py-3 text-sm font-thin rounded-md bg-muted-foreground/10">
+                    <span className="col-span-2 text-xs">{t('order.product')}</span>
+                    <span className="col-span-1 text-xs">{t('order.unitPrice')}</span>
+                    <span className="col-span-1 text-xs text-center">
                       {t('order.quantity')}
                     </span>
-                    <span className="col-span-1 text-center">
+                    <span className="col-span-1 text-xs text-center">
                       {t('order.grandTotal')}
                     </span>
                   </div>
-                  <div className="flex flex-col w-full rounded-md bg-background">
+                  <div className="flex flex-col w-full border rounded-md bg-background">
                     {order?.result.orderItems.map((item) => (
                       <div
                         key={item.slug}
                         className="grid items-center w-full gap-4 p-4 pb-4 border-b rounded-t-md"
                       >
-                        <div className="grid flex-row items-center w-full grid-cols-4">
-                          <div className="flex w-full col-span-1 gap-2">
+                        <div className="grid flex-row items-center w-full grid-cols-5">
+                          <div className="flex w-full col-span-2 gap-2">
                             <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
                               {/* <img
                                 src={`${publicFileURL}/${item.variant.product.image}`}
@@ -190,7 +176,7 @@ export default function PaymentPage() {
                                 className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                               /> */}
                               <div className="flex flex-col">
-                                <span className="font-bold truncate">
+                                <span className="text-sm font-bold truncate">
                                   {item.variant.product.name}
                                 </span>
                               </div>
@@ -214,7 +200,7 @@ export default function PaymentPage() {
                         </div>
                       </div>
                     ))}
-                    <div className="flex flex-col items-end w-full gap-2 p-4 pr-10">
+                    <div className="flex flex-col items-end w-full gap-2 px-2 py-4">
                       <div className="flex w-[20rem] flex-col gap-2">
                         <div className="flex justify-between w-full pb-4 border-b">
                           <h3 className="text-sm font-medium">

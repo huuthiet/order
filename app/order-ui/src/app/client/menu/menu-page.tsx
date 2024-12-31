@@ -35,13 +35,8 @@ export default function MenuPage() {
     setFilters((prev) => ({ ...prev, branch: value }));
   };
 
-  const handlePriceRangeFilter = (minPrice: number, maxPrice: number) => {
-    // Không cần xử lý thêm vì đã lưu trong store
-    console.log(`Price range applied: ${minPrice} - ${maxPrice}`);
-  };
-
   return (
-    <div className="container flex flex-col w-full mx-auto">
+    <div className="container flex flex-col w-full px-2 mx-auto">
       <div className="flex flex-col">
         <div className="sticky z-10 flex items-start justify-start w-full gap-2 py-4 overflow-hidden overflow-x-auto bg-white -top-1 sm:items-center sm:justify-between sm:flex-row">
           <div className="flex w-2/3 gap-4 sm:w-auto">
@@ -49,7 +44,7 @@ export default function MenuPage() {
               <CurrentDateInput menu={specificMenu?.result} />
             </div>
             {minPrice !== 0 && maxPrice !== 0 && (
-              <div className="flex items-center flex-shrink-0 gap-1 px-2 border rounded-full border-primary bg-primary/10 text-primary">
+              <div className="flex items-center flex-shrink-0 gap-1 border rounded-full border-primary bg-primary/10 text-primary">
                 <span className="text-xs">{`${minPrice.toLocaleString("vi-VN")}đ`}</span>
                 <span className="text-xs">đến</span>
                 <span className="text-xs">{`${maxPrice.toLocaleString("vi-VN")}đ`}</span>
@@ -60,7 +55,7 @@ export default function MenuPage() {
               <BranchSelect onChange={handleSelectBranch} />
             </div>
             <div className="flex-shrink-0 w-full sm:w-auto">
-              <PriceRangeFilter onApply={handlePriceRangeFilter} />
+              <PriceRangeFilter />
             </div>
           </div>
         </div>
