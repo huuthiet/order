@@ -26,7 +26,7 @@ export default function ClientHeaderDropdown() {
     return (
       <Button
         variant="default"
-        className="flex items-center gap-1"
+        className="flex items-center gap-1 px-2 py-1 text-[13px]"
         onClick={() => navigate(ROUTE.LOGIN)}
       >
         <LogIn />

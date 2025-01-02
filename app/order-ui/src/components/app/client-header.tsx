@@ -1,49 +1,66 @@
 import { NavLink } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
 
-import { DropdownClientHeader, ModeToggle } from '@/components/app/dropdown'
+import {
+  DropdownClientHeader,
+  ModeToggle,
+  SelectBranchDropdown,
+} from '@/components/app/dropdown'
 import { useCartItemStore } from '@/stores'
 import { Logo } from '@/assets/images'
 import { ROUTE } from '@/constants'
 import { Button } from '../ui'
+import { NavigationSheet } from './sheet'
 
-export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
+export default function ClientHeader() {
   const { getCartItems } = useCartItemStore()
   return (
     <header className="sticky top-0 z-30 w-full bg-white text-muted-foreground shadow-md backdrop-blur">
       <div className="container">
-        <div className="flex h-14 w-full flex-1 items-center justify-between gap-6">
-          {/* Trigger */}
-          {/* {isMobile && <SidebarTrigger />} */}
-
+        <div className="flex h-14 w-full items-center justify-between">
           {/* Left content*/}
-          <NavLink to={ROUTE.HOME} className="flex items-center gap-2">
-            {<img src={Logo} alt="logo" className="h-6 w-fit" />}
-          </NavLink>
+          <div className="flex items-center gap-1">
+            <NavigationSheet />
+            <NavLink to={ROUTE.HOME} className="flex items-center gap-2">
+              {<img src={Logo} alt="logo" className="h-8 w-fit" />}
+            </NavLink>
+          </div>
 
           {/* center content */}
-          {!isMobile && (
-            <div className="flex flex-row items-center justify-center gap-6">
-              <NavLink
-                to={ROUTE.HOME}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
-                }
-              >
-                <span className="text-sm">Trang chủ</span>
-              </NavLink>
-              <NavLink
-                to={ROUTE.CLIENT_MENU}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
-                }
-              >
-                <span className="text-sm">Thực đơn</span>
-              </NavLink>
-              <div className="cursor-pointer text-sm">Về chúng tôi</div>
-              <div className="cursor-pointer text-sm">Điều khoản</div>
-            </div>
-          )}
+          <div className="hidden flex-row items-center justify-center gap-6 lg:flex">
+            <NavLink
+              to={ROUTE.HOME}
+              className={({ isActive }) =>
+                `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+              }
+            >
+              <span className="text-sm">Trang chủ</span>
+            </NavLink>
+            <NavLink
+              to={ROUTE.CLIENT_MENU}
+              className={({ isActive }) =>
+                `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+              }
+            >
+              <span className="text-sm">Thực đơn</span>
+            </NavLink>
+            <NavLink
+              to={ROUTE.ABOUT}
+              className={({ isActive }) =>
+                `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+              }
+            >
+              <span className="text-sm">Về chúng tôi</span>
+            </NavLink>
+            <NavLink
+              to={ROUTE.POLICY}
+              className={({ isActive }) =>
+                `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+              }
+            >
+              <span className="text-sm">Điều khoản</span>
+            </NavLink>
+          </div>
 
           {/* Right content */}
           <div className="flex items-center justify-end gap-2">
@@ -67,6 +84,8 @@ export default function ClientHeader({ isMobile }: { isMobile: boolean }) {
 
             {/* Settings */}
             <ModeToggle />
+            {/* Select branch */}
+            <SelectBranchDropdown />
 
             {/* Login + Profile */}
             <DropdownClientHeader />

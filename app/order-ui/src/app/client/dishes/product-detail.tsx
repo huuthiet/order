@@ -68,7 +68,7 @@ export default function ProductManagementPage() {
       slug: productDetail?.slug || '',
       owner: getUserInfo()?.slug,
       type: IOrderType.AT_TABLE, // default value
-      branch: getUserInfo()?.branch.slug, // get branch from user info
+      // branch: getUserInfo()?.branch.slug, // get branch from user info
       orderItems: [
         {
           id: generateCartItemId(),
@@ -93,7 +93,7 @@ export default function ProductManagementPage() {
   }
 
   return (
-    <div className="container mx-auto flex h-full flex-row gap-2 px-2">
+    <div className="container flex h-full flex-row gap-2 py-5">
       {/* Menu Section - Scrollable */}
       <div className={`transition-all duration-300 ease-in-out`}>
         <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
@@ -138,7 +138,7 @@ export default function ProductManagementPage() {
                           </span>
                         </div>
                         <div>
-                          <span className="text-md text-muted-foreground">
+                          <span className="text-muted-foreground">
                             {productDetail.description}
                           </span>
                         </div>

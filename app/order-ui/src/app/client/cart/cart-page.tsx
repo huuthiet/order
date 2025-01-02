@@ -2,7 +2,7 @@ import { CircleAlert, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { QuantitySelector } from '@/components/app/button'
-import { TableSelect } from '@/app/system/menu'
+import { ClientTableSelect } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
 import {
@@ -22,7 +22,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className={`container my-10 w-full`}>
+    <div className={`container w-full py-5`}>
       {/* Order type selection */}
       {cartItems && (
         <div className="grid w-full max-w-xs grid-cols-2 gap-2">
@@ -117,7 +117,7 @@ export default function CartPage() {
       </div>
 
       {/* Table select */}
-      <TableSelect />
+      <ClientTableSelect />
       <div className="flex justify-end py-4">
         <div className="w-full sm:max-w-[10rem]">
           <CreateOrderDialog />

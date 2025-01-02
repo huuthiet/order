@@ -7,15 +7,15 @@ import {
   LandingPageBackground,
   LandingPageBackgroundMobile,
 } from '@/assets/images'
-import { useUserStore } from '@/stores'
 import { useIsMobile, useSpecificMenu } from '@/hooks'
 import { ROUTE } from '@/constants'
 import { BestSellerCarousel, StoreCarousel } from '.'
 import { LandingPageSkeleton } from '@/components/app/skeleton'
+import { useBranchStore } from '@/stores/branch.store'
 
-export default function MenuPage() {
+export default function HomePage() {
   const isMobile = useIsMobile()
-  const { userInfo } = useUserStore()
+  const { branch } = useBranchStore()
 
   function getCurrentDate() {
     return moment().format('YYYY-MM-DD')
@@ -23,7 +23,7 @@ export default function MenuPage() {
 
   const { data: specificMenu, isLoading } = useSpecificMenu({
     date: getCurrentDate(),
-    branch: userInfo?.branch.slug,
+    branch: branch?.slug,
   })
 
   if (isLoading) {
@@ -45,7 +45,7 @@ export default function MenuPage() {
       <div className="flex flex-col gap-6">
         {/* Section 1: Hero - Full width */}
         <motion.div
-          className="relative grid min-h-[80vh] w-full grid-cols-1 justify-center bg-cover bg-center px-4 sm:min-h-screen sm:grid-cols-6 sm:items-center sm:px-0"
+          className="relative grid min-h-[60vh] w-full grid-cols-1 justify-center bg-cover bg-center px-4 sm:grid-cols-6 sm:items-center sm:px-0"
           style={{
             backgroundImage: `url(${
               isMobile ? LandingPageBackgroundMobile : LandingPageBackground
@@ -145,26 +145,24 @@ export default function MenuPage() {
         </div>
 
         {/* Section 4: Thông tin thêm */}
-        <div>
-          <motion.div
-            className="flex h-[16rem] items-center bg-gray-900 px-4 text-white sm:h-screen sm:justify-center"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={fadeInVariants}
-          >
-            <div className="container mx-auto text-center">
-              <h2 className="text-2xl font-bold sm:text-4xl">
-                Tìm hiểu thêm về chúng tôi
-              </h2>
-              <p className="mt-4 text-sm">
-                Chúng tôi cung cấp các loại cà phê chất lượng cao với nguồn gốc
-                rõ ràng. Hãy ghé thăm cửa hàng của chúng tôi!
-              </p>
-              <Button className="mt-6">Liên hệ</Button>
-            </div>
-          </motion.div>
-        </div>
+        <motion.div
+          className="flex h-96 items-center bg-gray-900 px-4 text-white sm:justify-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={fadeInVariants}
+        >
+          <div className="container mx-auto text-center">
+            <h2 className="text-2xl font-bold sm:text-4xl">
+              Tìm hiểu thêm về chúng tôi
+            </h2>
+            <p className="mt-4 text-sm">
+              Chúng tôi cung cấp các loại cà phê chất lượng cao với nguồn gốc rõ
+              ràng. Hãy ghé thăm cửa hàng của chúng tôi!
+            </p>
+            <Button className="mt-6">Liên hệ</Button>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

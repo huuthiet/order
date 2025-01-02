@@ -3,6 +3,7 @@ import { IBase } from './base.type'
 export interface IBranch extends IBase {
   name: string
   address: string
+  slug: string
 }
 
 export interface ICreateBranchRequest {

@@ -1,21 +1,20 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import moment from 'moment'
-import { CircleX } from 'lucide-react'
+import { CircleX, MapPinIcon } from 'lucide-react'
 
-import { usePriceRangeStore, useUserStore } from '@/stores'
+import { usePriceRangeStore } from '@/stores'
 import { useSpecificMenu } from '@/hooks'
 import { MenuList } from '../menu'
 import { CurrentDateInput } from '@/components/app/input'
-import { BranchSelect } from '@/components/app/select'
 import { PriceRangeFilter } from '@/components/app/popover'
+import { useBranchStore } from '@/stores/branch.store'
 
 export default function MenuPage() {
-  const { userInfo } = useUserStore()
   const { minPrice, maxPrice, clearPriceRange } = usePriceRangeStore()
-  const [branch, setBranch] = useState<string>(userInfo?.branch.slug || '')
+  const { branch } = useBranchStore()
   const [filters, setFilters] = useState({
     date: moment().format('YYYY-MM-DD'),
-    branch,
+    branch: branch?.slug,
     minPrice: minPrice || undefined,
     maxPrice: maxPrice || undefined,
   })
@@ -25,15 +24,11 @@ export default function MenuPage() {
   useEffect(() => {
     setFilters((prev) => ({
       ...prev,
+      branch: branch?.slug,
       minPrice: minPrice || undefined,
       maxPrice: maxPrice || undefined,
     }))
-  }, [minPrice, maxPrice])
-
-  const handleSelectBranch = useCallback((value: string) => {
-    setBranch(value)
-    setFilters((prev) => ({ ...prev, branch: value }))
-  }, [])
+  }, [minPrice, maxPrice, branch?.slug])
 
   return (
     <div className="container my-10">
@@ -45,9 +40,9 @@ export default function MenuPage() {
             <div className="flex w-full items-center gap-1">
               <CurrentDateInput menu={specificMenu?.result} />
             </div>
-            {/* Branch select */}
-            <div className="w-full flex-shrink-0 sm:w-auto">
-              <BranchSelect onChange={handleSelectBranch} />
+            <div className="flex items-end gap-1 text-xs text-primary">
+              <MapPinIcon className="h-5 w-5" />
+              {branch?.name} ({branch?.address})
             </div>
             {/* Price filter */}
             <div className="w-full flex-shrink-0 sm:w-auto">
