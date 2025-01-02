@@ -13,6 +13,7 @@ import { DeleteCartItemDialog } from '@/components/app/dialog'
 import { publicFileURL } from '@/constants'
 import { useIsMobile } from '@/hooks'
 import { CheckoutCartDrawer } from '@/components/app/drawer'
+import { formatCurrency } from '@/utils'
 
 export default function ConfirmOrderPage() {
   const { t } = useTranslation('menu')
@@ -64,7 +65,7 @@ export default function ConfirmOrderPage() {
                       <div className="flex flex-col">
                         <span className="font-bold truncate">{item.name}</span>
                         <span className="text-sm text-muted-foreground">
-                          {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                          {`${formatCurrency(item.price || 0)}`}
                         </span>
                       </div>
                     </div>
@@ -74,7 +75,7 @@ export default function ConfirmOrderPage() {
                   </div>
                   <div className="col-span-2 text-center">
                     <span className="text-sm font-semibold text-primary">
-                      {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                      {`${formatCurrency((item.price || 0) * item.quantity)}`}
                     </span>
                   </div>
                   <div className="flex justify-center col-span-1">

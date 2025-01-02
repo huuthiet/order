@@ -11,6 +11,7 @@ import { CartNoteInput } from '@/components/app/input'
 import { CreateOrderDialog, DeleteCartItemDialog } from '@/components/app/dialog'
 import { publicFileURL } from '@/constants'
 import { IOrderType } from '@/types'
+import { formatCurrency } from '@/utils'
 
 export default function CartPage() {
   const { t } = useTranslation('menu')
@@ -85,7 +86,7 @@ export default function CartPage() {
                       <div className="flex flex-col">
                         <span className="text-xs font-bold truncate sm:text-md">{item.name}</span>
                         <span className="text-xs sm:text-sm text-muted-foreground">
-                          {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                          {`${formatCurrency(item.price || 0)}`}
                         </span>
                       </div>
                     </div>
@@ -95,7 +96,7 @@ export default function CartPage() {
                   </div>
                   <div className="col-span-2 text-center">
                     <span className="text-sm font-semibold text-primary">
-                      {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                      {`${formatCurrency((item.price || 0) * item.quantity)}`}
                     </span>
                   </div>
                   <div className="flex justify-center col-span-1">

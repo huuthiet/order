@@ -9,6 +9,7 @@ import { CartNoteInput } from '@/components/app/input'
 import { useCartItemStore } from '@/stores'
 import { publicFileURL } from '@/constants'
 import { CreateOrderDialog } from '@/components/app/dialog'
+import { formatCurrency } from '@/utils'
 
 export default function CheckoutCart() {
   const { t } = useTranslation('menu')
@@ -94,7 +95,7 @@ export default function CheckoutCart() {
                       <div className="flex flex-col flex-1 min-w-0">
                         <span className="font-bold truncate">{item.name}</span>
                         <span className="text-xs font-thin text-muted-foreground">
-                          {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                          {`${formatCurrency(item.price || 0)}`}
                         </span>
                       </div>
                       <Button
@@ -109,7 +110,7 @@ export default function CheckoutCart() {
                         {t('order.quantity')} {item.quantity}
                       </span>
                       <span className="font-semibold text-muted-foreground">
-                        {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                        {`${formatCurrency((item.price || 0) * item.quantity)}`}
                       </span>
                     </div>
                   </div>
@@ -128,19 +129,19 @@ export default function CheckoutCart() {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('order.total')}</span>
-            <span>{`${subtotal?.toLocaleString('vi-VN')}đ`}</span>
+            <span>{`${formatCurrency(subtotal || 0)}`}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('order.discount')}</span>
             <span className="text-xs text-green-600">
-              - {`${discount.toLocaleString('vi-VN')}đ`}
+              - {`${formatCurrency(discount)}`}
             </span>
           </div>
           <div className="flex flex-col justify-start pt-2 border-t">
             <div className="flex justify-between">
               <span className="font-semibold">{t('order.grandTotal')}</span>
               <span className="text-lg font-bold text-primary">
-                {`${total.toLocaleString('vi-VN')}đ`}
+                {`${formatCurrency(total)}`}
               </span>
             </div>
             <div className="text-xs text-muted-foreground">

@@ -8,6 +8,7 @@ import { MenuList } from "../menu";
 import { CurrentDateInput } from "@/components/app/input";
 import { BranchSelect } from "@/components/app/select";
 import { PriceRangeFilter } from "@/components/app/popover";
+import { formatCurrency } from "@/utils";
 
 export default function MenuPage() {
   const { userInfo } = useUserStore();
@@ -44,10 +45,10 @@ export default function MenuPage() {
               <CurrentDateInput menu={specificMenu?.result} />
             </div>
             {minPrice !== 0 && maxPrice !== 0 && (
-              <div className="flex items-center flex-shrink-0 gap-1 border rounded-full border-primary bg-primary/10 text-primary">
-                <span className="text-xs">{`${minPrice.toLocaleString("vi-VN")}đ`}</span>
+              <div className="flex items-center flex-shrink-0 gap-1 px-2 border rounded-full border-primary bg-primary/10 text-primary">
+                <span className="text-xs">{formatCurrency(minPrice)}</span>
                 <span className="text-xs">đến</span>
-                <span className="text-xs">{`${maxPrice.toLocaleString("vi-VN")}đ`}</span>
+                <span className="text-xs">{formatCurrency(maxPrice)}</span>
                 <CircleX onClick={() => clearPriceRange()} />
               </div>
             )}

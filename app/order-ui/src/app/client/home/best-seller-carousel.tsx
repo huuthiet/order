@@ -15,6 +15,7 @@ import {
 import { IProduct, ISpecificMenu } from "@/types";
 import { publicFileURL, ROUTE } from "@/constants";
 import { SkeletonMenuList } from "@/components/app/skeleton";
+import { formatCurrency } from "@/utils";
 
 interface BestSellerCarouselProps {
     isLoading: boolean;
@@ -127,8 +128,8 @@ export default function BestSellerCarousel({ menu, isLoading }: BestSellerCarous
                                                                     const range = getPriceRange(item.product.variants)
                                                                     if (!range) return '0đ'
                                                                     return range.isSinglePrice
-                                                                        ? `${range.min.toLocaleString('vi-VN')}đ`
-                                                                        : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
+                                                                        ? `${formatCurrency(range.min)}`
+                                                                        : `${formatCurrency(range.min)} - ${formatCurrency(range.max)}`
                                                                 })()}
                                                             </span>
                                                             <span className='text-[0.7rem] text-muted-foreground'>

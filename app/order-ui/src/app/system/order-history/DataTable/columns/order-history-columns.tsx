@@ -20,7 +20,7 @@ import {
 import { IOrder } from '@/types'
 import { PaymentMethod, paymentStatus, ROUTE } from '@/constants'
 import { useExportOrderInvoice, useExportPayment } from '@/hooks'
-import { loadDataToPrinter, showToast } from '@/utils'
+import { formatCurrency, loadDataToPrinter, showToast } from '@/utils'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 
 export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
@@ -149,7 +149,7 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
       cell: ({ row }) => {
         const order = row.original
         return (
-          <div className="text-sm">{order?.subtotal.toLocaleString()}đ</div>
+          <div className="text-sm">{formatCurrency(order?.subtotal)}</div>
         )
       },
     },

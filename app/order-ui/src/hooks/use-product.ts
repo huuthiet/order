@@ -7,6 +7,8 @@ import {
   getAllProducts,
   getAllProductVariant,
   getProductBySlug,
+  getTopBranchProducts,
+  getTopProducts,
   updateProduct,
   updateProductVariant,
   uploadMultipleProductImages,
@@ -15,6 +17,8 @@ import {
 import {
   ICreateProductRequest,
   ICreateProductVariantRequest,
+  ITopBranchProductQuery,
+  ITopProductQuery,
   IUpdateProductRequest,
   IUpdateProductVariantRequest,
 } from '@/types'
@@ -117,5 +121,21 @@ export const useDeleteProductVariant = () => {
     mutationFn: async (slug: string) => {
       return deleteProductVariant(slug)
     },
+  })
+}
+
+export const useTopProducts = (q: ITopProductQuery) => {
+  return useQuery({
+    queryKey: ['topProducts', JSON.stringify(q)],
+    queryFn: () => getTopProducts(q),
+    placeholderData: keepPreviousData,
+  })
+}
+
+export const useTopBranchProducts = (q: ITopBranchProductQuery) => {
+  return useQuery({
+    queryKey: ['topBranchProducts', JSON.stringify(q)],
+    queryFn: () => getTopBranchProducts(q),
+    placeholderData: keepPreviousData,
   })
 }

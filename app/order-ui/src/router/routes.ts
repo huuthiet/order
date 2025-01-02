@@ -1,6 +1,7 @@
 import {
   Banknote,
   Bolt,
+  ChartColumn,
   ClipboardList,
   CookingPot,
   FileChartColumnIncreasing,
@@ -68,6 +69,12 @@ export const sidebarRoutes: ISidebarRoute[] = [
     path: ROUTE.STAFF_USER_MANAGEMENT,
     roles: [Role.ADMIN],
     icon: Users,
+  },
+  {
+    title: 'sidebar.revenueManagement',
+    path: ROUTE.STAFF_REVENUE,
+    roles: [Role.ADMIN, Role.SUPER_ADMIN, Role.MANAGER],
+    icon: ChartColumn,
   },
   {
     title: 'sidebar.logManagement',

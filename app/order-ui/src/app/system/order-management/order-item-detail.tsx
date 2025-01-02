@@ -7,6 +7,7 @@ import { IOrderDetail, OrderItemStatus } from '@/types'
 import { Checkbox } from '@/components/ui'
 import { useOrderTrackingStore } from '@/stores'
 import OrderItemStatusBadge from '@/components/app/badge/order-item-status-badge'
+import { formatCurrency } from '@/utils'
 
 interface OrderItemDetailProps {
   order: IOrderDetail
@@ -134,7 +135,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
               )}
 
               <div className="col-span-2 text-xs text-center sm:text-sm">
-                {orderItem.variant.price.toLocaleString()}đ
+                {formatCurrency(orderItem.variant.price)}
               </div>
               <div className="flex justify-end col-span-3">
                 <OrderItemStatusBadge status={item.status} />

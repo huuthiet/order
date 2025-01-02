@@ -13,6 +13,8 @@ export interface IPaginationResponse<T> {
   page: number
   pageSize: number
   totalPages: number
+  hasNext: boolean
+  hasPrevious: boolean
 }
 
 export interface IQuery {
