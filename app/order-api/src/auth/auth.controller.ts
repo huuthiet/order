@@ -39,6 +39,7 @@ import { ApiResponseWithType } from 'src/app/app.decorator';
 import { CurrentUser } from '../user/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUserDto } from 'src/user/user.dto';
+import { CustomFileInterceptor } from 'src/file/custom-interceptor';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -255,7 +256,11 @@ export class AuthController {
     description: 'Avatar have been uploaded successfully',
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(new CustomFileInterceptor('file', {
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+    }
+  }))
   async uploadAvatar(
     @CurrentUser(new ValidationPipe({ validateCustomDecorators: true }))
     user: CurrentUserDto,

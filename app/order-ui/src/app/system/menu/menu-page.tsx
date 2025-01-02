@@ -31,7 +31,7 @@ export default function MenuPage() {
         className={`flex pr-2 flex-col transition-all duration-300 ease-in-out ${isCartOpen && !isMobile ? 'w-full md:w-[70%]' : 'w-full'} ${isCollapsed ? 'pl-2' : ''}`}
       >
         {/* Fixed Header Section */}
-        <div className="sticky top-0 z-10 flex flex-row items-center justify-between gap-2 py-3 pr-4 bg-gray-50">
+        <div className="sticky top-0 z-10 flex flex-row items-center gap-2 py-3 pr-4">
           <CurrentDateInput menu={specificMenu?.result} />
           {/* <MenuCategorySelect /> */}
           {!isMobile && (

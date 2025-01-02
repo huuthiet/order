@@ -6,6 +6,7 @@ import { DbScheduler } from './db.scheduler';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from 'src/config/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TransactionManagerService } from './transaction-manager.service';
 
 @Module({
   imports: [
@@ -22,6 +23,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
   ],
   controllers: [DbController],
-  providers: [DbService, GoogleDriveService, DbScheduler],
+  providers: [
+    DbService,
+    GoogleDriveService,
+    DbScheduler,
+    TransactionManagerService,
+  ],
+  exports: [TransactionManagerService],
 })
 export class DbModule {}

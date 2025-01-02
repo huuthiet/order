@@ -1,5 +1,3 @@
-'use client'
-
 import { useNavigate } from 'react-router-dom'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -34,7 +32,7 @@ export default function CheckoutCart() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-transparent backdrop-blur-md">
+    <div className="flex h-full flex-col bg-transparent backdrop-blur-md">
       {/* Header */}
       <div className="px-4 pt-4">
         <h1 className="text-xl font-bold text-primary">
@@ -44,10 +42,10 @@ export default function CheckoutCart() {
 
       {/* Cart Items */}
       <ScrollArea className="flex-1">
-        <div className="flex flex-col flex-1 gap-4 px-4 pb-8">
-          <div className="flex flex-col gap-4 py-2 space-y-2">
+        <div className="flex flex-1 flex-col gap-4 px-4 pb-8">
+          <div className="flex flex-col gap-4 space-y-2 py-2">
             {/* Customer Information */}
-            <div className="flex flex-col gap-4 pb-6 mt-6 border-b">
+            <div className="mt-6 flex flex-col gap-4 border-b pb-6">
               <div className="flex flex-col gap-2">
                 <Label>{t('order.customerName')}</Label>
                 <Input placeholder={t('order.enterCustomerName')} />
@@ -59,11 +57,11 @@ export default function CheckoutCart() {
             </div>
 
             {/* Table Information */}
-            <div className="flex flex-col gap-4 pb-6 mt-5 border-b">
+            <div className="mt-5 flex flex-col gap-4 border-b pb-6">
               <div className="flex flex-col gap-2">
                 <Label>{t('order.deliveryMethod')}</Label>
                 <div className="flex flex-row items-center gap-4">
-                  <div className="flex items-center justify-center px-4 py-1 text-xs font-thin rounded-full w-fit bg-primary/15 text-primary">
+                  <div className="flex w-fit items-center justify-center rounded-full bg-primary/15 px-4 py-1 text-xs font-thin text-primary">
                     {t('order.dineIn')}
                   </div>
                   <div>
@@ -79,21 +77,21 @@ export default function CheckoutCart() {
             {cartItems?.orderItems.map((item) => (
               <div
                 key={item.slug}
-                className="flex flex-col gap-4 pb-4 border-b"
+                className="flex flex-col gap-4 border-b pb-4"
               >
                 <div
                   key={`${item.slug}`}
-                  className="flex items-center w-full gap-2 rounded-xl"
+                  className="flex w-full items-center gap-2 rounded-xl"
                 >
                   <img
                     src={`${publicFileURL}/${item.image}`}
                     alt={item.name}
-                    className="object-cover w-20 h-20 rounded-2xl"
+                    className="h-20 w-20 rounded-2xl object-cover"
                   />
-                  <div className="flex flex-col flex-1 gap-2">
+                  <div className="flex flex-1 flex-col gap-2">
                     <div className="flex flex-row items-start justify-between">
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <span className="font-bold truncate">{item.name}</span>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate font-bold">{item.name}</span>
                         <span className="text-xs font-thin text-muted-foreground">
                           {`${formatCurrency(item.price || 0)}`}
                         </span>
@@ -105,7 +103,7 @@ export default function CheckoutCart() {
                         <Trash2 size={20} className="text-muted-foreground" />
                       </Button>
                     </div>
-                    <div className="flex items-center justify-between w-full text-sm font-medium">
+                    <div className="flex w-full items-center justify-between text-sm font-medium">
                       <span>
                         {t('order.quantity')} {item.quantity}
                       </span>
@@ -125,7 +123,7 @@ export default function CheckoutCart() {
       </ScrollArea>
 
       {/* Order Summary and Checkout */}
-      <div className="p-4 mt-auto border-t bg-background">
+      <div className="mt-auto border-t bg-background p-4">
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('order.total')}</span>
@@ -137,7 +135,7 @@ export default function CheckoutCart() {
               - {`${formatCurrency(discount)}`}
             </span>
           </div>
-          <div className="flex flex-col justify-start pt-2 border-t">
+          <div className="flex flex-col justify-start border-t pt-2">
             <div className="flex justify-between">
               <span className="font-semibold">{t('order.grandTotal')}</span>
               <span className="text-lg font-bold text-primary">
@@ -149,7 +147,7 @@ export default function CheckoutCart() {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between gap-2 mt-4">
+        <div className="mt-4 flex items-center justify-between gap-2">
           <Button
             variant="outline"
             className="rounded-full"

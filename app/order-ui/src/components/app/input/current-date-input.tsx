@@ -2,7 +2,6 @@ import moment from 'moment'
 import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Input } from '@/components/ui'
 import { ISpecificMenu } from '@/types'
 
 interface ICurrentDateInputProps {
@@ -13,21 +12,15 @@ export default function DateInput({ menu }: ICurrentDateInputProps) {
   const { t } = useTranslation('common')
 
   const currentDate = moment(new Date()).format('DD/MM/YYYY')
-  const dayOfWeek = menu?.dayIndex !== undefined ? t(`dayOfWeek.${menu?.dayIndex}`) : ''
+  const dayOfWeek =
+    menu?.dayIndex !== undefined ? t(`dayOfWeek.${menu?.dayIndex}`) : ''
 
   return (
-    <div className="relative grid items-center grid-cols-1 bg-gray-50">
-      {/* Icon Calendar */}
-      <Calendar className="absolute w-5 h-5 text-gray-500 pointer-events-none left-2" />
-
-      {/* Input */}
-      <Input
-        type="text"
-        id="date-input"
-        readOnly
-        value={`${dayOfWeek} ${currentDate}`}
-        className="pr-2 cursor-not-allowed text-muted-foreground pl-9 h-9"
-      />
+    <div className="flex w-full items-end justify-start gap-1 rounded-sm py-2 text-[14px] text-muted-foreground">
+      <Calendar />
+      <span>
+        {dayOfWeek} {currentDate}
+      </span>
     </div>
   )
 }

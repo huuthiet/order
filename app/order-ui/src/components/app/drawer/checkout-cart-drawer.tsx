@@ -1,6 +1,3 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trash2 } from 'lucide-react'
 
@@ -19,11 +16,11 @@ import { useCartItemStore, useUserStore } from '@/stores'
 import { Input, Label } from '@/components/ui'
 import { CartNoteInput } from '@/components/app/input'
 import { publicFileURL } from '@/constants'
-// import { NavLink, useNavigate } from 'react-router-dom'
 import { CreateOrderDialog } from '@/components/app/dialog'
 import { useDebouncedInput, usePagination, useUsers } from '@/hooks'
 import { IUserInfo } from '@/types'
 import { formatCurrency } from '@/utils'
+import { useEffect, useState } from 'react'
 
 export default function CheckoutCartDrawer() {
   const { t: tCommon } = useTranslation(['common'])
@@ -44,7 +41,7 @@ export default function CheckoutCartDrawer() {
         pageSize: pagination.pageSize,
         phonenumber: debouncedInputValue,
       }
-      : null // Không gọi hook nếu không có số điện thoại
+      : null, // Không gọi hook nếu không có số điện thoại
   )
 
   const cartItems = getCartItems()
@@ -80,7 +77,11 @@ export default function CheckoutCartDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild className="z-30">
-        <Button variant="default" disabled={!cartItems?.table || cartItems?.table === ""} className="text-white bg-primary">
+        <Button
+          variant="default"
+          disabled={!cartItems?.table || cartItems?.table === ''}
+          className="text-white bg-primary"
+        >
           {t('order.confirmation')}
         </Button>
       </DrawerTrigger>
@@ -95,7 +96,7 @@ export default function CheckoutCartDrawer() {
             <div className="flex flex-col gap-4 pb-6 mt-6 border-b sm:relative">
               <div className="flex flex-col gap-4">
                 <Label>{t('order.phoneNumber')}</Label>
-                <div className='flex gap-2'>
+                <div className="flex gap-2">
                   <Input
                     placeholder={t('order.enterPhoneNumber')}
                     value={inputValue}
@@ -107,7 +108,7 @@ export default function CheckoutCartDrawer() {
                 </div>
                 {cartItems && (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold ">
+                    <span className="text-sm font-semibold">
                       {cartItems.ownerFullName}
                     </span>
                     <span className="text-sm">
@@ -124,13 +125,15 @@ export default function CheckoutCartDrawer() {
                     <div
                       key={user.slug}
                       onClick={handleAddOwner(user)}
-                      className={`p-2 hover:bg-gray-100 cursor-pointer ${index < users.length - 1 ? 'border-b' : ''
+                      className={`cursor-pointer p-2 hover:bg-gray-100 ${index < users.length - 1 ? 'border-b' : ''
                         }`}
                     >
                       <div className="font-medium">
                         {user.firstName} {user.lastName}
                       </div>
-                      <div className="text-sm text-gray-500">{user.phonenumber}</div>
+                      <div className="text-sm text-gray-500">
+                        {user.phonenumber}
+                      </div>
                     </div>
                   ))}
                 </div>

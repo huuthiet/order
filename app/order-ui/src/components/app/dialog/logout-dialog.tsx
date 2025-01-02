@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   Button,
-  DialogFooter
+  DialogFooter,
 } from '@/components/ui'
 import { useAuthStore, useUserStore } from '@/stores'
 import { showToast } from '@/utils'
@@ -24,34 +24,44 @@ export default function LogoutDialog() {
   const { setLogout } = useAuthStore()
   const { removeUserInfo } = useUserStore()
   const navigate = useNavigate()
-  // const { removeUserInfo, userInfo } = useUserStore()
 
   const handleLogout = () => {
     setLogout()
     removeUserInfo()
-    // clearUserRoles()
-    navigate(ROUTE.LOGIN, { replace: true })
+    navigate(ROUTE.HOME, { replace: true })
     showToast(tToast('toast.logoutSuccess'))
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex justify-start w-full" asChild>
-        <Button variant="ghost" className="w-full gap-1 text-sm" onClick={() => setIsOpen(true)}>
+      <DialogTrigger className="flex w-full justify-start" asChild>
+        <Button
+          variant="ghost"
+          className="w-full gap-1 text-sm"
+          onClick={() => setIsOpen(true)}
+        >
           <LogOut className="icon" />
           {t('logout.title')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-lg max-w-[18rem] sm:max-w-[28rem] sm:max-h-[32rem] overflow-hidden hover:overflow-y-auto transition-all duration-300">
+      <DialogContent className="max-w-[18rem] overflow-hidden rounded-lg transition-all duration-300 hover:overflow-y-auto sm:max-h-[32rem] sm:max-w-[28rem]">
         <DialogHeader>
           <DialogTitle>{t('logout.title')}</DialogTitle>
           <DialogDescription>{t('logout.description')}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-between gap-2 sm:justify-end">
-          <Button variant="outline" className="w-full sm:w-auto" onClick={() => setIsOpen(false)}>
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto"
+            onClick={() => setIsOpen(false)}
+          >
             {t('logout.cancel')}
           </Button>
-          <Button variant="destructive" className="w-full sm:w-auto" onClick={() => handleLogout()}>
+          <Button
+            variant="destructive"
+            className="w-full sm:w-auto"
+            onClick={() => handleLogout()}
+          >
             {t('logout.logout')}
           </Button>
         </DialogFooter>
