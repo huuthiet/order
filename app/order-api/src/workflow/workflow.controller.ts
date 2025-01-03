@@ -23,7 +23,7 @@ export class WorkflowController {
   @ApiOperation({ summary: 'Create new workflow' })
   @ApiResponse({ status: 200, description: 'Create new workflow successfully' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async createVariant(
+  async createWorkflow(
     @Body(new ValidationPipe({
       transform: true,
       whitelist: true,
@@ -37,6 +37,27 @@ export class WorkflowController {
       timestamp: new Date().toISOString(),
       result,
     } as AppResponseDto<WorkflowResponseDto>;
+  }
+
+  @Post('workflow-executions/:slug/cancel')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Cancel workflow execution successfully',
+    type: WorkflowResponseDto,
+  })
+  @ApiOperation({ summary: 'Cancel workflow execution' })
+  @ApiResponse({ status: 200, description: 'Cancel workflow execution successfully' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  async cancelWorkflowExecution() {
+    const result = await this.workflowService.cancelWorkflowExecution();
+    return {
+      message: 'Cancel workflow execution successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<void>;
   }
 
   @Get()

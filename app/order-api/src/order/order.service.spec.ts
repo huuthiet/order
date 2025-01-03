@@ -37,7 +37,7 @@ import { Product } from 'src/product/product.entity';
 import { VariantException } from 'src/variant/variant.exception';
 import { BranchValidation } from 'src/branch/branch.validation';
 import { VariantValidation } from 'src/variant/variant.validation';
-import { WorkflowStatus } from 'src/tracking/tracking.constants';
+import { WorkflowStatus } from 'src/workflow/workflow.constants';
 import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
 import { Menu } from 'src/menu/menu.entity';
@@ -766,6 +766,7 @@ describe('OrderService', () => {
         [WorkflowStatus.RUNNING]: 0,
         [WorkflowStatus.COMPLETED]: 0,
         [WorkflowStatus.FAILED]: 0,
+        [WorkflowStatus.CANCELED]: 0,
       });
     });
   });

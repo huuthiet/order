@@ -4,7 +4,8 @@ import { Transform, Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsOptional, Min, ValidateNested } from "class-validator";
 import { BaseResponseDto } from "src/app/base.dto";
 import { CreateTrackingOrderItemRequestDto, TrackingOrderItemResponseDto } from "src/tracking-order-item/tracking-order-item.dto";
-import { TrackingType, WorkflowStatus } from "./tracking.constants";
+import { TrackingType } from "./tracking.constants";
+import { WorkflowStatus } from 'src/workflow/workflow.constants';
 
 export class CreateTrackingRequestDto {
   @AutoMap()

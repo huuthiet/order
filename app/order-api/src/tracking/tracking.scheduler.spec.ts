@@ -10,7 +10,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { OrderItem } from "src/order-item/order-item.entity";
 import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
-import { WorkflowStatus } from "./tracking.constants";
+import { WorkflowStatus } from "src/workflow/workflow.constants";
 import { OrderStatus } from "src/order/order.contants";
 
 describe('TrackingScheduler', () => {
@@ -162,7 +162,7 @@ describe('TrackingScheduler', () => {
       } as Order;
 
       jest.spyOn(trackingScheduler, "getAllOrdersByTrackingId").mockResolvedValue(orders);
-      const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
+      const result = await trackingScheduler.implementUpdateOrderStatus('mock-tracking-id');
 
       expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
     });
@@ -207,7 +207,7 @@ describe('TrackingScheduler', () => {
       } as Order;
 
       jest.spyOn(trackingScheduler, "getAllOrdersByTrackingId").mockResolvedValue(orders);
-      const result = await trackingScheduler.updateStatusOrder('mock-tracking-id');
+      const result = await trackingScheduler.implementUpdateOrderStatus('mock-tracking-id');
 
       expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
     });

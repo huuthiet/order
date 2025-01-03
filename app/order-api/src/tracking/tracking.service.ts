@@ -22,7 +22,8 @@ import {
 } from 'src/tracking-order-item/tracking-order-item.dto';
 import { Order } from 'src/order/order.entity';
 import { OrderItem } from 'src/order-item/order-item.entity';
-import { TrackingType, WorkflowStatus } from './tracking.constants';
+import { TrackingType } from './tracking.constants';
+import { WorkflowStatus } from 'src/workflow/workflow.constants';
 import { TrackingOrderItem } from 'src/tracking-order-item/tracking-order-item.entity';
 import { Table } from 'src/table/table.entity';
 import { OrderType } from 'src/order/order.contants';
@@ -34,7 +35,7 @@ import {
   WorkflowExecutionResponseDto,
 } from 'src/robot-connector/robot-connector.dto';
 import { Workflow } from 'src/workflow/workflow.entity';
-import { RobotStatus } from 'src/robot-connector/robot-connector.constants';
+import { RaybotCommandTypes, RobotStatus } from 'src/robot-connector/robot-connector.constants';
 import * as _ from 'lodash';
 import { TrackingScheduler } from './tracking.scheduler';
 import { TrackingException } from './tracking.exception';
@@ -98,6 +99,7 @@ export class TrackingService {
         take: options.size,
       });
     }
+
     const [trackings, total] =
       await this.trackingRepository.findAndCount(findManyOptions);
 
@@ -170,9 +172,9 @@ export class TrackingService {
       await this.checkRobotStatusBeforeCall();
 
       const runWorkflowData: RunWorkflowRequestDto = {
-        runtime_config: {
+        env: {
           raybot_id: await this.getRobotId(),
-          location: tableLocation,
+          table_location: tableLocation,
           order_code: order.slug,
         },
       };
@@ -184,7 +186,7 @@ export class TrackingService {
 
       const tracking = new Tracking();
       Object.assign(tracking, {
-        workflowExecution: workflowRobot.workflow_execution_id,
+        workflowExecution: workflowRobot.workflowExecutionId,
       });
 
       savedTrackingId = await this.createTrackingAndTrackingOrderItem(
@@ -202,10 +204,10 @@ export class TrackingService {
         tracking,
         orderItemsData,
       );
-      await this.trackingScheduler.updateStatusOrder(savedTrackingId);
+      await this.trackingScheduler.implementUpdateOrderStatus(savedTrackingId);
     }
 
-    await this.softDeleteOldTrackingOrderItemFailed(
+    await this.softDeleteOldFailedAndCanceledTrackingOrderItem(
       orderItemsData.map((item) => item.orderItem?.id),
     );
 
@@ -264,9 +266,9 @@ export class TrackingService {
       );
 
       const runWorkflowData: RunWorkflowRequestDto = {
-        runtime_config: {
+        env: {
           raybot_id: await this.getRobotId(),
-          location: tableLocation,
+          table_location: tableLocation,
           order_code: order.slug,
         },
       };
@@ -278,7 +280,7 @@ export class TrackingService {
 
       const tracking = new Tracking();
       Object.assign(tracking, {
-        workflowExecution: workflowRobot.workflow_execution_id,
+        workflowExecution: workflowRobot.workflowExecutionId,
       });
 
       savedTrackingId = await this.createTrackingAndTrackingOrderItem(
@@ -296,10 +298,10 @@ export class TrackingService {
         tracking,
         orderItemsData,
       );
-      await this.trackingScheduler.updateStatusOrder(savedTrackingId);
+      await this.trackingScheduler.implementUpdateOrderStatus(savedTrackingId);
     }
 
-    await this.softDeleteOldTrackingOrderItemFailed(
+    await this.softDeleteOldFailedAndCanceledTrackingOrderItem(
       orderItemsData.map((item) => item.orderItem?.id),
     );
 
@@ -322,7 +324,7 @@ export class TrackingService {
    *
    * @param {string[]} orderItemIds The array of order item ids need delete failed tracking
    */
-  async softDeleteOldTrackingOrderItemFailed(
+  async softDeleteOldFailedAndCanceledTrackingOrderItem(
     orderItemIds: string[],
   ): Promise<void> {
     const trackingOrderItems = await this.trackingOrderItemRepository.find({
@@ -331,10 +333,11 @@ export class TrackingService {
           id: In(orderItemIds),
         },
         tracking: {
-          status: WorkflowStatus.FAILED,
+          status: In([WorkflowStatus.FAILED, WorkflowStatus.CANCELED]),
         },
       },
     });
+    // if(_.isEmpty(trackingOrderItems)) return;
     const trackingOrderItemIds = trackingOrderItems.map((item) => item.id);
     await this.trackingOrderItemRepository.softDelete({
       id: In(trackingOrderItemIds),
@@ -349,7 +352,6 @@ export class TrackingService {
       relations: ['order.branch', 'order.orderItems'],
     });
     const order = orderItem.order;
-    console.log('a')
     return order;
   }
 
@@ -387,9 +389,25 @@ export class TrackingService {
     createTrackingOrderItems: CreateTrackingOrderItemRequestDto[],
   ): Promise<CreateTrackingOrderItemWithQuantityAndOrderItemEntity[]> {
     const context = `${TrackingService.name}.${this.validateDefinedAndQuantityOrderItem.name}`;
+
+    // const handleDuplicateOrderItems = this.handleDuplicateOrderItem(createTrackingOrderItems);
+    
+    const uniqueOrderItems = new Set();
     const orderItemsData: CreateTrackingOrderItemWithQuantityAndOrderItemEntity[] =
       [];
     for (const createTrackingOrderItem of createTrackingOrderItems) {
+      // check duplicate order item
+      if(uniqueOrderItems.has(createTrackingOrderItem.orderItem)) {
+        this.logger.warn(
+          TrackingValidation.DUPLICATE_ORDER_ITEM_WHEN_CONFIRM_SHIPMENT.message, 
+          context
+        );
+        throw new TrackingException(
+          TrackingValidation.DUPLICATE_ORDER_ITEM_WHEN_CONFIRM_SHIPMENT
+        );
+      }
+      uniqueOrderItems.add(createTrackingOrderItem.orderItem);
+
       // check defined
       const orderItem = await this.orderItemRepository.findOne({
         where: {
@@ -462,6 +480,24 @@ export class TrackingService {
     }
 
     return orderItemsData;
+  }
+
+  handleDuplicateOrderItem(
+    createTrackingOrderItems: CreateTrackingOrderItemRequestDto[]
+  ): CreateTrackingOrderItemRequestDto[] {
+    const orderItems = createTrackingOrderItems.reduce((acc, item) => {
+      if (acc[item.orderItem]) {
+        acc[item.orderItem] += item.quantity;
+      } else {
+        acc[item.orderItem] = item.quantity;
+      }
+      return acc;
+    }, []);
+
+    return Object.keys(orderItems).map(orderItem => ({
+      orderItem,
+      quantity: orderItems[orderItem]
+    }));
   }
 
   /**
@@ -542,7 +578,7 @@ export class TrackingService {
     const locationData: QRLocationResponseDto =
       await this.robotConnectorClient.getQRLocationById(table.location);
 
-    return locationData.qr_code;
+    return locationData.qrCode;
   }
 
   /**

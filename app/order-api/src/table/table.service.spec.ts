@@ -134,7 +134,7 @@ describe('TableService', () => {
       jest.spyOn(robotConnectorClient, 'getQRLocationById').mockResolvedValue({
         id: 'mock-location-id',
         name: 'mock-location-name',
-        qr_code: 'mock-location-code',
+        qrCode: 'mock-location-code',
       } as QRLocationResponseDto);
 
       await expect(service.create(mockInput)).rejects.toThrow(TableException);
@@ -172,7 +172,7 @@ describe('TableService', () => {
       jest.spyOn(robotConnectorClient, 'getQRLocationById').mockResolvedValue({
         id: 'mock-location-abfA',
         name: 'mock-location-name',
-        qr_code: 'mock-location-code',
+        qrCode: 'mock-location-code',
       } as QRLocationResponseDto);
 
       const result = await service.create(mockInput);

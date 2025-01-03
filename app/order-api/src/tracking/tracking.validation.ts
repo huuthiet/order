@@ -11,6 +11,8 @@ export const ORDERS_MUST_BELONG_TO_ONE_TABLE =
   'ORDERS_MUST_BELONG_TO_ONE_TABLE';
 export const INVALID_DATA_CREATE_TRACKING_ORDER_ITEM =
   'INVALID_DATA_CREATE_TRACKING_ORDER_ITEM';
+export const DUPLICATE_ORDER_ITEM_WHEN_CONFIRM_SHIPMENT =
+  'DUPLICATE_ORDER_ITEM_WHEN_CONFIRM_SHIPMENT';
 
 export type TTrackingErrorCodeKey =
   | typeof CREATE_TRACKING_FAILED
@@ -19,7 +21,8 @@ export type TTrackingErrorCodeKey =
   | typeof ORDERS_MUST_BELONG_TO_ONE_TABLE
   | typeof TRACKING_NOT_FOUND
   | typeof CREATE_TRACKING_ERROR
-  | typeof INVALID_DATA_CREATE_TRACKING_ORDER_ITEM;
+  | typeof INVALID_DATA_CREATE_TRACKING_ORDER_ITEM
+  | typeof DUPLICATE_ORDER_ITEM_WHEN_CONFIRM_SHIPMENT;
 export type TTrackingErrorCode = Record<TTrackingErrorCodeKey, TErrorCodeValue>;
 
 // 129000 - 130000
@@ -43,4 +46,8 @@ export const TrackingValidation: TTrackingErrorCode = {
   ),
   TRACKING_NOT_FOUND: createErrorCode(129004, 'Tracking not found'),
   CREATE_TRACKING_ERROR: createErrorCode(129005, 'Create traking error'),
+  DUPLICATE_ORDER_ITEM_WHEN_CONFIRM_SHIPMENT: createErrorCode(
+    129006, 
+    'Duplicate order item when create tracking'
+  ),
 };

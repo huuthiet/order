@@ -23,7 +23,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { User } from 'src/user/user.entity';
 import { Variant } from 'src/variant/variant.entity';
 import { OrderStatus, OrderType } from './order.contants';
-import { WorkflowStatus } from 'src/tracking/tracking.constants';
+import { WorkflowStatus } from 'src/workflow/workflow.constants';
 import { OnEvent } from '@nestjs/event-emitter';
 import { OrderException } from './order.exception';
 import { OrderValidation } from './order.validation';
@@ -533,6 +533,7 @@ export class OrderService {
           [WorkflowStatus.RUNNING]: 0,
           [WorkflowStatus.COMPLETED]: 0,
           [WorkflowStatus.FAILED]: 0,
+          [WorkflowStatus.CANCELED]: 0,
         },
       );
 

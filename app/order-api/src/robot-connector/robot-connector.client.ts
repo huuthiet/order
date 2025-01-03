@@ -16,14 +16,20 @@ import {
   GetWorkflowExecutionResponseDto,
   CreateWorkflowRequestDto,
   RobotResponseDto,
+  QRLocationArrayResponseDto,
+  RaybotCommandRequestDto,
+  WorkflowExecutionStepResponseDto,
+  RaybotCommandResponseDto,
 } from './robot-connector.dto';
-import { catchError, firstValueFrom, retry } from 'rxjs';
+import { catchError, delay, firstValueFrom, retry, retryWhen, take, tap } from 'rxjs';
 import { AxiosError } from 'axios';
 import { RobotConnectorException } from './robot-connector.exception';
 import { RobotConnectorValidation } from './robot-connector.validation';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
 import * as _ from 'lodash';
+import { RaybotCommandTypes } from './robot-connector.constants';
+import { error } from 'console';
 
 @Injectable()
 export class RobotConnectorClient {
@@ -112,7 +118,7 @@ export class RobotConnectorClient {
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(
-              `${RobotConnectorValidation.RUN_WORKFLOW_FROM_ROBOT_API_FAILED} ${workflowId}: ${error.message}`,
+              `${RobotConnectorValidation.RUN_WORKFLOW_FROM_ROBOT_API_FAILED.message} ${workflowId}: ${error.message}`,
               error.stack,
               context,
             );
@@ -133,6 +139,18 @@ export class RobotConnectorClient {
     const requestUrl = `${await this.getRobotApiUrl()}/workflow-executions/${workflowExecutionId}`;
     const { data } = await firstValueFrom(
       this.httpService.get<GetWorkflowExecutionResponseDto>(requestUrl).pipe(
+        retryWhen((errors) => 
+          errors.pipe(
+            tap(() => 
+              this.logger.warn(
+                `Retrying connection to ROBOT API to get Workflow Execution ${workflowExecutionId}`, 
+                context
+              )
+          ),
+            delay(1000),
+            take(3)
+          )
+        ),
         catchError((error: AxiosError) => {
           this.logger.error(
             `Get Workflow Execution from ROBOT API failed: ${error.message}`,
@@ -146,6 +164,29 @@ export class RobotConnectorClient {
       ),
     );
     return data;
+  }
+
+  async cancelWorkflowExecution(
+    workflowExecutionId: string,
+  ): Promise<void> {
+    const context = `${RobotConnectorClient.name}.${this.cancelWorkflowExecution.name}`;
+    const requestUrl = `${await this.getRobotApiUrl()}/workflows-executions/${workflowExecutionId}/cancel`;
+    await firstValueFrom(
+      this.httpService
+        .post<void>(requestUrl, {})
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(
+              `${RobotConnectorValidation.CANCEL_WORKFLOW_EXECUTION_FAILED.message} ${workflowExecutionId}: ${error.message}`,
+              error.stack,
+              context,
+            );
+            throw new RobotConnectorException(
+              RobotConnectorValidation.CANCEL_WORKFLOW_EXECUTION_FAILED,
+            );
+          }),
+        ),
+    );
   }
 
   async retrieveAllWorkflowExecutions(): Promise<
@@ -169,9 +210,9 @@ export class RobotConnectorClient {
   /** QR LOCATIONS */
   async retrieveAllQRLocations(): Promise<QRLocationResponseDto[]> {
     const context = `${RobotConnectorClient.name}.${this.retrieveAllQRLocations.name}`;
-    const requestUrl = `${await this.getRobotApiUrl()}/qr-locations`;
+    const requestUrl = `${await this.getRobotApiUrl()}/qr-locations?page=1&pageSize=1000`;
     const { data } = await firstValueFrom(
-      this.httpService.get<QRLocationResponseDto[]>(requestUrl).pipe(
+      this.httpService.get<QRLocationArrayResponseDto>(requestUrl).pipe(
         retry(3),
         catchError((error: AxiosError) => {
           this.logger.error(
@@ -183,7 +224,7 @@ export class RobotConnectorClient {
         }),
       ),
     );
-    return data;
+    return data.items;
   }
 
   async createQRLocation(
@@ -209,6 +250,7 @@ export class RobotConnectorClient {
   async getQRLocationById(id: string): Promise<QRLocationResponseDto> {
     const context = `${RobotConnectorClient.name}.${this.getQRLocationById.name}`;
     const requestUrl = `${await this.getRobotApiUrl()}/qr-locations/${id}`;
+    console.log({requestUrl})
     const { data } = await firstValueFrom(
       this.httpService.get<QRLocationResponseDto>(requestUrl).pipe(
         catchError((error: AxiosError) => {
@@ -264,5 +306,59 @@ export class RobotConnectorClient {
       ),
     );
     return response.status;
+  }
+
+  // STEP 
+  async getStepsByWorkflowExecutionId(
+    id: string
+  ): Promise<WorkflowExecutionStepResponseDto[]> {
+    const context = `${RobotConnectorClient.name}.${this.getStepsByWorkflowExecutionId.name}`;
+    const requestUrl = 
+      `${await this.getRobotApiUrl()}/workflow-executions/${id}/steps`;
+    const { data } = await firstValueFrom(
+      this.httpService.get<WorkflowExecutionStepResponseDto[]>(requestUrl).pipe(
+        catchError((error: AxiosError) => {
+          this.logger.error(
+            `Get steps by workflow execution ID from ROBOT API failed: ${error.message}`,
+            error.stack,
+            context,
+          );
+          // throw new RobotConnectorException(
+          //   RobotConnectorValidation.GET_LOCATION_FROM_ROBOT_API_FAILED,
+          // );
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
+
+  // RAYBOT COMMAND
+  async sendRaybotCommand(
+    raybotId: string,
+    type: RaybotCommandTypes,
+    input: Record<string, any> = {},
+  ): Promise<RaybotCommandResponseDto> {
+    const context = `${RobotConnectorClient.name}.${this.sendRaybotCommand.name}`;
+    const requestData: RaybotCommandRequestDto = {
+      type,
+      input
+    };
+    const requestUrl = `${await this.getRobotApiUrl()}/raybots/${raybotId}/commands`;
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<RaybotCommandResponseDto>(requestUrl, requestData)
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(
+              `Send command for raybot from ROBOT API failed: ${error.message}`,
+              error.stack,
+              context
+            );
+            throw error;
+          }),
+        ),
+    );
+    return data;
   }
 }

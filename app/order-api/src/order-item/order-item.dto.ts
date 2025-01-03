@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 import { TrackingOrderItemResponseDto } from 'src/tracking-order-item/tracking-order-item.dto';
 import { VariantResponseDto } from 'src/variant/variant.dto';
-import { WorkflowStatus } from 'src/tracking/tracking.constants';
+import { WorkflowStatus } from 'src/workflow/workflow.constants';
 
 export class CreateOrderItemRequestDto {
   @AutoMap()

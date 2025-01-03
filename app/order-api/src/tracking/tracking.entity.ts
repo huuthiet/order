@@ -1,7 +1,7 @@
 import { AutoMap } from "@automapper/classes";
 import { Base } from "src/app/base.entity";
 import { Column, Entity, OneToMany } from "typeorm";
-import { WorkflowStatus } from './tracking.constants';
+import { WorkflowStatus } from 'src/workflow/workflow.constants';
 import { TrackingOrderItem } from "src/tracking-order-item/tracking-order-item.entity";
 
 @Entity('tracking_tbl')

@@ -3,7 +3,8 @@ import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { TrackingCronEnum, WorkflowStatus } from './tracking.constants';
+import { TrackingCronEnum } from './tracking.constants';
+import { WorkflowStatus } from 'src/workflow/workflow.constants';
 import { Tracking } from './tracking.entity';
 import { RobotConnectorClient } from 'src/robot-connector/robot-connector.client';
 import * as _ from 'lodash';
@@ -35,8 +36,8 @@ export class TrackingScheduler {
   @Cron(CronExpression.EVERY_5_SECONDS, {
     name: TrackingCronEnum.UPDATE_STATUS_TRACKING,
   })
-  async UpdateStatusTracking() {
-    const context = `${TrackingScheduler.name}.${this.UpdateStatusTracking.name}`;
+  async UpdateTrackingStatusCron() {
+    const context = `${TrackingScheduler.name}.${this.UpdateTrackingStatusCron.name}`;
     const trackings = await this.trackingRepository.find({
       where: {
         status: In([WorkflowStatus.PENDING, WorkflowStatus.RUNNING]),
@@ -44,25 +45,67 @@ export class TrackingScheduler {
     });
     if (_.isEmpty(trackings)) this.stopUpdateStatusTracking();
 
+    await this.updateTrackingAndOrderStatus(trackings);
+  }
+
+  async updateTrackingAndOrderStatus(
+    trackings: Tracking[]
+  ): Promise<void> {
+    const context = `${TrackingScheduler.name}.${this.updateTrackingAndOrderStatus.name}`;
     // update for tracking
     const workflowExecutionIds = trackings.map(
       (item) => item.workflowExecution,
     );
+
+    // ***** If not use 2 try catch, use Promise.allSettled. Example:
+    // await Promise.allSettled(
+    //   workflowExecutionIds.map(async (id) => {
+    //     const tracking = await this.trackingRepository.findOne({
+    //       where: { workflowExecution: id },
+    //     });
+    //     try {
+    //       const workflow =
+    //         await this.robotConnectorClient.retrieveWorkflowExecution(id);
+
+    //       Object.assign(tracking, { status: workflow.status });
+    //       await this.trackingRepository.save(tracking);
+    //     } catch (error) {
+    //       this.logger.warn(
+    //         `Error processing workflow execution ${id}`,
+    //         context,
+    //       );
+
+    //       // update FAILED status for tracking when call robot connector failed
+    //       Object.assign(tracking, { status: WorkflowStatus.FAILED });
+    //       await this.trackingRepository.save(tracking);
+    //     }
+    //   }),
+    // );
     await Promise.all(
       workflowExecutionIds.map(async (id) => {
         try {
-          const workflow =
-            await this.robotConnectorClient.retrieveWorkflowExecution(id);
-
           const tracking = await this.trackingRepository.findOne({
             where: { workflowExecution: id },
           });
-
-          Object.assign(tracking, { status: workflow.status });
-          await this.trackingRepository.save(tracking);
+          try {
+            const workflow =
+              await this.robotConnectorClient.retrieveWorkflowExecution(id);
+  
+            Object.assign(tracking, { status: workflow.status });
+            await this.trackingRepository.save(tracking);
+          } catch (error) {
+            this.logger.warn(
+              `Error processing workflow execution ${id}`,
+              context,
+            );
+  
+            // update FAILED status for tracking when call robot connector failed
+            Object.assign(tracking, { status: WorkflowStatus.FAILED });
+            await this.trackingRepository.save(tracking);
+          }
         } catch (error) {
           this.logger.warn(
-            `Error processing workflow execution ${id}`,
+            `Error find tracking when update workflow execution ${id}`,
             context,
           );
         }
@@ -74,7 +117,7 @@ export class TrackingScheduler {
     await Promise.all(
       trackingIds.map(async (id) => {
         try {
-          await this.updateStatusOrder(id);
+          await this.implementUpdateOrderStatus(id);
         } catch (error) {
           this.logger.warn(`Error updating status for order`, context);
         }
@@ -86,8 +129,8 @@ export class TrackingScheduler {
    * Update latest order status by tracking id
    * @param {string} trackingId The id of tracking
    */
-  async updateStatusOrder(trackingId: string) {
-    const context = `${TrackingScheduler.name}.${this.updateStatusOrder.name}`;
+  async implementUpdateOrderStatus(trackingId: string) {
+    const context = `${TrackingScheduler.name}.${this.implementUpdateOrderStatus.name}`;
 
     const orders: Order[] = await this.getAllOrdersByTrackingId(trackingId);
 
