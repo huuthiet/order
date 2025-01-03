@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from './logger.entity';
 import { Repository } from 'typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class LoggerScheduler {

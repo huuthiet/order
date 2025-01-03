@@ -7,7 +7,7 @@ export function ClientFooter() {
   return (
     <footer className="bg-primary text-white">
       <div className="container py-6">
-        <div className="grid grid-cols-4 items-start gap-5">
+        <div className="grid grid-cols-2 items-start gap-5 lg:grid-cols-4">
           <div className="flex w-fit flex-col items-start justify-center gap-2">
             <span className="font-bold">Truy cập nhanh</span>
             <NavLink

@@ -17,7 +17,7 @@ import {
   RegisterAuthResponseDto,
 } from './auth.dto';
 import { UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { jwtServiceMockFactory } from 'src/test-utils/jwt-mock.factory';
 import { Mapper } from '@automapper/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

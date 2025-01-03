@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm';
-import * as Transport from 'winston-transport';
+import Transport from 'winston-transport';
 import { Logger } from './logger.entity';
-import { random } from 'lodash';
 
 export class DatabaseTransport extends Transport {
   private dataSource: DataSource;

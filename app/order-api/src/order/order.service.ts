@@ -41,7 +41,7 @@ import { MenuException } from 'src/menu/menu.exception';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
 import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as _ from 'lodash';
 
 @Injectable()

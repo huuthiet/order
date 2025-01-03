@@ -11,7 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Inject, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { TableStatus } from 'src/table/table.constant';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MenuValidation } from 'src/menu/menu.validation';
 import { MenuException } from 'src/menu/menu.exception';
 import { Menu } from 'src/menu/menu.entity';

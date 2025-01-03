@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import { PaymentMethod } from 'src/payment/payment.constants';
 import { v4 as uuidv4 } from 'uuid';
 

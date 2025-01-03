@@ -26,7 +26,7 @@ export interface ICartItem {
   ownerFullName?: string
   ownerPhoneNumber?: string
   type: string
-  branch?: string
+  // branch?: string
   orderItems: IOrderItem[]
   table?: string
   tableName?: string
