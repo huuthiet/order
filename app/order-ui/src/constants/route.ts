@@ -11,6 +11,7 @@ export const ROUTE = {
 
   // Staff Routes
   DASHBOARD: '/dashboard',
+  STAFF_BRANCH: '/branch',
   STAFF_PROFILE: '/staff/profile',
   STAFF_MENU: '/staff/menu',
   STAFF_CHECKOUT_ORDER: '/checkout-order',
@@ -28,6 +29,7 @@ export const ROUTE = {
   STAFF_USER_MANAGEMENT: '/user-management',
   STAFF_BANK_CONFIG: '/bank-config',
   STAFF_REVENUE: '/revenue',
+  STAFF_STATIC_PAGE: '/static-page',
 
   // Admin Routes
   // ADMIN_DASHBOARD: '/dashboard',
