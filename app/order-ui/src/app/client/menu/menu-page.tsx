@@ -2,22 +2,13 @@ import { useState, useEffect } from 'react'
 import moment from 'moment'
 import { CircleX, MapPinIcon } from 'lucide-react'
 
-<<<<<<< HEAD
 import { usePriceRangeStore } from '@/stores'
 import { useSpecificMenu } from '@/hooks'
 import { MenuList } from '../menu'
 import { CurrentDateInput } from '@/components/app/input'
 import { PriceRangeFilter } from '@/components/app/popover'
 import { useBranchStore } from '@/stores/branch.store'
-=======
-import { usePriceRangeStore, useUserStore } from "@/stores";
-import { useSpecificMenu } from "@/hooks";
-import { MenuList } from "../menu";
-import { CurrentDateInput } from "@/components/app/input";
-import { BranchSelect } from "@/components/app/select";
-import { PriceRangeFilter } from "@/components/app/popover";
-import { formatCurrency } from "@/utils";
->>>>>>> cc1ae76a5e5de8e01584cb3e122beb2407071881
+import { formatCurrency } from '@/utils'
 
 export default function MenuPage() {
   const { minPrice, maxPrice, clearPriceRange } = usePriceRangeStore()
@@ -47,25 +38,19 @@ export default function MenuPage() {
         <div className="w-full lg:sticky lg:top-20 lg:z-10 lg:w-1/4">
           <div className="flex flex-col gap-4">
             {/* Title */}
-            <div className="flex items-center w-full gap-1">
+            <div className="flex w-full items-center gap-1">
               <CurrentDateInput menu={specificMenu?.result} />
             </div>
-<<<<<<< HEAD
             <div className="flex items-end gap-1 text-xs text-primary">
               <MapPinIcon className="h-5 w-5" />
               {branch?.name} ({branch?.address})
-=======
-            {/* Branch select */}
-            <div className="flex-shrink-0 w-full sm:w-auto">
-              <BranchSelect onChange={handleSelectBranch} />
->>>>>>> cc1ae76a5e5de8e01584cb3e122beb2407071881
             </div>
             {/* Price filter */}
-            <div className="flex-shrink-0 w-full sm:w-auto">
+            <div className="w-full flex-shrink-0 sm:w-auto">
               <PriceRangeFilter />
             </div>
             {minPrice !== 0 && maxPrice !== 0 && (
-              <div className="flex items-center flex-shrink-0 gap-1 px-2 border rounded-full border-primary bg-primary/10 text-primary">
+              <div className="flex flex-shrink-0 items-center gap-1 rounded-full border border-primary bg-primary/10 px-2 text-primary">
                 <span className="text-xs">{formatCurrency(minPrice)}</span>
                 <span className="text-xs">đến</span>
                 <span className="text-xs">{formatCurrency(maxPrice)}</span>

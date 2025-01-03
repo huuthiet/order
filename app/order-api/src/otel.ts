@@ -27,13 +27,13 @@ const resource = new Resource({
 
 // Configure Trace Exporter
 const traceExporter = new OTLPTraceExporter({
-  url: `${process.env.TRACING_URL}/v1/traces`,
+  url: `${process.env.OTEL_LGTM_URL}/v1/traces`,
   headers: {},
 });
 
 // Configure Log Exporter
 const logExporter = new OTLPLogExporter({
-  url: `http://localhost:4318/v1/logs`, // Default OTLP endpoint for logs
+  url: `${process.env.OTEL_LGTM_URL}/v1/logs`,
   headers: {},
 });
 
