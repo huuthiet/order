@@ -40,7 +40,7 @@ import {
   FORGOT_TOKEN_EXPIRED,
   INVALID_OLD_PASSWORD,
 } from './auth.validation';
-import * as moment from 'moment';
+import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { Branch } from 'src/branch/branch.entity';
 import { BranchValidation } from 'src/branch/branch.validation';

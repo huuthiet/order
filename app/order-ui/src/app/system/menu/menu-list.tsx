@@ -5,6 +5,7 @@ import { IProduct, ISpecificMenu } from '@/types'
 import { publicFileURL } from '@/constants'
 import { AddToCartDialog } from '@/components/app/dialog'
 import { Button } from '@/components/ui'
+import { formatCurrency } from '@/utils'
 
 interface IMenuProps {
   menu: ISpecificMenu | undefined
@@ -96,8 +97,8 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
                         const range = getPriceRange(item.product.variants)
                         if (!range) return '0đ'
                         return range.isSinglePrice
-                          ? `${range.min.toLocaleString('vi-VN')}đ`
-                          : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
+                          ? `${formatCurrency(range.min)}`
+                          : `${formatCurrency(range.min)} - ${formatCurrency(range.max)}`
                       })()}
                     </span>
                     <span className='text-[0.7rem] text-muted-foreground'>

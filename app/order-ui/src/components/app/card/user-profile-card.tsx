@@ -20,13 +20,6 @@ export default function UserProfileCard() {
         showToast(t('toast.uploadProfilePictureSuccess'))
         setUserInfo(data.result)
       },
-      // onError: (error) => {
-      //   if (isAxiosError(error)) {
-      //     const axiosError = error as AxiosError<IApiResponse<void>>
-      //     if (axiosError.response?.data.code)
-      //       showErrorToast(axiosError.response.data.code)
-      //   }
-      // },
     })
   }
 
@@ -111,7 +104,7 @@ export default function UserProfileCard() {
   }
   return (
     <div>
-      <Card className="border-none shadow-none">
+      <Card className="bg-transparent border-none shadow-none">
         <CardContent className="flex flex-col gap-6 p-0">
           <div className="flex flex-row p-2">
             <ProfilePicture
@@ -125,11 +118,10 @@ export default function UserProfileCard() {
               onUpload={handleUploadProfilePicture}
             />
             <div className="flex flex-col justify-center ml-4">
-              <span className="font-semibold text-md font-beVietNam">
+              <span className="font-bold text-md">
                 {userProfile?.lastName} {userProfile?.firstName}
               </span>
               <div className="flex items-center text-description">
-                {/* <span>{userProfile?.username}</span> */}
               </div>
             </div>
           </div>
@@ -143,7 +135,7 @@ export default function UserProfileCard() {
                 'flex w-full items-center justify-between bg-muted-foreground/5 px-6 py-6'
               }
             >
-              <span className="font-semibold text-md font-beVietNam">
+              <span className="font-semibold text-md">
                 {t('profile.profile')}
               </span>
               <div className="flex gap-2">

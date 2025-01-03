@@ -6,6 +6,7 @@ import {
   UpdateMenuItemDialog,
 } from '@/components/app/dialog'
 import { IMenuItem } from '@/types'
+import { formatCurrency } from '@/utils'
 
 interface MenuItemCardProps {
   menuItem: IMenuItem
@@ -22,8 +23,8 @@ export default function MenuItemCard({ menuItem }: MenuItemCardProps) {
     const maxPrice = Math.max(...prices)
 
     return minPrice === maxPrice
-      ? `${minPrice.toLocaleString('vi-VN')}đ`
-      : `${minPrice.toLocaleString('vi-VN')}đ - ${maxPrice.toLocaleString('vi-VN')}đ`
+      ? `${formatCurrency(minPrice)}`
+      : `${formatCurrency(minPrice)} - ${formatCurrency(maxPrice)}`
   }
 
   return (

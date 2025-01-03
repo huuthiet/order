@@ -67,13 +67,13 @@
     @apply bg-background text-foreground;
   }
   .auth-layout {
-    @apply flex items-center justify-center w-full min-h-screen bg-muted text-foreground;
+    @apply flex min-h-screen w-full items-center justify-center bg-muted text-foreground;
   }
   .login-background {
-    @apply absolute inset-0 z-10 object-cover w-full h-full;
+    @apply absolute inset-0 z-10 h-full w-full object-cover;
   }
   .header {
-    @apply border-b border-b-gray-200 flex h-14 items-center justify-between gap-4 lg:h-[60px];
+    @apply flex h-14 items-center justify-between gap-4 border-b border-b-gray-200 lg:h-[60px];
   }
   .text-description {
     @apply text-sm;
@@ -85,17 +85,17 @@
     @apply text-red-500;
   }
   .icon {
-    @apply w-3.5 h-3.5;
+    @apply h-3.5 w-3.5;
   }
 
   .icon-sm {
-    @apply w-2.5 h-2.5;
+    @apply h-2.5 w-2.5;
   }
   .header-icon {
-    @apply w-4 h-4;
+    @apply h-4 w-4;
   }
   .danger-icon {
-    @apply w-3.5 h-3.5 text-red-500;
+    @apply h-3.5 w-3.5 text-red-500;
   }
 }
 
@@ -115,35 +115,35 @@
 
 @font-face {
   font-family: 'BeVietnam';
-  src: url('/src/assets/fonts/BeVietnam-Bold.ttf') format('truetype');
+  src: url('/src/assets/fonts/BeVietnamPro-Bold.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'BeVietnam';
-  src: url('/src/assets/fonts/BeVietnam-Bold.ttf') format('truetype');
+  src: url('/src/assets/fonts/BeVietnamPro-Bold.ttf') format('truetype');
   font-weight: 600;
-  font-style: normal;
+  font-style: medium;
 }
 
 @font-face {
   font-family: 'BeVietnam';
-  src: url('/src/assets/fonts/BeVietnam-Bold.ttf') format('truetype');
+  src: url('/src/assets/fonts/BeVietnamPro-Bold.ttf') format('truetype');
   font-weight: 700;
-  font-style: normal;
+  font-style: semibold;
 }
 
 @font-face {
   font-family: 'BeVietnam';
-  src: url('/src/assets/fonts/BeVietnam-Bold.ttf') format('truetype');
+  src: url('/src/assets/fonts/BeVietnamPro-Bold.ttf') format('truetype');
   font-weight: 800;
-  font-style: normal;
+  font-style: bold;
 }
 
 @font-face {
   font-family: 'BeVietnam';
-  src: url('/src/assets/fonts/BeVietnam-Bold.ttf') format('truetype');
+  src: url('/src/assets/fonts/BeVietnamPro-Bold.ttf') format('truetype');
   font-weight: 900;
-  font-style: normal;
+  font-style: extrabold;
 }

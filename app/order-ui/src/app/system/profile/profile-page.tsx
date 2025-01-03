@@ -14,9 +14,9 @@ export default function ProfilePage() {
       <ScrollArea className="flex-1">
         <div
           className={`transition-all duration-300 ease-in-out${isCartOpen ? 'w-[70%]' : 'w-full'
-            } ${isCollapsed ? 'pl-2' : 'pl-4'}`}
+            } ${isCollapsed ? 'pl-2' : ''}`}
         >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 pr-4 bg-background">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
             <div className="w-full">
               <ProfileForm />
             </div>

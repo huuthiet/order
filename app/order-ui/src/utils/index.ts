@@ -2,4 +2,5 @@
 export * from './toast'
 export { default as http } from './http'
 export { default as formatCurrency } from './formCurrency'
+export { default as formatShortCurrency } from './formatShortCurrency'
 export * from './printer'

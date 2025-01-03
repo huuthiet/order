@@ -76,3 +76,16 @@ export interface IUpdateProductVariantRequest {
   price: number
   product: string //Slug of the product
 }
+
+export interface ITopProductQuery {
+  page: number
+  size: number
+  hasPaging: boolean
+}
+
+export interface ITopBranchProductQuery {
+  branch: string
+  page: number
+  size: number
+  hasPaging: boolean
+}

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import { ROUTE } from '@/constants'
 import { useExportOrderInvoice } from '@/hooks'
-import { showToast } from '@/utils'
+import { formatCurrency, showToast } from '@/utils'
 
 interface OrderItemDetailProps {
   order: IOrder
@@ -52,7 +52,7 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
             {order.orderItems?.length} {t('order.item')}
           </span>
           <span className="text-sm font-medium text-muted-foreground">
-            {order.subtotal?.toLocaleString('vi-VN')}đ
+            {formatCurrency(order.subtotal)}
           </span>
         </div>
       </div>

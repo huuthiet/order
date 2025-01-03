@@ -10,7 +10,7 @@ export default function ProfilePage() {
         <div
           className={`transition-all duration-300 ease-in-out w-full`}
         >
-          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 bg-background">
+          <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
             <div className="w-full">
               <ProfileForm />
             </div>

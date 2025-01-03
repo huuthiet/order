@@ -148,6 +148,13 @@ export const OrderPaymentPage = React.lazy(() =>
   })),
 )
 
+//Revenue page
+export const RevenuePage = React.lazy(() =>
+  import('@/app/system/revenue').then((module) => ({
+    default: module.RevenuePage,
+  })),
+)
+
 //Bank config page
 export const BankConfigPage = React.lazy(() =>
   import('@/app/system/payment').then((module) => ({

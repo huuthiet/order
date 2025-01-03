@@ -16,7 +16,6 @@ import { Repository } from 'typeorm';
 import * as _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { ACBInitiateQRCodeRequestDto } from 'src/acb-connector/acb-connector.dto';
-import * as shortid from 'shortid';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Payment } from '../payment.entity';
 import { PaymentMethod, PaymentStatus } from '../payment.constants';
@@ -95,13 +94,13 @@ export class BankTransferStrategy implements IPaymentStrategy {
         traceNumber: requestTrace,
         amount: order.subtotal,
         beneficiaryName: acbConnectorConfig?.beneficiaryName,
-        merchantId: shortid(),
+        merchantId: getRandomString(),
         orderId: orderId,
-        terminalId: shortid(),
+        terminalId: getRandomString(),
         userId: order.owner?.id,
-        loyaltyCode: shortid(),
+        loyaltyCode: getRandomString(),
         virtualAccountPrefix: acbConnectorConfig?.virtualAccountPrefix,
-        voucherCode: shortid(),
+        voucherCode: getRandomString(),
         description: 'hoa don thanh toan',
       },
     } as ACBInitiateQRCodeRequestDto;

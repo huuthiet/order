@@ -5,6 +5,7 @@ import { SkeletonMenuList } from '@/components/app/skeleton'
 import { IProduct, ISpecificMenu } from '@/types'
 import { publicFileURL, ROUTE } from '@/constants'
 import { Button } from '@/components/ui'
+import { formatCurrency } from '@/utils'
 // import { AddToCartDialog } from '@/components/app/dialog'
 
 interface IMenuProps {
@@ -93,10 +94,10 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
                       <span className="text-lg font-bold text-primary">
                         {(() => {
                           const range = getPriceRange(item.product.variants)
-                          if (!range) return '0đ'
+                          if (!range) return formatCurrency(0)
                           return range.isSinglePrice
-                            ? `${range.min.toLocaleString('vi-VN')}đ`
-                            : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
+                            ? `${formatCurrency(range.min)}`
+                            : `${formatCurrency(range.min)} - ${formatCurrency(range.max)}`
                         })()}
                       </span>
                       <span className="text-[0.7rem] text-muted-foreground">

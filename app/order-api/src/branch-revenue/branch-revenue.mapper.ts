@@ -8,7 +8,7 @@ import {
 } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { baseMapper } from 'src/app/base.mapper';
-import * as moment from 'moment';
+import moment from 'moment';
 import {
   BranchRevenueQueryResponseDto,
   BranchRevenueResponseDto,

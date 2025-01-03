@@ -19,6 +19,7 @@ import { publicFileURL } from '@/constants'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import { IOrderType } from '@/types'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
+import { formatCurrency } from '@/utils'
 // import { ProgressBar } from '@/components/app/progress'
 
 export default function OrderDetailPage() {
@@ -139,10 +140,10 @@ export default function OrderDetailPage() {
                       </TableCell>
                       {/* <TableCell className='text-center'>{item.quantity}</TableCell> */}
                       <TableCell className="text-right">
-                        {`${orderDetail.result.subtotal.toLocaleString('vi-VN')}đ`}
+                        {`${formatCurrency(orderDetail.result.subtotal)}`}
                       </TableCell>
                       <TableCell className="text-right">
-                        {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                        {`${formatCurrency((item.variant.price || 0) * item.quantity)}`}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -194,16 +195,16 @@ export default function OrderDetailPage() {
             <div className="flex flex-col gap-2 rounded-sm border border-muted-foreground/30 p-2">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">Tạm tính</p>
-                <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+                <p>{`${formatCurrency(orderDetail?.result?.subtotal || 0)}`}</p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">Thành tiền</p>
-                <p>{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+                <p>{`${formatCurrency(orderDetail?.result?.subtotal || 0)}`}</p>
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <p className="text-lg font-semibold">Cần thanh toán</p>
-                <p className="text-2xl font-bold text-primary">{`${(orderDetail?.result?.subtotal || 0).toLocaleString('vi-VN')}đ`}</p>
+                <p className="text-2xl font-bold text-primary">{`${formatCurrency(orderDetail?.result?.subtotal || 0)}`}</p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">

@@ -15,9 +15,16 @@ import { NavigationSheet } from './sheet'
 export default function ClientHeader() {
   const { getCartItems } = useCartItemStore()
   return (
-    <header className="sticky top-0 z-30 w-full bg-white text-muted-foreground shadow-md backdrop-blur">
+    <header className="sticky top-0 z-30 w-full bg-white shadow-md text-muted-foreground backdrop-blur">
       <div className="container">
+<<<<<<< HEAD
         <div className="flex h-14 w-full items-center justify-between">
+=======
+        <div className="flex items-center justify-between flex-1 w-full gap-6 h-14">
+          {/* Trigger */}
+          {/* {isMobile && <SidebarTrigger />} */}
+
+>>>>>>> cc1ae76a5e5de8e01584cb3e122beb2407071881
           {/* Left content*/}
           <div className="flex items-center gap-1">
             <NavigationSheet />
@@ -27,6 +34,7 @@ export default function ClientHeader() {
           </div>
 
           {/* center content */}
+<<<<<<< HEAD
           <div className="hidden flex-row items-center justify-center gap-6 lg:flex">
             <NavLink
               to={ROUTE.HOME}
@@ -61,6 +69,30 @@ export default function ClientHeader() {
               <span className="text-sm">Điều khoản</span>
             </NavLink>
           </div>
+=======
+          {!isMobile && (
+            <div className="flex flex-row items-center justify-center gap-6">
+              <NavLink
+                to={ROUTE.HOME}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+                }
+              >
+                <span className="text-sm">Trang chủ</span>
+              </NavLink>
+              <NavLink
+                to={ROUTE.CLIENT_MENU}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+                }
+              >
+                <span className="text-sm">Thực đơn</span>
+              </NavLink>
+              <div className="text-sm cursor-pointer">Về chúng tôi</div>
+              <div className="text-sm cursor-pointer">Điều khoản</div>
+            </div>
+          )}
+>>>>>>> cc1ae76a5e5de8e01584cb3e122beb2407071881
 
           {/* Right content */}
           <div className="flex items-center justify-end gap-2">
@@ -75,7 +107,7 @@ export default function ClientHeader() {
               >
                 <ShoppingCart />
                 {getCartItems()?.orderItems?.length ? (
-                  <span className="absolute right-2 top-2 flex h-4 w-4 -translate-y-1/2 translate-x-1/2 transform items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                  <span className="absolute flex items-center justify-center w-4 h-4 text-xs font-bold text-white transform translate-x-1/2 -translate-y-1/2 rounded-full right-2 top-2 bg-primary">
                     {getCartItems()?.orderItems.length}
                   </span>
                 ) : null}

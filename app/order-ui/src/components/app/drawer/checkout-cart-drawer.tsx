@@ -19,6 +19,7 @@ import { publicFileURL } from '@/constants'
 import { CreateOrderDialog } from '@/components/app/dialog'
 import { useDebouncedInput, usePagination, useUsers } from '@/hooks'
 import { IUserInfo } from '@/types'
+import { formatCurrency } from '@/utils'
 import { useEffect, useState } from 'react'
 
 export default function CheckoutCartDrawer() {
@@ -35,11 +36,11 @@ export default function CheckoutCartDrawer() {
   const { data: userByPhoneNumber } = useUsers(
     debouncedInputValue
       ? {
-          order: 'DESC',
-          page: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-          phonenumber: debouncedInputValue,
-        }
+        order: 'DESC',
+        page: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        phonenumber: debouncedInputValue,
+      }
       : null, // Không gọi hook nếu không có số điện thoại
   )
 
@@ -79,20 +80,20 @@ export default function CheckoutCartDrawer() {
         <Button
           variant="default"
           disabled={!cartItems?.table || cartItems?.table === ''}
-          className="bg-primary text-white"
+          className="text-white bg-primary"
         >
           {t('order.confirmation')}
         </Button>
       </DrawerTrigger>
       <DrawerContent className="h-[90%]">
-        <div className="mx-4 overflow-y-auto pb-10">
+        <div className="pb-10 mx-4 overflow-y-auto">
           <DrawerHeader>
             <DrawerTitle>{t('order.orderInformation')}</DrawerTitle>
             <DrawerDescription>{t('menu.orderDescription')}</DrawerDescription>
           </DrawerHeader>
           <div className="">
             {/* Customer Information */}
-            <div className="mt-6 flex flex-col gap-4 border-b pb-6 sm:relative">
+            <div className="flex flex-col gap-4 pb-6 mt-6 border-b sm:relative">
               <div className="flex flex-col gap-4">
                 <Label>{t('order.phoneNumber')}</Label>
                 <div className="flex gap-2">
@@ -119,14 +120,13 @@ export default function CheckoutCartDrawer() {
 
               {/* Dropdown danh sách user */}
               {users.length > 0 && (
-                <div className="absolute z-10 mt-16 w-full rounded-md border bg-white p-2 shadow-lg">
+                <div className="absolute z-10 w-full p-2 mt-16 bg-white border rounded-md shadow-lg">
                   {users.map((user, index) => (
                     <div
                       key={user.slug}
                       onClick={handleAddOwner(user)}
-                      className={`cursor-pointer p-2 hover:bg-gray-100 ${
-                        index < users.length - 1 ? 'border-b' : ''
-                      }`}
+                      className={`cursor-pointer p-2 hover:bg-gray-100 ${index < users.length - 1 ? 'border-b' : ''
+                        }`}
                     >
                       <div className="font-medium">
                         {user.firstName} {user.lastName}
@@ -139,11 +139,11 @@ export default function CheckoutCartDrawer() {
                 </div>
               )}
             </div>
-            <div className="mt-5 flex flex-col gap-4 border-b p-4">
+            <div className="flex flex-col gap-4 p-4 mt-5 border-b">
               <div className="flex flex-col gap-2">
                 <Label>{t('order.deliveryMethod')}</Label>
                 <div className="flex flex-row items-center gap-4">
-                  <div className="flex w-fit items-center justify-center rounded-full bg-primary/15 px-4 py-1 text-xs font-thin text-primary">
+                  <div className="flex items-center justify-center px-4 py-1 text-xs font-thin rounded-full w-fit bg-primary/15 text-primary">
                     {t('order.dineIn')}
                   </div>
                   <div>
@@ -155,12 +155,12 @@ export default function CheckoutCartDrawer() {
               </div>
             </div>
             <div className="flex flex-col gap-4 p-4">
-              <div className="flex flex-col gap-4 space-y-2 py-2">
+              <div className="flex flex-col gap-4 py-2 space-y-2">
                 {cartItems ? (
                   cartItems?.orderItems?.map((item) => (
                     <div
                       key={item.slug}
-                      className="flex flex-col gap-4 border-b pb-4"
+                      className="flex flex-col gap-4 pb-4 border-b"
                     >
                       <div
                         key={`${item.slug}`}
@@ -170,19 +170,16 @@ export default function CheckoutCartDrawer() {
                         <img
                           src={`${publicFileURL}/${item.image}`}
                           alt={item.name}
-                          className="h-20 w-20 rounded-2xl object-cover"
+                          className="object-cover w-20 h-20 rounded-2xl"
                         />
-                        <div className="flex h-20 flex-1 flex-col gap-2 py-2">
-                          <div className="flex h-full flex-row items-start justify-between">
-                            <div className="flex h-full min-w-0 flex-1 flex-col justify-between">
-                              <span className="truncate font-bold">
+                        <div className="flex flex-col flex-1 h-20 gap-2 py-2">
+                          <div className="flex flex-row items-start justify-between h-full">
+                            <div className="flex flex-col justify-between flex-1 h-full min-w-0">
+                              <span className="font-bold truncate">
                                 {item.name}
                               </span>
                               <span className="flex items-center justify-between text-xs font-thin text-muted-foreground">
-                                {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
-                                {/* <span className="text-muted-foreground">
-                                  x1
-                                </span> */}
+                                {`${formatCurrency(item.price || 0)}`}
                               </span>
                             </div>
                             <Button
@@ -195,12 +192,12 @@ export default function CheckoutCartDrawer() {
                               />
                             </Button>
                           </div>
-                          <div className="flex w-full items-center justify-between text-sm font-medium">
+                          <div className="flex items-center justify-between w-full text-sm font-medium">
                             <span>
                               {t('order.quantity')} {item.quantity}
                             </span>
                             <span className="font-semibold text-muted-foreground">
-                              {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                              {`${formatCurrency((item.price || 0) * item.quantity)}`}
                             </span>
                           </div>
                         </div>
@@ -218,29 +215,29 @@ export default function CheckoutCartDrawer() {
             </div>
           </div>
           <DrawerFooter>
-            <div className="mt-auto border-t bg-background p-4">
+            <div className="p-4 mt-auto border-t bg-background">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
                     {t('order.total')}
                   </span>
-                  <span>{`${subtotal?.toLocaleString('vi-VN')}đ`}</span>
+                  <span>{`${formatCurrency(subtotal || 0)}`}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
                     {t('order.discount')}
                   </span>
                   <span className="text-xs text-green-600">
-                    - {`${discount.toLocaleString('vi-VN')}đ`}
+                    - {`${formatCurrency(discount)}`}
                   </span>
                 </div>
-                <div className="flex flex-col justify-start border-t pt-2">
+                <div className="flex flex-col justify-start pt-2 border-t">
                   <div className="flex justify-between">
                     <span className="font-semibold">
                       {t('order.grandTotal')}
                     </span>
                     <span className="text-lg font-bold text-primary">
-                      {`${total.toLocaleString('vi-VN')}đ`}
+                      {`${formatCurrency(total)}`}
                     </span>
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -249,11 +246,11 @@ export default function CheckoutCartDrawer() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 flex-row gap-2">
+            <div className="grid flex-row grid-cols-2 gap-2">
               <DrawerClose asChild>
                 <Button
                   variant="outline"
-                  className="w-full rounded-full border border-gray-400"
+                  className="w-full border border-gray-400 rounded-full"
                 >
                   {tCommon('common.close')}
                 </Button>

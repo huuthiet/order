@@ -22,6 +22,7 @@ import {
 import { ICartItem, IOrderType, IProduct, IProductVariant } from '@/types'
 import { useCartItemStore, useUserStore } from '@/stores'
 import { publicFileURL } from '@/constants'
+import { formatCurrency } from '@/utils'
 
 interface AddToCartDialogProps {
   product: IProduct
@@ -145,7 +146,7 @@ export default function AddToCartDialog({
                       .map((variant) => (
                         <SelectItem key={variant.slug} value={variant.slug}>
                           {variant.size.name.toUpperCase()} -{' '}
-                          {variant.price.toLocaleString('vi-VN')}đ
+                          {formatCurrency(variant.price)}
                         </SelectItem>
                       ))}
                   </SelectContent>

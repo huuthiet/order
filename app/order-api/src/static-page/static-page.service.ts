@@ -91,21 +91,9 @@ export class StaticPageService {
       );
       throw new StaticPageException(StaticPageValidation.STATIC_PAGE_NOT_FOUND);
     }
+    
+    await this.validateUpdatedKey(staticPage, updateStaticPageDto);
 
-    if(staticPage.key !== updateStaticPageDto.key) {
-      const existingStaticPage = await this.staticPageRepository.findOne({
-        where: {
-          key: updateStaticPageDto.key
-        }
-      });
-      if(existingStaticPage) {
-        this.logger.warn(
-          StaticPageValidation.STATIC_PAGE_KEY_ALREADY_EXIST.message,
-          context
-        );
-        throw new StaticPageException(StaticPageValidation.STATIC_PAGE_KEY_ALREADY_EXIST);
-      }
-    }
     const updatedStaticPage = this.mapper.map(
       updateStaticPageDto,
       UpdateStaticPageDto,
@@ -120,6 +108,22 @@ export class StaticPageService {
       StaticPageResponseDto
     );
     return staticPageDto;
+  }
+
+   async validateUpdatedKey(
+    staticPage: StaticPage,
+    updateStaticPageDto: UpdateStaticPageDto
+  ): Promise<void> {
+    if(staticPage.key !== updateStaticPageDto.key) {
+      const existingStaticPage = this.staticPageRepository.findOne({
+        where: {
+          key: updateStaticPageDto.key
+        }
+      });
+      if(existingStaticPage) {
+        throw new StaticPageException(StaticPageValidation.STATIC_PAGE_KEY_ALREADY_EXIST);
+      }
+    }
   }
 
   async remove(slug: string): Promise<StaticPageResponseDto> {
