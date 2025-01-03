@@ -16,7 +16,7 @@ export default function ClientLayout() {
       {/* Main content */}
       <div className="">
         {/* Header */}
-        <ClientHeader isMobile={isMobile} />
+        <ClientHeader />
 
         {/* Main content */}
         <main

@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { RevenueQueryResponseDto, RevenueResponseDto } from './revenue.dto';
 import { Revenue } from './revenue.entity';
 import { baseMapper } from 'src/app/base.mapper';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class RevenueProfile extends AutomapperProfile {

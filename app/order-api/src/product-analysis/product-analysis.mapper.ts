@@ -7,7 +7,7 @@ import {
   ProductAnalysisResponseDto,
 } from './product-analysis.dto';
 import { ProductAnalysis } from './product-analysis.entity';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class ProductAnalysisProfile extends AutomapperProfile {

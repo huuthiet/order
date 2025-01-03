@@ -1,3 +1,4 @@
+import { IBranch } from './branch.type'
 import { IUserInfo } from './user.type'
 
 export interface IAuthStore {
@@ -14,6 +15,12 @@ export interface IAuthStore {
   setExpireTime: (expireTime: string) => void
   setExpireTimeRefreshToken: (expireTimeRefreshToken: string) => void
   setLogout: () => void
+}
+
+export interface IBranchStore {
+  branch?: IBranch
+  setBranch: (branch?: IBranch) => void
+  removeBranch: () => void
 }
 
 export interface IRequestDishStore {

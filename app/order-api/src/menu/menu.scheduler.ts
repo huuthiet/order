@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { getDayIndex } from 'src/helper';
 import { Branch } from 'src/branch/branch.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MenuItem } from 'src/menu-item/menu-item.entity';
 
 @Injectable()

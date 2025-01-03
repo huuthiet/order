@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { corsOptions } from './config/cors.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { otelSDK } from './tracing';
+import { otelSDK } from './otel';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');

@@ -19,6 +19,7 @@ import { useCreateOrder } from '@/hooks'
 import { showToast } from '@/utils'
 import { Role, ROUTE } from '@/constants'
 import { useCartItemStore, useUserStore } from '@/stores'
+import { useBranchStore } from '@/stores/branch.store'
 
 interface IPlaceOrderDialogProps {
   disabled?: boolean
@@ -33,16 +34,17 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
   const { mutate: createOrder } = useCreateOrder()
   const [isOpen, setIsOpen] = useState(false)
   const { getUserInfo, userInfo } = useUserStore()
+  const { branch } = useBranchStore()
 
   const order = getCartItems()
 
   const handleSubmit = (order: ICartItem) => {
-    if (!order) return // Nếu giỏ hàng trống, thoát sớm.
+    if (!order) return
 
     const createOrderRequest: ICreateOrderRequest = {
       type: order.type,
       table: order.table || '',
-      branch: order.branch || getUserInfo()?.branch?.name || '',
+      branch: branch?.slug || '',
       owner: order.owner || '',
       approvalBy: getUserInfo()?.slug || '',
       orderItems: order.orderItems.map((orderItem) => ({
@@ -55,13 +57,14 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
     // Gọi API để tạo đơn hàng.
     createOrder(createOrderRequest, {
       onSuccess: (data) => {
-        const orderPath = userInfo?.role.name === Role.CUSTOMER
-          ? `${ROUTE.CLIENT_ORDER_PAYMENT}/${data.result.slug}`
-          : `${ROUTE.STAFF_ORDER_PAYMENT}/${data.result.slug}`;
-        navigate(orderPath);
-        setIsOpen(false);
-        clearCart();
-        showToast(tToast('toast.createOrderSuccess'));
+        const orderPath =
+          userInfo?.role.name === Role.CUSTOMER
+            ? `${ROUTE.CLIENT_ORDER_PAYMENT}/${data.result.slug}`
+            : `${ROUTE.STAFF_ORDER_PAYMENT}/${data.result.slug}`
+        navigate(orderPath)
+        setIsOpen(false)
+        clearCart()
+        showToast(tToast('toast.createOrderSuccess'))
       },
     })
   }
@@ -71,7 +74,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
       <DialogTrigger asChild>
         <Button
           disabled={disabled}
-          className="flex items-center w-full text-sm rounded-full"
+          className="flex w-full items-center rounded-full text-sm"
           onClick={() => setIsOpen(true)}
         >
           {t('order.create')}
@@ -80,9 +83,9 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
 
       <DialogContent className="max-w-[22rem] rounded-md px-6 font-beVietNam sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="pb-4 border-b">
+          <DialogTitle className="border-b pb-4">
             <div className="flex items-center gap-2 text-primary">
-              <ShoppingCart className="w-6 h-6" />
+              <ShoppingCart className="h-6 w-6" />
               {t('order.create')}
             </div>
           </DialogTitle>
@@ -96,7 +99,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
           <Button
             variant="outline"
             onClick={() => setIsOpen(false)}
-            className="border border-gray-300 min-w-24"
+            className="min-w-24 border border-gray-300"
           >
             {tCommon('common.cancel')}
           </Button>

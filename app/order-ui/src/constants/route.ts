@@ -7,7 +7,6 @@ export const ROUTE = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/reset-password',
   ORDER_SUCCESS: '/order-success',
-  // PROFILE: '/profile',
 
   // Staff Routes
   DASHBOARD: '/dashboard',
@@ -21,7 +20,6 @@ export const ROUTE = {
   STAFF_TABLE_MANAGEMENT: '/table-management',
   STAFF_PRODUCT_MANAGEMENT: '/product-management',
   STAFF_MENU_MANAGEMENT: '/menu-management',
-  // STAFF_PRODUCT_DETAIL: '/product',
   STAFF_DELIVERY_MANAGEMENT: '/delivery-management',
   STAFF_WALLET_MANAGEMENT: '/wallet-management',
   STAFF_LOG_MANAGEMENT: '/log',
@@ -30,9 +28,7 @@ export const ROUTE = {
   STAFF_REVENUE: '/revenue',
 
   // Admin Routes
-  // ADMIN_DASHBOARD: '/dashboard',
   ADMIN_MENU_MANAGEMENT: '/menu-management',
-  // ADMIN_ADD_PRODUCT: '/add-product',
   ADMIN_PRODUCT_DETAIL: '/product',
   ADMIN_TABLE_MANAGEMENT: '/table-management',
   ADMIN_ORDER_HISTORY: '/order-history',
@@ -55,6 +51,7 @@ export const ROUTE = {
   ABOUT: '/about',
   CONTACT: '/contact',
   HELP: '/help',
+  POLICY: '/policy',
 
   // Notification
   NOTIFICATION: '/notification',

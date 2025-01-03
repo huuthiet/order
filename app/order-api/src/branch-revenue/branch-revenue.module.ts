@@ -6,9 +6,10 @@ import { Branch } from 'src/branch/branch.entity';
 import { BranchRevenue } from './branch-revenue.entity';
 import { BranchRevenueScheduler } from './branch-revenue.scheduler';
 import { BranchRevenueProfile } from './branch-revenue.mapper';
+import { DbModule } from 'src/db/db.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Branch, BranchRevenue])],
+  imports: [TypeOrmModule.forFeature([Branch, BranchRevenue]), DbModule],
   controllers: [BranchRevenueController],
   providers: [
     BranchRevenueService,
