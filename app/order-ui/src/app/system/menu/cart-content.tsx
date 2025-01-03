@@ -10,6 +10,7 @@ import { useCartItemStore } from '@/stores'
 import { publicFileURL, ROUTE } from '@/constants'
 import { IOrderType } from '@/types'
 import { CreateOrderDialog } from '@/components/app/dialog'
+import { formatCurrency } from '@/utils'
 
 export default function CartContent() {
   const { t } = useTranslation(['menu'])
@@ -96,7 +97,7 @@ export default function CartContent() {
                               {item.name}
                             </span>
                             <span className="text-xs font-thin text-muted-foreground">
-                              {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                              {`${formatCurrency(item.price || 0)}`}
                             </span>
                           </div>
                           <Button
@@ -134,18 +135,18 @@ export default function CartContent() {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('menu.total')}</span>
-            <span>{`${subtotal?.toLocaleString('vi-VN') || 0}đ`}</span>
+            <span>{`${formatCurrency(subtotal || 0)}`}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('menu.discount')}</span>
             <span className="text-xs text-green-600">
-              - {`${discount.toLocaleString('vi-VN')}đ`}
+              - {`${formatCurrency(discount)}`}
             </span>
           </div>
           <div className="flex justify-between py-4 font-medium border-t">
             <span className="font-semibold">{t('menu.subTotal')}</span>
             <span className="text-2xl font-bold text-primary">
-              {`${total.toLocaleString('vi-VN')}đ`}
+              {`${formatCurrency(total)}`}
             </span>
           </div>
         </div>

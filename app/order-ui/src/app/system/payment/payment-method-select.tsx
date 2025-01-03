@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next'
 
 import { PaymentMethodRadioGroup } from '@/components/app/radio'
 import { Label } from '@/components/ui'
+import { formatCurrency } from '@/utils'
 
 interface PaymentMethodSelectProps {
   qrCode?: string
-  total?: number | string
+  total?: number
   onSubmit?: (paymentMethod: string) => void
 }
 
@@ -48,7 +49,7 @@ export default function PaymentMethodSelect({
                 <div className="text-sm">
                   {t('paymentMethod.total')}
                   <span className="text-lg font-bold">
-                    {total?.toLocaleString()}đ
+                    {formatCurrency(total || 0)}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 px-4 text-xs text-muted-foreground">

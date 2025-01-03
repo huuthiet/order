@@ -11,7 +11,7 @@ import { ProductDetailSkeleton } from '@/components/app/skeleton'
 import { NonPropQuantitySelector } from '@/components/app/button'
 import { useCartItemStore, useCurrentUrlStore, useUserStore } from '@/stores'
 import { ICartItem, IOrderType, IProductVariant } from '@/types'
-import { showErrorToast } from '@/utils'
+import { formatCurrency, showErrorToast } from '@/utils'
 import { ProductImageCarousel } from '.'
 
 export default function ProductManagementPage() {
@@ -144,7 +144,7 @@ export default function ProductManagementPage() {
                         </div>
                         {price && (
                           <div className="text-2xl font-semibold text-primary">
-                            {`${price.toLocaleString()}đ`}
+                            {`${formatCurrency(price)}`}
                           </div>
                         )}
                         {/* Product Rating */}

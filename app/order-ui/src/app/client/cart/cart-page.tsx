@@ -28,21 +28,19 @@ export default function CartPage() {
         <div className="grid w-full max-w-xs grid-cols-2 gap-2">
           <div
             onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
-            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${
-              getCartItems()?.type === IOrderType.AT_TABLE
-                ? 'border-primary bg-primary text-white'
-                : 'border'
-            } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
+            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.AT_TABLE
+              ? 'border-primary bg-primary text-white'
+              : 'border'
+              } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
           >
             {t('menu.dineIn')}
           </div>
           <div
             onClick={() => handleAddDeliveryMethod(IOrderType.TAKE_OUT)}
-            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${
-              getCartItems()?.type === IOrderType.TAKE_OUT
-                ? 'border-primary bg-primary text-white'
-                : 'border'
-            } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
+            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${getCartItems()?.type === IOrderType.TAKE_OUT
+              ? 'border-primary bg-primary text-white'
+              : 'border'
+              } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
           >
             {t('menu.takeAway')}
           </div>
@@ -50,36 +48,36 @@ export default function CartPage() {
       )}
       {/* Table list order items */}
       <div className="mb-4">
-        <div className="mb-4 grid grid-cols-7 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
+        <div className="grid grid-cols-7 px-4 py-3 mb-4 text-sm font-thin rounded-md bg-muted/60">
           <span className="col-span-2">{t('order.product')}</span>
           <span className="col-span-2 text-center">{t('order.quantity')}</span>
           <span className="col-span-2 text-center">
             {t('order.grandTotal')}
           </span>
-          <span className="col-span-1 flex justify-center">
+          <span className="flex justify-center col-span-1">
             <Trash2 size={18} />
           </span>
         </div>
 
-        <div className="flex flex-col rounded-md border">
+        <div className="flex flex-col border rounded-md">
           {cartItems?.orderItems.map((item) => (
             <div
               key={item.slug}
-              className="grid w-full items-center gap-4 rounded-md p-4 pb-4"
+              className="grid items-center w-full gap-4 p-4 pb-4 rounded-md"
             >
               <div
                 key={`${item.slug}`}
-                className="grid w-full grid-cols-7 flex-row items-center"
+                className="grid flex-row items-center w-full grid-cols-7"
               >
-                <div className="col-span-2 flex w-full gap-2">
+                <div className="flex w-full col-span-2 gap-2">
                   <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
                     <img
                       src={`${publicFileURL}/${item.image}`}
                       alt={item.name}
-                      className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                      className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                     />
                     <div className="flex flex-col">
-                      <span className="sm:text-md truncate text-xs font-bold">
+                      <span className="text-xs font-bold truncate sm:text-md">
                         {item.name}
                       </span>
                       <span className="text-xs text-muted-foreground sm:text-sm">
@@ -88,7 +86,7 @@ export default function CartPage() {
                     </div>
                   </div>
                 </div>
-                <div className="col-span-2 flex justify-center">
+                <div className="flex justify-center col-span-2">
                   <QuantitySelector cartItem={item} />
                 </div>
                 <div className="col-span-2 text-center">
@@ -96,7 +94,7 @@ export default function CartPage() {
                     {`${((item.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
                   </span>
                 </div>
-                <div className="col-span-1 flex justify-center">
+                <div className="flex justify-center col-span-1">
                   <DeleteCartItemDialog cartItem={item} />
                 </div>
               </div>

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui'
 import { useExportPayment, useInitiatePayment, useOrderBySlug } from '@/hooks'
 import { PaymentMethod, ROUTE } from '@/constants'
 import { PaymentMethodSelect } from '@/app/system/payment'
-import { loadDataToPrinter, showToast } from '@/utils'
+import { formatCurrency, loadDataToPrinter, showToast } from '@/utils'
 import { ButtonLoading } from '@/components/app/loading'
 // import { QrCodeDialog } from '@/components/app/dialog'
 
@@ -178,7 +178,7 @@ export default function PaymentPage() {
                         </div>
                         <div className="flex items-center col-span-1">
                           <span className="text-sm">
-                            {`${(item.variant.price || 0).toLocaleString('vi-VN')}đ`}
+                            {`${formatCurrency(item.variant.price || 0)}`}
                           </span>
                         </div>
                         <div className="flex justify-center col-span-1">
@@ -188,7 +188,7 @@ export default function PaymentPage() {
                         </div>
                         <div className="col-span-1 text-center">
                           <span className="text-sm">
-                            {`${((item.variant.price || 0) * item.quantity).toLocaleString('vi-VN')}đ`}
+                            {`${formatCurrency((item.variant.price || 0) * item.quantity)}`}
                           </span>
                         </div>
                       </div>
@@ -201,7 +201,7 @@ export default function PaymentPage() {
                           {t('order.total')}
                         </h3>
                         <p className="text-sm font-semibold">
-                          {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
+                          {`${formatCurrency(order.result.subtotal || 0)}`}
                         </p>
                       </div>
                       <div className="flex flex-col">
@@ -210,7 +210,7 @@ export default function PaymentPage() {
                             {t('order.totalPayment')}
                           </h3>
                           <p className="text-lg font-semibold text-primary">
-                            {`${order.result.subtotal.toLocaleString('vi-VN')}đ`}
+                            {`${formatCurrency(order.result.subtotal)}`}
                           </p>
                         </div>
                         <span className="text-xs text-muted-foreground">
@@ -223,7 +223,7 @@ export default function PaymentPage() {
                 {/* Lựa chọn phương thức thanh toán */}
                 <PaymentMethodSelect
                   qrCode={qrCode ? qrCode : ''}
-                  total={order.result ? order.result.subtotal : ''}
+                  total={order.result ? order.result.subtotal : 0}
                   onSubmit={handleSelectPaymentMethod}
                 />
               </div>

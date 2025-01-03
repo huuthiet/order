@@ -1,0 +1,11 @@
+{
+  "revenue": {
+    "title": "Doanh thu",
+    "dateRangeFilter": "Lọc theo ngày",
+    "dateRange": "Khoảng ngày",
+    "dateRangeDescription": "Chọn khoảng ngày để xem doanh thu",
+    "fromDate": "Từ ngày",
+    "toDate": "Đến ngày",
+    "apply": "Áp dụng"
+  }
+}

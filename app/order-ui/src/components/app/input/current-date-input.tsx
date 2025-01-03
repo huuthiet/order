@@ -16,8 +16,8 @@ export default function DateInput({ menu }: ICurrentDateInputProps) {
     menu?.dayIndex !== undefined ? t(`dayOfWeek.${menu?.dayIndex}`) : ''
 
   return (
-    <div className="flex w-full items-end justify-center gap-1 rounded-sm bg-gray-100 py-2 text-[14px] text-gray-500">
-      <Calendar className="" />
+    <div className="flex w-full items-end justify-start gap-1 rounded-sm py-2 text-[14px] text-muted-foreground">
+      <Calendar />
       <span>
         {dayOfWeek} {currentDate}
       </span>

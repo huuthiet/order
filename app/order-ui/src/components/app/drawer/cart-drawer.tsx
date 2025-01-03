@@ -17,6 +17,7 @@ import { useCartItemStore } from '@/stores'
 import { QuantitySelector } from '@/components/app/button'
 import { CartNoteInput } from '@/components/app/input'
 import { publicFileURL, ROUTE } from '@/constants'
+import { formatCurrency } from '@/utils'
 
 export default function CartDrawer() {
   const { t } = useTranslation(['menu'])
@@ -42,27 +43,27 @@ export default function CartDrawer() {
       <DrawerTrigger asChild className="z-30">
         <div>
           {cartItems?.orderItems && cartItems.orderItems.length > 0 && (
-            <span className="absolute right-0 top-0 flex h-7 w-7 items-center justify-center rounded-full border border-gray-300 bg-white p-2 text-xs font-semibold text-primary">
+            <span className="absolute top-0 right-0 flex items-center justify-center p-2 text-xs font-semibold bg-white border border-gray-300 rounded-full h-7 w-7 text-primary">
               {cartItems?.orderItems.length}
             </span>
           )}
           <Button variant="default">
-            <ShoppingCart className="icon text-white" />
+            <ShoppingCart className="text-white icon" />
           </Button>
         </div>
       </DrawerTrigger>
       <DrawerContent className="h-[90%]">
-        <div className="mx-4 overflow-y-auto pb-10">
+        <div className="pb-10 mx-4 overflow-y-auto">
           <DrawerHeader>
             <DrawerTitle>{t('menu.order')}</DrawerTitle>
             <DrawerDescription>{t('menu.orderDescription')}</DrawerDescription>
           </DrawerHeader>
-          <div className="flex flex-col gap-4 space-y-2 py-2">
+          <div className="flex flex-col gap-4 py-2 space-y-2">
             {cartItems ? (
               cartItems?.orderItems?.map((item) => (
                 <div
                   key={item.slug}
-                  className="flex flex-col gap-4 border-b pb-4"
+                  className="flex flex-col gap-4 pb-4 border-b"
                 >
                   <div
                     key={`${item.slug}`}
@@ -72,16 +73,16 @@ export default function CartDrawer() {
                     <img
                       src={`${publicFileURL}/${item.image}`}
                       alt={item.name}
-                      className="h-20 w-20 rounded-2xl object-cover"
+                      className="object-cover w-20 h-20 rounded-2xl"
                     />
-                    <div className="flex flex-1 flex-col gap-2">
+                    <div className="flex flex-col flex-1 gap-2">
                       <div className="flex flex-row items-start justify-between">
-                        <div className="flex min-w-0 flex-1 flex-col">
-                          <span className="truncate font-bold">
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <span className="font-bold truncate">
                             {item.name}
                           </span>
                           <span className="text-xs font-thin text-muted-foreground">
-                            {`${(item.price || 0).toLocaleString('vi-VN')}đ`}
+                            {`${formatCurrency(item.price || 0)}`}
                           </span>
                         </div>
                         <Button
@@ -92,7 +93,7 @@ export default function CartDrawer() {
                         </Button>
                       </div>
 
-                      <div className="flex w-full items-center justify-between text-sm font-medium">
+                      <div className="flex items-center justify-between w-full text-sm font-medium">
                         <QuantitySelector cartItem={item} />
                       </div>
                     </div>
@@ -111,28 +112,28 @@ export default function CartDrawer() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{t('menu.total')}</span>
-                <span>{`${subtotal?.toLocaleString('vi-VN') || 0}đ`}</span>
+                <span>{`${formatCurrency(subtotal || 0)}`}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">
                   {t('menu.discount')}
                 </span>
                 <span className="text-xs text-green-600">
-                  - {`${discount.toLocaleString('vi-VN')}đ`}
+                  - {`${formatCurrency(discount)}`}
                 </span>
               </div>
-              <div className="flex justify-between border-t pt-2 font-medium">
+              <div className="flex justify-between pt-2 font-medium border-t">
                 <span className="font-semibold">{t('menu.subTotal')}</span>
                 <span className="text-lg font-bold text-primary">
-                  {`${total.toLocaleString('vi-VN')}đ`}
+                  {`${formatCurrency(total)}`}
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-2 flex-row gap-2">
+            <div className="grid flex-row grid-cols-2 gap-2">
               <DrawerClose asChild>
                 <Button
                   variant="outline"
-                  className="mt-4 w-full rounded-full border border-gray-400"
+                  className="w-full mt-4 border border-gray-400 rounded-full"
                 >
                   {tCommon('common.close')}
                 </Button>
@@ -140,7 +141,7 @@ export default function CartDrawer() {
               <NavLink to={ROUTE.STAFF_CHECKOUT_ORDER}>
                 <Button
                   disabled={!cartItems}
-                  className="mt-4 w-full rounded-full bg-primary text-white"
+                  className="w-full mt-4 text-white rounded-full bg-primary"
                 >
                   {t('menu.continue')}
                 </Button>

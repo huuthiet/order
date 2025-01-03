@@ -8,11 +8,14 @@ import {
   CarouselItem,
   CarouselApi,
   Button,
+  CarouselPrevious,
+  CarouselNext,
 } from '@/components/ui'
 
-import { IProduct, ISpecificMenu } from '@/types'
-import { publicFileURL, ROUTE } from '@/constants'
-import { SkeletonMenuList } from '@/components/app/skeleton'
+import { IProduct, ISpecificMenu } from "@/types";
+import { publicFileURL, ROUTE } from "@/constants";
+import { SkeletonMenuList } from "@/components/app/skeleton";
+import { formatCurrency } from "@/utils";
 
 interface BestSellerCarouselProps {
   isLoading: boolean
@@ -72,7 +75,7 @@ export default function BestSellerCarousel({
   }
 
   return (
-    <div className="flex w-full flex-col items-center gap-2">
+    <div className="flex flex-col items-center w-full gap-2">
       <Carousel
         opts={{
           align: 'start',
@@ -103,20 +106,20 @@ export default function BestSellerCarousel({
                         <img
                           src={`${publicFileURL}/${item.product.image}`}
                           alt={item.product.name}
-                          className="h-36 w-full rounded-t-md object-cover"
+                          className="object-cover w-full h-36 rounded-t-md"
                         />
                       ) : (
-                        <div className="h-24 w-full rounded-t-md bg-muted/60" />
+                        <div className="w-full h-24 rounded-t-md bg-muted/60" />
                       )}
                     </div>
 
                     {/* Content Section - More compact */}
                     <div className="flex flex-1 flex-col justify-between space-y-1.5 p-2">
                       <div>
-                        <h3 className="line-clamp-1 text-lg font-bold">
+                        <h3 className="text-lg font-bold line-clamp-1">
                           {item.product.name}
                         </h3>
-                        <p className="line-clamp-2 text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 line-clamp-2">
                           {item.product.description}
                         </p>
                       </div>
@@ -124,22 +127,19 @@ export default function BestSellerCarousel({
                       <div className="flex items-center justify-between gap-1">
                         <div className="flex flex-col">
                           {item.product.variants.length > 0 ? (
-                            <div className="flex flex-col items-start justify-start gap-1">
-                              <span className="text-lg font-bold text-primary">
+                            <div className='flex flex-col items-start justify-start gap-1'>
+                              <span className="text-xs font-bold sm:text-lg text-primary">
                                 {(() => {
-                                  const range = getPriceRange(
-                                    item.product.variants,
-                                  )
+                                  const range = getPriceRange(item.product.variants)
                                   if (!range) return '0đ'
                                   return range.isSinglePrice
-                                    ? `${range.min.toLocaleString('vi-VN')}đ`
-                                    : `${range.min.toLocaleString('vi-VN')}đ - ${range.max.toLocaleString('vi-VN')}đ`
+                                    ? `${formatCurrency(range.min)}`
+                                    : `${formatCurrency(range.min)} - ${formatCurrency(range.max)}`
                                 })()}
                               </span>
-                              <span className="text-[0.7rem] text-muted-foreground">
+                              <span className='text-[0.7rem] text-muted-foreground'>
                                 {t('menu.amount')}
-                                {item.currentStock}/{item.defaultStock}
-                              </span>
+                                {item.currentStock}/{item.defaultStock}</span>
                             </div>
                           ) : (
                             <span className="text-sm font-bold text-primary">
@@ -149,12 +149,12 @@ export default function BestSellerCarousel({
                         </div>
                       </div>
                       {item.currentStock > 0 ? (
-                        <div className="flex w-full items-end justify-center">
+                        <div className='flex items-end justify-center w-full'>
                           {/* <AddToCartDialog product={item.product} /> */}
                         </div>
                       ) : (
                         <Button
-                          className="flex w-full items-center justify-center rounded-full bg-red-500 py-2 text-sm font-semibold text-white"
+                          className="flex items-center justify-center w-full py-2 text-sm font-semibold text-white bg-red-500 rounded-full"
                           disabled
                         >
                           {t('menu.outOfStock')}
@@ -167,15 +167,16 @@ export default function BestSellerCarousel({
             </CarouselItem>
           ))}
         </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
       </Carousel>
 
-      <div className="mt-4 flex gap-2">
+      <div className="flex gap-2 mt-4">
         {menu?.menuItems.map((_, index) => (
           <button
             key={index}
-            className={`h-2 w-2 rounded-full transition-all ${
-              current === index ? 'w-4 bg-primary' : 'bg-gray-300'
-            }`}
+            className={`h-2 w-2 rounded-full transition-all ${current === index ? 'w-4 bg-primary' : 'bg-gray-300'
+              }`}
             onClick={() => api?.scrollTo(index)}
           />
         ))}

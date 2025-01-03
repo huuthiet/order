@@ -2,7 +2,8 @@ import { Coins, CreditCard, WalletMinimal } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { RadioGroup, RadioGroupItem, Label } from '@/components/ui'
-import { PaymentMethod } from '@/constants'
+import { PaymentMethod, Role } from '@/constants'
+import { useUserStore } from '@/stores'
 
 interface PaymentMethodRadioGroupProps {
   onSubmit?: (paymentMethod: PaymentMethod) => void
@@ -12,6 +13,7 @@ export default function PaymentMethodRadioGroup({
   onSubmit,
 }: PaymentMethodRadioGroupProps) {
   const { t } = useTranslation('menu')
+  const { userInfo } = useUserStore()
 
   const handlePaymentMethodChange = (paymentMethod: PaymentMethod) => {
     if (onSubmit) {
@@ -42,15 +44,17 @@ export default function PaymentMethodRadioGroup({
           </Label>
         </div>
       </div>
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value={PaymentMethod.CASH} id="r3" />
-        <div className="flex items-center gap-1 pl-2 text-muted-foreground">
-          <Label htmlFor="r3" className="flex items-center gap-1">
-            <Coins size={20} />
-            {t('paymentMethod.cash')}
-          </Label>
+      {userInfo?.role.name !== Role.CUSTOMER && (
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value={PaymentMethod.CASH} id="r3" />
+          <div className="flex items-center gap-1 pl-2 text-muted-foreground">
+            <Label htmlFor="r3" className="flex items-center gap-1">
+              <Coins size={20} />
+              {t('paymentMethod.cash')}
+            </Label>
+          </div>
         </div>
-      </div>
+      )}
     </RadioGroup>
   )
 }
