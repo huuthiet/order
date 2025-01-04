@@ -2,6 +2,7 @@ volumes:
   mysql:
   redis_data:
   postgres_data:
+  grafana_data:
 
 services:
   redis:
@@ -136,6 +137,10 @@ services:
       - "3005:3000" # Grafana UI
       - "4317:4317" # OTLP gRPC
       - "4318:4318" # OTLP HTTP
+    environment:
+      GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL}
+      GF_SERVER_SERVE_FROM_SUB_PATH: ${GF_SERVER_SERVE_FROM_SUB_PATH}
+      ENABLE_LOGS_LOKI: ${ENABLE_LOGS_LOKI}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
@@ -143,6 +148,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 networks:
   default:
