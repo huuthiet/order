@@ -11,7 +11,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REPOSITORY_OWNER: ${{ github.repository_owner.lowercase }}
+
 jobs:
   publish-dev:
     if: github.event.pull_request.merged
@@ -43,6 +43,12 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          REPOSITORY_OWNER: "${{ github.repository_owner }}"
 
       - name: Build and push order-api image
         uses: docker/build-push-action@v4
