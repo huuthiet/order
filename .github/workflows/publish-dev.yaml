@@ -45,7 +45,7 @@ jobs:
       - name: Build and push order-api image
         uses: docker/build-push-action@v4
         with:
-          context: ../../app/order-api
-          file: ../../.build/order-api/Dockerfile
+          context: ./app/order-api
+          file: ./.build/order-api/Dockerfile
           tags: ${{ steps.meta.outputs.tags['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-api'] }}
           labels: ${{ steps.meta.outputs.labels['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-api'] }}
