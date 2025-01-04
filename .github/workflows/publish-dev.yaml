@@ -49,3 +49,4 @@ jobs:
           file: ./.build/order-api/Dockerfile
           tags: ${{ steps.meta.outputs.tags['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-api'] }}
           labels: ${{ steps.meta.outputs.labels['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-api'] }}
+          push: true
