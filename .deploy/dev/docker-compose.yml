@@ -1,6 +1,7 @@
 volumes:
   mysql:
   redis_data:
+  postgres_data:
 
 services:
   redis:
@@ -66,8 +67,8 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
-      # Tracing
-      TRACING_URL: ${TRACING_URL}
+      # Otel lgtm
+      OTEL_LGTM_URL: ${OTEL_LGTM_URL}
 
       TZ: Asia/Ho_Chi_Minh
     depends_on:
@@ -114,6 +115,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   roboflow:
     image: tuanvux01/roboflow:dev
