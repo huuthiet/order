@@ -2,7 +2,8 @@ name: deploy-dev
 
 on:
   workflow_run:
-    workflows: ["publish-dev"]
+    workflows:
+      - publish-dev
     types:
       - completed
 
