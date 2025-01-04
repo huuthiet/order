@@ -39,19 +39,19 @@ jobs:
       # Step 5: Tag and Push Docker Image
       - name: Build and push Docker image
         run: |
-          docker tag order-api ghcr.io/${{ github.repository_owner }}/order-api:latest
-          docker tag mysql_db ghcr.io/${{ github.repository_owner }}/order-db:latest
-          docker tag order-ui ghcr.io/${{ github.repository_owner }}/order-ui:latest
-          docker tag postgres ghcr.io/${{ github.repository_owner }}/robot-db:latest
-          docker push ghcr.io/${{ github.repository_owner }}/order-api:latest
-          docker push ghcr.io/${{ github.repository_owner }}/order-db:latest
-          docker push ghcr.io/${{ github.repository_owner }}/order-ui:latest
-          docker push ghcr.io/${{ github.repository_owner }}/robot-db:latest
+          docker tag order-api ghcr.io/${{ github.repository_owner }}/dev-order-api:latest
+          docker tag mysql_db ghcr.io/${{ github.repository_owner }}/dev-mysql_db:latest
+          docker tag order-ui ghcr.io/${{ github.repository_owner }}/dev-order-ui:latest
+          docker tag postgres ghcr.io/${{ github.repository_owner }}/dev-postgres:latest
+          docker push ghcr.io/${{ github.repository_owner }}/dev-order-api:latest
+          docker push ghcr.io/${{ github.repository_owner }}/dev-mysql_db:latest
+          docker push ghcr.io/${{ github.repository_owner }}/dev-order-ui:latest
+          docker push ghcr.io/${{ github.repository_owner }}/dev-postgres:latest
 
       # Step 6: Verify the image was pushed
       - name: Verify image push
         run: |
-          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/order-api:latest"
-          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/order-db:latest"
-          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/order-ui:latest"
-          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/robot-db:latest"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/dev-order-api:latest"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/dev-mysql_db:latest"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/dev-order-ui:latest"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/dev-postgres:latest"
