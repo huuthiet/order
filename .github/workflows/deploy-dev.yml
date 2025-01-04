@@ -1,17 +1,16 @@
-name: Deploy-dev
+name: deploy-dev
 
 on:
   pull_request_target:
     branches: [main]
     types: [opened, closed]
   workflow_run:
-    workflows: ["Build and Test"] # Trigger after 'Build and Test' workflow succeeds
+    workflows: ["publish-dev"] # Trigger after 'publish-dev' workflow succeeds
     types:
       - completed
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     environment: development
     steps:
@@ -27,10 +26,7 @@ jobs:
           GOOGLE_API_CREDENTIALS: ${{ secrets.GOOGLE_API_CREDENTIALS }}
           FE_ENV_DEV: ${{ secrets.FE_ENV_DEV }}
         run: |
-          mkdir -p app/order-api/public/json
           echo "$ENV_DEV" > .deploy/dev/.env
-          echo "$GOOGLE_API_CREDENTIALS" > app/order-api/public/json/credentials.json
-          echo "$FE_ENV_DEV" > app/order-ui/.env
 
       - name: Deploy with Docker Compose
         env:
@@ -49,6 +45,6 @@ jobs:
           docker ps -a
           docker compose -f .deploy/dev/docker-compose.yml pull
           docker compose -f .deploy/dev/docker-compose.yml down
-          docker compose -f .deploy/dev/docker-compose.yml up -d --build
+          docker compose -f .deploy/dev/docker-compose.yml up -d
           docker image prune -f  # clean up none image after built
           docker volume prune -f # clean up none volumn after built

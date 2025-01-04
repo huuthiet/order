@@ -2,6 +2,7 @@ volumes:
   mysql:
   redis_data:
   postgres_data:
+  grafana_data:
 
 services:
   redis:
@@ -19,9 +20,7 @@ services:
       - 6379:6379
 
   order-api:
-    build:
-      context: ../../app/order-api
-      dockerfile: ../../.build/order-api/Dockerfile # current context at app/order-api/
+    image: ghcr.io/HomesLands/order-api:dev
     healthcheck:
       test:
         [
@@ -78,8 +77,7 @@ services:
       - "8080:8080"
 
   mysql_db:
-    build:
-      context: ../../.build/order-db
+    image: ghcr.io/HomesLands/order-db:dev
     volumes:
       - mysql:/var/lib/mysql
     environment:
@@ -93,9 +91,7 @@ services:
       retries: 5
 
   order-ui:
-    build:
-      context: ../../app/order-ui
-      dockerfile: ../../.build/order-ui/Dockerfile # Adjusted to be relative to the context
+    image: ghcr.io/HomesLands/order-ui:dev
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "5173"] # TCP check on port 5173
       interval: 10s # Increase interval between health checks
@@ -106,8 +102,7 @@ services:
       - "5173:5173"
 
   postgres:
-    build:
-      context: ../../.build/order-postgres
+    image: ghcr.io/HomesLands/robot-db:dev
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -136,6 +131,10 @@ services:
       - "3005:3000" # Grafana UI
       - "4317:4317" # OTLP gRPC
       - "4318:4318" # OTLP HTTP
+    environment:
+      GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL}
+      GF_SERVER_SERVE_FROM_SUB_PATH: ${GF_SERVER_SERVE_FROM_SUB_PATH}
+      ENABLE_LOGS_LOKI: ${ENABLE_LOGS_LOKI}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
@@ -143,6 +142,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 networks:
   default:
