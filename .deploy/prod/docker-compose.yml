@@ -1,6 +1,7 @@
 volumes:
   mysql:
   redis_data:
+  postgres_data:
 
 services:
   redis:
@@ -58,8 +59,8 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
-      # Tracing
-      TRACING_URL: ${TRACING_URL}
+      # Otel lgtm
+      OTEL_LGTM_URL: ${OTEL_LGTM_URL}
 
       TZ: Asia/Ho_Chi_Minh
     depends_on:
@@ -100,6 +101,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   roboflow:
     image: tuanvux01/roboflow:dev
@@ -113,8 +116,15 @@ services:
     depends_on:
       - postgres
 
-  tracing:
-    image: jaegertracing/all-in-one:latest
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 networks:
   default:
