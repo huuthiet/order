@@ -11,8 +11,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REPOSITORY_OWNER: ${{ github.repository_owner }}
-
+  REPOSITORY_OWNER: ${{ github.repository_owner.lowercase }}
 jobs:
   publish-dev:
     if: github.event.pull_request.merged
