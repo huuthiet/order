@@ -1,20 +1,23 @@
 name: publish-dev
 
 on:
-  pull_request_target:
-    branches: [main]
-    types: [opened, closed]
-  workflow_run:
-    workflows: ["build-and-test"] # Trigger after 'build-and-test' workflow succeeds
-    types:
-      - completed
+  push:
+    branches:
+      - main # Or your branch name
+  # pull_request_target:
+  #   branches: [main]
+  #   types: [opened, closed]
+  # workflow_run:
+  #   workflows: ["build-and-test"] # Trigger after 'build-and-test' workflow succeeds
+  #   types:
+  #     - completed
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
   publish-dev:
-    if: github.event.pull_request.merged
+    # if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     environment: development
 
@@ -45,10 +48,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "REPOSITORY_OWNER=${{ github.repository_owner | lower }}" >> $GITHUB_ENV
         env:
-          REPOSITORY_OWNER: "${{ github.repository_owner }}"
+          OWNER_LC: ${{ github.repository_owner | lower }}
 
       - name: Build and push order-api image
         uses: docker/build-push-action@v4
