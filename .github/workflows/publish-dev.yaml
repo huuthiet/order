@@ -48,9 +48,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lower case owner name
-        run: echo "REPOSITORY_OWNER=${{ github.repository_owner | lower }}" >> $GITHUB_ENV
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ github.repository_owner }}
         env:
-          OWNER_LC: ${{ github.repository_owner | lower }}
+          REPOSITORY_OWNER: ${{ steps.string.outputs.lowercase }}
 
       - name: Build and push order-api image
         uses: docker/build-push-action@v4
