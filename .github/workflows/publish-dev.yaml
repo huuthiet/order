@@ -40,3 +40,28 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api:dev
           labels: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api
           push: true
+
+      - name: Build and push order-ui image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./app/order-ui
+          file: ./.build/order-ui/Dockerfile
+          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-ui:dev
+          labels: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-ui
+          push: true
+
+      - name: Build and push postgres image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./.build/order-postgres
+          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/robot-db:dev
+          labels: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/robot-db
+          push: true
+
+      - name: Build and push mysql image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./.build/order-db
+          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-db:dev
+          labels: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-db
+          push: true
