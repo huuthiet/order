@@ -32,21 +32,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api:dev
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-ui
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-postgres
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-mysql
-
       - name: Build and push order-api image
         uses: docker/build-push-action@v4
         with:
           context: ./app/order-api
           file: ./.build/order-api/Dockerfile
-          tags: ${{ steps.meta.outputs.tags['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api:dev'] }}
-          labels: ${{ steps.meta.outputs.labels['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api'] }}
+          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api:dev
+          labels: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api
           push: true
