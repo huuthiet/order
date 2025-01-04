@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Allow manual trigger of the workflow
 
 jobs:
-  build-and-publish:
+  publish:
     runs-on: ubuntu-latest
     environment: development
 
@@ -33,6 +33,9 @@ jobs:
         run: |
           docker compose -f .deploy/dev/docker-compose.yml build
 
+      - name: List Docker images
+        run: docker images
+
       # Step 5: Tag and Push Docker Image
       - name: Build and push Docker image
         run: |
@@ -48,4 +51,7 @@ jobs:
       # Step 6: Verify the image was pushed
       - name: Verify image push
         run: |
-          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/your-image-name"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/order-api:latest"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/order-db:latest"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/order-ui:latest"
+          echo "Image pushed to: ghcr.io/${{ github.repository_owner }}/robot-db:latest"
