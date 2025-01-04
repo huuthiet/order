@@ -37,7 +37,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-api
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api:dev
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-ui
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-postgres
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-mysql
@@ -47,6 +47,6 @@ jobs:
         with:
           context: ./app/order-api
           file: ./.build/order-api/Dockerfile
-          tags: ${{ steps.meta.outputs.tags['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-api'] }}
-          labels: ${{ steps.meta.outputs.labels['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/dev-order-api'] }}
+          tags: ${{ steps.meta.outputs.tags['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api:dev'] }}
+          labels: ${{ steps.meta.outputs.labels['${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER }}/order-api'] }}
           push: true
