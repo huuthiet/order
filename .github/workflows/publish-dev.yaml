@@ -17,6 +17,11 @@ jobs:
   publish-dev:
     if: github.event.pull_request.merged
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
     environment: development
 
     steps:
