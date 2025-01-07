@@ -90,7 +90,7 @@ export class AuthService {
   }
 
   /**
-   *  Retrieves the frontend URL configuration
+   *  Retrieves the frontend URL configuration.
    *
    * This method fetches the frontend URL from the system configuration
    * service using the predefined `SystemConfigKey.FRONTEND_URL` key.
