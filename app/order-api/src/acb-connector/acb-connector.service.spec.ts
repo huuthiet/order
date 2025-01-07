@@ -43,10 +43,4 @@ describe('ACBConnectorService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  describe('Get', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-  });
 });
