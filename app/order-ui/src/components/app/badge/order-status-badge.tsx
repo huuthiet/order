@@ -9,17 +9,18 @@ interface IOrderStatusBadgeProps {
 
 export default function OrderStatusBadge({ order }: IOrderStatusBadgeProps) {
   const { t } = useTranslation(['menu'])
+  console.log('order', order)
 
   const getBadgeColor = (status: OrderStatus) => {
     switch (status) {
       case OrderStatus.PENDING:
-        return 'bg-yellow-500 bg-yellow-50 border text-white'
+        return 'bg-yellow-500 bg-yellow-50 text-white'
       case OrderStatus.SHIPPING:
-        return 'bg-blue-500 bg-blue-50 border text-white '
+        return 'bg-blue-500 bg-blue-50 text-white '
       case OrderStatus.COMPLETED:
-        return 'bg-green-500 bg-green-50 border text-white '
+        return 'bg-green-500 bg-green-50 text-white '
       case OrderStatus.PAID:
-        return 'bg-green-500 bg-green-50 border text-white'
+        return 'bg-green-500 bg-green-50 text-white'
       case OrderStatus.FAILED:
         return 'bg-destructive bg-destructive/20 text-white'
     }
@@ -27,6 +28,8 @@ export default function OrderStatusBadge({ order }: IOrderStatusBadgeProps) {
 
   const getBadgeText = (order: IOrder) => {
     if (order?.status === OrderStatus.PENDING && order?.payment?.statusCode === paymentStatus.PENDING) {
+      return t('order.pending');
+    } else if (order?.status === OrderStatus.PENDING && order?.payment === null) {
       return t('order.pending');
     } else if (order?.status === OrderStatus.PENDING && order?.payment?.statusCode === paymentStatus.COMPLETED) {
       return t('order.pending');

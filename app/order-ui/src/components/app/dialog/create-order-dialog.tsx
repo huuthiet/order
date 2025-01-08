@@ -41,10 +41,19 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
   const handleSubmit = (order: ICartItem) => {
     if (!order) return
 
+    const selectedBranch = userInfo?.role.name === Role.CUSTOMER
+      ? branch?.slug
+      : userInfo?.branch.slug;
+
+    if (!selectedBranch) {
+      showToast(t('error.branchRequired'));
+      return;
+    }
+
     const createOrderRequest: ICreateOrderRequest = {
       type: order.type,
       table: order.table || '',
-      branch: branch?.slug || '',
+      branch: selectedBranch,
       owner: order.owner || '',
       approvalBy: getUserInfo()?.slug || '',
       orderItems: order.orderItems.map((orderItem) => ({
@@ -74,7 +83,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
       <DialogTrigger asChild>
         <Button
           disabled={disabled}
-          className="flex w-full items-center rounded-full text-sm"
+          className="flex items-center w-full text-sm rounded-full"
           onClick={() => setIsOpen(true)}
         >
           {t('order.create')}
@@ -83,9 +92,9 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
 
       <DialogContent className="max-w-[22rem] rounded-md px-6 font-beVietNam sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="border-b pb-4">
+          <DialogTitle className="pb-4 border-b">
             <div className="flex items-center gap-2 text-primary">
-              <ShoppingCart className="h-6 w-6" />
+              <ShoppingCart className="w-6 h-6" />
               {t('order.create')}
             </div>
           </DialogTitle>
@@ -99,7 +108,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
           <Button
             variant="outline"
             onClick={() => setIsOpen(false)}
-            className="min-w-24 border border-gray-300"
+            className="border border-gray-300 min-w-24"
           >
             {tCommon('common.cancel')}
           </Button>
