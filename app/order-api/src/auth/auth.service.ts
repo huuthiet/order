@@ -426,7 +426,7 @@ export class AuthService {
       loginAuthDto.password,
     );
     if (!user) {
-      throw new UnauthorizedException();
+      throw new AuthException(AuthValidation.INVALID_CREDENTIALS);
     }
 
     const payload: AuthJwtPayload = {
