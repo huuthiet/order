@@ -120,7 +120,7 @@ export default function CartPage() {
           <ClientTableSelect />
           <div className="flex justify-end py-4">
             <div className="w-full sm:max-w-[10rem]">
-              <CreateOrderDialog />
+              <CreateOrderDialog disabled={!cartItems.table || !cartItems} />
             </div>
           </div>
         </div>

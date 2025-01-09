@@ -123,7 +123,7 @@ export default function PaymentPage() {
                       </h3>
                       <span className="text-sm font-semibold">
                         {moment(order.result.createdAt).format(
-                          'HH:mm DD/MM/YYYY',
+                          'HH:mm:ss DD/MM/YYYY',
                         )}
                       </span>
                     </div>
