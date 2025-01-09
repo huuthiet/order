@@ -36,9 +36,9 @@ export const ForgotPasswordAndResetPasswordPage = React.lazy(() =>
 //----------------------------------------------//
 //Admin
 //Home page
-export const HomePage = React.lazy(() =>
+export const OverviewPage = React.lazy(() =>
   import('@/app/system/home').then((module) => ({
-    default: module.HomePage,
+    default: module.OverviewPage,
   })),
 )
 
