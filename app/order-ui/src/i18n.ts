@@ -40,6 +40,7 @@ import viConfig from '@/locales/vi/config.json'
 import viRevenue from '@/locales/vi/revenue.json'
 import viBranch from '@/locales/vi/branch.json'
 import viStaticPage from '@/locales/vi/static-page.json'
+import viCustomer from '@/locales/vi/customer.json'
 import viDashboard from '@/locales/vi/dashboard.json'
 
 i18n
@@ -87,6 +88,7 @@ i18n
         revenue: viRevenue,
         branch: viBranch,
         staticPage: viStaticPage,
+        customer: viCustomer,
         dashboard: viDashboard,
       },
     },

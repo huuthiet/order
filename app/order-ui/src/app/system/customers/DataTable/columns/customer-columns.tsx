@@ -13,7 +13,6 @@ import {
 } from '@/components/ui'
 import { IUserInfo } from '@/types'
 import { ResetPasswordDialog, UserInfoDialog } from '@/components/app/dialog'
-import UpdateUserRoleDialog from '@/components/app/dialog/update-user-role-dialog'
 
 export const useUserListColumns = (): ColumnDef<IUserInfo>[] => {
   const { t } = useTranslation(['user', 'common'])
@@ -108,7 +107,6 @@ export const useUserListColumns = (): ColumnDef<IUserInfo>[] => {
                 <UserInfoDialog user={user} />
                 <>
                   <ResetPasswordDialog user={user} />
-                  <UpdateUserRoleDialog user={user} />
                 </>
               </DropdownMenuContent>
             </DropdownMenu>

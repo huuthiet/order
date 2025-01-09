@@ -37,6 +37,7 @@ import {
   ClientPaymentPage,
   RevenuePage,
   StaticPageManagementPage,
+  CustomerPage,
   OverviewPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
@@ -69,7 +70,12 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN, Role.STAFF, Role.MANAGER, Role.SUPER_ADMIN]}
+            allowedRoles={[
+              Role.ADMIN,
+              Role.STAFF,
+              Role.MANAGER,
+              Role.SUPER_ADMIN,
+            ]}
             element={<SuspenseElement component={OverviewPage} />}
           />
         ),
@@ -297,8 +303,27 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.ADMIN, Role.MANAGER]}
+            allowedRoles={[Role.CHEF, Role.MANAGER]}
             element={<SuspenseElement component={MenuDetailPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.STAFF_CUSTOMER_MANAGEMENT,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.MANAGER, Role.ADMIN, Role.SUPER_ADMIN]}
+            element={<SuspenseElement component={CustomerPage} />}
           />
         ),
       },
