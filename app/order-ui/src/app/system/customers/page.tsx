@@ -5,8 +5,9 @@ import { DataTable } from '@/components/ui'
 import { useUsers, usePagination } from '@/hooks'
 import { useUserListColumns } from './DataTable/columns'
 import { Role } from '@/constants'
+import { CustomerAction } from './DataTable/actions'
 
-export default function UserListPage() {
+export default function CustomerPage() {
   const { t } = useTranslation(['user'])
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
 
@@ -14,7 +15,7 @@ export default function UserListPage() {
     page: pagination.pageIndex,
     pageSize: pagination.pageSize,
     order: 'DESC',
-    role: [Role.STAFF, Role.CHEF, Role.MANAGER, Role.ADMIN].join(','),
+    role: Role.CUSTOMER,
   })
 
   return (
@@ -33,6 +34,7 @@ export default function UserListPage() {
           pages={data?.result.totalPages || 0}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
+          actionOptions={CustomerAction}
         />
       </div>
     </div>

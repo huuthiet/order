@@ -39,6 +39,7 @@ import viConfig from '@/locales/vi/config.json'
 import viRevenue from '@/locales/vi/revenue.json'
 import viBranch from '@/locales/vi/branch.json'
 import viStaticPage from '@/locales/vi/static-page.json'
+import viCustomer from '@/locales/vi/customer.json'
 
 i18n
   .use(LanguageDetector) // Tự động phát hiện ngôn ngữ
@@ -84,6 +85,7 @@ i18n
         revenue: viRevenue,
         branch: viBranch,
         staticPage: viStaticPage,
+        customer: viCustomer,
       },
     },
     lng: window.localStorage.getItem('i18nextLng') || 'vi',
