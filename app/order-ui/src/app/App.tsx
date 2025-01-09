@@ -14,7 +14,6 @@ import { router } from '@/router'
 import '@/i18n'
 import { IApiErrorResponse, IApiResponse } from '@/types'
 import { showErrorToast } from '@/utils'
-import { console } from 'inspector'
 
 // Create a client
 const queryClient = new QueryClient({
