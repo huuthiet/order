@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { ChevronsLeftRight, PencilLine } from 'lucide-react'
+import { ChevronsLeftRight } from 'lucide-react'
 
 import { Label, Input, Button } from '@/components/ui'
 import { useCreateSystemConfig, useSystemConfigs } from '@/hooks'
@@ -14,8 +14,6 @@ import { ButtonLoading } from '../loading'
 const NewConfigRow = ({
   config,
   onChange,
-  onToggleDescription,
-  isEditingDescription,
   t,
 }: {
   config: ISystemConfig

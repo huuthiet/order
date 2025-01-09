@@ -1,5 +1,4 @@
 import React from 'react'
-import { isAxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -22,7 +21,7 @@ import { ButtonLoading } from '@/components/app/loading'
 import { useLogin, useProfile } from '@/hooks'
 import { useAuthStore, useCurrentUrlStore, useUserStore } from '@/stores'
 import { Role, ROUTE } from '@/constants'
-import { showErrorToast, showToast } from '@/utils'
+import { showToast } from '@/utils'
 
 export const LoginForm: React.FC = () => {
   const { t } = useTranslation(['auth'])

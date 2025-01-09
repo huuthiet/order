@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { useSidebar } from '@/components/ui'
 import { useMemo } from 'react'
 import { useUserStore } from '@/stores'
-import { Role } from '@/constants/role'
 
 import {
   Collapsible,
