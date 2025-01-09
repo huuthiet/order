@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
+import { SquareMenu } from 'lucide-react'
 
 import { Button } from '@/components/ui'
 import { useExportPayment, useInitiatePayment, useOrderBySlug } from '@/hooks'
@@ -10,7 +11,6 @@ import { PaymentMethodSelect } from '@/app/system/payment'
 import { formatCurrency, loadDataToPrinter, showToast } from '@/utils'
 import { ButtonLoading } from '@/components/app/loading'
 import { useUserStore } from '@/stores'
-import { SquareMenu } from 'lucide-react'
 
 export default function PaymentPage() {
   const { t } = useTranslation(['menu'])

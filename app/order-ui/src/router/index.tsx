@@ -41,6 +41,7 @@ import {
 import ProtectedElement from '@/components/app/elements/protected-element'
 import { ClientLayout } from '@/app/layouts/client'
 import { BranchManagementPage } from '@/app/system/branch'
+import { DashboardPage } from '@/app/system/home'
 
 export const router = createBrowserRouter([
   { path: ROUTE.LOGIN, element: <SuspenseElement component={LoginPage} /> },
@@ -55,6 +56,25 @@ export const router = createBrowserRouter([
   {
     path: `${ROUTE.RESET_PASSWORD}`,
     element: <SuspenseElement component={ForgotPasswordAndResetPasswordPage} />,
+  },
+  {
+    path: ROUTE.DASHBOARD,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.ADMIN, Role.STAFF, Role.MANAGER, Role.SUPER_ADMIN]}
+            element={<SuspenseElement component={DashboardPage} />}
+          />
+        ),
+      },
+    ],
   },
   {
     path: ROUTE.STAFF_MENU,

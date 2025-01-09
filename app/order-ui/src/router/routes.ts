@@ -10,6 +10,7 @@ import {
   LayoutGrid,
   Phone,
   ShoppingBag,
+  SquareTerminal,
   Store,
   Users,
 } from 'lucide-react'
@@ -18,12 +19,12 @@ import type { ISidebarRoute } from '@/types'
 import { Role, ROUTE } from '@/constants'
 
 export const sidebarRoutes: ISidebarRoute[] = [
-  // {
-  //   title: 'sidebar.home',
-  //   path: ROUTE.HOME,
-  //   icon: SquareTerminal,
-  //   roles: [Role.ADMIN, Role.CUSTOMER],
-  // },
+  {
+    title: 'sidebar.home',
+    path: ROUTE.DASHBOARD,
+    icon: SquareTerminal,
+    roles: [Role.ADMIN, Role.STAFF, Role.MANAGER, Role.SUPER_ADMIN],
+  },
   {
     title: 'sidebar.menu',
     path: ROUTE.STAFF_MENU,
