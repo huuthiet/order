@@ -7,7 +7,7 @@ import { RevenueSummary, RevenueChart, TopProducts, RevenueComparison } from './
 import { BranchSelect } from '@/components/app/select'
 import { TimeRangeRevenueFilter } from '@/components/app/popover'
 
-export default function DashboardPage() {
+export default function OverviewPage() {
   const { t } = useTranslation(['dashboard'])
   // Get first and last day of current month as default values
   const [startDate, setStartDate] = useState<string>(

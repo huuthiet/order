@@ -20,7 +20,6 @@ import {
   RegisterAuthRequestDto,
   RegisterAuthResponseDto,
 } from './auth.dto';
-import { UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { jwtServiceMockFactory } from 'src/test-utils/jwt-mock.factory';
 import { Mapper } from '@automapper/core';
@@ -201,7 +200,7 @@ describe('AuthService', () => {
   });
 
   describe('Testing login func', () => {
-    it('should throw an unauthorized exception if login fails', async () => {
+    it('should throw an `AuthException` if login fails', async () => {
       // mock input
       const mockReq = {
         phonenumber: 'phonenumber',
@@ -212,7 +211,7 @@ describe('AuthService', () => {
       jest.spyOn(service, 'validateUser').mockResolvedValue(null);
 
       // Assertions
-      expect(service.login(mockReq)).rejects.toThrow(UnauthorizedException);
+      expect(service.login(mockReq)).rejects.toThrow(AuthException);
     });
 
     it('should return an access token if login succeeds', async () => {
