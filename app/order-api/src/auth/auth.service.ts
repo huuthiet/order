@@ -259,6 +259,7 @@ export class AuthService {
     const context = `${AuthService.name}.${this.uploadAvatar.name}`;
     const userEntity = await this.userRepository.findOne({
       where: { id: user.userId },
+      relations: ['branch', 'role'],
     });
     if (!userEntity) throw new AuthException(AuthValidation.USER_NOT_FOUND);
 

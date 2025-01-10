@@ -12,7 +12,7 @@ export default function ClientLayout() {
   const { progress, fileName, isDownloading } = useDownloadStore()
 
   return (
-    <div className="">
+    <>
       {/* Main content */}
       <div className="">
         {/* Header */}
@@ -35,6 +35,6 @@ export default function ClientLayout() {
         {/* Footer */}
         <ClientFooter />
       </div>
-    </div>
+    </>
   )
 }

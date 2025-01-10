@@ -58,7 +58,7 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="container my-10">
+    <div className="container py-10">
       <div className="flex flex-col items-start gap-5 lg:flex-row">
         {/* Left - sidebar */}
         <div className="w-full lg:sticky lg:top-20 lg:z-10 lg:w-1/4">

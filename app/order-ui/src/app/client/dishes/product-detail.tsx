@@ -1,18 +1,24 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ShoppingCart, SquareMenu } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 
 import { Button } from '@/components/ui'
-import { useSpecificMenuItem } from '@/hooks'
+import { useSpecificMenu, useSpecificMenuItem } from '@/hooks'
 import { publicFileURL, ROUTE } from '@/constants'
 import { ProductRating } from '.'
 import { ProductDetailSkeleton } from '@/components/app/skeleton'
 import { NonPropQuantitySelector } from '@/components/app/button'
-import { useCartItemStore, useCurrentUrlStore, useUserStore } from '@/stores'
+import {
+  useBranchStore,
+  useCartItemStore,
+  useCurrentUrlStore,
+  useUserStore,
+} from '@/stores'
 import { ICartItem, IOrderType, IProductVariant } from '@/types'
 import { formatCurrency, showErrorToast } from '@/utils'
 import { ProductImageCarousel } from '.'
+import moment from 'moment'
 
 export default function ProductManagementPage() {
   const { t } = useTranslation(['product'])
@@ -21,6 +27,12 @@ export default function ProductManagementPage() {
   const { getUserInfo } = useUserStore()
   const { setCurrentUrl } = useCurrentUrlStore()
   const navigate = useNavigate()
+  const { branch } = useBranchStore()
+
+  const { data: specificMenu } = useSpecificMenu({
+    branch: branch?.slug,
+    date: moment().format('YYYY-MM-DD'),
+  })
 
   const { data: product, isLoading } = useSpecificMenuItem(slug as string)
   const { addCartItem } = useCartItemStore()
@@ -68,7 +80,6 @@ export default function ProductManagementPage() {
       slug: productDetail?.slug || '',
       owner: getUserInfo()?.slug,
       type: IOrderType.AT_TABLE, // default value
-      // branch: getUserInfo()?.branch.slug, // get branch from user info
       orderItems: [
         {
           id: generateCartItemId(),
@@ -80,7 +91,6 @@ export default function ProductManagementPage() {
           price: selectedVariant.price,
           description: productDetail?.description || '',
           isLimit: productDetail?.isLimit || false,
-          // catalog: productDetail?.catalog || null,
           note: note,
         },
       ],
@@ -93,121 +103,140 @@ export default function ProductManagementPage() {
   }
 
   return (
-    <div className="container flex flex-row h-full gap-2 py-5">
-      {/* Menu Section - Scrollable */}
-      <div className={`transition-all duration-300 ease-in-out`}>
-        <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4">
-          <div className="flex flex-col flex-1 w-full mt-1">
-            <div className="flex flex-row items-center justify-between">
-              <span className="flex items-center gap-1 text-lg">
-                <SquareMenu />
-                {t('product.productDetail')}
-              </span>
-            </div>
-            <div className="flex flex-col gap-4">
-              <div className="grid w-full grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
-                <div className="flex flex-col h-full col-span-1 gap-2">
-                  {productDetail && (
-                    <img
-                      src={`${publicFileURL}/${selectedImage || productDetail.image}`}
-                      alt={productDetail.name}
-                      className="h-[20rem] w-full rounded-xl object-cover transition-opacity duration-300 ease-in-out"
-                    />
-                  )}
-                  <div className="flex items-center justify-center">
-                    <ProductImageCarousel
-                      images={
-                        productDetail
-                          ? [
-                            productDetail.image,
-                            ...(productDetail.images || []),
-                          ]
-                          : []
-                      }
-                      onImageClick={setSelectedImage}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col col-span-1 gap-4">
-                  {productDetail && (
-                    <div className="flex flex-col gap-4">
-                      <div className="flex flex-col gap-1">
-                        <div>
-                          <span className="text-3xl font-semibold">
-                            {productDetail.name}
-                          </span>
+    <div>
+      {/* Thumbnail */}
+      <div className="container py-10">
+        <div className={`transition-all duration-300 ease-in-out`}>
+          <div className="flex flex-col items-start gap-10 lg:flex-row">
+            {/* Product detail */}
+            <div className="flex w-full flex-col gap-5 lg:w-3/4 lg:flex-row">
+              <div className="col-span-1 flex w-full flex-col gap-2 lg:w-1/2">
+                {productDetail && (
+                  <img
+                    src={`${publicFileURL}/${selectedImage || productDetail.image}`}
+                    alt={productDetail.name}
+                    className="h-[15rem] w-full rounded-xl object-cover transition-opacity duration-300 ease-in-out"
+                  />
+                )}
+                <ProductImageCarousel
+                  images={
+                    productDetail
+                      ? [productDetail.image, ...(productDetail.images || [])]
+                      : []
+                  }
+                  onImageClick={setSelectedImage}
+                />
+              </div>
+              <div className="col-span-1 flex flex-col gap-4">
+                {productDetail && (
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xl font-semibold">
+                        {productDetail.name}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {productDetail.description}
+                      </span>
+                      {price ? (
+                        <div className="text-lg font-semibold text-primary">
+                          {`${formatCurrency(price)}`}
                         </div>
-                        <div>
-                          <span className="text-muted-foreground">
-                            {productDetail.description}
-                          </span>
+                      ) : (
+                        <div className="font-semibold text-primary">
+                          {t('product.chooseSizeToViewPrice')}
                         </div>
-                        {price ? (
-                          <div className="text-2xl font-semibold text-primary">
-                            {`${formatCurrency(price)}`}
-                          </div>
-                        ) : (
-                          <div className="text-xl font-semibold text-primary">
-                            {t('product.chooseSizeToViewPrice')}
-                          </div>
-                        )}
-                        {/* Product Rating */}
-                        <div className="mt-2">
-                          <ProductRating rating={productDetail.rating} />
+                      )}
+                      {/* Product Rating */}
+                      <div className="mt-2">
+                        <ProductRating rating={productDetail.rating} />
+                      </div>
+                    </div>
+                    {productDetail.variants.length > 0 && (
+                      <div className="flex w-full flex-row items-center gap-6">
+                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          {t('product.selectSize')}
+                        </label>
+                        <div className="flex flex-row items-center justify-start gap-2">
+                          {productDetail.variants.map((variant) => (
+                            <div
+                              // variant="outline"
+                              className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-500 p-2 text-xs transition-colors hover:border-primary hover:bg-primary hover:text-white ${size === variant.size.name ? 'border-primary bg-primary text-white' : 'bg-transparent'}`}
+                              key={variant.slug}
+                              onClick={() => handleSizeChange(variant)}
+                            >
+                              {variant.size.name.toUpperCase()}
+                            </div>
+                          ))}
                         </div>
                       </div>
-                      {productDetail.variants.length > 0 && (
-                        <div className="flex flex-row items-center w-full gap-6">
-                          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            {t('product.selectSize')}
-                          </label>
-                          <div className="flex flex-row items-center justify-start gap-2">
-                            {productDetail.variants.map((variant) => (
-                              <div
-                                // variant="outline"
-                                className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border p-2 transition-colors hover:bg-primary hover:text-white ${size === variant.size.name ? 'border-primary bg-primary text-white' : 'bg-transparent'}`}
-                                key={variant.slug}
-                                onClick={() => handleSizeChange(variant)}
-                              >
-                                {variant.size.name.toUpperCase()}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                    )}
 
-                      {productDetail.variants.length > 0 && (
-                        <div className="flex flex-row items-center w-full gap-6">
-                          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            {t('product.selectQuantity')}
-                          </label>
-                          <div className="flex flex-row items-center justify-start gap-2">
-                            <NonPropQuantitySelector
-                              currentQuantity={product.result.currentStock}
-                              onChange={handleQuantityChange}
-                            />
-                            <div className="text-xs text-muted-foreground">
-                              {product.result.currentStock}/
-                              {product.result.defaultStock} sản phẩm có sẵn
-                            </div>
+                    {productDetail.variants.length > 0 && (
+                      <div className="flex w-full flex-row items-center gap-6">
+                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          {t('product.selectQuantity')}
+                        </label>
+                        <div className="flex flex-row items-center justify-start gap-2">
+                          <NonPropQuantitySelector
+                            currentQuantity={product.result.currentStock}
+                            onChange={handleQuantityChange}
+                          />
+                          <div className="text-xs text-muted-foreground">
+                            {product.result.currentStock}/
+                            {product.result.defaultStock} sản phẩm có sẵn
                           </div>
                         </div>
-                      )}
-                    </div>
-                  )}
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button
-                      onClick={handleAddToCart}
-                      variant="outline"
-                      className="bg-transparent"
-                      disabled={!size || quantity <= 0}
-                    >
-                      <ShoppingCart />
-                      {tMenu('menu.addToCart')}
-                    </Button>
-                    <Button>{tMenu('menu.buyNow')}</Button>
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
+                <Button
+                  onClick={handleAddToCart}
+                  variant="default"
+                  disabled={!size || quantity <= 0}
+                >
+                  <ShoppingCart />
+                  {tMenu('menu.addToCart')}
+                </Button>
+              </div>
+            </div>
+
+            {/* Related products */}
+            <div className="w-full lg:w-1/4">
+              <p className="border-l-4 border-primary pl-2 text-primary">
+                Món liên quan
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-5 lg:grid-cols-1">
+                {specificMenu?.result.menuItems.map((item) => {
+                  return (
+                    <NavLink
+                      key={item.slug}
+                      to={`${ROUTE.CLIENT_MENU}/${item.slug}`}
+                    >
+                      <div
+                        key={item.slug}
+                        className="flex flex-col rounded-xl backdrop-blur-md transition-all duration-300 hover:scale-105"
+                      >
+                        {/* Image Section with Discount Tag */}
+                        <div className="relative">
+                          {item.product.image ? (
+                            <img
+                              src={`${publicFileURL}/${item.product.image}`}
+                              alt={item.product.name}
+                              className="h-36 w-full rounded-t-md object-cover"
+                            />
+                          ) : (
+                            <div className="h-24 w-full rounded-t-md bg-muted/60" />
+                          )}
+                        </div>
+
+                        <h3 className="mt-3 text-[13px]">
+                          {item.product.name}
+                        </h3>
+                      </div>
+                    </NavLink>
+                  )
+                })}
               </div>
             </div>
           </div>

@@ -52,7 +52,7 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
         <NavLink key={item.slug} to={`${ROUTE.CLIENT_MENU}/${item.slug}`}>
           <div
             key={item.slug}
-            className="flex min-h-[20rem] flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105"
+            className="flex min-h-[20rem] flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-100"
           >
             {/* Image Section with Discount Tag */}
             <div className="relative">
@@ -77,7 +77,7 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
             </div>
 
             {/* Content Section - More compact */}
-            <div className="flex flex-1 flex-col justify-between space-y-1.5 p-2">
+            <div className="flex flex-1 flex-col justify-between p-2">
               <div>
                 <h3 className="line-clamp-1 text-lg font-bold">
                   {item.product.name}
