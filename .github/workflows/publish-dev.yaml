@@ -81,4 +81,4 @@ jobs:
           ssh-keyscan -p $SSH_PORT $REMOTE_HOST >> ~/.ssh/known_hosts
           export DOCKER_HOST="ssh://$REMOTE_USER@$REMOTE_HOST:$SSH_PORT"
 
-          ocker compose -f .deploy/dev/docker-compose.yml pull
+          docker compose -f .deploy/dev/docker-compose.yml pull
