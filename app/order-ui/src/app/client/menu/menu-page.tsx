@@ -64,26 +64,26 @@ export default function MenuPage() {
         <div className="w-full lg:sticky lg:top-20 lg:z-10 lg:w-1/4">
           <div className="flex flex-col gap-4">
             {/* Title */}
-            <div className="flex items-center w-full gap-1">
+            <div className="flex w-full items-center gap-1">
               {/* <CurrentDateInput menu={specificMenu?.result} /> */}
             </div>
             <div className="flex items-end gap-1 text-xs text-primary">
-              <MapPinIcon className="w-5 h-5" />
+              <MapPinIcon className="h-5 w-5" />
               {branch ? `${branch.name} (${branch.address})` : t('menu.noData')}
             </div>
             {/* Product name search */}
             <div className="relative w-full">
-              <Search className="absolute w-4 h-4 -translate-y-1/2 left-3 top-1/2 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder={t('menu.searchProduct')}
-                className="w-full pl-10 pr-10 bg-transparent"
+                className="w-full bg-transparent pl-10 pr-10"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
               {inputValue && (
                 <CircleX
-                  className="absolute w-4 h-4 -translate-y-1/2 cursor-pointer right-3 top-1/2 text-muted-foreground hover:text-primary"
+                  className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-primary"
                   onClick={() => setInputValue('')}
                 />
               )}
@@ -93,17 +93,22 @@ export default function MenuPage() {
             </div>
 
             {/* Price filter */}
-            <div className="flex-shrink-0 w-fit">
-              <PriceRangeFilter />
-            </div>
-            {minPrice !== 0 && maxPrice !== 0 && (
-              <div className="flex items-center flex-shrink-0 gap-1 px-2 py-1 border rounded-full w-fit border-primary bg-primary/10 text-primary">
-                <span className="text-xs">{formatCurrency(minPrice)}</span>
-                <span className="text-xs">đến</span>
-                <span className="text-xs">{formatCurrency(maxPrice)}</span>
-                <CircleX className='cursor-pointer' onClick={() => clearPriceRange()} />
+            <div className="flex items-center gap-2">
+              <div className="w-fit">
+                <PriceRangeFilter />
               </div>
-            )}
+              {minPrice !== 0 && maxPrice !== 0 && (
+                <div className="flex w-fit items-center gap-1 rounded-full border border-primary bg-primary/10 px-2 py-1 text-primary">
+                  <span className="text-xs">{formatCurrency(minPrice)}</span>
+                  <span className="text-xs">đến</span>
+                  <span className="text-xs">{formatCurrency(maxPrice)}</span>
+                  <CircleX
+                    className="cursor-pointer"
+                    onClick={() => clearPriceRange()}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -114,4 +119,3 @@ export default function MenuPage() {
     </div>
   )
 }
-
