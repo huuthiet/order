@@ -39,6 +39,7 @@ import {
   StaticPageManagementPage,
   CustomerPage,
   OverviewPage,
+  OverviewDetailPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 import { ClientLayout } from '@/app/layouts/client'
@@ -77,6 +78,30 @@ export const router = createBrowserRouter([
               Role.SUPER_ADMIN,
             ]}
             element={<SuspenseElement component={OverviewPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.OVERVIEW_DETAIL,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={StaffLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[
+              Role.ADMIN,
+              Role.STAFF,
+              Role.MANAGER,
+              Role.SUPER_ADMIN,
+            ]}
+            element={<SuspenseElement component={OverviewDetailPage} />}
           />
         ),
       },

@@ -58,7 +58,7 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="container my-10">
+    <div className="container mb-10">
       <div className="flex flex-col items-start gap-5 lg:flex-row">
         {/* Left - sidebar */}
         <div className="w-full lg:sticky lg:top-20 lg:z-10 lg:w-1/4">
@@ -88,13 +88,15 @@ export default function MenuPage() {
                 />
               )}
             </div>
-            <div>
-              <ClientCatalogSelect onChange={handleSelectCatalog} />
+            <div className='grid grid-cols-3 gap-2'>
+              <div className='col-span-2'>
+                <ClientCatalogSelect onChange={handleSelectCatalog} />
+              </div>
+              <PriceRangeFilter />
             </div>
-
             {/* Price filter */}
             <div className="flex-shrink-0 w-fit">
-              <PriceRangeFilter />
+
             </div>
             {minPrice !== 0 && maxPrice !== 0 && (
               <div className="flex items-center flex-shrink-0 gap-1 px-2 py-1 border rounded-full w-fit border-primary bg-primary/10 text-primary">
@@ -107,7 +109,7 @@ export default function MenuPage() {
           </div>
         </div>
 
-        <div className="w-full lg:w-3/4">
+        <div className="w-full my-10 lg:w-3/4">
           <MenuList menu={specificMenu?.result} isLoading={isPending} />
         </div>
       </div>

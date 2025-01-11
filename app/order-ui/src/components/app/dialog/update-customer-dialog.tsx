@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SquareMousePointer } from 'lucide-react'
+import { PenLineIcon } from 'lucide-react'
 
 import {
   Button,
@@ -12,15 +12,15 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { UserInfoForm } from '@/components/app/form'
+import { UpdateCustomerForm } from '@/components/app/form'
 import { IUserInfo } from '@/types'
 
-interface IUserInfoDialogProps {
-  user?: IUserInfo
+interface IUpdateCustomerDialogProps {
+  customer: IUserInfo
 }
 
-export default function UserInfoDialog({ user }: IUserInfoDialogProps) {
-  const { t } = useTranslation(['user'])
+export default function UpdateEmployeeDialog({ customer }: IUpdateCustomerDialogProps) {
+  const { t } = useTranslation(['customer'])
   const [isOpen, setIsOpen] = useState(false)
   const handleSubmit = (isOpen: boolean) => {
     setIsOpen(isOpen)
@@ -28,24 +28,24 @@ export default function UserInfoDialog({ user }: IUserInfoDialogProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild className="flex justify-start w-full">
+      <DialogTrigger asChild className='flex items-center justify-start w-full'>
         <Button
           variant="ghost"
           className="h-10 gap-1 px-2 text-sm"
           onClick={() => setIsOpen(true)}
         >
-          <SquareMousePointer className="icon" />
-          {t('users.viewDetail')}
+          <PenLineIcon className="icon" />
+          {t('customer.update')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="h-4/5 w-4/5 overflow-y-auto rounded-md px-6 sm:max-w-[40rem]">
+      <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
         <DialogHeader>
-          <DialogTitle>{t('users.detailInfo')}</DialogTitle>
+          <DialogTitle>{t('customer.update')}</DialogTitle>
           <DialogDescription>
-            {t('users.detailInfoDescription')}
+            {t('customer.updateDescription')}
           </DialogDescription>
         </DialogHeader>
-        <UserInfoForm user={user} onSubmit={handleSubmit} />
+        <UpdateCustomerForm customer={customer} onSubmit={handleSubmit} />
       </DialogContent>
     </Dialog>
   )

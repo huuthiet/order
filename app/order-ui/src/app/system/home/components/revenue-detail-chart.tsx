@@ -3,12 +3,13 @@ import * as echarts from 'echarts'
 import moment from 'moment'
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
-import { useRevenue } from '@/hooks'
+import { useBranchRevenue } from '@/hooks'
 import { formatCurrency, formatShortCurrency } from '@/utils'
 import { RevenueTypeQuery } from '@/constants'
 import { DateSelect } from '@/components/app/select'
 
 interface RevenueData {
+    branch: string
     startDate: string
     endDate: string
 }
@@ -19,14 +20,15 @@ interface TooltipParams {
     seriesName: string;
 }
 
-export default function RevenueChart({ startDate, endDate }: RevenueData) {
+export default function RevenueDetailChart({ branch, startDate, endDate }: RevenueData) {
     const chartRef = useRef<HTMLDivElement>(null)
     const [revenueType, setRevenueType] = useState(RevenueTypeQuery.DAILY)
 
-    const { data: revenueData } = useRevenue({
+    const { data: revenueData } = useBranchRevenue({
+        branch,
         startDate,
         endDate,
-        type: revenueType // Sử dụng state thay vì hardcode
+        type: revenueType
     })
 
     const handleSelectTimeRange = (timeRange: string) => {
