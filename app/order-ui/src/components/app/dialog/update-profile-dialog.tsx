@@ -37,7 +37,7 @@ export default function UpdateProfileDialog({
           onClick={() => setIsOpen(true)}
         >
           <PencilLine className="icon" />
-          <span className="hidden sm:block">{t('profile.updateProfile')}</span>
+          <span className="">{t('profile.updateProfile')}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] rounded-md px-0 sm:max-w-[56rem]">

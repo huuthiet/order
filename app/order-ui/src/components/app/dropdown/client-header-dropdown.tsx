@@ -60,20 +60,6 @@ export default function ClientHeaderDropdown() {
               </Button>
             </NavLink>
           </DropdownMenuItem>
-          <DropdownMenuItem className="h-9 px-0">
-            <NavLink
-              to={`${ROUTE.CLIENT_ORDER_HISTORY}`}
-              className="flex h-9 w-full justify-start"
-            >
-              <Button
-                variant="ghost"
-                className="flex w-full justify-start gap-1 text-sm"
-              >
-                <ShoppingBag className="icon" />
-                {t('header.myOrders')}
-              </Button>
-            </NavLink>
-          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <LogoutDialog />

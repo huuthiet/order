@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 import {
@@ -19,9 +19,12 @@ import { OrderStatus } from '@/types'
 import { OrderHistorySkeleton } from '@/components/app/skeleton'
 import { formatCurrency } from '@/utils'
 
-export default function OrderList({ filter }: { filter: OrderStatus }) {
+export default function CustomerOrderTabsContent({
+  status,
+}: {
+  status: OrderStatus
+}) {
   const { t } = useTranslation(['menu'])
-  const { t: tCommon } = useTranslation(['common'])
   const navigate = useNavigate()
   const { userInfo } = useUserStore()
   const { pagination, handlePageChange } = usePagination()
@@ -31,9 +34,8 @@ export default function OrderList({ filter }: { filter: OrderStatus }) {
     size: pagination.pageSize,
     ownerSlug: userInfo?.slug,
     order: 'DESC',
-    branchSlug: userInfo?.branch.slug,
     hasPaging: true,
-    status: filter === OrderStatus.ALL ? undefined : filter,
+    status: status,
   })
 
   const orderData = order?.result.items
@@ -47,33 +49,30 @@ export default function OrderList({ filter }: { filter: OrderStatus }) {
       {orderData?.length ? (
         orderData.map((orderItem) => (
           <div key={orderItem.slug} className="mb-6 rounded-md border">
-            {/* Header: Thông tin đơn hàng */}
+            {/* Header */}
             <div className="flex items-center justify-between rounded-t-md border-b px-4 py-4">
               <span className="text-xs text-muted-foreground">
                 {moment(orderItem.createdAt).format('hh:mm:ss DD/MM/YYYY')}
               </span>
+
               <OrderStatusBadge order={orderItem} />
             </div>
 
-            {/* Danh sách sản phẩm */}
-            <div className="flex flex-col divide-y">
+            {/* Order items */}
+            <div className="flex flex-col">
               {orderItem.orderItems.map((product) => (
                 <div
                   key={product.slug}
                   className="grid grid-cols-12 items-center gap-2 p-4"
                 >
-                  <div className="relative col-span-4">
-                    <div className="relative h-16 w-full cursor-pointer sm:h-full sm:w-1/2">
-                      <NavLink to={`${ROUTE.CLIENT_MENU}/${orderItem.slug}`}>
-                        <img
-                          src={`${publicFileURL}/${product.variant.product.image}`}
-                          alt={product.variant.product.name}
-                          className="h-full w-full rounded-md object-cover"
-                        />
-                      </NavLink>
-                      <div className="absolute -bottom-2 -right-3 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs text-white sm:h-10 sm:w-10">
-                        x{product.quantity}
-                      </div>
+                  <div className="relative">
+                    <img
+                      src={`${publicFileURL}/${product.variant.product.image}`}
+                      alt={product.variant.product.name}
+                      className="h-20 w-20 rounded-md object-cover"
+                    />
+                    <div className="absolute -bottom-2 -right-3 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs text-white sm:h-8 sm:w-8">
+                      x{product.quantity}
                     </div>
                   </div>
 
@@ -97,7 +96,6 @@ export default function OrderList({ filter }: { filter: OrderStatus }) {
             <div className="flex flex-col justify-end gap-2 p-4">
               <div className="flex items-center justify-between">
                 <Button
-                  variant="outline"
                   onClick={() =>
                     navigate(`${ROUTE.CLIENT_ORDER_HISTORY}/${orderItem.slug}`)
                   }
@@ -134,13 +132,6 @@ export default function OrderList({ filter }: { filter: OrderStatus }) {
               {/* Current page */}
               <PaginationItem>
                 <PaginationLink isActive>{order?.result.page}</PaginationLink>
-              </PaginationItem>
-
-              {/* Show total pages info */}
-              <PaginationItem>
-                <PaginationLink>
-                  {tCommon('dataTable.of')} {order?.result.totalPages}
-                </PaginationLink>
               </PaginationItem>
 
               <PaginationItem>

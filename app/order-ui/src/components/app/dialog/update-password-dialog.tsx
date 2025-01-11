@@ -30,7 +30,7 @@ export default function UpdatePasswordDialog() {
           onClick={() => setIsOpen(true)}
         >
           <KeyRound className="icon" />
-          <span className="hidden sm:block">{t('profile.updatePassword')}</span>
+          <span className="">{t('profile.updatePassword')}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] rounded-md px-6 sm:max-w-[36rem]">
