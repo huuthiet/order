@@ -52,7 +52,7 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
         <NavLink key={item.slug} to={`${ROUTE.CLIENT_MENU}/${item.slug}`}>
           <div
             key={item.slug}
-            className="flex min-h-[20rem] flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105"
+            className="flex min-h-[18rem] sm:min-h-[20rem] flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105"
           >
             {/* Image Section with Discount Tag */}
             <div className="relative">
@@ -60,10 +60,10 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
                 <img
                   src={`${publicFileURL}/${item.product.image}`}
                   alt={item.product.name}
-                  className="h-36 w-full rounded-t-md object-cover"
+                  className="object-cover w-full h-36 rounded-t-md"
                 />
               ) : (
-                <div className="h-24 w-full rounded-t-md bg-muted/60" />
+                <div className="w-full h-24 rounded-t-md bg-muted/60" />
               )}
 
               {/* Discount Tag */}
@@ -79,10 +79,10 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
             {/* Content Section - More compact */}
             <div className="flex flex-1 flex-col justify-between space-y-1.5 p-2">
               <div>
-                <h3 className="line-clamp-1 text-lg font-bold">
+                <h3 className="text-lg font-bold line-clamp-1">
                   {item.product.name}
                 </h3>
-                <p className="line-clamp-2 text-xs text-gray-500">
+                <p className="text-xs text-gray-500 line-clamp-2">
                   {item.product.description}
                 </p>
               </div>
@@ -113,12 +113,12 @@ export default function MenuList({ menu, isLoading }: IMenuProps) {
                 </div>
               </div>
               {item.currentStock > 0 ? (
-                <div className="flex w-full items-end justify-center">
+                <div className="flex items-end justify-center w-full">
                   {/* <AddToCartDialog product={item.product} /> */}
                 </div>
               ) : (
                 <Button
-                  className="flex w-full items-center justify-center rounded-full bg-red-500 py-2 text-sm font-semibold text-white"
+                  className="flex items-center justify-center w-full py-2 text-sm font-semibold text-white bg-red-500 rounded-full"
                   disabled
                 >
                   {t('menu.outOfStock')}

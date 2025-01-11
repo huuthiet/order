@@ -25,9 +25,9 @@ export default function CartPage() {
 
   return (
     <div className={`container w-full py-4`}>
-      {/* Order type selection */}
       {cartItems ? (
         <div>
+          {/* Order type selection */}
           <div className="grid w-full grid-cols-2 gap-2 sm:max-w-xs">
             <div
               onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
@@ -50,8 +50,8 @@ export default function CartPage() {
           </div>
           {/* Table list order items */}
           <div className="my-4">
-            <div className="grid grid-cols-7 px-4 py-3 mb-4 text-sm font-thin rounded-md bg-muted/60">
-              <span className="col-span-2">{t('order.product')}</span>
+            <div className="grid grid-cols-8 px-4 py-3 mb-4 text-sm font-thin rounded-md bg-muted/60">
+              <span className="col-span-3">{t('order.product')}</span>
               <span className="col-span-2 text-center">{t('order.quantity')}</span>
               <span className="col-span-2 text-center">
                 {t('order.grandTotal')}
@@ -69,9 +69,9 @@ export default function CartPage() {
                 >
                   <div
                     key={`${item.slug}`}
-                    className="grid flex-row items-center w-full grid-cols-7"
+                    className="grid flex-row items-center w-full grid-cols-8"
                   >
-                    <div className="flex w-full col-span-2 gap-2">
+                    <div className="flex w-full col-span-3 gap-2">
                       <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
                         <img
                           src={`${publicFileURL}/${item.image}`}
@@ -88,7 +88,7 @@ export default function CartPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex justify-center col-span-2">
+                    <div className="flex h-full col-span-2">
                       <QuantitySelector cartItem={item} />
                     </div>
                     <div className="col-span-2 text-center">
@@ -106,7 +106,7 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* Checkout cart */}
+          {/* Note */}
           <div className="flex items-end justify-between">
             <div className="flex items-center gap-1">
               <CircleAlert size={14} className="text-destructive" />

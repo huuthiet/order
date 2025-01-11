@@ -35,8 +35,6 @@ export default function BestSellerCarousel() {
     refetch()
   }, [branch, refetch])
 
-  console.log('bestSellerProducts', bestSellerProducts?.result.items)
-
   const getPriceRange = (variants: IProduct['variants']) => {
     if (!variants || variants.length === 0) return null
 
@@ -61,7 +59,7 @@ export default function BestSellerCarousel() {
 
     const intervalId = setInterval(() => {
       api.scrollNext()
-    }, 6000) // Trượt mỗi 6 giây
+    }, 5000) // Trượt mỗi 5 giây
 
     api.on('select', onSelect)
 
@@ -82,7 +80,7 @@ export default function BestSellerCarousel() {
   }
 
   return (
-    <div className="flex flex-col items-center w-full gap-2">
+    <div className="flex flex-col items-center w-full">
       <Carousel
         opts={{
           align: 'start',
@@ -97,14 +95,14 @@ export default function BestSellerCarousel() {
               key={item.product.slug}
               className="basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
-              <div className="w-full p-2">
+              <div className="flex justify-center w-full py-2">
                 <NavLink
                   key={item.product.slug}
                   className="block w-full"
                   to={`${ROUTE.CLIENT_MENU}/${item.product.slug}`}
                 >
                   <div
-                    className="flex h-[20rem] w-full flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105"
+                    className="flex h-[18rem] sm:h-[20rem] w-full flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105"
                   >
                     <div className="relative">
                       {item.product.image ? (

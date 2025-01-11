@@ -1,16 +1,21 @@
 import { DollarSign, CoffeeIcon, TrendingUp, Users } from 'lucide-react';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
-import { useRevenue } from "@/hooks";
+import { useBranchRevenue } from "@/hooks";
+import { RevenueTypeQuery } from '@/constants';
 
 interface RevenueData {
+    branch: string;
     startDate: string;
     endDate: string;
 }
 
-export default function RevenueSummary({ startDate, endDate }: RevenueData) {
-    const { data: revenueData } = useRevenue({
+export default function RevenueDetailSummary({ branch, startDate, endDate }: RevenueData) {
+    const { data: revenueData } = useBranchRevenue({
+        branch,
         startDate,
         endDate,
+        type: RevenueTypeQuery.DAILY
     });
 
     // Lấy ngày hôm nay

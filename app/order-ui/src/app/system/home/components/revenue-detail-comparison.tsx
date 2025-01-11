@@ -1,24 +1,28 @@
 import { useEffect, useRef } from 'react'
 import * as echarts from 'echarts'
 import moment from 'moment'
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
-import { useRevenue } from '@/hooks'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useBranchRevenue } from '@/hooks'
 import { formatCurrency } from '@/utils'
 import { RevenueTypeQuery } from '@/constants'
 
-export default function RevenueComparison() {
+interface RevenueData {
+    branch: string
+}
+export default function RevenueComparison({ branch }: RevenueData) {
     const chartRef = useRef<HTMLDivElement>(null)
 
     // Get current month data
-    const { data: currentMonthData } = useRevenue({
+    const { data: currentMonthData } = useBranchRevenue({
+        branch,
         startDate: moment().startOf('month').toISOString(),
         endDate: moment().endOf('month').toISOString(),
         type: RevenueTypeQuery.MONTHLY
     })
 
     // Get last month data
-    const { data: lastMonthData } = useRevenue({
+    const { data: lastMonthData } = useBranchRevenue({
+        branch,
         startDate: moment().subtract(1, 'month').startOf('month').toISOString(),
         endDate: moment().subtract(1, 'month').endOf('month').toISOString(),
         type: RevenueTypeQuery.MONTHLY

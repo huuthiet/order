@@ -169,7 +169,7 @@ export default function PaymentPage() {
                   <span className="col-span-1 text-xs text-center">
                     {t('order.quantity')}
                   </span>
-                  <span className="col-span-1 text-xs text-center">
+                  <span className="col-span-1 text-xs text-end">
                     {t('order.grandTotal')}
                   </span>
                 </div>
@@ -179,16 +179,11 @@ export default function PaymentPage() {
                       key={item.slug}
                       className="grid items-center w-full gap-4 p-4 pb-4 border-b rounded-t-md"
                     >
-                      <div className="grid flex-row items-center w-full grid-cols-5">
+                      <div className="grid items-center w-full grid-cols-5">
                         <div className="flex w-full col-span-2 gap-2">
                           <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
-                            {/* <img
-                                src={`${publicFileURL}/${item.variant.product.image}`}
-                                alt={item.variant.product.name}
-                                className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
-                              /> */}
                             <div className="flex flex-col">
-                              <span className="text-sm font-bold truncate sm:text-lg">
+                              <span className="text-xs font-bold truncate sm:text-lg">
                                 {item.variant.product.name}
                               </span>
                             </div>
@@ -204,37 +199,35 @@ export default function PaymentPage() {
                             {item.quantity || 0}
                           </span>
                         </div>
-                        <div className="col-span-1 text-center">
-                          <span className="text-sm font-semibold text-primary">
+                        <div className="col-span-1 text-end">
+                          <span className="text-sm">
                             {`${formatCurrency((item.variant.price || 0) * item.quantity)}`}
                           </span>
                         </div>
                       </div>
                     </div>
                   ))}
-                  <div className="flex flex-col items-end w-full gap-2 px-2 py-4">
-                    <div className="flex w-[20rem] flex-col gap-2">
-                      <div className="flex justify-between w-full pb-4 border-b">
-                        <h3 className="text-sm font-medium">
-                          {t('order.total')}
+                  <div className="flex flex-col items-end w-full gap-2 p-4">
+                    <div className="grid justify-between w-full grid-cols-5 pb-4 border-b">
+                      <h3 className="col-span-3 text-sm font-medium">
+                        {t('order.total')}
+                      </h3>
+                      <p className="flex justify-end col-span-2 text-sm font-semibold">
+                        {`${formatCurrency(order.result.subtotal || 0)}`}
+                      </p>
+                    </div>
+                    <div className="grid w-full grid-cols-5">
+                      <div className="flex flex-col w-full col-span-3 gap-1">
+                        <h3 className="font-semibold text-md">
+                          {t('order.totalPayment')}
                         </h3>
-                        <p className="text-sm font-semibold">
-                          {`${formatCurrency(order.result.subtotal || 0)}`}
-                        </p>
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="flex justify-between w-full">
-                          <h3 className="font-semibold text-md">
-                            {t('order.totalPayment')}
-                          </h3>
-                          <p className="text-lg font-semibold text-primary">
-                            {`${formatCurrency(order.result.subtotal || 0)}`}
-                          </p>
-                        </div>
                         <span className="text-xs text-muted-foreground">
                           {t('order.vat')}
                         </span>
                       </div>
+                      <p className="flex items-center justify-end col-span-2 text-lg font-semibold text-primary">
+                        {`${formatCurrency(order.result.subtotal || 0)}`}
+                      </p>
                     </div>
                   </div>
                 </div>

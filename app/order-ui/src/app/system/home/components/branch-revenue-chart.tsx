@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState } from 'react' // Thêm useState
+import { useEffect, useRef, useState } from 'react'
 import * as echarts from 'echarts'
 import moment from 'moment'
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
-import { useRevenue } from '@/hooks'
+import { useBranchRevenue } from '@/hooks'
 import { formatCurrency, formatShortCurrency } from '@/utils'
 import { RevenueTypeQuery } from '@/constants'
 import { DateSelect } from '@/components/app/select'
 
-interface RevenueData {
+interface BranchRevenueData {
+    branch: string
     startDate: string
     endDate: string
 }
@@ -19,14 +20,15 @@ interface TooltipParams {
     seriesName: string;
 }
 
-export default function RevenueChart({ startDate, endDate }: RevenueData) {
+export default function RevenueChart({ branch, startDate, endDate }: BranchRevenueData) {
     const chartRef = useRef<HTMLDivElement>(null)
     const [revenueType, setRevenueType] = useState(RevenueTypeQuery.DAILY)
 
-    const { data: revenueData } = useRevenue({
+    const { data: revenueData } = useBranchRevenue({
+        branch,
         startDate,
         endDate,
-        type: revenueType // Sử dụng state thay vì hardcode
+        type: revenueType
     })
 
     const handleSelectTimeRange = (timeRange: string) => {
@@ -144,7 +146,7 @@ export default function RevenueChart({ startDate, endDate }: RevenueData) {
                         name: 'Đơn hàng',
                         type: 'bar',
                         yAxisIndex: 1,
-                        barWidth: sortedData.length === 1 ? 40 : '50%', // Add this line
+                        barWidth: sortedData.length === 1 ? 40 : '50%',
                         data: sortedData.map(item => item.totalOrder),
                         itemStyle: {
                             color: '#f89209',
@@ -168,13 +170,13 @@ export default function RevenueChart({ startDate, endDate }: RevenueData) {
                 window.removeEventListener('resize', handleResize)
             }
         }
-    }, [revenueData, revenueType]) // Add revenueType to dependencies
+    }, [revenueData, revenueType])
 
     return (
         <Card className='shadow-none'>
             <CardHeader>
                 <CardTitle className='flex items-center justify-between'>
-                    Doanh thu toàn hệ thống
+                    Doanh thu chi nhánh {branch}
                     {/* <TimeRangeRevenueFilter onApply={handleSelectTimeRange} /> */}
                     <DateSelect onChange={handleSelectTimeRange} />
                 </CardTitle>
