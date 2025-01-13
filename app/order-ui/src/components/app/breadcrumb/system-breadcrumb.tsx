@@ -25,7 +25,7 @@ const routeNameMap: { [key: string]: string } = {
   settings: 'settings',
 }
 
-export default function BreadcrumbComponent() {
+export default function SystemBreadcrumb() {
   const location = useLocation()
   const { t } = useTranslation(['route'])
 

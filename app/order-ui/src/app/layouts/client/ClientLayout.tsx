@@ -12,28 +12,20 @@ export default function ClientLayout() {
 
   return (
     <>
+      {/* Header */}
+      <ClientHeader />
+
       {/* Main content */}
-      <div className="">
-        {/* Header */}
-        <ClientHeader />
+      <main className={cn(isMobile ? 'pb-[env(safe-area-inset-bottom)]' : '')}>
+        <Outlet />
+        {isDownloading && (
+          <DownloadProgress progress={progress} fileName={fileName} />
+        )}
+        <BackToTop />
+      </main>
 
-        {/* Main content */}
-        <main
-          className={cn(
-            'min-h-full',
-            isMobile ? 'pb-[env(safe-area-inset-bottom)]' : '',
-          )}
-        >
-          <Outlet />
-          {isDownloading && (
-            <DownloadProgress progress={progress} fileName={fileName} />
-          )}
-          <BackToTop />
-        </main>
-
-        {/* Footer */}
-        <ClientFooter />
-      </div>
+      {/* Footer */}
+      <ClientFooter />
     </>
   )
 }

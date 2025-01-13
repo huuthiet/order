@@ -10,6 +10,7 @@ import { useIsMobile } from '@/hooks'
 import { ROUTE } from '@/constants'
 import { BestSellerCarousel, StoreCarousel } from './components'
 import { AdPopup } from '@/components/app/AdPopup'
+import React from 'react'
 
 export default function HomePage() {
   const isMobile = useIsMobile()
@@ -25,7 +26,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex w-full flex-col">
+    <React.Fragment>
       <AdPopup />
       <div className="flex flex-col gap-6">
         {/* Section 1: Hero - Full width */}
@@ -72,20 +73,10 @@ export default function HomePage() {
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeInVariants}
           >
-            <div className="flex w-full justify-between">
-              <div className="flex gap-2">
-                <div className="rounded-full border border-primary bg-primary px-3 py-1 text-xs text-muted-foreground text-white sm:text-sm">
-                  Sản phẩm bán chạy
-                </div>
-                <div className="rounded-full border px-3 py-1 text-xs text-muted-foreground sm:text-sm">
-                  Sản phẩm mới
-                </div>
-              </div>
-              <NavLink
-                to={ROUTE.CLIENT_MENU}
-                className="flex items-center justify-center rounded-md px-2 text-xs transition-all duration-200 hover:scale-105 hover:bg-primary/20 hover:text-primary sm:text-sm"
-              >
-                Xem thêm
+            <div className="flex-between w-full">
+              <div className="primary-highlight">Sản phẩm bán chạy</div>
+              <NavLink to={ROUTE.CLIENT_MENU}>
+                <Button>Xem thêm</Button>
               </NavLink>
             </div>
             <BestSellerCarousel />
@@ -119,7 +110,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex justify-center sm:col-span-3">
-              <div className="w-full sm:w-11/12">
+              <div className="w-full">
                 <StoreCarousel />
               </div>
             </div>
@@ -146,6 +137,6 @@ export default function HomePage() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </React.Fragment>
   )
 }

@@ -7,8 +7,6 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselApi,
-  CarouselPrevious,
-  CarouselNext,
 } from '@/components/ui'
 
 import { IProduct } from '@/types'
@@ -63,7 +61,7 @@ export default function BestSellerCarousel() {
 
     const intervalId = setInterval(() => {
       api.scrollNext()
-    }, 5000) // Trượt mỗi 5 giây
+    }, 50000) // Trượt mỗi 5 giây
 
     api.on('select', onSelect)
 
@@ -97,7 +95,7 @@ export default function BestSellerCarousel() {
           {bestSellerProducts.result.items.map((item) => (
             <CarouselItem
               key={item.product.slug}
-              className="basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              className="basis-1/2 lg:basis-1/4 xl:basis-1/5"
             >
               <div className="flex w-full justify-center py-2">
                 <NavLink
@@ -105,7 +103,7 @@ export default function BestSellerCarousel() {
                   className="block w-full"
                   to={`${ROUTE.CLIENT_MENU}/${item.product.slug}`}
                 >
-                  <div className="flex h-[20rem] w-full flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105">
+                  <div className="flex min-h-[10rem] w-full flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105">
                     <div className="relative">
                       {item.product.image ? (
                         <img
@@ -118,7 +116,7 @@ export default function BestSellerCarousel() {
                       )}
                     </div>
 
-                    <div className="flex flex-1 flex-col justify-between space-y-1.5 p-2">
+                    <div className="flex flex-1 flex-col space-y-1.5 p-2">
                       <div>
                         <h3 className="line-clamp-1 text-lg font-bold">
                           {item.product.name}
@@ -161,8 +159,6 @@ export default function BestSellerCarousel() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
       </Carousel>
 
       <div className="mt-4 flex gap-2">

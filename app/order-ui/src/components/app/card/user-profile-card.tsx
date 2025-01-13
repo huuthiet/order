@@ -30,78 +30,44 @@ export default function UserProfileCard() {
   const formFields = {
     firstName: (
       <div className="flex flex-col gap-1">
-        <span className="text-normal font-beVietNam text-sm">
-          {t('profile.firstName')}
-        </span>
-        <Input
-          className="font-beVietNam"
-          value={userProfile?.firstName}
-          readOnly
-        />
+        <span className="text-normal text-sm">{t('profile.firstName')}</span>
+        <Input className="" value={userProfile?.firstName} readOnly />
       </div>
     ),
     lastName: (
       <div className="flex flex-col gap-1">
-        <span className="text-normal font-beVietNam text-sm">
-          {t('profile.lastName')}
-        </span>
-        <Input
-          className="font-beVietNam"
-          value={userProfile?.lastName}
-          readOnly
-        />
+        <span className="text-normal text-sm">{t('profile.lastName')}</span>
+        <Input className="" value={userProfile?.lastName} readOnly />
       </div>
     ),
     email: (
       <div className="flex flex-col gap-1">
-        <span className="text-normal font-beVietNam text-sm">
-          {t('profile.email')}
-        </span>
-        <Input className="font-beVietNam" value={userProfile?.email} readOnly />
+        <span className="text-normal text-sm">{t('profile.email')}</span>
+        <Input className="" value={userProfile?.email} readOnly />
       </div>
     ),
     phonenumber: (
       <div className="flex flex-col gap-1">
-        <span className="text-normal font-beVietNam text-sm">
-          {t('profile.phoneNumber')}
-        </span>
-        <Input
-          className="font-beVietNam"
-          value={userProfile?.phonenumber}
-          readOnly
-        />
+        <span className="text-normal text-sm">{t('profile.phoneNumber')}</span>
+        <Input className="" value={userProfile?.phonenumber} readOnly />
       </div>
     ),
     dob: (
       <div className="flex flex-col gap-1">
-        <span className="text-normal font-beVietNam text-sm">
-          {t('profile.dob')}
-        </span>
-        <Input className="font-beVietNam" value={userProfile?.dob} readOnly />
+        <span className="text-normal text-sm">{t('profile.dob')}</span>
+        <Input className="" value={userProfile?.dob} readOnly />
       </div>
     ),
     address: (
       <div className="flex flex-col gap-1">
-        <span className="text-normal font-beVietNam text-sm">
-          {t('profile.address')}
-        </span>
-        <Input
-          className="font-beVietNam"
-          value={userProfile?.address}
-          readOnly
-        />
+        <span className="text-normal text-sm">{t('profile.address')}</span>
+        <Input className="" value={userProfile?.address} readOnly />
       </div>
     ),
     branch: (
       <div className="flex flex-col gap-1">
-        <span className="text-normal font-beVietNam text-sm">
-          {t('profile.branch')}
-        </span>
-        <Input
-          className="font-beVietNam"
-          value={userProfile?.branch?.name}
-          readOnly
-        />
+        <span className="text-normal text-sm">{t('profile.branch')}</span>
+        <Input className="" value={userProfile?.branch?.name} readOnly />
       </div>
     ),
   }
