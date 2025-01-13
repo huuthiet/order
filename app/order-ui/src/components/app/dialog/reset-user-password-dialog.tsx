@@ -35,7 +35,7 @@ export default function ResetPasswordDialog({
         resetPassword(user, {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['users'],
+                    queryKey: ['customers'],
                 })
                 setIsOpen(false)
                 showToast(tToast('toast.resetPasswordSuccess'))

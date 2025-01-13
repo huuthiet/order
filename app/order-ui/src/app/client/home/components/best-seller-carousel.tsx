@@ -63,7 +63,7 @@ export default function BestSellerCarousel() {
 
     const intervalId = setInterval(() => {
       api.scrollNext()
-    }, 6000) // Trượt mỗi 6 giây
+    }, 5000) // Trượt mỗi 5 giây
 
     api.on('select', onSelect)
 
@@ -99,7 +99,7 @@ export default function BestSellerCarousel() {
               key={item.product.slug}
               className="basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
-              <div className="w-full p-2">
+              <div className="flex w-full justify-center py-2">
                 <NavLink
                   key={item.product.slug}
                   className="block w-full"

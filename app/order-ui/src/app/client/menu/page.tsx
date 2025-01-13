@@ -84,10 +84,8 @@ export default function MenuPage() {
                 />
               )}
             </div>
-            <div>
-              <ClientCatalogSelect onChange={handleSelectCatalog} />
-            </div>
-
+            {/* Catalog filter */}
+            <ClientCatalogSelect onChange={handleSelectCatalog} />
             {/* Price filter */}
             <div className="flex items-center gap-2">
               <div className="w-fit">

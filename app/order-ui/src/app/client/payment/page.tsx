@@ -180,11 +180,6 @@ export function ClientPaymentPage() {
                       <div className="grid w-full grid-cols-5 flex-row items-center">
                         <div className="col-span-2 flex w-full gap-2">
                           <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
-                            {/* <img
-                                src={`${publicFileURL}/${item.variant.product.image}`}
-                                alt={item.variant.product.name}
-                                className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
-                              /> */}
                             <div className="flex flex-col">
                               <span className="truncate text-sm font-bold sm:text-lg">
                                 {item.variant.product.name}
@@ -200,8 +195,8 @@ export function ClientPaymentPage() {
                         <div className="col-span-1 flex justify-center">
                           <span className="text-sm">{item.quantity || 0}</span>
                         </div>
-                        <div className="col-span-1 text-center">
-                          <span className="text-sm font-semibold text-primary">
+                        <div className="col-span-1 text-end">
+                          <span className="text-sm">
                             {`${formatCurrency((item.variant.price || 0) * item.quantity)}`}
                           </span>
                         </div>
@@ -231,6 +226,9 @@ export function ClientPaymentPage() {
                           {t('order.vat')}
                         </span>
                       </div>
+                      <p className="col-span-2 flex items-center justify-end text-lg font-semibold text-primary">
+                        {`${formatCurrency(order.result.subtotal || 0)}`}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -269,7 +267,6 @@ export function ClientPaymentPage() {
                 </div>
               )}
             </div>
-            {/* {qrCode && <QrCodeDialog qrCode={qrCode} />} */}
           </div>
         </div>
       </div>

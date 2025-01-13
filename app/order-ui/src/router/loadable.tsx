@@ -42,6 +42,12 @@ export const OverviewPage = React.lazy(() =>
   })),
 )
 
+export const OverviewDetailPage = React.lazy(() =>
+  import('@/app/system/home').then((module) => ({
+    default: module.OverviewDetailPage,
+  })),
+)
+
 //Menu page
 export const MenuPage = React.lazy(() =>
   import('@/app/system/menu').then((module) => ({

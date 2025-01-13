@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { LogIn, ShoppingBag, User } from 'lucide-react'
+import { LogIn, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import {

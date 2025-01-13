@@ -130,7 +130,7 @@ export function ClientCartPage() {
             </div>
           </div>
 
-          {/* Checkout cart */}
+          {/* Note */}
           <div className="flex items-end justify-between">
             <div className="flex items-center gap-1">
               <CircleAlert size={14} className="text-destructive" />
