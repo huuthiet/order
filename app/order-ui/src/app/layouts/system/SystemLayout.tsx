@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 
 import { SidebarProvider, ScrollArea } from '@/components/ui'
-import { BreadcrumbComponent } from '@/components/app/breadcrumb'
+import { SystemBreadcrumb } from '@/components/app/breadcrumb'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib'
 import { DownloadProgress } from '@/components/app/progress'
@@ -27,7 +27,7 @@ export default function SystemLayout() {
 
           {/* Breadcrumb - Responsive padding */}
           <div className={cn('sticky z-20', isMobile ? 'px-3 py-2' : 'p-4')}>
-            <BreadcrumbComponent />
+            <SystemBreadcrumb />
           </div>
 
           {/* Main scrollable area */}

@@ -7,8 +7,6 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselApi,
-  CarouselPrevious,
-  CarouselNext,
 } from '@/components/ui'
 
 import { IProduct } from '@/types'
@@ -63,7 +61,7 @@ export default function BestSellerCarousel() {
 
     const intervalId = setInterval(() => {
       api.scrollNext()
-    }, 5000) // Trượt mỗi 5 giây
+    }, 50000) // Trượt mỗi 5 giây
 
     api.on('select', onSelect)
 
@@ -97,7 +95,7 @@ export default function BestSellerCarousel() {
           {bestSellerProducts.result.items.map((item) => (
             <CarouselItem
               key={item.product.slug}
-              className="basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              className="basis-1/2 lg:basis-1/4 xl:basis-1/5"
             >
               <div className="flex justify-center w-full py-2">
                 {/* <NavLink
@@ -161,8 +159,6 @@ export default function BestSellerCarousel() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
       </Carousel>
 
       <div className="flex gap-2 mt-4">

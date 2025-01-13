@@ -15,11 +15,9 @@ export function CustomerInfoTabsContent() {
   const formFields = {
     firstName: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
-          {t('profile.firstName')}
-        </span>
+        <span className="text-sm text-normal">{t('profile.firstName')}</span>
         <Input
-          className="font-beVietNam"
+          className=""
           value={userProfile?.firstName}
           readOnly
           disabled
@@ -29,11 +27,9 @@ export function CustomerInfoTabsContent() {
     ),
     lastName: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
-          {t('profile.lastName')}
-        </span>
+        <span className="text-sm text-normal">{t('profile.lastName')}</span>
         <Input
-          className="font-beVietNam"
+          className=""
           value={userProfile?.lastName}
           readOnly
           disabled
@@ -43,11 +39,9 @@ export function CustomerInfoTabsContent() {
     ),
     email: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
-          {t('profile.email')}
-        </span>
+        <span className="text-sm text-normal">{t('profile.email')}</span>
         <Input
-          className="font-beVietNam"
+          className=""
           value={userProfile?.email}
           readOnly
           disabled
@@ -57,11 +51,9 @@ export function CustomerInfoTabsContent() {
     ),
     phonenumber: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
-          {t('profile.phoneNumber')}
-        </span>
+        <span className="text-sm text-normal">{t('profile.phoneNumber')}</span>
         <Input
-          className="font-beVietNam"
+          className=""
           value={userProfile?.phonenumber}
           readOnly
           disabled
@@ -71,11 +63,9 @@ export function CustomerInfoTabsContent() {
     ),
     dob: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
-          {t('profile.dob')}
-        </span>
+        <span className="text-sm text-normal">{t('profile.dob')}</span>
         <Input
-          className="font-beVietNam"
+          className=""
           value={userProfile?.dob}
           readOnly
           disabled
@@ -85,11 +75,9 @@ export function CustomerInfoTabsContent() {
     ),
     address: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
-          {t('profile.address')}
-        </span>
+        <span className="text-sm text-normal">{t('profile.address')}</span>
         <Textarea
-          className="font-beVietNam"
+          className=""
           value={userProfile?.address}
           readOnly
           disabled
