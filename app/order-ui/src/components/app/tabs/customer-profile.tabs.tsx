@@ -8,7 +8,7 @@ export function CustomerProfileTabs() {
   const { t } = useTranslation(['profile'])
   return (
     <Tabs defaultValue="info" className="w-full">
-      <TabsList className="mb-10 grid grid-cols-2 gap-3 sm:grid-cols-6 lg:mb-0">
+      <TabsList className="grid grid-cols-3 gap-3 mb-10 sm:grid-cols-6 lg:mb-0">
         <TabsTrigger value="info" className="flex justify-center">
           {t('profile.generalInfo')}
         </TabsTrigger>
