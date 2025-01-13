@@ -9,7 +9,6 @@ interface IOrderStatusBadgeProps {
 
 export default function OrderStatusBadge({ order }: IOrderStatusBadgeProps) {
   const { t } = useTranslation(['menu'])
-  console.log('order', order)
 
   const getBadgeColor = (status: OrderStatus) => {
     switch (status) {
@@ -27,26 +26,50 @@ export default function OrderStatusBadge({ order }: IOrderStatusBadgeProps) {
   }
 
   const getBadgeText = (order: IOrder) => {
-    if (order?.status === OrderStatus.PENDING && order?.payment?.statusCode === paymentStatus.PENDING) {
-      return t('order.pending');
-    } else if (order?.status === OrderStatus.PENDING && order?.payment === null) {
-      return t('order.pending');
-    } else if (order?.status === OrderStatus.PENDING && order?.payment?.statusCode === paymentStatus.COMPLETED) {
-      return t('order.pending');
-    } else if (order?.status === OrderStatus.PAID && order?.payment?.statusCode === paymentStatus.COMPLETED) {
-      return t('order.paid');
-    } else if (order?.status === OrderStatus.SHIPPING && order?.payment?.statusCode === paymentStatus.COMPLETED) {
-      return t('order.shipping');
-    } else if (order?.status === OrderStatus.SHIPPING && order?.payment?.statusCode === paymentStatus.PENDING) {
-      return t('order.shipping');
-    } else if (order?.status === OrderStatus.COMPLETED && order?.payment?.statusCode === paymentStatus.PENDING) {
-      return t('order.completed');
-    } else if (order?.status === OrderStatus.COMPLETED && order?.payment?.statusCode === paymentStatus.COMPLETED) {
-      return t('order.completed');
+    if (
+      order?.status === OrderStatus.PENDING &&
+      order?.payment?.statusCode === paymentStatus.PENDING
+    ) {
+      return t('order.pending')
+    } else if (
+      order?.status === OrderStatus.PENDING &&
+      order?.payment === null
+    ) {
+      return t('order.pending')
+    } else if (
+      order?.status === OrderStatus.PENDING &&
+      order?.payment?.statusCode === paymentStatus.COMPLETED
+    ) {
+      return t('order.pending')
+    } else if (
+      order?.status === OrderStatus.PAID &&
+      order?.payment?.statusCode === paymentStatus.COMPLETED
+    ) {
+      return t('order.paid')
+    } else if (
+      order?.status === OrderStatus.SHIPPING &&
+      order?.payment?.statusCode === paymentStatus.COMPLETED
+    ) {
+      return t('order.shipping')
+    } else if (
+      order?.status === OrderStatus.SHIPPING &&
+      order?.payment?.statusCode === paymentStatus.PENDING
+    ) {
+      return t('order.shipping')
+    } else if (
+      order?.status === OrderStatus.COMPLETED &&
+      order?.payment?.statusCode === paymentStatus.PENDING
+    ) {
+      return t('order.completed')
+    } else if (
+      order?.status === OrderStatus.COMPLETED &&
+      order?.payment?.statusCode === paymentStatus.COMPLETED
+    ) {
+      return t('order.completed')
     } else {
-      return t('order.unknown');
+      return t('order.unknown')
     }
-  };
+  }
 
   // Ensure the component returns valid JSX
   return (

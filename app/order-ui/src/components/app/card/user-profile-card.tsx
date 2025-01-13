@@ -4,7 +4,10 @@ import { Input, Card, CardContent } from '@/components/ui'
 import { ProfilePicture } from '@/components/app/avatar'
 import { useProfile, useUploadProfilePicture } from '@/hooks'
 import { publicFileURL } from '@/constants'
-import { UpdatePasswordDialog, UpdateProfileDialog } from '@/components/app/dialog'
+import {
+  UpdatePasswordDialog,
+  UpdateProfileDialog,
+} from '@/components/app/dialog'
 import { showToast } from '@/utils'
 import { useUserStore } from '@/stores'
 
@@ -27,7 +30,7 @@ export default function UserProfileCard() {
   const formFields = {
     firstName: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
+        <span className="text-normal font-beVietNam text-sm">
           {t('profile.firstName')}
         </span>
         <Input
@@ -39,7 +42,7 @@ export default function UserProfileCard() {
     ),
     lastName: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
+        <span className="text-normal font-beVietNam text-sm">
           {t('profile.lastName')}
         </span>
         <Input
@@ -51,7 +54,7 @@ export default function UserProfileCard() {
     ),
     email: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
+        <span className="text-normal font-beVietNam text-sm">
           {t('profile.email')}
         </span>
         <Input className="font-beVietNam" value={userProfile?.email} readOnly />
@@ -59,7 +62,7 @@ export default function UserProfileCard() {
     ),
     phonenumber: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
+        <span className="text-normal font-beVietNam text-sm">
           {t('profile.phoneNumber')}
         </span>
         <Input
@@ -71,7 +74,7 @@ export default function UserProfileCard() {
     ),
     dob: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
+        <span className="text-normal font-beVietNam text-sm">
           {t('profile.dob')}
         </span>
         <Input className="font-beVietNam" value={userProfile?.dob} readOnly />
@@ -79,7 +82,7 @@ export default function UserProfileCard() {
     ),
     address: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
+        <span className="text-normal font-beVietNam text-sm">
           {t('profile.address')}
         </span>
         <Input
@@ -91,7 +94,7 @@ export default function UserProfileCard() {
     ),
     branch: (
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-normal font-beVietNam">
+        <span className="text-normal font-beVietNam text-sm">
           {t('profile.branch')}
         </span>
         <Input
@@ -104,7 +107,7 @@ export default function UserProfileCard() {
   }
   return (
     <div>
-      <Card className="bg-transparent border-none shadow-none">
+      <Card className="border-none bg-transparent shadow-none">
         <CardContent className="flex flex-col gap-6 p-0">
           <div className="flex flex-row p-2">
             <ProfilePicture
@@ -117,21 +120,20 @@ export default function UserProfileCard() {
               }
               onUpload={handleUploadProfilePicture}
             />
-            <div className="flex flex-col justify-center ml-4">
-              <span className="font-bold text-md">
+            <div className="ml-4 flex flex-col justify-center">
+              <span className="text-md font-bold">
                 {userProfile?.lastName} {userProfile?.firstName}
               </span>
-              <div className="flex items-center text-description">
-              </div>
+              <div className="text-description flex items-center"></div>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-3 border rounded-md">
+          <div className="grid grid-cols-1 gap-3 rounded-md border">
             <div
               className={
                 'flex w-full items-center justify-between bg-muted-foreground/5 px-6 py-6'
               }
             >
-              <span className="font-semibold text-md">
+              <span className="text-md font-semibold">
                 {t('profile.profile')}
               </span>
               <div className="flex gap-2">

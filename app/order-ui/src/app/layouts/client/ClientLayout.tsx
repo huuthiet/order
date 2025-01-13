@@ -1,18 +1,17 @@
 import { Outlet } from 'react-router-dom'
 
-import { ClientHeader, BackToTop } from '@/components/app'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib'
 import { DownloadProgress } from '@/components/app/progress'
 import { useDownloadStore } from '@/stores'
-import { ClientFooter } from './client-footer'
+import { ClientHeader, ClientFooter, BackToTop } from './components'
 
 export default function ClientLayout() {
   const isMobile = useIsMobile()
   const { progress, fileName, isDownloading } = useDownloadStore()
 
   return (
-    <div className="">
+    <>
       {/* Main content */}
       <div className="">
         {/* Header */}
@@ -35,6 +34,6 @@ export default function ClientLayout() {
         {/* Footer */}
         <ClientFooter />
       </div>
-    </div>
+    </>
   )
 }
