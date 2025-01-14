@@ -71,9 +71,10 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedElement
             allowedRoles={[
-              Role.ADMIN,
+              Role.CHEF,
               Role.STAFF,
               Role.MANAGER,
+              Role.ADMIN,
               Role.SUPER_ADMIN,
             ]}
             element={<SuspenseElement component={OverviewPage} />}
@@ -95,9 +96,10 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedElement
             allowedRoles={[
-              Role.ADMIN,
+              Role.CHEF,
               Role.STAFF,
               Role.MANAGER,
+              Role.ADMIN,
               Role.SUPER_ADMIN,
             ]}
             element={<SuspenseElement component={OverviewDetailPage} />}
@@ -156,7 +158,12 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN]}
+            allowedRoles={[
+              Role.STAFF,
+              Role.MANAGER,
+              Role.ADMIN,
+              Role.SUPER_ADMIN,
+            ]}
             element={<SuspenseElement component={OrderPaymentPage} />}
           />
         ),
@@ -175,7 +182,12 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedElement
-            allowedRoles={[Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN]}
+            allowedRoles={[
+              Role.STAFF,
+              Role.MANAGER,
+              Role.ADMIN,
+              Role.SUPER_ADMIN,
+            ]}
             element={<SuspenseElement component={OrderSuccessPage} />}
           />
         ),
@@ -542,12 +554,6 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <SuspenseElement component={ClientMenuPage} />,
-        // element: (
-        //   <ProtectedElement
-        //     allowedRoles={[Role.CUSTOMER]}
-        //     element={<SuspenseElement component={ClientMenuPage} />}
-        //   />
-        // ),
       },
     ],
   },
@@ -562,12 +568,6 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <SuspenseElement component={ClientProductDetailPage} />,
-        // element: (
-        //   <ProtectedElement
-        //     allowedRoles={[Role.CUSTOMER]}
-        //     element={<SuspenseElement component={ClientProductDetailPage} />}
-        //   />
-        // ),
       },
     ],
   },

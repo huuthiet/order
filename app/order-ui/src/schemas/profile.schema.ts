@@ -6,7 +6,6 @@ export const updateProfileSchema = z.object({
   email: z.string().email('Email không hợp lệ'),
   dob: z.string().min(1, 'Ngày sinh không được để trống'),
   address: z.string().min(1, 'Địa chỉ không được để trống'),
-  branch: z.string().min(1, 'Chi nhánh không được để trống'),
 })
 
 export const updatePasswordSchema = z

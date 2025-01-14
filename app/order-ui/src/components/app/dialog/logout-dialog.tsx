@@ -30,7 +30,6 @@ export default function LogoutDialog() {
   const handleLogout = () => {
     setLogout()
     removeUserInfo()
-    removeBranch()
     navigate(ROUTE.HOME, { replace: true })
     showToast(tToast('toast.logoutSuccess'))
   }

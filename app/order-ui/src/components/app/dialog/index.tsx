@@ -65,3 +65,5 @@ export { default as UpdateCustomerDialog } from './update-customer-dialog'
 
 export { default as CreateEmployeeDialog } from './create-employee-dialog'
 export { default as UpdateEmployeeDialog } from './update-employee-dialog'
+
+export { default as UpdateCustomerProfileDialog } from './update-customer-profile-dialog'

@@ -46,8 +46,25 @@ export function ClientCartPage() {
   return (
     <div className={`container py-10`}>
       {/* Order type selection */}
-      {cartItems ? (
-        <div className="rounded-sm bg-white p-5 shadow-lg">
+      <div className="grid grid-cols-12 gap-4">
+        {/* Left content */}
+        <div className="col-span-12 lg:col-span-8">
+          {/* Note */}
+          <div className="flex items-end justify-between">
+            <div className="flex items-center gap-1">
+              <CircleAlert size={14} className="text-destructive" />
+              <span className="text-xs italic text-destructive">
+                {t('order.selectTableNote')}
+              </span>
+            </div>
+          </div>
+
+          {/* Table select */}
+          <ClientTableSelect />
+        </div>
+
+        {/* Right content */}
+        <div className="col-span-12 lg:col-span-4">
           <div className="grid w-full grid-cols-2 gap-2 sm:max-w-xs">
             <div
               onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
@@ -129,39 +146,10 @@ export function ClientCartPage() {
               ))}
             </div>
           </div>
-
-          {/* Note */}
-          <div className="flex items-end justify-between">
-            <div className="flex items-center gap-1">
-              <CircleAlert size={14} className="text-destructive" />
-              <span className="text-xs italic text-destructive">
-                {t('order.selectTableNote')}
-              </span>
-            </div>
-          </div>
-
-          {/* Table select */}
-          <ClientTableSelect />
-          <div className="flex justify-end py-4">
-            <div className="w-full sm:max-w-[10rem]">
-              <CreateOrderDialog disabled={!cartItems.table || !cartItems} />
-            </div>
-          </div>
+          {/* Button */}
+          <CreateOrderDialog disabled={!cartItems?.table || !cartItems} />
         </div>
-      ) : (
-        <div className="flex h-[calc(51vh)] flex-col items-center justify-center gap-4 text-center">
-          {/* Empty Cart Icon */}
-          <ShoppingBag size={64} className="text-muted-foreground" />
-
-          {/* Message */}
-          <p className="text-lg text-muted-foreground">{t('order.noOrders')}</p>
-
-          {/* Navigation Button */}
-          <NavLink to={ROUTE.CLIENT_MENU}>
-            <Button>{t('order.backToMenu')}</Button>
-          </NavLink>
-        </div>
-      )}
+      </div>
     </div>
   )
 }

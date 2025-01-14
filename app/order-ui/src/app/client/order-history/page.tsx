@@ -220,7 +220,7 @@ export default function OrderHistoryPage() {
               <Button
                 className="w-fit bg-primary"
                 onClick={() => {
-                  navigate(`${ROUTE.CLIENT_ORDER_HISTORY}`)
+                  navigate(`${ROUTE.CLIENT_PROFILE}?tab=history`)
                 }}
               >
                 Quay lại
