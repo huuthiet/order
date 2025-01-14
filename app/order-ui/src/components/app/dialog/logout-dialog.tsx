@@ -16,14 +16,12 @@ import {
 import { useAuthStore, useUserStore } from '@/stores'
 import { showToast } from '@/utils'
 import { ROUTE } from '@/constants'
-import { useBranchStore } from '@/stores/branch.store'
 
 export default function LogoutDialog() {
   const { t } = useTranslation(['auth'])
   const { t: tToast } = useTranslation('toast')
   const [isOpen, setIsOpen] = useState(false)
   const { setLogout } = useAuthStore()
-  const { removeBranch } = useBranchStore()
   const { removeUserInfo } = useUserStore()
   const navigate = useNavigate()
 

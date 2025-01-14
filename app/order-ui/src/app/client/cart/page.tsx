@@ -1,13 +1,7 @@
-import {
-  CircleAlert,
-  ShoppingBag,
-  ShoppingCartIcon,
-  Trash2,
-} from 'lucide-react'
+import { CircleAlert, ShoppingCartIcon, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { QuantitySelector } from '@/components/app/button'
-import { ClientTableSelect } from '@/app/system/menu'
 import { useCartItemStore } from '@/stores'
 import { CartNoteInput } from '@/components/app/input'
 import {
@@ -19,6 +13,7 @@ import { IOrderType } from '@/types'
 import { NavLink } from 'react-router-dom'
 import { Button } from '@/components/ui'
 import _ from 'lodash'
+import { ClientTableSelect } from '@/components/app/select'
 
 export function ClientCartPage() {
   const { t } = useTranslation('menu')

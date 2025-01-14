@@ -1,4 +1,4 @@
-import { CircleXIcon, Settings2 } from 'lucide-react'
+import { CircleXIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   Accordion,

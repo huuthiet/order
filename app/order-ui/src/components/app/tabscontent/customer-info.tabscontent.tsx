@@ -2,10 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Input, Textarea } from '@/components/ui'
 import { useProfile } from '@/hooks'
-import {
-  UpdateCustomerDialog,
-  UpdatePasswordDialog,
-} from '@/components/app/dialog'
+import { UpdatePasswordDialog } from '@/components/app/dialog'
 import UpdateCustomerProfileDialog from '../dialog/update-customer-profile-dialog'
 
 export function CustomerInfoTabsContent() {

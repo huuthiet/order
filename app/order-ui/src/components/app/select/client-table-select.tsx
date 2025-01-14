@@ -5,7 +5,7 @@ import { useTables } from '@/hooks'
 import { useCartItemStore, useBranchStore } from '@/stores'
 import { ITable } from '@/types'
 import SelectReservedTableDialog from '@/components/app/dialog/select-reserved-table-dialog'
-import { NonResizableTableItem } from '../table'
+import { NonResizableTableItem } from '@/app/system/table'
 
 export default function ClientTableSelect() {
   const { t } = useTranslation(['table'])
@@ -45,25 +45,25 @@ export default function ClientTableSelect() {
   }
 
   return (
-    <div className="flex flex-col w-full mt-6 border rounded-md">
-      <div className="flex flex-col items-start justify-between gap-2 p-4 bg-muted/60 sm:flex-row">
-        <span className="font-medium text-md">{t('table.title')}</span>
+    <div className="mt-6 flex w-full flex-col rounded-md border">
+      <div className="flex flex-col items-start justify-between gap-2 bg-muted/60 p-4 sm:flex-row">
+        <span className="text-md font-medium">{t('table.title')}</span>
         <div className="flex gap-2 text-xs sm:flex-row sm:gap-4 sm:px-4">
           <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 border rounded-sm bg-muted-foreground/10" />
+            <div className="h-4 w-4 rounded-sm border bg-muted-foreground/10" />
             <span className="sm:text-sm">{t('table.available')}</span>
           </div>
           <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 bg-yellow-500 rounded-sm" />
+            <div className="h-4 w-4 rounded-sm bg-yellow-500" />
             <span className="sm:text-sm">{t('table.reserved')}</span>
           </div>
           <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 border-2 border-green-500 rounded-sm bg-muted-foreground/10" />
+            <div className="h-4 w-4 rounded-sm border-2 border-green-500 bg-muted-foreground/10" />
             <span className="sm:text-sm">{t('table.selected')}</span>
           </div>
         </div>
       </div>
-      <div className="flex flex-row flex-wrap w-full h-full gap-4 p-4">
+      <div className="flex h-full w-full flex-row flex-wrap gap-4 p-4">
         {tables?.result.map((table) => (
           <NonResizableTableItem
             key={table.slug}

@@ -9,11 +9,11 @@ export const ROUTE = {
   ORDER_SUCCESS: '/order-success',
 
   // Staff Routes
-  OVERVIEW: '/overview',
-  OVERVIEW_DETAIL: '/overview/detail',
-  STAFF_BRANCH: '/branch',
-  STAFF_PROFILE: '/staff/profile',
-  STAFF_MENU: '/staff/menu',
+  OVERVIEW: '/system/overview',
+  OVERVIEW_DETAIL: '/system/overview/detail',
+  STAFF_BRANCH: '/system/branch',
+  STAFF_PROFILE: '/system/profile',
+  STAFF_MENU: '/system/menu',
   STAFF_CHECKOUT_ORDER: '/checkout-order',
   STAFF_ORDER_PAYMENT: '/staff/order-payment',
   STAFF_ORDER_MANAGEMENT: '/order-management',

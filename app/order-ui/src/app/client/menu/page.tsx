@@ -18,7 +18,7 @@ interface FilterState {
   maxPrice?: number
 }
 
-export default function MenuPage() {
+export default function ClientMenuPage() {
   const { minPrice, maxPrice } = usePriceRangeStore()
   const { branch } = useBranchStore()
   const { catalog } = useCatalogStore()
