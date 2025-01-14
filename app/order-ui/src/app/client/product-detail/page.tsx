@@ -19,6 +19,7 @@ import { ICartItem, IOrderType, IProductVariant } from '@/types'
 import { formatCurrency, showErrorToast } from '@/utils'
 import { ProductImageCarousel } from '.'
 import moment from 'moment'
+import { getPriceRange } from '@/utils/priceRange'
 
 export default function ProductDetailPage() {
   const { t } = useTranslation(['product'])
@@ -107,15 +108,15 @@ export default function ProductDetailPage() {
       {/* Thumbnail */}
       <div className="container py-10">
         <div className={`transition-all duration-300 ease-in-out`}>
-          <div className="flex flex-col items-start gap-10 lg:flex-row">
+          <div className="flex flex-col items-start gap-10">
             {/* Product detail */}
-            <div className="flex w-full flex-col gap-5 lg:w-3/4 lg:flex-row">
-              <div className="col-span-1 flex w-full flex-col gap-2 lg:w-1/2">
+            <div className="flex flex-col w-full gap-5 lg:flex-row">
+              <div className="flex flex-col w-full col-span-1 gap-2 lg:w-1/2">
                 {productDetail && (
                   <img
                     src={`${publicFileURL}/${selectedImage || productDetail.image}`}
                     alt={productDetail.name}
-                    className="h-[15rem] w-full rounded-xl object-cover transition-opacity duration-300 ease-in-out"
+                    className="h-[20rem] w-full rounded-xl object-cover transition-opacity duration-300 ease-in-out"
                   />
                 )}
                 <ProductImageCarousel
@@ -127,7 +128,7 @@ export default function ProductDetailPage() {
                   onImageClick={setSelectedImage}
                 />
               </div>
-              <div className="col-span-1 flex flex-col gap-4">
+              <div className="flex flex-col justify-between col-span-1 gap-4">
                 {productDetail && (
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
@@ -152,14 +153,13 @@ export default function ProductDetailPage() {
                       </div>
                     </div>
                     {productDetail.variants.length > 0 && (
-                      <div className="flex w-full flex-row items-center gap-6">
+                      <div className="flex flex-row items-center w-full gap-6">
                         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           {t('product.selectSize')}
                         </label>
                         <div className="flex flex-row items-center justify-start gap-2">
                           {productDetail.variants.map((variant) => (
                             <div
-                              // variant="outline"
                               className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-500 p-2 text-xs transition-colors hover:border-primary hover:bg-primary hover:text-white ${size === variant.size.name ? 'border-primary bg-primary text-white' : 'bg-transparent'}`}
                               key={variant.slug}
                               onClick={() => handleSizeChange(variant)}
@@ -170,9 +170,8 @@ export default function ProductDetailPage() {
                         </div>
                       </div>
                     )}
-
                     {productDetail.variants.length > 0 && (
-                      <div className="flex w-full flex-row items-center gap-6">
+                      <div className="flex flex-row items-center w-full gap-6">
                         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           {t('product.selectQuantity')}
                         </label>
@@ -188,6 +187,28 @@ export default function ProductDetailPage() {
                         </div>
                       </div>
                     )}
+                    {/* Khuyến mãi */}
+                    <div className="flex flex-col gap-4 p-4 border-l-4 border-yellow-500 rounded-md bg-yellow-50">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-primary">
+                          🎉 Khuyến mãi đặc biệt:
+                        </span>
+                      </div>
+                      <ul className="pl-5 text-sm list-disc text-primary">
+                        <li>
+                          <strong>Mua 2 tặng 1:</strong> Áp dụng cho tất cả các kích cỡ.
+                        </li>
+                        <li>
+                          <strong>Giảm 10%:</strong> Cho đơn hàng trên <strong>500.000 VNĐ</strong>.
+                        </li>
+                        <li>
+                          <strong>Freeship nội thành:</strong> Đơn từ <strong>200.000 VNĐ</strong>.
+                        </li>
+                      </ul>
+                      <div className="mt-2 text-xs text-yellow-600">
+                        * Lưu ý: Các ưu đãi không được cộng gộp. Thời hạn đến cuối tháng này!
+                      </div>
+                    </div>
                   </div>
                 )}
                 <Button
@@ -202,11 +223,18 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Related products */}
-            <div className="w-full lg:w-1/4">
-              <p className="border-l-4 border-primary pl-2 text-primary">
-                Món liên quan
+            <div className="w-full">
+              <p className="flex justify-between pl-2 border-l-4 border-primary text-primary">
+                <span>
+                  Món liên quan
+                </span>
+                <NavLink to={ROUTE.CLIENT_MENU}>
+                  <span className="text-sm text-muted-foreground">
+                    Xem thêm
+                  </span>
+                </NavLink>
               </p>
-              <div className="mt-4 grid grid-cols-2 gap-5 lg:grid-cols-1">
+              <div className="grid grid-cols-2 gap-5 mt-4 lg:grid-cols-4">
                 {specificMenu?.result.menuItems.map((item) => {
                   return (
                     <NavLink
@@ -215,7 +243,7 @@ export default function ProductDetailPage() {
                     >
                       <div
                         key={item.slug}
-                        className="flex flex-col rounded-xl backdrop-blur-md transition-all duration-300 hover:scale-105"
+                        className="flex flex-col transition-all duration-300 rounded-xl backdrop-blur-md hover:scale-105"
                       >
                         {/* Image Section with Discount Tag */}
                         <div className="relative">
@@ -223,15 +251,20 @@ export default function ProductDetailPage() {
                             <img
                               src={`${publicFileURL}/${item.product.image}`}
                               alt={item.product.name}
-                              className="h-36 w-full rounded-t-md object-cover"
+                              className="object-cover w-full rounded-md h-36"
                             />
                           ) : (
-                            <div className="h-24 w-full rounded-t-md bg-muted/60" />
+                            <div className="w-full h-24 rounded-t-md bg-muted/60" />
                           )}
                         </div>
 
-                        <h3 className="mt-3 text-[13px]">
-                          {item.product.name}
+                        <h3 className="flex flex-col gap-1 mt-3">
+                          <span className="font-semibold text-md">
+                            {item.product.name}
+                          </span>
+                          <span className='text-xs text-muted-foreground'>
+                            {getPriceRange(item.product.variants, (value) => formatCurrency(value))}
+                          </span>
                         </h3>
                       </div>
                     </NavLink>
