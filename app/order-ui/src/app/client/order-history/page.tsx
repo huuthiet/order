@@ -1,4 +1,9 @@
-import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import {
+  NavLink,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 import moment from 'moment'
@@ -16,14 +21,15 @@ import {
 } from '@/components/ui'
 import { useOrderBySlug } from '@/hooks'
 import { publicFileURL, ROUTE } from '@/constants'
-import { OrderTypeEnumnumnumnumnum } from '@/types'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 import { formatCurrency } from '@/utils'
 import { ProgressBar } from '@/components/app/progress'
+import { OrderTypeEnum } from '@/types'
 
 export default function OrderHistoryPage() {
   const { t } = useTranslation(['menu'])
-  const { slug } = useParams()
+  const [searchParams] = useSearchParams()
+  const slug = searchParams.get('order')
   const { data: orderDetail } = useOrderBySlug(slug as string)
   const navigate = useNavigate()
 
@@ -53,7 +59,6 @@ export default function OrderHistoryPage() {
                   <span className="text-muted-foreground">
                     {orderDetail?.result?.slug}
                   </span>
-                  {/* <OrderStatusBadge order={orderDetail?.result || undefined} /> */}
                 </p>
                 <div className="flex flex-col gap-1 text-sm font-thin sm:flex-row sm:items-center">
                   <p>

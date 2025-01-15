@@ -558,7 +558,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: `${ROUTE.CLIENT_MENU}/:slug`,
+    path: `${ROUTE.CLIENT_MENU_ITEM}`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={ClientLayout} />
@@ -591,7 +591,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: `${ROUTE.CLIENT_ORDER_PAYMENT}/:slug`,
+    path: `${ROUTE.CLIENT_PAYMENT}`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={ClientLayout} />
@@ -610,26 +610,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: ROUTE.CLIENT_ORDER_HISTORY,
-    element: (
-      <Suspense fallback={<SkeletonCart />}>
-        <SuspenseElement component={ClientLayout} />
-      </Suspense>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <ProtectedElement
-            allowedRoles={[Role.CUSTOMER]}
-            element={<SuspenseElement component={ClientOrderHistoryPage} />}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    path: `${ROUTE.CLIENT_ORDER_HISTORY}/:slug`,
+    path: `${ROUTE.CLIENT_ORDER_HISTORY}`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={ClientLayout} />

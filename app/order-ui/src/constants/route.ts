@@ -8,7 +8,7 @@ export const ROUTE = {
   RESET_PASSWORD: '/reset-password',
   ORDER_SUCCESS: '/order-success',
 
-  // Staff Routes
+  // System Routes
   OVERVIEW: '/system/overview',
   OVERVIEW_DETAIL: '/system/overview/detail',
   STAFF_BRANCH: '/system/branch',
@@ -38,17 +38,17 @@ export const ROUTE = {
   ADMIN_ORDER_HISTORY: '/order-history',
   ADMIN_WALLET_APPROVALS: '/wallet-approvals',
   ADMIN_USER_MANAGEMENT: '/user-management',
-  ADMIN_FINANCIAL_REPORT: '/financial-report',
+  ADMIN_FINANCIAL_REPOR: '/financial-report',
   ADMIN_CONFIG: '/config',
 
   //Client Routes
   CLIENT_HOME: '/',
   CLIENT_MENU: '/menu',
-  CLIENT_PRODUCT_DETAIL: '/product',
+  CLIENT_MENU_ITEM: '/menu-item',
   CLIENT_CART: '/cart',
   CLIENT_CHECKOUT_ORDER: '/checkout-order',
-  CLIENT_ORDER_PAYMENT: '/order-payment',
-  CLIENT_ORDER_HISTORY: '/order-history',
+  CLIENT_PAYMENT: '/payment',
+  CLIENT_ORDER_HISTORY: '/history',
   CLIENT_PROFILE: '/profile',
 
   // General Routes
@@ -56,7 +56,4 @@ export const ROUTE = {
   CONTACT: '/contact',
   HELP: '/help',
   POLICY: '/policy',
-
-  // Notification
-  NOTIFICATION: '/notification',
 }

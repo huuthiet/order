@@ -34,7 +34,7 @@ export default function OrderTypeAlertDialog({
           </div>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-center gap-2">
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="default" onClick={onCancel}>
             {tCommon('common.understand')}
           </Button>
         </DialogFooter>

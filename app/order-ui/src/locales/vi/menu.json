@@ -183,6 +183,7 @@
     "title": "Danh sách bàn"
   },
   "paymentMethod": {
+    "userInfo": "Thông tin khách hàng",
     "title": "Phương thức thanh toán",
     "cash": "Thanh toán bằng tiền mặt",
     "status": "Trạng thái",

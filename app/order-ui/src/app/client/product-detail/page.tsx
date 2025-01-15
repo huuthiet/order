@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart } from 'lucide-react'
 
@@ -24,7 +24,8 @@ import { getPriceRange } from '@/utils/priceRange'
 export default function ProductDetailPage() {
   const { t } = useTranslation(['product'])
   const { t: tMenu } = useTranslation(['menu'])
-  const { slug } = useParams()
+  const [searchParams] = useSearchParams()
+  const slug = searchParams.get('slug')
   const { getUserInfo } = useUserStore()
   const { setCurrentUrl } = useCurrentUrlStore()
   const navigate = useNavigate()
@@ -241,7 +242,7 @@ export default function ProductDetailPage() {
                   return (
                     <NavLink
                       key={item.slug}
-                      to={`${ROUTE.CLIENT_MENU}/${item.slug}`}
+                      to={`${ROUTE.CLIENT_MENU_ITEM}?slug=${item.slug}`}
                     >
                       <div
                         key={item.slug}

@@ -28,7 +28,7 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
   }
 
   return (
-    <NavLink key={item.slug} to={`${ROUTE.CLIENT_MENU}/${item.slug}`}>
+    <NavLink key={item.slug} to={`${ROUTE.CLIENT_MENU_ITEM}?slug=${item.slug}`}>
       <div
         key={item.slug}
         className="flex min-h-[20rem] flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-100"
