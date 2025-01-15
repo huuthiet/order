@@ -13,10 +13,9 @@ import {
   Button,
   DialogFooter,
 } from '@/components/ui'
-import { useAuthStore, useCartItemStore, useUserStore } from '@/stores'
+import { useAuthStore, useBranchStore, useCartItemStore, useUserStore } from '@/stores'
 import { showToast } from '@/utils'
 import { ROUTE } from '@/constants'
-import { useBranchStore } from '@/stores/branch.store'
 
 export default function LogoutDialog() {
   const { t } = useTranslation(['auth'])

@@ -46,11 +46,6 @@ export default function CustomerOrderTabsContent({
     return <OrderHistorySkeleton />
   }
 
-  const handleViewDetail = (order: IOrder) => {
-    // setOrderItems(order)
-    navigate(`${ROUTE.CLIENT_ORDER_HISTORY}/${order.slug}`)
-  }
-
   const handleUpdateOrder = (order: IOrder) => {
     console.log('order', order)
     if (!getUserInfo()?.slug)
@@ -88,7 +83,7 @@ export default function CustomerOrderTabsContent({
                       alt={product.variant.product.name}
                       className="object-cover w-20 h-20 rounded-md sm:w-36"
                     />
-                    <div className="absolute flex items-center justify-center text-xs text-white rounded-full -bottom-2 -right-3 sm:right-4 h-7 w-7 bg-primary sm:h-8 sm:w-8">
+                    <div className="absolute flex items-center justify-center text-xs text-white rounded-full -bottom-2 -right-3 h-7 w-7 bg-primary sm:right-4 sm:h-8 sm:w-8">
                       x{product.quantity}
                     </div>
                   </div>
@@ -97,7 +92,7 @@ export default function CustomerOrderTabsContent({
                     <div className="text-sm font-semibold truncate sm:text-md">
                       {product.variant.product.name}
                     </div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">
+                    <div className="text-xs text-muted-foreground sm:text-sm">
                       {product.variant.size.name.toLocaleUpperCase()} -{' '}
                       {`${formatCurrency(product.variant.price)}`}
                     </div>
@@ -112,29 +107,28 @@ export default function CustomerOrderTabsContent({
             </div>
             <div className="flex flex-col justify-end gap-2 p-4">
               <div className="flex items-center justify-between">
-                <div className='flex gap-2'>
-                  <Button
-                    onClick={() =>
-                      handleViewDetail(orderItem)
-                    }
-                  >
-                    {t('order.viewDetail')}
-                  </Button>
-                  {orderItem.status === OrderStatus.PENDING && (
-                    <div className='flex gap-2'>
-                      <Button
-                        variant="outline"
-                        onClick={() =>
-                          handleUpdateOrder(orderItem)
-                        }
-                      >
-                        {t('order.updateOrder')}
-                      </Button>
-                      <CancelOrderDialog order={orderItem} />
-                    </div>
-                  )}
-
-                </div>
+                <Button
+                  onClick={() =>
+                    navigate(
+                      `${ROUTE.CLIENT_ORDER_HISTORY}?order=${orderItem.slug}`,
+                    )
+                  }
+                >
+                  {t('order.viewDetail')}
+                </Button>
+                {orderItem.status === OrderStatus.PENDING && (
+                  <div className='flex gap-2'>
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        handleUpdateOrder(orderItem)
+                      }
+                    >
+                      {t('order.updateOrder')}
+                    </Button>
+                    <CancelOrderDialog order={orderItem} />
+                  </div>
+                )}
                 <div>
                   {t('order.subtotal')}:&nbsp;
                   <span className="font-semibold text-md text-primary sm:text-2xl">{`${formatCurrency(orderItem.subtotal)}`}</span>

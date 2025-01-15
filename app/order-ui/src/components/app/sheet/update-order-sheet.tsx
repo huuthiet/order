@@ -16,10 +16,10 @@ import { useBranchStore, useCatalogStore, usePriceRangeStore } from '@/stores'
 import { useDebouncedInput, useSpecificMenu } from '@/hooks'
 import { FilterState } from '@/types'
 import { formatCurrency } from '@/utils'
-import { MenusInUpdateOrder } from '@/app/client/menu/components'
 import moment from 'moment'
 import { ClientCatalogSelect } from '../select'
-import { PriceRangeFilter } from '../popover'
+import { PriceRangeFilter } from '@/app/client/menu/components/price-range-filter'
+import { MenusInUpdateOrder } from '@/app/client/menu/components/menus-in-update-order'
 
 export default function CheckoutCartSheet() {
   const { t } = useTranslation('menu')

@@ -2,10 +2,8 @@ import { useTranslation } from 'react-i18next'
 
 import { Input, Textarea } from '@/components/ui'
 import { useProfile } from '@/hooks'
-import {
-  UpdatePasswordDialog,
-  UpdateProfileDialog,
-} from '@/components/app/dialog'
+import { UpdatePasswordDialog } from '@/components/app/dialog'
+import UpdateCustomerProfileDialog from '../dialog/update-customer-profile-dialog'
 
 export function CustomerInfoTabsContent() {
   const { t } = useTranslation(['profile', 'toast'])
@@ -95,7 +93,7 @@ export function CustomerInfoTabsContent() {
         ))}
       </div>
       <div className="flex flex-wrap justify-end gap-2">
-        <UpdateProfileDialog userProfile={userProfile} />
+        <UpdateCustomerProfileDialog userProfile={userProfile} />
         <UpdatePasswordDialog />
       </div>
     </div>

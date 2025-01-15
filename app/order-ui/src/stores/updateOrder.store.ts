@@ -1,16 +1,19 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import i18next from 'i18next'
-import { v4 as uuidv4 } from 'uuid'
 
 import { showToast } from '@/utils'
-import {
-  IUpdateOrderStore,
-  IOrder,
-  IOrderToUpdate,
-  ITable,
-  ICartItem,
-} from '@/types'
+import { IUpdateOrderStore, IOrder, IOrderToUpdate, ITable } from '@/types'
+
+// Add a counter for additional uniqueness
+let counter = 0
+
+const generateUniqueId = () => {
+  const timestamp = Date.now().toString(36)
+  const randomStr = Math.random().toString(36).substr(2, 5)
+  const count = (counter++).toString(36)
+  return `${timestamp}-${randomStr}-${count}`
+}
 
 export const useUpdateOrderStore = create<IUpdateOrderStore>()(
   persist(
@@ -19,16 +22,17 @@ export const useUpdateOrderStore = create<IUpdateOrderStore>()(
 
       getOrderItems: () => get().orderItems,
       setOrderItems: (order: IOrder) => {
+        const orderId = generateUniqueId()
         const orderItems: IOrderToUpdate = {
-          id: uuidv4(),
+          id: orderId,
           slug: order.slug,
           owner: order.owner?.slug,
-          paymentMethod: order.payment ? order.payment.paymentMethod : '',
+          paymentMethod: order.payment.paymentMethod,
           ownerFullName: order.owner?.firstName,
           ownerPhoneNumber: order.owner?.phonenumber,
           type: order.type,
           orderItems: order.orderItems.map((item) => ({
-            id: uuidv4(), // Each item gets a unique ID
+            id: generateUniqueId(), // Each item gets a unique ID
             slug: item.variant.product.slug,
             image: item.variant.product.image,
             name: item.variant.product.name,
@@ -48,7 +52,7 @@ export const useUpdateOrderStore = create<IUpdateOrderStore>()(
         set({ orderItems })
       },
 
-      addOrderItem: (item: ICartItem) => {
+      addOrderItem: (item: IOrderToUpdate) => {
         const { orderItems } = get()
         if (!orderItems) {
           // If cart is empty, create new cart with the item

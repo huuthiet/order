@@ -16,7 +16,7 @@ import {
     RemoveOrderItemInUpdateOrderDialog,
 } from '@/components/app/dialog'
 import { publicFileURL, ROUTE } from '@/constants'
-import { IOrderType } from '@/types'
+import { OrderTypeEnum } from '@/types'
 import { Button } from '@/components/ui'
 import { UpdateOrderSheet } from '@/components/app/sheet'
 import { useUpdateOrderStore } from '@/stores'
@@ -24,7 +24,7 @@ import { useUpdateOrderStore } from '@/stores'
 export default function ClientUpdateOrderPage() {
     const { t } = useTranslation('menu')
     const { orderItems, addOrderType } = useUpdateOrderStore()
-    const handleAddDeliveryMethod = (orderType: IOrderType) => {
+    const handleAddDeliveryMethod = (orderType: OrderTypeEnum) => {
         addOrderType(orderType)
     }
     // if (isLoading) {
@@ -52,8 +52,8 @@ export default function ClientUpdateOrderPage() {
                     {/* Order type selection */}
                     <div className="grid w-full grid-cols-2 gap-2 sm:max-w-xs">
                         <div
-                            onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
-                            className={`flex cursor-pointer items-center justify-center py-2 text-sm transition-colors duration-200 ${orderItems.type === IOrderType.AT_TABLE
+                            onClick={() => handleAddDeliveryMethod(OrderTypeEnum.AT_TABLE)}
+                            className={`flex cursor-pointer items-center justify-center py-2 text-sm transition-colors duration-200 ${orderItems.type === OrderTypeEnum.AT_TABLE
                                 ? 'border-primary border bg-primary text-white'
                                 : 'border'
                                 } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
@@ -61,8 +61,8 @@ export default function ClientUpdateOrderPage() {
                             {t('menu.dineIn')}
                         </div>
                         <div
-                            onClick={() => handleAddDeliveryMethod(IOrderType.TAKE_OUT)}
-                            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${orderItems.type === IOrderType.TAKE_OUT
+                            onClick={() => handleAddDeliveryMethod(OrderTypeEnum.TAKE_OUT)}
+                            className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${orderItems.type === OrderTypeEnum.TAKE_OUT
                                 ? 'border-primary border bg-primary text-white'
                                 : 'border'
                                 } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}

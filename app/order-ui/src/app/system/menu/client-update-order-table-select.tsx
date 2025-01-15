@@ -17,7 +17,7 @@ export default function ClientUpdateOrderTableSelect({ defaultValue }: ClientTab
   const { t } = useTranslation(['table'])
   const { branch } = useBranchStore()
   const { data: tables } = useTables(branch?.slug)
-  const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
+  const [selectedTableId, setSelectedTableId] = useState<string | undefined>(undefined)
   const { orderItems, addTable, removeTable } = useUpdateOrderStore()
   const [reservedTable, setReservedTable] = useState<ITable | null>(null)
 
@@ -33,7 +33,7 @@ export default function ClientUpdateOrderTableSelect({ defaultValue }: ClientTab
   const handleTableClick = (table: ITable) => {
     if (selectedTableId === table.slug) {
       // Remove table for any status
-      setSelectedTableId(null)
+      setSelectedTableId(undefined)
       removeTable()
     } else {
       if (table.status === TableStatus.RESERVED) {

@@ -1,2 +1,1 @@
-export * from './menus'
-export * from './menus-in-update-order'
+export * from './client-menus'

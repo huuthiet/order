@@ -1,4 +1,10 @@
-import { ICartItem, IOrder, IOrderToUpdate, IOrderType, ITable } from '@/types'
+import {
+  ICartItem,
+  IOrder,
+  IOrderToUpdate,
+  OrderTypeEnum,
+  ITable,
+} from '@/types'
 
 export interface IUpdateOrderStore {
   orderItems: IOrderToUpdate | null
@@ -7,7 +13,7 @@ export interface IUpdateOrderStore {
   addOrderItem: (item: ICartItem) => void
   updateOrderItemQuantity: (id: string, quantity: number) => void
   addNote: (id: string, note: string) => void
-  addOrderType: (orderType: IOrderType) => void
+  addOrderType: (orderType: OrderTypeEnum) => void
   addTable: (table: ITable) => void
   removeTable: () => void
   addPaymentMethod: (paymentMethod: string) => void
