@@ -12,12 +12,13 @@ import {
 
 import { Button } from '@/components/ui'
 import { useOrders, usePagination } from '@/hooks'
-import { useUserStore } from '@/stores'
+import { useUpdateOrderStore, useUserStore } from '@/stores'
 import { publicFileURL, ROUTE } from '@/constants'
 import OrderStatusBadge from '@/components/app/badge/order-status-badge'
-import { OrderStatus } from '@/types'
+import { IOrder, OrderStatus } from '@/types'
 import { OrderHistorySkeleton } from '@/components/app/skeleton'
-import { formatCurrency } from '@/utils'
+import { formatCurrency, showErrorToast } from '@/utils'
+import { CancelOrderDialog } from '../dialog'
 
 export default function CustomerOrderTabsContent({
   status,
@@ -26,8 +27,9 @@ export default function CustomerOrderTabsContent({
 }) {
   const { t } = useTranslation(['menu'])
   const navigate = useNavigate()
-  const { userInfo } = useUserStore()
+  const { userInfo, getUserInfo } = useUserStore()
   const { pagination, handlePageChange } = usePagination()
+  const { setOrderItems } = useUpdateOrderStore()
 
   const { data: order, isLoading } = useOrders({
     page: pagination.pageIndex,
@@ -42,6 +44,21 @@ export default function CustomerOrderTabsContent({
 
   if (isLoading) {
     return <OrderHistorySkeleton />
+  }
+
+  const handleViewDetail = (order: IOrder) => {
+    // setOrderItems(order)
+    navigate(`${ROUTE.CLIENT_ORDER_HISTORY}/${order.slug}`)
+  }
+
+  const handleUpdateOrder = (order: IOrder) => {
+    console.log('order', order)
+    if (!getUserInfo()?.slug)
+      return (
+        showErrorToast(1042), navigate(ROUTE.LOGIN)
+      )
+    setOrderItems(order)
+    navigate(`${ROUTE.CLIENT_UPDATE_ORDER}/${order.slug}`)
   }
 
   return (
@@ -95,13 +112,29 @@ export default function CustomerOrderTabsContent({
             </div>
             <div className="flex flex-col justify-end gap-2 p-4">
               <div className="flex items-center justify-between">
-                <Button
-                  onClick={() =>
-                    navigate(`${ROUTE.CLIENT_ORDER_HISTORY}/${orderItem.slug}`)
-                  }
-                >
-                  {t('order.viewDetail')}
-                </Button>
+                <div className='flex gap-2'>
+                  <Button
+                    onClick={() =>
+                      handleViewDetail(orderItem)
+                    }
+                  >
+                    {t('order.viewDetail')}
+                  </Button>
+                  {orderItem.status === OrderStatus.PENDING && (
+                    <div className='flex gap-2'>
+                      <Button
+                        variant="outline"
+                        onClick={() =>
+                          handleUpdateOrder(orderItem)
+                        }
+                      >
+                        {t('order.updateOrder')}
+                      </Button>
+                      <CancelOrderDialog order={orderItem} />
+                    </div>
+                  )}
+
+                </div>
                 <div>
                   {t('order.subtotal')}:&nbsp;
                   <span className="font-semibold text-md text-primary sm:text-2xl">{`${formatCurrency(orderItem.subtotal)}`}</span>

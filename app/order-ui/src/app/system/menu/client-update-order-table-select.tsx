@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useTables } from '@/hooks'
-import { useCartItemStore, useBranchStore } from '@/stores'
+import { useBranchStore, useUpdateOrderStore } from '@/stores'
 import { ITable } from '@/types'
 import SelectReservedTableDialog from '@/components/app/dialog/select-reserved-table-dialog'
 import { NonResizableTableItem } from '../table'
@@ -13,23 +13,22 @@ interface ClientTableSelectProps {
 }
 
 
-export default function ClientTableSelect({ defaultValue }: ClientTableSelectProps) {
+export default function ClientUpdateOrderTableSelect({ defaultValue }: ClientTableSelectProps) {
   const { t } = useTranslation(['table'])
   const { branch } = useBranchStore()
   const { data: tables } = useTables(branch?.slug)
   const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
-  const { getCartItems, addTable, removeTable } = useCartItemStore()
-  const cartItems = getCartItems()
+  const { orderItems, addTable, removeTable } = useUpdateOrderStore()
   const [reservedTable, setReservedTable] = useState<ITable | null>(null)
 
   useEffect(() => {
-    const addedTable = cartItems?.table
+    const addedTable = orderItems?.table
     if (addedTable) {
       setSelectedTableId(addedTable)
     } else if (defaultValue) {
       setSelectedTableId(defaultValue)
     }
-  }, [cartItems, defaultValue])
+  }, [orderItems, defaultValue])
 
   const handleTableClick = (table: ITable) => {
     if (selectedTableId === table.slug) {

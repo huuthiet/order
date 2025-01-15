@@ -4,6 +4,7 @@ import { TableStatus } from '@/constants'
 interface TableItemProps {
     table: ITable
     isSelected?: boolean
+    defaultValue?: string
     onClick?: (e: React.MouseEvent) => void
     containerBounds?: DOMRect
 }
@@ -11,6 +12,7 @@ interface TableItemProps {
 export default function NonResizableTableItem({
     table,
     isSelected,
+    defaultValue,
     onClick,
 }: TableItemProps) {
 
@@ -31,7 +33,7 @@ export default function NonResizableTableItem({
             onClick={onClick}
         >
             <div
-                className={`rounded-md bg-transparent p-2 transition-all duration-200 ${isSelected
+                className={`rounded-md bg-transparent p-2 transition-all duration-200 ${isSelected || defaultValue === table.slug
                     ? 'z-10 scale-110 border-primary bg-primary/10 ring-2 ring-green-500'
                     : 'bg-background hover:scale-105 hover:ring-2 hover:ring-primary/50'
                     } `}

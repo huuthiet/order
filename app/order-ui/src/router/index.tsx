@@ -39,6 +39,7 @@ import {
   CustomerPage,
   OverviewPage,
   OverviewDetailPage,
+  ClientUpdateOrderPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 import { ClientLayout } from '@/app/layouts/client'
@@ -642,6 +643,44 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={[Role.CUSTOMER]}
             element={<SuspenseElement component={ClientOrderHistoryPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.CLIENT_ORDER_HISTORY}/:slug`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientOrderHistoryPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: `${ROUTE.CLIENT_UPDATE_ORDER}/:slug`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={ClientLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.CUSTOMER]}
+            element={<SuspenseElement component={ClientUpdateOrderPage} />}
           />
         ),
       },
