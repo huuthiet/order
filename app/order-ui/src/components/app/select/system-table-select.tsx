@@ -12,7 +12,9 @@ export default function SystemTableSelect() {
   const { t } = useTranslation(['table'])
   const { getUserInfo } = useUserStore()
   const { data: tables } = useTables(getUserInfo()?.branch.slug)
-  const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
+  const [selectedTableId, setSelectedTableId] = useState<string | undefined>(
+    undefined,
+  )
   const { getCartItems, addTable, removeTable } = useCartItemStore()
   const cartItems = getCartItems()
   const [reservedTable, setReservedTable] = useState<ITable | null>(null)
@@ -22,12 +24,12 @@ export default function SystemTableSelect() {
     if (addedTable) {
       setSelectedTableId(addedTable)
     }
-  }, [cartItems])
+  }, [cartItems?.table])
 
   const handleTableClick = (table: ITable) => {
     if (selectedTableId === table.slug) {
       // Remove table for any status
-      setSelectedTableId(null)
+      setSelectedTableId(undefined)
       removeTable()
     } else {
       if (table.status === 'reserved') {

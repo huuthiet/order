@@ -6,17 +6,15 @@ import { SquareMenu } from 'lucide-react'
 
 import { Button } from '@/components/ui'
 import { useExportPayment, useInitiatePayment, useOrderBySlug } from '@/hooks'
-import { PaymentMethod, Role, ROUTE } from '@/constants'
+import { PaymentMethod, ROUTE } from '@/constants'
 import { formatCurrency, loadDataToPrinter, showToast } from '@/utils'
 import { ButtonLoading } from '@/components/app/loading'
-import { useUserStore } from '@/stores'
 import { ClientPaymentMethodSelect } from '@/components/app/select'
 import { Label } from '@radix-ui/react-context-menu'
 
 export function ClientPaymentPage() {
   const { t } = useTranslation(['menu'])
   const { t: tToast } = useTranslation(['toast'])
-  const { userInfo } = useUserStore()
   const [searchParams] = useSearchParams()
   const slug = searchParams.get('order')
   const navigate = useNavigate()

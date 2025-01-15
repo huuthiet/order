@@ -1,9 +1,4 @@
-import {
-  NavLink,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 import moment from 'moment'

@@ -116,6 +116,7 @@ export const useCartItemStore = create<ICartItemStore>()(
             cartItems: {
               ...cartItems,
               table: table.slug,
+              tableName: table.name,
             },
           })
         }
@@ -125,7 +126,7 @@ export const useCartItemStore = create<ICartItemStore>()(
         const { cartItems } = get()
         if (cartItems) {
           set({
-            cartItems: { ...cartItems, table: '' },
+            cartItems: { ...cartItems, table: '', tableName: '' },
           })
         }
       },
