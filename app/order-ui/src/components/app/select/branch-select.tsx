@@ -21,7 +21,6 @@ export default function BranchSelect({
   } | null>(null)
   const { data } = useBranch()
 
-  // Chỉ set giá trị mặc định một lần khi component mount hoặc khi data thay đổi
   useEffect(() => {
     if (data?.result && !selectedBranch) {
       const newBranches = data.result.map((item) => ({
@@ -30,7 +29,6 @@ export default function BranchSelect({
       }))
       setAllBranches(newBranches)
 
-      // Chỉ set default value nếu chưa có selectedBranch
       const defaultOption = defaultValue
         ? newBranches.find((branch) => branch.value === defaultValue)
         : newBranches[0]

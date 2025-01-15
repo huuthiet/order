@@ -7,7 +7,7 @@ import {
   ICartItemStore,
   ICartItem,
   ITable,
-  IOrderType,
+  OrderTypeEnum,
   IUserInfo,
 } from '@/types'
 
@@ -116,7 +116,6 @@ export const useCartItemStore = create<ICartItemStore>()(
             cartItems: {
               ...cartItems,
               table: table.slug,
-              tableName: table.name,
             },
           })
         }
@@ -126,7 +125,7 @@ export const useCartItemStore = create<ICartItemStore>()(
         const { cartItems } = get()
         if (cartItems) {
           set({
-            cartItems: { ...cartItems, table: '', tableName: '' },
+            cartItems: { ...cartItems, table: '' },
           })
         }
       },
@@ -140,7 +139,7 @@ export const useCartItemStore = create<ICartItemStore>()(
         }
       },
 
-      addOrderType: (orderType: IOrderType) => {
+      addOrderType: (orderType: OrderTypeEnum) => {
         const { cartItems } = get()
         if (cartItems) {
           set({

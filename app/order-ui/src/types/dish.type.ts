@@ -29,7 +29,6 @@ export interface ICartItem {
   // branch?: string
   orderItems: IOrderItem[]
   table?: string
-  tableName?: string
   note?: string
   approvalBy?: string
 }
@@ -143,7 +142,7 @@ export enum OrderItemStatus {
   FAILED = 'FAILED',
 }
 
-export enum IOrderType {
+export enum OrderTypeEnum {
   AT_TABLE = 'at-table',
   TAKE_OUT = 'take-out',
 }

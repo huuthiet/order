@@ -48,9 +48,9 @@ export default function CustomerOrderTabsContent({
     <div className="mb-4">
       {orderData?.length ? (
         orderData.map((orderItem) => (
-          <div key={orderItem.slug} className="mb-6 rounded-md border">
+          <div key={orderItem.slug} className="mb-6 border rounded-md">
             {/* Header */}
-            <div className="flex items-center justify-between rounded-t-md border-b px-4 py-4">
+            <div className="flex items-center justify-between px-4 py-4 border-b rounded-t-md">
               <span className="text-xs text-muted-foreground">
                 {moment(orderItem.createdAt).format('hh:mm:ss DD/MM/YYYY')}
               </span>
@@ -63,29 +63,29 @@ export default function CustomerOrderTabsContent({
               {orderItem.orderItems.map((product) => (
                 <div
                   key={product.slug}
-                  className="grid grid-cols-12 items-center gap-2 p-4"
+                  className="grid items-center grid-cols-12 gap-2 p-4"
                 >
-                  <div className="relative">
+                  <div className="relative col-span-3">
                     <img
                       src={`${publicFileURL}/${product.variant.product.image}`}
                       alt={product.variant.product.name}
-                      className="h-20 w-20 rounded-md object-cover"
+                      className="object-cover w-20 h-20 rounded-md sm:w-36"
                     />
-                    <div className="absolute -bottom-2 -right-3 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs text-white sm:h-8 sm:w-8">
+                    <div className="absolute flex items-center justify-center text-xs text-white rounded-full -bottom-2 -right-3 sm:right-4 h-7 w-7 bg-primary sm:h-8 sm:w-8">
                       x{product.quantity}
                     </div>
                   </div>
 
-                  <div className="col-span-6 px-4">
-                    <div className="font-semibold">
+                  <div className="flex flex-col col-span-6 gap-1 px-1">
+                    <div className="text-sm font-semibold truncate sm:text-md">
                       {product.variant.product.name}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-xs sm:text-sm text-muted-foreground">
                       {product.variant.size.name.toLocaleUpperCase()} -{' '}
                       {`${formatCurrency(product.variant.price)}`}
                     </div>
                   </div>
-                  <div className="col-span-2 text-right">
+                  <div className="col-span-3">
                     <span>
                       {`${formatCurrency(product.variant.price * product.quantity)}`}
                     </span>
@@ -104,7 +104,7 @@ export default function CustomerOrderTabsContent({
                 </Button>
                 <div>
                   {t('order.subtotal')}:&nbsp;
-                  <span className="text-md font-semibold text-primary sm:text-2xl">{`${formatCurrency(orderItem.subtotal)}`}</span>
+                  <span className="font-semibold text-md text-primary sm:text-2xl">{`${formatCurrency(orderItem.subtotal)}`}</span>
                 </div>
               </div>
             </div>
@@ -115,7 +115,7 @@ export default function CustomerOrderTabsContent({
       )}
 
       {orderData && orderData?.length > 0 && (
-        <div className="flex items-center justify-center space-x-2 py-4">
+        <div className="flex items-center justify-center py-4 space-x-2">
           <Pagination>
             <PaginationContent>
               <PaginationItem>

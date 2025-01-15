@@ -3,45 +3,52 @@ import { useTranslation } from 'react-i18next'
 
 import { useTables } from '@/hooks'
 import { useCartItemStore, useBranchStore } from '@/stores'
-import { ITable } from '@/types'
+import { ITable, OrderTypeEnum } from '@/types'
 import SelectReservedTableDialog from '@/components/app/dialog/select-reserved-table-dialog'
 import { NonResizableTableItem } from '@/app/system/table'
+import { TableStatus } from '@/constants'
+import { OrderTypeAlertDialog } from '../dialog'
 
 export default function ClientTableSelect() {
   const { t } = useTranslation(['table'])
   const { branch } = useBranchStore()
   const { data: tables } = useTables(branch?.slug)
-  const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
+  const [openOrderTypeAlert, setOpenOrderTypeAlert] = useState(false)
+  const [selectedTableId, setSelectedTableId] = useState<string | undefined>(
+    undefined,
+  )
   const { getCartItems, addTable, removeTable } = useCartItemStore()
   const cartItems = getCartItems()
   const [reservedTable, setReservedTable] = useState<ITable | null>(null)
 
   useEffect(() => {
     const addedTable = cartItems?.table
-    if (addedTable) {
-      setSelectedTableId(addedTable)
-    }
-  }, [cartItems])
+    setSelectedTableId(addedTable)
+  }, [cartItems?.table])
 
   const handleTableClick = (table: ITable) => {
+    if (getCartItems()?.type === OrderTypeEnum.TAKE_OUT) {
+      setOpenOrderTypeAlert(true)
+      return
+    }
     if (selectedTableId === table.slug) {
-      // Remove table for any status
-      setSelectedTableId(null)
       removeTable()
-    } else {
-      if (table.status === 'reserved') {
-        setReservedTable(table) // Show confirmation dialog
-      } else if (table.status === 'available') {
-        setSelectedTableId(table.slug)
-        addTable(table)
-      }
+      return
+    }
+    if (table.status === TableStatus.RESERVED) {
+      setReservedTable(table)
+      return
+    }
+    if (table.status === TableStatus.AVAILABLE) {
+      addTable(table)
+      return
     }
   }
 
   const confirmAddReservedTable = (table: ITable) => {
     setSelectedTableId(table.slug)
     addTable(table)
-    setReservedTable(null) // Close the dialog
+    setReservedTable(null)
   }
 
   return (
@@ -79,6 +86,12 @@ export default function ClientTableSelect() {
           setSelectedTableId={setSelectedTableId}
           onConfirm={confirmAddReservedTable}
           onCancel={() => setReservedTable(null)} // Close dialog on cancel
+        />
+      )}
+      {openOrderTypeAlert && (
+        <OrderTypeAlertDialog
+          open={openOrderTypeAlert}
+          onCancel={() => setOpenOrderTypeAlert(false)}
         />
       )}
     </div>

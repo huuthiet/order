@@ -16,7 +16,7 @@ import {
 } from '@/components/ui'
 import { useOrderBySlug } from '@/hooks'
 import { publicFileURL, ROUTE } from '@/constants'
-import { IOrderType } from '@/types'
+import { OrderTypeEnumnumnumnumnum } from '@/types'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 import { formatCurrency } from '@/utils'
 import { ProgressBar } from '@/components/app/progress'
@@ -85,7 +85,7 @@ export default function OrderHistoryPage() {
                 </div>
                 <div className="px-3 py-2 text-sm">
                   <p>
-                    {orderDetail?.result?.type === IOrderType.AT_TABLE
+                    {orderDetail?.result?.type === OrderTypeEnum.AT_TABLE
                       ? t('order.dineIn')
                       : t('order.takeAway')}{' '}
                     - {t('order.tableNumber')}{' '}

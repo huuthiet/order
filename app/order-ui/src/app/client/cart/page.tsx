@@ -9,20 +9,16 @@ import {
   DeleteCartItemDialog,
 } from '@/components/app/dialog'
 import { publicFileURL, ROUTE } from '@/constants'
-import { IOrderType } from '@/types'
-import { NavLink } from 'react-router-dom'
 import { Button } from '@/components/ui'
 import _ from 'lodash'
 import { ClientTableSelect } from '@/components/app/select'
+import { NavLink } from 'react-router-dom'
+import { OrderTypeSelect } from './components/order-type-select'
 
 export function ClientCartPage() {
   const { t } = useTranslation('menu')
-  const { getCartItems, addOrderType } = useCartItemStore()
+  const { getCartItems } = useCartItemStore()
   const cartItems = getCartItems()
-
-  const handleAddDeliveryMethod = (orderType: IOrderType) => {
-    addOrderType(orderType)
-  }
 
   if (_.isEmpty(cartItems?.orderItems)) {
     return (
@@ -60,28 +56,7 @@ export function ClientCartPage() {
 
         {/* Right content */}
         <div className="col-span-12 lg:col-span-4">
-          <div className="grid w-full grid-cols-2 gap-2 sm:max-w-xs">
-            <div
-              onClick={() => handleAddDeliveryMethod(IOrderType.AT_TABLE)}
-              className={`flex cursor-pointer items-center justify-center py-2 text-sm transition-colors duration-200 ${
-                getCartItems()?.type === IOrderType.AT_TABLE
-                  ? 'border-primary bg-primary text-white'
-                  : 'border'
-              } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
-            >
-              {t('menu.dineIn')}
-            </div>
-            <div
-              onClick={() => handleAddDeliveryMethod(IOrderType.TAKE_OUT)}
-              className={`flex cursor-pointer items-center justify-center py-1 text-sm transition-colors duration-200 ${
-                getCartItems()?.type === IOrderType.TAKE_OUT
-                  ? 'border-primary bg-primary text-white'
-                  : 'border'
-              } rounded-full border-muted-foreground/40 text-muted-foreground hover:border-primary hover:bg-primary hover:text-white`}
-            >
-              {t('menu.takeAway')}
-            </div>
-          </div>
+          <OrderTypeSelect />
           {/* Table list order items */}
           <div className="my-4">
             <div className="mb-4 grid grid-cols-7 rounded-md bg-muted/60 px-4 py-3 text-sm font-thin">
@@ -142,7 +117,7 @@ export function ClientCartPage() {
             </div>
           </div>
           {/* Button */}
-          <CreateOrderDialog disabled={!cartItems?.table || !cartItems} />
+          <CreateOrderDialog disabled={!cartItems} />
         </div>
       </div>
     </div>
