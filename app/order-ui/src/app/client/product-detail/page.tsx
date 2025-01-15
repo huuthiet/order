@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart } from 'lucide-react'
 
@@ -15,7 +15,7 @@ import {
   useCurrentUrlStore,
   useUserStore,
 } from '@/stores'
-import { ICartItem, IOrderType, IProductVariant } from '@/types'
+import { ICartItem, OrderTypeEnum, IProductVariant } from '@/types'
 import { formatCurrency, showErrorToast } from '@/utils'
 import { ProductImageCarousel } from '.'
 import moment from 'moment'
@@ -24,7 +24,8 @@ import { getPriceRange } from '@/utils/priceRange'
 export default function ProductDetailPage() {
   const { t } = useTranslation(['product'])
   const { t: tMenu } = useTranslation(['menu'])
-  const { slug } = useParams()
+  const [searchParams] = useSearchParams()
+  const slug = searchParams.get('slug')
   const { getUserInfo } = useUserStore()
   const { setCurrentUrl } = useCurrentUrlStore()
   const navigate = useNavigate()
@@ -80,7 +81,7 @@ export default function ProductDetailPage() {
       id: generateCartItemId(),
       slug: productDetail?.slug || '',
       owner: getUserInfo()?.slug,
-      type: IOrderType.AT_TABLE, // default value
+      type: OrderTypeEnum.AT_TABLE, // default value
       orderItems: [
         {
           id: generateCartItemId(),
@@ -110,8 +111,8 @@ export default function ProductDetailPage() {
         <div className={`transition-all duration-300 ease-in-out`}>
           <div className="flex flex-col items-start gap-10">
             {/* Product detail */}
-            <div className="flex flex-col w-full gap-5 lg:flex-row">
-              <div className="flex flex-col w-full col-span-1 gap-2 lg:w-1/2">
+            <div className="flex w-full flex-col gap-5 lg:flex-row">
+              <div className="col-span-1 flex w-full flex-col gap-2 lg:w-1/2">
                 {productDetail && (
                   <img
                     src={`${publicFileURL}/${selectedImage || productDetail.image}`}
@@ -128,7 +129,7 @@ export default function ProductDetailPage() {
                   onImageClick={setSelectedImage}
                 />
               </div>
-              <div className="flex flex-col justify-between col-span-1 gap-4">
+              <div className="col-span-1 flex flex-col justify-between gap-4">
                 {productDetail && (
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
@@ -153,7 +154,7 @@ export default function ProductDetailPage() {
                       </div>
                     </div>
                     {productDetail.variants.length > 0 && (
-                      <div className="flex flex-row items-center w-full gap-6">
+                      <div className="flex w-full flex-row items-center gap-6">
                         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           {t('product.selectSize')}
                         </label>
@@ -171,7 +172,7 @@ export default function ProductDetailPage() {
                       </div>
                     )}
                     {productDetail.variants.length > 0 && (
-                      <div className="flex flex-row items-center w-full gap-6">
+                      <div className="flex w-full flex-row items-center gap-6">
                         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           {t('product.selectQuantity')}
                         </label>
@@ -188,25 +189,29 @@ export default function ProductDetailPage() {
                       </div>
                     )}
                     {/* Khuyến mãi */}
-                    <div className="flex flex-col gap-4 p-4 border-l-4 border-yellow-500 rounded-md bg-yellow-50">
+                    <div className="flex flex-col gap-4 rounded-md border-l-4 border-yellow-500 bg-yellow-50 p-4">
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-primary">
                           🎉 Khuyến mãi đặc biệt:
                         </span>
                       </div>
-                      <ul className="pl-5 text-sm list-disc text-primary">
+                      <ul className="list-disc pl-5 text-sm text-primary">
                         <li>
-                          <strong>Mua 2 tặng 1:</strong> Áp dụng cho tất cả các kích cỡ.
+                          <strong>Mua 2 tặng 1:</strong> Áp dụng cho tất cả các
+                          kích cỡ.
                         </li>
                         <li>
-                          <strong>Giảm 10%:</strong> Cho đơn hàng trên <strong>500.000 VNĐ</strong>.
+                          <strong>Giảm 10%:</strong> Cho đơn hàng trên{' '}
+                          <strong>500.000 VNĐ</strong>.
                         </li>
                         <li>
-                          <strong>Freeship nội thành:</strong> Đơn từ <strong>200.000 VNĐ</strong>.
+                          <strong>Freeship nội thành:</strong> Đơn từ{' '}
+                          <strong>200.000 VNĐ</strong>.
                         </li>
                       </ul>
                       <div className="mt-2 text-xs text-yellow-600">
-                        * Lưu ý: Các ưu đãi không được cộng gộp. Thời hạn đến cuối tháng này!
+                        * Lưu ý: Các ưu đãi không được cộng gộp. Thời hạn đến
+                        cuối tháng này!
                       </div>
                     </div>
                   </div>
@@ -224,26 +229,24 @@ export default function ProductDetailPage() {
 
             {/* Related products */}
             <div className="w-full">
-              <p className="flex justify-between pl-2 border-l-4 border-primary text-primary">
-                <span>
-                  Món liên quan
-                </span>
+              <p className="flex justify-between border-l-4 border-primary pl-2 text-primary">
+                <span>Món liên quan</span>
                 <NavLink to={ROUTE.CLIENT_MENU}>
                   <span className="text-sm text-muted-foreground">
                     Xem thêm
                   </span>
                 </NavLink>
               </p>
-              <div className="grid grid-cols-2 gap-5 mt-4 lg:grid-cols-4">
+              <div className="mt-4 grid grid-cols-2 gap-5 lg:grid-cols-4">
                 {specificMenu?.result.menuItems.map((item) => {
                   return (
                     <NavLink
                       key={item.slug}
-                      to={`${ROUTE.CLIENT_MENU}/${item.slug}`}
+                      to={`${ROUTE.CLIENT_MENU_ITEM}?slug=${item.slug}`}
                     >
                       <div
                         key={item.slug}
-                        className="flex flex-col transition-all duration-300 rounded-xl backdrop-blur-md hover:scale-105"
+                        className="flex flex-col rounded-xl backdrop-blur-md transition-all duration-300 hover:scale-105"
                       >
                         {/* Image Section with Discount Tag */}
                         <div className="relative">
@@ -251,19 +254,21 @@ export default function ProductDetailPage() {
                             <img
                               src={`${publicFileURL}/${item.product.image}`}
                               alt={item.product.name}
-                              className="object-cover w-full rounded-md h-36"
+                              className="h-36 w-full rounded-md object-cover"
                             />
                           ) : (
-                            <div className="w-full h-24 rounded-t-md bg-muted/60" />
+                            <div className="h-24 w-full rounded-t-md bg-muted/60" />
                           )}
                         </div>
 
-                        <h3 className="flex flex-col gap-1 mt-3">
-                          <span className="font-semibold text-md">
+                        <h3 className="mt-3 flex flex-col gap-1">
+                          <span className="text-md font-semibold">
                             {item.product.name}
                           </span>
-                          <span className='text-xs text-muted-foreground'>
-                            {getPriceRange(item.product.variants, (value) => formatCurrency(value))}
+                          <span className="text-xs text-muted-foreground">
+                            {getPriceRange(item.product.variants, (value) =>
+                              formatCurrency(value),
+                            )}
                           </span>
                         </h3>
                       </div>

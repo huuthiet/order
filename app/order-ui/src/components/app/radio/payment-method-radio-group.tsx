@@ -31,7 +31,7 @@ export default function PaymentMethodRadioGroup({
         <div className="flex items-center gap-1 pl-2 text-muted-foreground">
           <Label htmlFor="r1" className="flex items-center gap-1">
             <WalletMinimal size={20} />
-            {t('paymentMethod.internalWallet')}
+            {t('paymentMethod.internalWallet')} (comming soon)
           </Label>
         </div>
       </div>

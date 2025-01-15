@@ -10,10 +10,9 @@ import { formatCurrency } from '@/utils'
 interface IMenuProps {
   menu: ISpecificMenu | undefined
   isLoading: boolean
-  isCartOpen: boolean
 }
 
-export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
+export default function SystemMenus({ menu, isLoading }: IMenuProps) {
   const { t } = useTranslation('menu')
 
   const menuItems = menu?.menuItems
@@ -34,9 +33,7 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
 
   if (isLoading) {
     return (
-      <div
-        className={`grid grid-cols-1 ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-3`}
-      >
+      <div className={`grid grid-cols-1 gap-3 lg:grid-cols-3`}>
         {[...Array(8)].map((_, index) => (
           <SkeletonMenuList key={index} />
         ))}
@@ -49,13 +46,11 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
   }
 
   return (
-    <div
-      className={` grid grid-cols-2 ${isCartOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-4`}
-    >
+    <div className={`grid grid-cols-2 gap-4 lg:grid-cols-4`}>
       {menuItems.map((item) => (
         <div
           key={item.slug}
-          className="flex flex-col bg-white border rounded-xl backdrop-blur-md"
+          className="flex flex-col rounded-xl border bg-white backdrop-blur-md"
         >
           {/* Image Section with Discount Tag */}
           <div className="relative">
@@ -63,10 +58,10 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
               <img
                 src={`${publicFileURL}/${item.product.image}`}
                 alt={item.product.name}
-                className="object-cover w-full h-28 rounded-t-md"
+                className="h-28 w-full rounded-t-md object-cover"
               />
             ) : (
-              <div className="w-full h-24 rounded-t-md bg-muted/60" />
+              <div className="h-24 w-full rounded-t-md bg-muted/60" />
             )}
 
             {/* Discount Tag */}
@@ -81,17 +76,17 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
 
           {/* Content Section - More compact */}
           <div className="flex flex-1 flex-col space-y-1.5 p-2">
-            <h3 className="text-sm font-bold line-clamp-1">
+            <h3 className="line-clamp-1 text-sm font-bold">
               {item.product.name}
             </h3>
-            <p className="text-xs text-gray-500 line-clamp-2">
+            <p className="line-clamp-2 text-xs text-gray-500">
               {item.product.description}
             </p>
 
             <div className="flex items-center justify-between gap-1">
               <div className="flex flex-col">
                 {item.product.variants.length > 0 ? (
-                  <div className='flex flex-col items-start justify-start gap-1'>
+                  <div className="flex flex-col items-start justify-start gap-1">
                     <span className="text-sm font-bold text-primary">
                       {(() => {
                         const range = getPriceRange(item.product.variants)
@@ -101,9 +96,10 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
                           : `${formatCurrency(range.min)} - ${formatCurrency(range.max)}`
                       })()}
                     </span>
-                    <span className='text-[0.7rem] text-muted-foreground'>
+                    <span className="text-[0.7rem] text-muted-foreground">
                       {t('menu.amount')}
-                      {item.currentStock}/{item.defaultStock}</span>
+                      {item.currentStock}/{item.defaultStock}
+                    </span>
                   </div>
                 ) : (
                   <span className="text-sm font-bold text-primary">
@@ -116,7 +112,7 @@ export default function MenuList({ menu, isLoading, isCartOpen }: IMenuProps) {
               <AddToCartDialog product={item.product} />
             ) : (
               <Button
-                className="flex items-center justify-center w-full py-2 text-sm font-semibold text-white bg-red-500 rounded-full"
+                className="flex w-full items-center justify-center rounded-full bg-red-500 py-2 text-sm font-semibold text-white"
                 disabled
               >
                 {t('menu.outOfStock')}

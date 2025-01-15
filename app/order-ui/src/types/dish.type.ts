@@ -143,7 +143,7 @@ export enum OrderItemStatus {
   FAILED = 'FAILED',
 }
 
-export enum IOrderType {
+export enum OrderTypeEnum {
   AT_TABLE = 'at-table',
   TAKE_OUT = 'take-out',
 }

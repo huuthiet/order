@@ -48,9 +48,9 @@ export default function CustomerOrderTabsContent({
     <div className="mb-4">
       {orderData?.length ? (
         orderData.map((orderItem) => (
-          <div key={orderItem.slug} className="mb-6 border rounded-md">
+          <div key={orderItem.slug} className="mb-6 rounded-md border">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-4 border-b rounded-t-md">
+            <div className="flex items-center justify-between rounded-t-md border-b px-4 py-4">
               <span className="text-xs text-muted-foreground">
                 {moment(orderItem.createdAt).format('hh:mm:ss DD/MM/YYYY')}
               </span>
@@ -63,24 +63,24 @@ export default function CustomerOrderTabsContent({
               {orderItem.orderItems.map((product) => (
                 <div
                   key={product.slug}
-                  className="grid items-center grid-cols-12 gap-2 p-4"
+                  className="grid grid-cols-12 items-center gap-2 p-4"
                 >
                   <div className="relative col-span-3">
                     <img
                       src={`${publicFileURL}/${product.variant.product.image}`}
                       alt={product.variant.product.name}
-                      className="object-cover w-20 h-20 rounded-md sm:w-36"
+                      className="h-20 w-20 rounded-md object-cover sm:w-36"
                     />
-                    <div className="absolute flex items-center justify-center text-xs text-white rounded-full -bottom-2 -right-3 sm:right-4 h-7 w-7 bg-primary sm:h-8 sm:w-8">
+                    <div className="absolute -bottom-2 -right-3 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs text-white sm:right-4 sm:h-8 sm:w-8">
                       x{product.quantity}
                     </div>
                   </div>
 
-                  <div className="flex flex-col col-span-6 gap-1 px-1">
-                    <div className="text-sm font-semibold truncate sm:text-md">
+                  <div className="col-span-6 flex flex-col gap-1 px-1">
+                    <div className="sm:text-md truncate text-sm font-semibold">
                       {product.variant.product.name}
                     </div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">
+                    <div className="text-xs text-muted-foreground sm:text-sm">
                       {product.variant.size.name.toLocaleUpperCase()} -{' '}
                       {`${formatCurrency(product.variant.price)}`}
                     </div>
@@ -97,14 +97,16 @@ export default function CustomerOrderTabsContent({
               <div className="flex items-center justify-between">
                 <Button
                   onClick={() =>
-                    navigate(`${ROUTE.CLIENT_ORDER_HISTORY}/${orderItem.slug}`)
+                    navigate(
+                      `${ROUTE.CLIENT_ORDER_HISTORY}?order=${orderItem.slug}`,
+                    )
                   }
                 >
                   {t('order.viewDetail')}
                 </Button>
                 <div>
                   {t('order.subtotal')}:&nbsp;
-                  <span className="font-semibold text-md text-primary sm:text-2xl">{`${formatCurrency(orderItem.subtotal)}`}</span>
+                  <span className="text-md font-semibold text-primary sm:text-2xl">{`${formatCurrency(orderItem.subtotal)}`}</span>
                 </div>
               </div>
             </div>
@@ -115,7 +117,7 @@ export default function CustomerOrderTabsContent({
       )}
 
       {orderData && orderData?.length > 0 && (
-        <div className="flex items-center justify-center py-4 space-x-2">
+        <div className="flex items-center justify-center space-x-2 py-4">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
