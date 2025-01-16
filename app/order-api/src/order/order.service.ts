@@ -44,6 +44,8 @@ import ProductValidation from 'src/product/product.validation';
 import { ProductException } from 'src/product/product.exception';
 import moment from 'moment';
 import * as _ from 'lodash';
+import { OrderScheduler } from './order.scheduler';
+import { TransactionManagerService } from 'src/db/transaction-manager.service';
 
 @Injectable()
 export class OrderService {
@@ -65,6 +67,8 @@ export class OrderService {
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     private readonly dataSource: DataSource,
+    private readonly orderScheduler: OrderScheduler,
+    private readonly transactionManagerService: TransactionManagerService,
   ) {}
 
   @OnEvent(PaymentAction.PAYMENT_PAID)
@@ -206,7 +210,7 @@ export class OrderService {
   }
 
   /**
-   * Handles create new order
+   * Handles order creation
    * This method creates new order and order items
    * @param {CreateOrderRequestDto} requestData The data to create a new order
    * @returns {Promise<OrderResponseDto>} The created order
@@ -235,35 +239,34 @@ export class OrderService {
 
     Object.assign(order, { orderItems, subtotal });
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      // Created order
-      const createdOrder = await queryRunner.manager.save(order);
-      const currentMenuItems = await this.getCurrentMenuItems(createdOrder);
-      await queryRunner.manager.save(currentMenuItems);
-      await queryRunner.commitTransaction();
+    const createdOrder = await this.transactionManagerService.execute<Order>(
+      async (manager) => {
+        const createdOrder = await manager.save(order);
+        const currentMenuItems = await this.getCurrentMenuItems(createdOrder);
+        await manager.save(currentMenuItems);
 
-      this.logger.log(
-        `New order ${createdOrder.slug} created successfully`,
-        context,
-      );
-      this.logger.log(
-        `Number of menu items: ${currentMenuItems.length} updated successfully`,
-        context,
-      );
-      await queryRunner.release();
-      return this.mapper.map(createdOrder, Order, OrderResponseDto);
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      this.logger.warn(
-        `Error when creating new order: ${err.message}`,
-        context,
-      );
-      await queryRunner.release();
-      throw new OrderException(OrderValidation.CREATE_ORDER_ERROR);
-    }
+        this.logger.log(
+          `Number of menu items: ${currentMenuItems.length} updated successfully`,
+          context,
+        );
+
+        // Cancel order after 5 minutes
+        this.orderScheduler.addCancelOrderJob(createdOrder.slug);
+        return createdOrder;
+      },
+      (result) => {
+        this.logger.log(`Order ${result.slug} has been created`, context);
+      },
+      (error) => {
+        this.logger.warn(
+          `Error when creating new order: ${error.message}`,
+          context,
+        );
+        throw new OrderException(OrderValidation.CREATE_ORDER_ERROR);
+      },
+    );
+
+    return this.mapper.map(createdOrder, Order, OrderResponseDto);
   }
 
   /**
@@ -553,6 +556,7 @@ export class OrderService {
       where: findOptionsWhere,
       relations: [
         'owner',
+        'approvalBy',
         'orderItems.variant.size',
         'orderItems.variant.product',
         'payment',
@@ -606,6 +610,7 @@ export class OrderService {
       relations: [
         'payment',
         'owner',
+        'approvalBy',
         'orderItems.variant.size',
         'orderItems.variant.product',
         'orderItems.trackingOrderItems.tracking',

@@ -1,10 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
-import { DataSource, Repository } from 'typeorm';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Repository } from 'typeorm';
 import { Table } from 'src/table/table.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { OrderStatus } from './order.contants';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { TransactionManagerService } from 'src/db/transaction-manager.service';
 
 @Injectable()
 export class OrderScheduler {
@@ -12,62 +14,69 @@ export class OrderScheduler {
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
-    @InjectRepository(Table)
-    private readonly tableRepository: Repository<Table>,
-    private readonly dataSource: DataSource,
+    private readonly schedulerRegistry: SchedulerRegistry,
+    private readonly transactionManagerService: TransactionManagerService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
-  async updateOrdertable() {
-    const context = `${OrderScheduler.name}.${this.updateOrdertable.name}`;
-    this.logger.log(`Migrating tablename to table...`, context);
+  // Called once after 5 minutes
+  async cancelOrder(orderSlug: string) {
+    const context = `${OrderScheduler.name}.${this.cancelOrder.name}`;
+    this.logger.log(`Cancel order ${orderSlug}`, context);
 
-    const orders = await this.orderRepository
-      .createQueryBuilder('order')
-      .leftJoinAndSelect('order.table', 'table')
-      .leftJoinAndSelect('order.branch', 'branch')
-      .where('table.id IS NULL')
-      .getMany();
+    const order = await this.orderRepository.findOne({
+      where: { slug: orderSlug },
+      relations: ['orderItems.variant', 'branch'],
+    });
+    if (!order) {
+      this.logger.warn(`Order ${orderSlug} not found`, context);
+      return;
+    }
 
-    this.logger.log(`Found ${orders.length} orders without table`, context);
+    if (order.status !== OrderStatus.PENDING) {
+      this.logger.warn(`Order ${orderSlug} is not pending`, context);
+      return;
+    }
 
-    const updatedOrders = await Promise.all(
-      orders.map(async (item) => {
-        const table = await this.tableRepository.findOne({
-          where: {
-            branch: {
-              id: item.branch?.id,
-            },
-          },
-        });
-        if (table) {
-          item.table = table;
-        }
-        return item;
-      }),
+    this.transactionManagerService.execute<void>(
+      async (manager) => {
+        await manager.remove(order.orderItems);
+        await manager.remove(order);
+      },
+      () => {
+        this.logger.log(`Order ${orderSlug} has been canceled`, context);
+      },
+      (error) => {
+        this.logger.error(
+          `Error when cancel order ${orderSlug}: ${error.message}`,
+          error.stack,
+          context,
+        );
+      },
     );
+  }
 
-    // Updated
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+  addCancelOrderJob(orderSlug: string) {
+    const context = `${OrderScheduler.name}.${this.addCancelOrderJob.name}`;
+    const jobName = `CANCEL_ORDER_${orderSlug}`;
+    this.logger.log(`Add cancel order job ${orderSlug}`, context);
 
     try {
-      await queryRunner.manager.save(updatedOrders);
-      await queryRunner.commitTransaction();
-      this.logger.log(
-        `The table in the list of orders has been updated successfully.`,
-        context,
-      );
+      const existedJob = this.schedulerRegistry.getTimeout(jobName);
+      if (existedJob) {
+        this.logger.warn(`Job ${orderSlug} already exists`, context);
+        return;
+      }
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      this.logger.error(
-        `Error encountered while migrating: ${error.message}`,
-        error.stack,
-        context,
-      );
-    } finally {
-      await queryRunner.release();
+      this.logger.error(`Error when get job ${orderSlug}`, context);
     }
+
+    const job = setTimeout(
+      async () => {
+        await this.cancelOrder(orderSlug);
+      },
+      5 * 60 * 1000,
+    ); // 5 minutes
+
+    this.schedulerRegistry.addTimeout(jobName, job);
   }
 }
