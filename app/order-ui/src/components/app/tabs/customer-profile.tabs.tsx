@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
-import { CustomerInfoTabsContent } from '@/components/app/tabscontent'
+import { CustomerInfoTabsContent, CustomerNotificationTabsContent } from '@/components/app/tabscontent'
 import CustomerOrderTabs from './customer-order.tabs'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -48,7 +48,7 @@ export function CustomerProfileTabs() {
         <CustomerInfoTabsContent />
       </TabsContent>
       <TabsContent value="notification" className="w-full p-0">
-        <div className="py-5 text-center text-[13px]">Không có thông báo</div>
+        <CustomerNotificationTabsContent />
       </TabsContent>
       <TabsContent value="history" className="w-full p-0">
         <CustomerOrderTabs />

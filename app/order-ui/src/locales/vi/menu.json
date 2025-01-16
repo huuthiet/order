@@ -84,6 +84,7 @@
 
   "order": {
     "confirmation": "Xác nhận thanh toán",
+    "openMenu": "Mở thực đơn",
     "product": "Sản phẩm",
     "unitPrice": "Đơn giá",
     "quantity": "Số lượng",
@@ -135,7 +136,15 @@
     "create": "Đặt hàng",
     "confirmOrder": "Bạn có chắc muốn đặt hàng?",
 
+    "update": "Chỉnh sửa đơn hàng",
+    "confirmUpdateOrder": "Bạn có chắc muốn cập nhật đơn hàng?",
+    "confirm": "Xác nhận",
+
     "viewDetail": "Xem chi tiết",
+    "cancelOrder": "Hủy đơn hàng",
+    "cancelOrderWarning": "Bạn có chắc muốn hủy đơn hàng này không?",
+    "updateOrder": "Cập nhật đơn hàng",
+
     "updatePayment": "Cập nhật thanh toán",
     "exportPayment": "Xuất QR code thanh toán",
     "exportInvoice": "Xuất hóa đơn",

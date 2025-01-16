@@ -7,6 +7,8 @@ import { ClientCatalogSelect } from '@/components/app/select'
 import { ClientMenus } from './components'
 import { ProductNameSearch } from './components/product-name-search'
 import { PriceRangeFilter } from './components/price-range-filter'
+import { MapPinIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface FilterState {
   menu?: string
@@ -19,6 +21,7 @@ interface FilterState {
 }
 
 export default function ClientMenuPage() {
+  const { t } = useTranslation(['menu'])
   const { minPrice, maxPrice } = usePriceRangeStore()
   const { branch } = useBranchStore()
   const { catalog } = useCatalogStore()
@@ -59,6 +62,10 @@ export default function ClientMenuPage() {
         {/* Left - sidebar */}
         <div className="w-full lg:sticky lg:top-20 lg:z-10 lg:w-1/4">
           <div className="flex flex-col gap-4">
+            <div className="flex items-end gap-1 text-xs text-primary">
+              <MapPinIcon className="w-5 h-5" />
+              {branch ? `${branch.name} (${branch.address})` : t('menu.noData')}
+            </div>
             {/* Product name search */}
             <ProductNameSearch
               inputValue={inputValue}

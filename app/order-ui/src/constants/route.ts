@@ -49,6 +49,7 @@ export const ROUTE = {
   CLIENT_CHECKOUT_ORDER: '/checkout-order',
   CLIENT_PAYMENT: '/payment',
   CLIENT_ORDER_HISTORY: '/history',
+  CLIENT_UPDATE_ORDER: '/update-order',
   CLIENT_PROFILE: '/profile',
 
   // General Routes

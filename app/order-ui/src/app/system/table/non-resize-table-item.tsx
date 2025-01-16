@@ -1,16 +1,18 @@
 import { ITable } from '@/types'
 import { TableStatus } from '@/constants'
-import { cn } from '@/lib'
 
 interface TableItemProps {
   table: ITable
   isSelected?: boolean
+  defaultValue?: string
   onClick?: (e: React.MouseEvent) => void
+  containerBounds?: DOMRect
 }
 
 export default function NonResizableTableItem({
   table,
   isSelected,
+  defaultValue,
   onClick,
 }: TableItemProps) {
   const getStatusColor = () => {
@@ -25,13 +27,15 @@ export default function NonResizableTableItem({
   }
 
   return (
-    <div className={cn('mt-4')} onClick={onClick}>
+    <div
+      className="mt-4"
+      onClick={onClick}
+    >
       <div
-        className={`rounded-md bg-transparent p-2 transition-all duration-200 ${
-          isSelected
-            ? 'z-10 scale-110 border-primary bg-primary/10 ring-2 ring-green-500'
-            : 'bg-background hover:scale-105 hover:ring-2 hover:ring-primary/50'
-        } `}
+        className={`rounded-md bg-transparent p-2 transition-all duration-200 ${isSelected || defaultValue === table.slug
+          ? 'z-10 scale-110 border-primary bg-primary/10 ring-2 ring-green-500'
+          : 'bg-background hover:scale-105 hover:ring-2 hover:ring-primary/50'
+          } `}
       >
         <div className="flex flex-col items-center gap-2">
           <div className="flex items-center gap-2">
@@ -39,7 +43,7 @@ export default function NonResizableTableItem({
             <div className="flex flex-col items-center gap-2">
               <div className={`h-2 w-2/3 rounded-full ${getStatusColor()}`} />
               <div
-                className={`flex min-h-[2rem] min-w-[3rem] cursor-pointer items-center justify-center rounded-md sm:min-h-[4rem] sm:min-w-[6rem] ${getStatusColor()}`}
+                className={`flex cursor-pointer min-w-[3rem] sm:min-w-[6rem] min-h-[2rem] sm:min-h-[4rem] items-center justify-center rounded-md ${getStatusColor()}`}
               >
                 {/* <span className="flex items-center justify-center p-1 text-sm font-medium bg-white rounded-full h-7 w-7 text-muted-foreground">
                   {table.name}

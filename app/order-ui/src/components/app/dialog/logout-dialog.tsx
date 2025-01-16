@@ -13,7 +13,7 @@ import {
   Button,
   DialogFooter,
 } from '@/components/ui'
-import { useAuthStore, useUserStore } from '@/stores'
+import { useAuthStore, useBranchStore, useCartItemStore, useUserStore } from '@/stores'
 import { showToast } from '@/utils'
 import { ROUTE } from '@/constants'
 
@@ -22,19 +22,23 @@ export default function LogoutDialog() {
   const { t: tToast } = useTranslation('toast')
   const [isOpen, setIsOpen] = useState(false)
   const { setLogout } = useAuthStore()
+  const { removeBranch } = useBranchStore()
+  const { clearCart } = useCartItemStore()
   const { removeUserInfo } = useUserStore()
   const navigate = useNavigate()
 
   const handleLogout = () => {
     setLogout()
     removeUserInfo()
+    removeBranch()
+    clearCart()
     navigate(ROUTE.HOME, { replace: true })
     showToast(tToast('toast.logoutSuccess'))
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex w-full justify-start" asChild>
+      <DialogTrigger className="flex justify-start w-full" asChild>
         <Button
           variant="ghost"
           className="w-full gap-1 text-sm"

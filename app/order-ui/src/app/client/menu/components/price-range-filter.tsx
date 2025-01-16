@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Accordion,
   AccordionContent,
+  AccordionItem,
   AccordionTrigger,
   Button,
   Input,
@@ -10,7 +11,6 @@ import {
 } from '@/components/ui'
 import { useEffect, useState } from 'react'
 import { usePriceRangeStore } from '@/stores'
-import { AccordionItem } from '@radix-ui/react-accordion'
 
 export const PriceRangeFilter = () => {
   const { t } = useTranslation(['menu'])
@@ -38,16 +38,16 @@ export const PriceRangeFilter = () => {
     <Accordion type="single" collapsible className="">
       <AccordionItem value="item-1" className="">
         <AccordionTrigger className="hover:no-underline">
-          <div className="flex cursor-default items-center gap-2">
+          <div className="flex items-center gap-2 cursor-default">
             {t('menu.priceRangeFilter')}
             <CircleXIcon
-              className="h-5 w-5 cursor-pointer hover:text-primary"
+              className="w-5 h-5 cursor-pointer hover:text-primary"
               onClick={clearPriceRange}
             />
           </div>
         </AccordionTrigger>
         <AccordionContent>
-          <div className="flex-between mt-2 items-center gap-2">
+          <div className="items-center gap-2 mt-2 flex-between">
             <div className="flex items-center gap-1">
               <Input
                 id="minPrice"
