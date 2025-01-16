@@ -2,11 +2,12 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
 import { Repository } from 'typeorm';
-import { Table } from 'src/table/table.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { OrderStatus } from './order.contants';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
+import { Menu } from 'src/menu/menu.entity';
+import { OrderUtils } from './order.utils';
 
 @Injectable()
 export class OrderScheduler {
@@ -14,8 +15,11 @@ export class OrderScheduler {
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectRepository(Menu)
+    private readonly menuRepository: Repository<Menu>,
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly transactionManagerService: TransactionManagerService,
+    private readonly orderUtils: OrderUtils,
   ) {}
 
   // Called once after 5 minutes
@@ -25,7 +29,7 @@ export class OrderScheduler {
 
     const order = await this.orderRepository.findOne({
       where: { slug: orderSlug },
-      relations: ['orderItems.variant', 'branch'],
+      relations: ['orderItems.variant.product', 'branch', 'payment'],
     });
     if (!order) {
       this.logger.warn(`Order ${orderSlug} not found`, context);
@@ -37,10 +41,23 @@ export class OrderScheduler {
       return;
     }
 
-    this.transactionManagerService.execute<void>(
+    // Get all menu items base on unique products
+    const menuItems = await this.orderUtils.getCurrentMenuItems(
+      order,
+      'increment',
+    );
+
+    // Delete order
+    await this.transactionManagerService.execute<void>(
       async (manager) => {
-        await manager.remove(order.orderItems);
+        await manager.save(menuItems);
+        if (order.payment) await manager.remove(order.payment);
+        if (order.orderItems) await manager.remove(order.orderItems);
         await manager.remove(order);
+        this.logger.log(
+          `Menu items: ${menuItems.map((item) => item.product.name).join(', ')} updated`,
+          context,
+        );
       },
       () => {
         this.logger.log(`Order ${orderSlug} has been canceled`, context);
@@ -67,15 +84,15 @@ export class OrderScheduler {
         return;
       }
     } catch (error) {
-      this.logger.error(`Error when get job ${orderSlug}`, context);
+      this.logger.error(
+        `Error when get job ${orderSlug}: ${error.message}`,
+        context,
+      );
     }
 
-    const job = setTimeout(
-      async () => {
-        await this.cancelOrder(orderSlug);
-      },
-      5 * 60 * 1000,
-    ); // 5 minutes
+    const job = setTimeout(async () => {
+      await this.cancelOrder(orderSlug);
+    }, 30000); // 5 minutes
 
     this.schedulerRegistry.addTimeout(jobName, job);
   }

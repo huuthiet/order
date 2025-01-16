@@ -16,6 +16,7 @@ import { OrderSubscriber } from './order.subscriber';
 import { OrderScheduler } from './order.scheduler';
 import { DbModule } from 'src/db/db.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { OrderUtils } from './order.utils';
 
 @Module({
   imports: [
@@ -33,7 +34,13 @@ import { ScheduleModule } from '@nestjs/schedule';
     DbModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderProfile, OrderSubscriber, OrderScheduler],
+  providers: [
+    OrderService,
+    OrderProfile,
+    OrderSubscriber,
+    OrderScheduler,
+    OrderUtils,
+  ],
   exports: [OrderService],
 })
 export class OrderModule {}

@@ -46,6 +46,7 @@ import moment from 'moment';
 import * as _ from 'lodash';
 import { OrderScheduler } from './order.scheduler';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
+import { OrderUtils } from './order.utils';
 
 @Injectable()
 export class OrderService {
@@ -69,6 +70,7 @@ export class OrderService {
     private readonly dataSource: DataSource,
     private readonly orderScheduler: OrderScheduler,
     private readonly transactionManagerService: TransactionManagerService,
+    private readonly orderUtils: OrderUtils,
   ) {}
 
   @OnEvent(PaymentAction.PAYMENT_PAID)
@@ -183,7 +185,10 @@ export class OrderService {
       const updatedOrder = await queryRunner.manager.save(order);
 
       // Update current stock of menu items
-      const currentMenuItems = await this.getCurrentMenuItems(updatedOrder);
+      const currentMenuItems = await this.orderUtils.getCurrentMenuItems(
+        updatedOrder,
+        'decrement',
+      );
       await queryRunner.manager.save(currentMenuItems);
 
       await queryRunner.commitTransaction();
@@ -242,7 +247,10 @@ export class OrderService {
     const createdOrder = await this.transactionManagerService.execute<Order>(
       async (manager) => {
         const createdOrder = await manager.save(order);
-        const currentMenuItems = await this.getCurrentMenuItems(createdOrder);
+        const currentMenuItems = await this.orderUtils.getCurrentMenuItems(
+          createdOrder,
+          'decrement',
+        );
         await manager.save(currentMenuItems);
 
         this.logger.log(
@@ -334,91 +342,6 @@ export class OrderService {
       approvalBy,
     });
     return order;
-  }
-
-  /**
-   * Get list of current menu items
-   * @param {Order} entity
-   * @returns {Promise<MenuItem[]>} List of current menu items
-   */
-  async getCurrentMenuItems(entity: Order): Promise<MenuItem[]> {
-    const context = `${OrderService.name}.${this.getCurrentMenuItems.name}`;
-    this.logger.log(
-      `Get current of menu items for order: ${entity.slug}`,
-      context,
-    );
-
-    const today = new Date(moment().format('YYYY-MM-DD'));
-    this.logger.log(`Retrieve the menu for today: ${today}`, context);
-
-    // Get current menu
-    const menu = await this.menuRepository.findOne({
-      where: {
-        branch: {
-          id: entity.branch?.id,
-        },
-        date: today,
-      },
-    });
-    if (!menu) {
-      this.logger.warn(MenuValidation.MENU_NOT_FOUND.message, context);
-      throw new MenuException(MenuValidation.MENU_NOT_FOUND);
-    }
-
-    const menuItems = await Promise.all(
-      entity.orderItems.map(async (item) => {
-        // Get variant
-        const variant = await this.variantRepository.findOne({
-          where: {
-            slug: item.variant.slug,
-          },
-          relations: ['product'],
-        });
-        if (!variant) {
-          this.logger.warn(
-            `${VariantValidation.VARIANT_NOT_FOUND.message} ${item.variant}`,
-            context,
-          );
-          throw new VariantException(VariantValidation.VARIANT_NOT_FOUND);
-        }
-
-        // Get menu item
-        const menuItem = await this.menuItemRepository.findOne({
-          where: {
-            menu: { slug: menu.slug },
-            product: {
-              id: variant.product?.id,
-            },
-          },
-        });
-        if (!menuItem) {
-          this.logger.warn(
-            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU.message,
-            context,
-          );
-          throw new ProductException(
-            ProductValidation.PRODUCT_NOT_FOUND_IN_TODAY_MENU,
-          );
-        }
-
-        if (item.quantity > menuItem.currentStock) {
-          this.logger.warn(
-            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
-            context,
-          );
-          throw new OrderException(
-            OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
-          );
-        }
-
-        const currentQuantity: number = menuItem.currentStock - item.quantity;
-        menuItem.currentStock = currentQuantity;
-        return menuItem;
-      }),
-    );
-
-    this.logger.log(`Number of menu items: ${menuItems.length}`, context);
-    return menuItems;
   }
 
   /**

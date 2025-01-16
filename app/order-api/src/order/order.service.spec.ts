@@ -45,6 +45,10 @@ import { MenuException } from 'src/menu/menu.exception';
 import { ProductException } from 'src/product/product.exception';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfig } from 'src/system-config/system-config.entity';
+import { OrderScheduler } from './order.scheduler';
+import { TransactionManagerService } from 'src/db/transaction-manager.service';
+import { OrderUtils } from './order.utils';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -53,7 +57,6 @@ describe('OrderService', () => {
   let branchRepositoryMock: MockType<Repository<Branch>>;
   let userRepositoryMock: MockType<Repository<User>>;
   let variantRepositoryMock: MockType<Repository<Variant>>;
-  let trackingRepositoryMock: MockType<Repository<Tracking>>;
   let menuRepositoryMock: MockType<Repository<Menu>>;
   let menuItemRepositoryMock: MockType<Repository<MenuItem>>;
   let mapperMock: MockType<Mapper>;
@@ -80,6 +83,10 @@ describe('OrderService', () => {
         RobotConnectorClient,
         HttpService,
         SystemConfigService,
+        OrderScheduler,
+        TransactionManagerService,
+        OrderUtils,
+        SchedulerRegistry,
         {
           provide: ConfigService,
           useValue: {
@@ -155,7 +162,7 @@ describe('OrderService', () => {
     branchRepositoryMock = module.get(getRepositoryToken(Branch));
     tableRepositoryMock = module.get(getRepositoryToken(Table));
     userRepositoryMock = module.get(getRepositoryToken(User));
-    trackingRepositoryMock = module.get(getRepositoryToken(Tracking));
+    // trackingRepositoryMock = module.get(getRepositoryToken(Tracking));
     menuRepositoryMock = module.get(getRepositoryToken(Menu));
     menuItemRepositoryMock = module.get(getRepositoryToken(MenuItem));
     mapperMock = module.get(MAPPER_MODULE_PROVIDER);
@@ -616,12 +623,6 @@ describe('OrderService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       } as OrderItem;
-      const menuItem = {
-        defaultStock: 0,
-        currentStock: 0,
-        id: '',
-        slug: '',
-      } as MenuItem;
       const orderItems = [orderItem];
       const mockOutput = {
         subtotal: 100,
