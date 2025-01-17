@@ -14,23 +14,23 @@ import {
   Label,
 } from '@/components/ui'
 import { IOrderItem } from '@/types'
-import { useCartItemStore } from '@/stores'
+import { useUpdateOrderStore } from '@/stores'
 
 interface DialogDeleteCartItemProps {
   cartItem: IOrderItem
 }
 
-export default function DeleteCartItemDialog({
+export default function RemoveOrderItemInUpdateOrderDialog({
   cartItem,
 }: DialogDeleteCartItemProps) {
   const { t } = useTranslation('menu')
   const { t: tCommon } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
-  const { removeCartItem } = useCartItemStore()
+  const { removeOrderItem } = useUpdateOrderStore()
 
   const handleDelete = (cartItemId: string) => {
     setIsOpen(false)
-    removeCartItem(cartItemId)
+    removeOrderItem(cartItemId)
   }
 
   return (

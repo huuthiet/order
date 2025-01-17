@@ -49,6 +49,7 @@ import { OrderScheduler } from './order.scheduler';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
 import { OrderUtils } from './order.utils';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -60,21 +61,8 @@ describe('OrderService', () => {
   let menuRepositoryMock: MockType<Repository<Menu>>;
   let menuItemRepositoryMock: MockType<Repository<MenuItem>>;
   let mapperMock: MockType<Mapper>;
-
-  const mockQueryRunner = {
-    connect: jest.fn(),
-    startTransaction: jest.fn(),
-    commitTransaction: jest.fn(),
-    rollbackTransaction: jest.fn(),
-    release: jest.fn(),
-    manager: {
-      save: jest.fn(),
-    },
-  };
-
-  const mockDataSource = {
-    createQueryRunner: jest.fn().mockReturnValue(mockQueryRunner),
-  };
+  let orderUtils: OrderUtils;
+  let mockDataSource: MockType<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -107,7 +95,7 @@ describe('OrderService', () => {
         },
         {
           provide: DataSource,
-          useValue: mockDataSource,
+          useFactory: dataSourceMockFactory,
         },
         {
           provide: getRepositoryToken(SystemConfig),
@@ -162,10 +150,11 @@ describe('OrderService', () => {
     branchRepositoryMock = module.get(getRepositoryToken(Branch));
     tableRepositoryMock = module.get(getRepositoryToken(Table));
     userRepositoryMock = module.get(getRepositoryToken(User));
-    // trackingRepositoryMock = module.get(getRepositoryToken(Tracking));
     menuRepositoryMock = module.get(getRepositoryToken(Menu));
     menuItemRepositoryMock = module.get(getRepositoryToken(MenuItem));
     mapperMock = module.get(MAPPER_MODULE_PROVIDER);
+    orderUtils = module.get(OrderUtils);
+    mockDataSource = module.get(DataSource);
   });
 
   it('should be defined', () => {
@@ -639,8 +628,18 @@ describe('OrderService', () => {
 
       jest.spyOn(service, 'constructOrder').mockResolvedValue(mockOutput);
       jest.spyOn(service, 'constructOrderItems').mockResolvedValue(orderItems);
+      jest
+        .spyOn(service, 'getOrderSubtotal')
+        .mockResolvedValue(mockOutput.subtotal);
       (orderRepositoryMock.create as jest.Mock).mockResolvedValue(mockOutput);
-      (mockQueryRunner.manager.save as jest.Mock).mockResolvedValue(mockOutput);
+      jest.spyOn(orderUtils, 'getCurrentMenuItems').mockResolvedValue([]);
+      const queryRunner = mockDataSource.createQueryRunner();
+      mockDataSource.createQueryRunner = jest.fn().mockReturnValue({
+        ...queryRunner,
+        manager: {
+          save: jest.fn().mockResolvedValue(mockOutput),
+        },
+      });
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
 
       expect(await service.createOrder(mockInput)).toEqual(mockOutput);

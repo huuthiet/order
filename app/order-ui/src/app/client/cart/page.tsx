@@ -8,11 +8,13 @@ import {
   CreateOrderDialog,
   DeleteCartItemDialog,
 } from '@/components/app/dialog'
-import { publicFileURL, ROUTE } from '@/constants'
+import { ROUTE } from '@/constants'
 import { Button } from '@/components/ui'
 import _ from 'lodash'
 import { ClientTableSelect, OrderTypeSelect } from '@/components/app/select'
 import { NavLink } from 'react-router-dom'
+import { OrderTypeSelect } from './components/order-type-select'
+import { OrderTypeEnum } from '@/types'
 
 export function ClientCartPage() {
   const { t } = useTranslation('menu')
@@ -83,11 +85,6 @@ export function ClientCartPage() {
                   >
                     <div className="col-span-2 flex w-full gap-2">
                       <div className="flex flex-col items-center justify-start gap-2 sm:flex-row sm:justify-center">
-                        <img
-                          src={`${publicFileURL}/${item.image}`}
-                          alt={item.name}
-                          className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
-                        />
                         <div className="flex flex-col">
                           <span className="sm:text-md truncate text-xs font-bold">
                             {item.name}
@@ -116,7 +113,11 @@ export function ClientCartPage() {
             </div>
           </div>
           {/* Button */}
-          <CreateOrderDialog disabled={!cartItems} />
+          <CreateOrderDialog
+            disabled={
+              cartItems?.type === OrderTypeEnum.AT_TABLE && !cartItems?.table
+            }
+          />
         </div>
       </div>
     </div>
