@@ -92,7 +92,7 @@ export class OrderScheduler {
 
     const job = setTimeout(async () => {
       await this.cancelOrder(orderSlug);
-    }, 30000); // 5 minutes
+    }, 60000); // 5 minutes
 
     this.schedulerRegistry.addTimeout(jobName, job);
   }
