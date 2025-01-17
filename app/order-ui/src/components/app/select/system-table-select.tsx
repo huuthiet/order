@@ -48,7 +48,7 @@ export default function SystemTableSelect() {
   }
 
   return (
-    <div className="mt-6 flex w-full flex-col rounded-md border">
+    <div className="mt-6 rounded-md border">
       <div className="flex flex-col items-start justify-between gap-2 bg-muted/60 p-4 sm:flex-row">
         <span className="text-md font-medium">{t('table.title')}</span>
         {/* Table status */}
@@ -67,7 +67,7 @@ export default function SystemTableSelect() {
           </div>
         </div>
       </div>
-      <div className="flex h-full w-full flex-row flex-wrap gap-4 p-4">
+      <div className="flex flex-wrap gap-4 p-4">
         {tables?.result.map((table) => (
           <NonResizableTableItem
             key={table.slug}

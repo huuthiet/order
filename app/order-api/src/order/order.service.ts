@@ -247,10 +247,12 @@ export class OrderService {
     const createdOrder = await this.transactionManagerService.execute<Order>(
       async (manager) => {
         const createdOrder = await manager.save(order);
+        console.log({ createdOrder });
         const currentMenuItems = await this.orderUtils.getCurrentMenuItems(
           createdOrder,
           'decrement',
         );
+        console.log({ currentMenuItems });
         await manager.save(currentMenuItems);
 
         this.logger.log(
@@ -444,7 +446,7 @@ export class OrderService {
    * @param {OrderItem[]} orderItems Array of order items.
    * @returns {Promise<number>} The subtotal of order
    */
-  private async getOrderSubtotal(orderItems: OrderItem[]): Promise<number> {
+  async getOrderSubtotal(orderItems: OrderItem[]): Promise<number> {
     return orderItems.reduce(
       (previous, current) => previous + current.subtotal,
       0,
