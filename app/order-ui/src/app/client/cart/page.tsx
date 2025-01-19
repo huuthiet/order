@@ -11,9 +11,8 @@ import {
 import { ROUTE } from '@/constants'
 import { Button } from '@/components/ui'
 import _ from 'lodash'
-import { ClientTableSelect } from '@/components/app/select'
+import { ClientTableSelect, OrderTypeSelect } from '@/components/app/select'
 import { NavLink } from 'react-router-dom'
-import { OrderTypeSelect } from './components/order-type-select'
 import { OrderTypeEnum } from '@/types'
 
 export function ClientCartPage() {
