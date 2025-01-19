@@ -40,7 +40,7 @@ export function ClientCartPage() {
       {/* Order type selection */}
       <div className="grid grid-cols-12 gap-4">
         {/* Left content */}
-        <div className="col-span-12 lg:col-span-8">
+        <div className="col-span-12">
           {/* Note */}
           <div className="flex items-end justify-between">
             <div className="flex items-center gap-1">
@@ -56,7 +56,7 @@ export function ClientCartPage() {
         </div>
 
         {/* Right content */}
-        <div className="col-span-12 lg:col-span-4">
+        <div className="col-span-12">
           <OrderTypeSelect />
           {/* Table list order items */}
           <div className="my-4">
@@ -113,8 +113,9 @@ export function ClientCartPage() {
             </div>
           </div>
           {/* Button */}
-          <CreateOrderDialog disabled={cartItems?.type === OrderTypeEnum.AT_TABLE && !cartItems?.table} />
-
+          <div className='flex justify-end w-full'>
+            <CreateOrderDialog disabled={cartItems?.type === OrderTypeEnum.AT_TABLE && !cartItems?.table} />
+          </div>
         </div>
       </div>
     </div>
