@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  StreamableFile,
   UploadedFile,
   UploadedFiles,
   UseFilters,
@@ -38,12 +40,52 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { RoleEnum } from 'src/role/role.enum';
 import { HasRoles } from 'src/role/roles.decorator';
 import { CustomFileInterceptor, CustomFilesInterceptor } from 'src/file/custom-interceptor';
+import { FileException } from 'src/file/file.exception';
+import FileValidation from 'src/file/file.validation';
 
 @ApiTags('Product')
 @Controller('products')
 @ApiBearerAuth()
 export class ProductController {
   constructor(private productService: ProductService) {}
+
+  @Get('export')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Export all products successfully',
+    type: ProductResponseDto,
+  })
+  @ApiOperation({ summary: 'Export all products' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Chef)
+  async exportAllProducts() {
+    const result = await this.productService.exportAllProducts();
+
+    return new StreamableFile(result.data, {
+      disposition: 'attachment; filename="exportAllProducts.xlsx"',
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+  }
+
+  @Get('import-template')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Get import products template successfully',
+    type: ProductResponseDto,
+  })
+  @ApiOperation({ summary: 'Get import products template' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Chef)
+  async getTemplateImportProducts() {
+    const result = await this.productService.getTemplateImportProducts();
+
+    return new StreamableFile(result.data, {
+      disposition: 'attachment; filename="import-products-template.xlsx"',
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -323,5 +365,62 @@ export class ProductController {
       timestamp: new Date().toISOString(),
       result,
     } as AppResponseDto<ProductResponseDto>;
+  }
+
+  @Post('multi')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Create many products successfully',
+    type: ProductResponseDto,
+  })
+  @ApiOperation({ summary: 'Create many products' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Chef)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(new CustomFileInterceptor('file', {
+    limits: {
+      fileSize: 20 * 1024 * 1024,
+    },
+    fileFilter: (req, file, callback) => {
+      if (!file.originalname.match(/\.(xlsx|xls)$/)) {
+        return callback(
+          Object.assign(
+            new FileException(FileValidation.MUST_EXCEL_FILE)
+          )
+        );
+      }
+      callback(null, true);
+    },
+  }))
+  async createManyProducts(
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const result = await this.productService.createManyProducts(file);
+
+    if(result.errors) {
+      return new StreamableFile(result.excelBuffer, {
+        disposition: 'attachment; filename="errorsCreateManyProducts.xlsx"',
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+    } else {
+      return {
+        message: 'Products have been created successfully',
+        statusCode: HttpStatus.CREATED,
+        timestamp: new Date().toISOString(),
+        result: `${result.countCreated} products have been created successfully`,
+      } as AppResponseDto<string>;
+    }
   }
 }

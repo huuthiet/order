@@ -183,6 +183,13 @@ export const StaticPageManagementPage = React.lazy(() =>
   })),
 )
 
+//Static page detail page
+export const StaticPageDetailPage = React.lazy(() =>
+  import('@/app/system/static-page').then((module) => ({
+    default: module.StaticPageDetailPage,
+  })),
+)
+
 //Config page
 export const ConfigPage = React.lazy(() =>
   import('@/app/system/config').then((module) => ({
@@ -243,5 +250,19 @@ export const ClientProfilePage = React.lazy(() =>
 export const ClientUpdateOrderPage = React.lazy(() =>
   import('@/app/client/update-order').then((module) => ({
     default: module.ClientUpdateOrderPage,
+  })),
+)
+
+//About page
+export const ClientAboutPage = React.lazy(() =>
+  import('@/app/client/about').then((module) => ({
+    default: module.AboutPage,
+  })),
+)
+
+//Policy page
+export const ClientPolicyPage = React.lazy(() =>
+  import('@/app/client/policy').then((module) => ({
+    default: module.PolicyPage,
   })),
 )

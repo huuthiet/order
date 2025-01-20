@@ -73,6 +73,10 @@
     "forgotPasswordSuccess": "Gửi email đặt lại mật khẩu thành công",
     "resetPasswordSuccess": "Đặt lại mật khẩu thành công",
 
+    "createUserSuccess": "Tạo người dùng thành công",
+    "updateUserSuccess": "Cập nhật người dùng thành công",
+    "deleteUserSuccess": "Xóa người dùng thành công",
+
     "updateUserRoleSuccess": "Cập nhật chức danh người dùng thành công",
 
     "forbidden": "Không có quyền truy cập",
@@ -81,6 +85,10 @@
     "createSystemConfigSuccess": "Tạo cấu hình hệ thống thành công",
     "updateSystemConfigSuccess": "Cập nhật cấu hình hệ thống thành công",
     "deleteSystemConfigSuccess": "Xóa cấu hình hệ thống thành công",
+
+    "createStaticPageSuccess": "Tạo trang tĩnh thành công",
+    "updateStaticPageSuccess": "Cập nhật trang tĩnh thành công",
+    "deleteStaticPageSuccess": "Xóa trang tĩnh thành công",
 
     "unloggedIn": "Vui lòng đăng nhập",
     "catalogNameInvalid": "Tên danh mục không hợp lệ",
