@@ -54,11 +54,6 @@ export const MenuPage = React.lazy(() =>
     default: module.MenuPage,
   })),
 )
-export const CartContent = React.lazy(() =>
-  import('@/app/system/menu').then((module) => ({
-    default: module.CartContent,
-  })),
-)
 
 export const ConfirmOrderPage = React.lazy(() =>
   import('@/app/system/menu').then((module) => ({
@@ -241,5 +236,26 @@ export const ClientOrderHistoryPage = React.lazy(() =>
 export const ClientProfilePage = React.lazy(() =>
   import('@/app/client/profile').then((module) => ({
     default: module.ProfilePage,
+  })),
+)
+
+//Update order page
+export const ClientUpdateOrderPage = React.lazy(() =>
+  import('@/app/client/update-order').then((module) => ({
+    default: module.ClientUpdateOrderPage,
+  })),
+)
+
+//About page
+export const ClientAboutPage = React.lazy(() =>
+  import('@/app/client/about').then((module) => ({
+    default: module.AboutPage,
+  })),
+)
+
+//Policy page
+export const ClientPolicyPage = React.lazy(() =>
+  import('@/app/client/policy').then((module) => ({
+    default: module.PolicyPage,
   })),
 )

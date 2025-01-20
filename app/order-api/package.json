@@ -61,6 +61,7 @@
     "bullmq": "^5.34.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cron": "^3.5.0",
     "ejs": "^3.1.10",
     "exceljs": "^4.4.0",
     "googleapis": "^144.0.0",

@@ -62,6 +62,7 @@
     "deleteBranchSuccess": "Xóa chi nhánh thành công",
 
     "createOrderSuccess": "Đặt hàng thành công",
+    "orderItemDeleted": "Xóa món thành công",
 
     "createOrderTrackingSuccess": "Phân robot giao hàng thành công",
 
@@ -80,6 +81,10 @@
     "createSystemConfigSuccess": "Tạo cấu hình hệ thống thành công",
     "updateSystemConfigSuccess": "Cập nhật cấu hình hệ thống thành công",
     "deleteSystemConfigSuccess": "Xóa cấu hình hệ thống thành công",
+
+    "createStaticPageSuccess": "Tạo trang tĩnh thành công",
+    "updateStaticPageSuccess": "Cập nhật trang tĩnh thành công",
+    "deleteStaticPageSuccess": "Xóa trang tĩnh thành công",
 
     "unloggedIn": "Vui lòng đăng nhập",
     "catalogNameInvalid": "Tên danh mục không hợp lệ",

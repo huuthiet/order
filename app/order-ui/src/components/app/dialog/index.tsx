@@ -5,6 +5,9 @@ export { default as NestedDialogs } from './nested-dialog'
 export { default as AddToCartDialog } from './add-to-cart-dialog'
 export { default as SelectReservedTableDialog } from './select-reserved-table-dialog'
 export { default as DeleteCartItemDialog } from './delete-cart-item-dialog'
+export { default as ClientAddToCartDialog } from './client-add-to-cart-dialog'
+
+export { default as RemoveOrderItemInUpdateOrderDialog } from './remove-order-item-in-update-order-dialog'
 
 export { default as CreateCatalogDialog } from './create-catalog-dialog'
 export { default as UpdateCatalogDialog } from './update-catalog-dialog'
@@ -37,6 +40,9 @@ export { default as UpdateTableDialog } from './update-table-dialog'
 export { default as DeleteTableDialog } from './delete-table-dialog'
 
 export { default as CreateOrderDialog } from './create-order-dialog'
+export { default as UpdateOrderItemDialog } from './update-order-item-dialog'
+export { default as ConfirmUpdateOrderDialog } from './confirm-update-order-dialog'
+export { default as CancelOrderDialog } from './cancel-order-dialog'
 
 export { default as CreateBankConnectorDialog } from './create-bank-connector-dialog'
 export { default as UpdateBankConnectorDialog } from './update-bank-connector-dialog'
@@ -65,3 +71,9 @@ export { default as UpdateCustomerDialog } from './update-customer-dialog'
 
 export { default as CreateEmployeeDialog } from './create-employee-dialog'
 export { default as UpdateEmployeeDialog } from './update-employee-dialog'
+
+export { default as UpdateCustomerProfileDialog } from './update-customer-profile-dialog'
+export { default as OrderTypeAlertDialog } from './order-type-alert-dialog'
+
+export { default as CreateStaticPageDialog } from './create-static-page-dialog'
+export { default as UpdateStaticPageDialog } from './update-static-page-dialog'
