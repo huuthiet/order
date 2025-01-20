@@ -2,7 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderItem } from './order-item.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { Order } from 'src/order/order.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
@@ -11,31 +10,27 @@ import {
   OrderItemResponseDto,
 } from './order-item.dto';
 import { Variant } from 'src/variant/variant.entity';
-import { OrderException } from 'src/order/order.exception';
-import { OrderValidation } from 'src/order/order.validation';
 import { VariantException } from 'src/variant/variant.exception';
 import { VariantValidation } from 'src/variant/variant.validation';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
-import { OrderItemException } from './order-item.exception';
-import { OrderItemValidation } from './order-item.validation';
+import { OrderUtils } from 'src/order/order.utils';
+import { OrderItemUtils } from './order-item.utils';
 
 @Injectable()
 export class OrderItemService {
   constructor(
-    @InjectRepository(OrderItem)
-    private readonly orderItemRepository: Repository<OrderItem>,
-    @InjectRepository(Order)
-    private readonly orderRepository: Repository<Order>,
     @InjectRepository(Variant)
     private readonly variantRepository: Repository<Variant>,
+    private readonly orderItemUtils: OrderItemUtils,
     @InjectMapper() private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
     private readonly transactionManagerService: TransactionManagerService,
+    private readonly orderUtils: OrderUtils,
   ) {}
 
   async deleteOrderItem(slug: string) {
     const context = `${OrderItemService.name}.${this.deleteOrderItem.name}`;
-    const orderItem = await this.getOrderItem({ slug });
+    const orderItem = await this.orderItemUtils.getOrderItem({ slug });
     await this.transactionManagerService.execute(
       async (manager) => {
         await manager.remove(orderItem);
@@ -51,27 +46,6 @@ export class OrderItemService {
         );
       },
     );
-  }
-
-  async getOrder(where: FindOptionsWhere<Order>) {
-    const order = await this.orderRepository.findOne({
-      where,
-      relations: ['orderItems', 'orderItems.variant'],
-    });
-    if (!order) {
-      throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
-    }
-    return order;
-  }
-
-  async getOrderItem(where: FindOptionsWhere<OrderItem>) {
-    const orderItem = await this.orderItemRepository.findOne({
-      where,
-    });
-    if (!orderItem) {
-      throw new OrderItemException(OrderItemValidation.ORDER_ITEM_NOT_FOUND);
-    }
-    return orderItem;
   }
 
   async getVariant(where: FindOptionsWhere<Variant>) {
@@ -90,7 +64,7 @@ export class OrderItemService {
 
   async createOrderItem(requestData: CreateOrderItemRequestDto) {
     const context = `${OrderItemService.name}.${this.createOrderItem.name}`;
-    const order = await this.getOrder({ slug: requestData.order });
+    const order = await this.orderUtils.getOrder({ slug: requestData.order });
     const variant = await this.getVariant({ slug: requestData.variant });
     const orderItem = this.mapper.map(
       requestData,
