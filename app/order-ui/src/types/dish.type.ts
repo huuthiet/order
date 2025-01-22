@@ -203,6 +203,13 @@ export interface ICreateOrderRequest {
   approvalBy: string
 }
 
+export interface IAddNewOrderItemRequest {
+  quantity: number
+  variant: string
+  note: string
+  order: string
+}
+
 export interface IInitiatePaymentRequest {
   paymentMethod: string
   orderSlug: string

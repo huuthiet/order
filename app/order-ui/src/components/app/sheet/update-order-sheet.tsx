@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CircleX, MapPinIcon, Search } from 'lucide-react'
@@ -16,12 +17,15 @@ import { useBranchStore, useCatalogStore, usePriceRangeStore } from '@/stores'
 import { useDebouncedInput, useSpecificMenu } from '@/hooks'
 import { FilterState } from '@/types'
 import { formatCurrency } from '@/utils'
-import moment from 'moment'
 import { ClientCatalogSelect } from '../select'
 import { PriceRangeFilter } from '@/app/client/menu/components/price-range-filter'
 import { MenusInUpdateOrder } from '@/app/client/menu/components/menus-in-update-order'
 
-export default function CheckoutCartSheet() {
+interface CheckoutCartSheetProps {
+  onAddNewOrderItemSuccess: () => void
+}
+
+export default function CheckoutCartSheet({ onAddNewOrderItemSuccess }: CheckoutCartSheetProps) {
   const { t } = useTranslation('menu')
   const { inputValue, setInputValue, debouncedInputValue } = useDebouncedInput()
   const { minPrice, maxPrice, clearPriceRange } = usePriceRangeStore()
@@ -56,7 +60,7 @@ export default function CheckoutCartSheet() {
 
   return (
     <Sheet>
-      <SheetTrigger asChild className='fixed w-full top-20 right-10'>
+      <SheetTrigger asChild className='fixed w-full left-4 top-20'>
         <Button className='w-fit'>
           {t('order.openMenu')}
         </Button>
@@ -64,7 +68,7 @@ export default function CheckoutCartSheet() {
           {t('order.confirmation')}
         </Button> */}
       </SheetTrigger>
-      <SheetContent className="sm:max-w-4xl">
+      <SheetContent className="sm:max-w-3xl">
         <SheetHeader className="p-4">
           <SheetTitle className="text-primary">
             {t('order.orderInformation')}
@@ -101,19 +105,21 @@ export default function CheckoutCartSheet() {
                   {/* Catalog filter */}
                   <ClientCatalogSelect onChange={handleSelectCatalog} />
                   {/* Price filter */}
-                  <div className="flex items-center gap-2">
-                    <div className="w-fit">
+                  <div className="flex flex-col items-center justify-start w-full gap-2">
+                    <div className="w-full">
                       <PriceRangeFilter />
                     </div>
                     {minPrice !== 0 && maxPrice !== 0 && (
-                      <div className="flex items-center gap-1 px-2 py-1 border rounded-full w-fit border-primary bg-primary/10 text-primary">
-                        <span className="text-xs">{formatCurrency(minPrice)}</span>
-                        <span className="text-xs">đến</span>
-                        <span className="text-xs">{formatCurrency(maxPrice)}</span>
-                        <CircleX
-                          className="cursor-pointer"
-                          onClick={() => clearPriceRange()}
-                        />
+                      <div className='flex justify-start w-full'>
+                        <div className="flex items-center gap-1 px-2 py-1 border rounded-full w-fit border-primary bg-primary/10 text-primary">
+                          <span className="text-xs">{formatCurrency(minPrice)}</span>
+                          <span className="text-xs">đến</span>
+                          <span className="text-xs">{formatCurrency(maxPrice)}</span>
+                          <CircleX
+                            className="cursor-pointer"
+                            onClick={() => clearPriceRange()}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
@@ -121,7 +127,7 @@ export default function CheckoutCartSheet() {
               </div>
 
               <div className="w-full mt-4 lg:w-3/4">
-                <MenusInUpdateOrder menu={specificMenu?.result} isLoading={isPending} />
+                <MenusInUpdateOrder onAddNewOrderItemSuccess={onAddNewOrderItemSuccess} menu={specificMenu?.result} isLoading={isPending} />
               </div>
             </div>
             {/* <div className="flex flex-col flex-1 gap-4 pb-8">

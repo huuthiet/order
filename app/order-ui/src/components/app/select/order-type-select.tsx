@@ -5,7 +5,11 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ReactSelect, { SingleValue } from 'react-select'
 
-export default function OrderTypeSelect() {
+interface OrderTypeSelectProps {
+  orderType?: string
+}
+
+export default function OrderTypeSelect({ orderType }: OrderTypeSelectProps) {
   const { t } = useTranslation('menu')
   const { addOrderType, removeTable, getCartItems } = useCartItemStore()
   const [orderTypes] = useState<{ value: string; label: string }[]>(() => {
@@ -50,7 +54,8 @@ export default function OrderTypeSelect() {
   return (
     <ReactSelect
       placeholder={t('menu.selectOrderType')}
-      className="w-full border-muted-foreground text-sm text-muted-foreground"
+      defaultValue={orderType ? orderTypes.find((type) => type.value === orderType) : null}
+      className="w-full text-sm border-muted-foreground text-muted-foreground"
       value={selectedType}
       options={orderTypes}
       onChange={handleChange}

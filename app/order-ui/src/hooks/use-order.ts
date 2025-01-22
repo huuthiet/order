@@ -1,8 +1,10 @@
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 
 import {
+  addNewOrderItem,
   createOrder,
   createOrderTracking,
+  deleteOrderItem,
   exportOrderInvoice,
   exportPaymentQRCode,
   getAllOrders,
@@ -16,6 +18,7 @@ import {
   ICreateOrderTrackingRequest,
   IGetOrderInvoiceRequest,
   IOrdersQuery,
+  IAddNewOrderItemRequest,
 } from '@/types'
 
 export const useOrders = (q: IOrdersQuery) => {
@@ -82,6 +85,23 @@ export const useExportPayment = () => {
   return useMutation({
     mutationFn: async (slug: string) => {
       return exportPaymentQRCode(slug)
+    },
+  })
+}
+
+//Update order
+export const useAddNewOrderItem = () => {
+  return useMutation({
+    mutationFn: async (data: IAddNewOrderItemRequest) => {
+      return addNewOrderItem(data)
+    },
+  })
+}
+
+export const useDeleteOrderItem = () => {
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      return deleteOrderItem(slug)
     },
   })
 }

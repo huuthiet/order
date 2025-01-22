@@ -19,65 +19,80 @@ import {
   Textarea,
 } from '@/components/ui'
 
-import { ICartItem, IProduct, IProductVariant, OrderTypeEnum } from '@/types'
-import { useUpdateOrderStore, useUserStore } from '@/stores'
+import { IAddNewOrderItemRequest, IProduct, IProductVariant } from '@/types'
 import { publicFileURL } from '@/constants'
-import { formatCurrency } from '@/utils'
+import { formatCurrency, showToast } from '@/utils'
+import { useAddNewOrderItem } from '@/hooks'
+import { useParams } from 'react-router-dom'
 
 interface AddToCartDialogProps {
+  onAddNewOrderItemSuccess: () => void
   product: IProduct
   trigger?: React.ReactNode
 }
 
 export default function UpdateOrderItemDialog({
+  onAddNewOrderItemSuccess,
   product,
   trigger,
 }: AddToCartDialogProps) {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
+  const { t: tToast } = useTranslation(['toast'])
+  const { slug } = useParams()
   const [isOpen, setIsOpen] = useState(false)
   const [note, setNote] = useState<string>('')
   const [selectedVariant, setSelectedVariant] =
     useState<IProductVariant | null>(product.variants[0] || null)
-  const { addOrderItem } = useUpdateOrderStore()
-  const { getUserInfo } = useUserStore()
-
-  const generateCartItemId = () => {
-    return Date.now().toString(36)
-  }
+  const { mutate: addNewOrderItem } = useAddNewOrderItem()
 
   const handleAddToCart = () => {
     if (!selectedVariant) return
 
-    const cartItem: ICartItem = {
-      id: generateCartItemId(),
-      slug: product.slug,
-      owner: getUserInfo()?.slug,
-      type: OrderTypeEnum.AT_TABLE, // default value, can be modified based on requirements
-      // branch: getUserInfo()?.branch.slug, // get branch from user info
-      orderItems: [
-        {
-          id: generateCartItemId(),
-          slug: product.slug,
-          image: product.image,
-          name: product.name,
-          quantity: 1,
-          variant: selectedVariant.slug,
-          price: selectedVariant.price,
-          description: product.description,
-          isLimit: product.isLimit,
-          // catalog: product.catalog,
-          note: note,
-        },
-      ],
-      table: '', // will be set later via addTable
+    const newOrderItem: IAddNewOrderItemRequest = {
+      order: slug as string,
+      variant: selectedVariant.slug,
+      quantity: 1,
+      note: note,
     }
 
-    addOrderItem(cartItem)
-    // Reset states
-    setNote('')
-    setSelectedVariant(product.variants[0] || null)
-    setIsOpen(false)
+    // const cartItem: ICartItem = {
+    //   id: generateCartItemId(),
+    //   slug: product.slug,
+    //   owner: getUserInfo()?.slug,
+    //   type: OrderTypeEnum.AT_TABLE, // default value, can be modified based on requirements
+    //   // branch: getUserInfo()?.branch.slug, // get branch from user info
+    //   orderItems: [
+    //     {
+    //       id: generateCartItemId(),
+    //       slug: product.slug,
+    //       image: product.image,
+    //       name: product.name,
+    //       quantity: 1,
+    //       variant: selectedVariant.slug,
+    //       price: selectedVariant.price,
+    //       description: product.description,
+    //       isLimit: product.isLimit,
+    //       // catalog: product.catalog,
+    //       note: note,
+    //     },
+    //   ],
+    //   table: '', // will be set later via addTable
+    // }
+
+    addNewOrderItem(newOrderItem, {
+      onSuccess: () => {
+        setIsOpen(false)
+        onAddNewOrderItemSuccess?.()
+        showToast(tToast('toast.addNewOrderItemSuccess'))
+        // addOrderItem(cartItem)
+        // Reset states
+        setNote('')
+        // setSelectedVariant(product.variants[0] || null)
+        setIsOpen(false)
+      },
+    })
+
   }
 
   return (
