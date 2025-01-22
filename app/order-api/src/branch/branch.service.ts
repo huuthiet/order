@@ -12,7 +12,7 @@ import { Mapper } from '@automapper/core';
 import { BranchException } from './branch.exception';
 import { BranchValidation } from './branch.validation';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { BranchUtils } from './branch.util';
+import { BranchUtils } from './branch.utils';
 
 @Injectable()
 export class BranchService {
