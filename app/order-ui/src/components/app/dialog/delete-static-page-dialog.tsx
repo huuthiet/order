@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TriangleAlert } from 'lucide-react'
+import { Trash2, TriangleAlert } from 'lucide-react'
 
 import {
   Button,
@@ -13,36 +13,47 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { IOrder } from '@/types'
+import { IStaticPage } from '@/types'
 
-export default function DeleteSizeDialog({ order }: { order: IOrder }) {
-  const { t } = useTranslation(['menu'])
+import { useDeleteStaticPage } from '@/hooks'
+import { showToast } from '@/utils'
+import { useQueryClient } from '@tanstack/react-query'
+
+export default function DeleteStaticPageDialog({
+  staticPage,
+}: {
+  staticPage: IStaticPage
+}) {
+  const queryClient = useQueryClient()
+  const { t } = useTranslation(['staticPage'])
   const { t: tCommon } = useTranslation('common')
+  const { t: tToast } = useTranslation('toast')
+  const { mutate: deleteStaticPage } = useDeleteStaticPage()
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleSubmit = (catalogSlug: string) => {
-    console.log('catalogSlug', catalogSlug)
-    // deleteSize(catalogSlug, {
-    //   onSuccess: () => {
-    //     queryClient.invalidateQueries({
-    //       queryKey: ['size'],
-    //     })
-    //     setIsOpen(false)
-    //     showToast(tToast('toast.deleteSizeSuccess'))
-    //   },
-    // })
+  const handleSubmit = (staticPageSlug: string) => {
+    deleteStaticPage(staticPageSlug, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['staticPages'],
+        })
+        setIsOpen(false)
+        showToast(tToast('toast.deleteStaticPageSuccess'))
+      },
+    })
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex justify-center w-full" asChild>
+      <DialogTrigger className="flex justify-start w-full" asChild>
         <DialogTrigger asChild>
           <Button
-            variant="destructive"
+            variant="ghost"
             className="gap-1 px-2 text-sm"
             onClick={() => setIsOpen(true)}
           >
-            {t('order.cancelOrder')}
+            <Trash2 className="icon" />
+            {t('staticPage.delete')}
           </Button>
         </DialogTrigger>
       </DialogTrigger>
@@ -52,16 +63,18 @@ export default function DeleteSizeDialog({ order }: { order: IOrder }) {
           <DialogTitle className="pb-4 border-b border-destructive text-destructive">
             <div className="flex items-center gap-2">
               <TriangleAlert className="w-6 h-6" />
-              {t('order.cancelOrder')}
+              {t('staticPage.delete')}
             </div>
           </DialogTitle>
           <DialogDescription className="p-2 bg-red-100 rounded-md text-destructive">
             {tCommon('common.deleteNote')}
           </DialogDescription>
 
-          <div className="py-4 text-sm text-muted-foreground">
-            {t('order.cancelOrderWarning')}{' '}
+          <div className="py-4 text-sm text-gray-500">
+            {t('staticPage.deleteStaticPageWarning')}{' '}
+            <span className="font-bold">{staticPage?.title}</span> <br />
             <br />
+            {t('staticPage.deleteStaticPageConfirmation')}
           </div>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-center gap-2">
@@ -70,9 +83,9 @@ export default function DeleteSizeDialog({ order }: { order: IOrder }) {
           </Button>
           <Button
             variant="destructive"
-            onClick={() => order && handleSubmit(order.slug || '')}
+            onClick={() => staticPage && handleSubmit(staticPage.slug || '')}
           >
-            {tCommon('common.confirmCancel')}
+            {tCommon('common.confirmDelete')}
           </Button>
         </DialogFooter>
       </DialogContent>

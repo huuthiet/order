@@ -15,6 +15,10 @@ import { Variant } from 'src/variant/variant.entity';
 import { OrderUtils } from 'src/order/order.utils';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
 import { OrderItemUtils } from './order-item.utils';
+import { VariantUtils } from 'src/variant/variant.utils';
+import { MenuUtils } from 'src/menu/menu.utils';
+import { MenuItemUtils } from 'src/menu-item/menu-item.utils';
+import { MenuItem } from 'src/menu-item/menu-item.entity';
 
 describe('OrderItemController', () => {
   let controller: OrderItemController;
@@ -27,6 +31,13 @@ describe('OrderItemController', () => {
         TransactionManagerService,
         OrderUtils,
         OrderItemUtils,
+        VariantUtils,
+        MenuUtils,
+        MenuItemUtils,
+        {
+          provide: getRepositoryToken(MenuItem),
+          useFactory: repositoryMockFactory,
+        },
         {
           provide: getRepositoryToken(Variant),
           useFactory: repositoryMockFactory,

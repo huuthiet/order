@@ -117,8 +117,12 @@ export class OrderController {
     description: 'Update order successfully',
     type: OrderResponseDto,
   })
-  async updateOrder(@Param('slug') slug: string, data: UpdateOrderRequestDto) {
-    const result = await this.orderService.updateOrder(slug);
+  async updateOrder(
+    @Param('slug') slug: string,
+    @Body(new ValidationPipe({ transform: true }))
+    requestData: UpdateOrderRequestDto,
+  ) {
+    const result = await this.orderService.updateOrder(slug, requestData);
     return {
       message: 'Update order status successfully',
       statusCode: HttpStatus.OK,

@@ -42,6 +42,7 @@ import {
   ClientUpdateOrderPage,
   ClientAboutPage,
   ClientPolicyPage,
+  StaticPageDetailPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 import { ClientLayout } from '@/app/layouts/client'
@@ -60,6 +61,34 @@ export const router = createBrowserRouter([
   {
     path: `${ROUTE.RESET_PASSWORD}`,
     element: <SuspenseElement component={ForgotPasswordAndResetPasswordPage} />,
+  },
+  {
+    path: ROUTE.ABOUT,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <ClientLayout />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: <SuspenseElement component={ClientAboutPage} />,
+      },
+    ],
+  },
+  {
+    path: ROUTE.POLICY,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <ClientLayout />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: <SuspenseElement component={ClientPolicyPage} />,
+      },
+    ],
   },
   {
     path: ROUTE.OVERVIEW,
@@ -451,6 +480,25 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: `${ROUTE.STAFF_STATIC_PAGE}/:key`,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={SystemLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.MANAGER]}
+            element={<SuspenseElement component={StaticPageDetailPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
     path: ROUTE.STAFF_LOG_MANAGEMENT,
     element: (
       <Suspense fallback={<SkeletonCart />}>
@@ -698,44 +746,6 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={[Role.CUSTOMER]}
             element={<SuspenseElement component={ClientProfilePage} />}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    path: ROUTE.ABOUT,
-    element: (
-      <Suspense fallback={<SkeletonCart />}>
-        <SuspenseElement component={ClientLayout} />
-      </Suspense>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <ProtectedElement
-            allowedRoles={[Role.CUSTOMER]}
-            element={<SuspenseElement component={ClientAboutPage} />}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    path: ROUTE.POLICY,
-    element: (
-      <Suspense fallback={<SkeletonCart />}>
-        <SuspenseElement component={ClientLayout} />
-      </Suspense>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <ProtectedElement
-            allowedRoles={[Role.CUSTOMER]}
-            element={<SuspenseElement component={ClientPolicyPage} />}
           />
         ),
       },

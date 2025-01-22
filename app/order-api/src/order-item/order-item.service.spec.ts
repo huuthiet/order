@@ -14,6 +14,10 @@ import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 import { Menu } from 'src/menu/menu.entity';
 import { Order } from 'src/order/order.entity';
 import { OrderItemUtils } from './order-item.utils';
+import { VariantUtils } from 'src/variant/variant.utils';
+import { MenuUtils } from 'src/menu/menu.utils';
+import { MenuItemUtils } from 'src/menu-item/menu-item.utils';
+import { MenuItem } from 'src/menu-item/menu-item.entity';
 
 describe('OrderItemService', () => {
   let service: OrderItemService;
@@ -25,6 +29,13 @@ describe('OrderItemService', () => {
         TransactionManagerService,
         OrderUtils,
         OrderItemUtils,
+        VariantUtils,
+        MenuUtils,
+        MenuItemUtils,
+        {
+          provide: getRepositoryToken(MenuItem),
+          useFactory: repositoryMockFactory,
+        },
         {
           provide: getRepositoryToken(Variant),
           useFactory: repositoryMockFactory,
