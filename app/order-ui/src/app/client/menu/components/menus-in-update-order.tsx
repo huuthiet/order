@@ -8,11 +8,12 @@ import { formatCurrency } from '@/utils'
 import { UpdateOrderItemDialog } from '@/components/app/dialog'
 
 interface IMenuProps {
+  onAddNewOrderItemSuccess: () => void
   menu: ISpecificMenu | undefined
   isLoading: boolean
 }
 
-export function MenusInUpdateOrder({ menu, isLoading }: IMenuProps) {
+export function MenusInUpdateOrder({ onAddNewOrderItemSuccess, menu, isLoading }: IMenuProps) {
   const { t } = useTranslation('menu')
   const menuItems = menu?.menuItems
   const getPriceRange = (variants: IProduct['variants']) => {
@@ -120,7 +121,7 @@ export function MenusInUpdateOrder({ menu, isLoading }: IMenuProps) {
                 {t('menu.outOfStock')}
               </Button>
             )}
-            <UpdateOrderItemDialog product={item.product} />
+            <UpdateOrderItemDialog onAddNewOrderItemSuccess={onAddNewOrderItemSuccess} product={item.product} />
             {/* <Button>
                 <ShoppingBag size={18} />
                 Thêm vào giỏ
