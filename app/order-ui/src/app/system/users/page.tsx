@@ -4,18 +4,18 @@ import { DataTable } from '@/components/ui'
 import { useUsers, usePagination } from '@/hooks'
 import { useUserListColumns } from './DataTable/columns'
 import { Role } from '@/constants'
-import { CustomerAction } from './DataTable/actions'
+import { EmployeeFilterOptions, EmployeesAction } from './DataTable/actions'
 
-export default function CustomerPage() {
+export default function UserListPage() {
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
   const [phonenumber, setPhoneNumber] = useState<string>('')
 
   const { data, isLoading } = useUsers({
     page: pagination.pageIndex,
     pageSize: pagination.pageSize,
-    order: 'DESC',
     phonenumber,
-    role: Role.CUSTOMER,
+    order: 'DESC',
+    role: [Role.STAFF, Role.CHEF, Role.MANAGER, Role.ADMIN].join(','),
   })
 
   const handleSearchChange = (value: string) => {
@@ -23,17 +23,18 @@ export default function CustomerPage() {
   }
 
   return (
-    <div className="mt-4 grid h-full grid-cols-1 gap-2">
+    <div className="mt-4 grid grid-cols-1 gap-2">
       <DataTable
         columns={useUserListColumns()}
         data={data?.result.items || []}
         isLoading={isLoading}
         pages={data?.result.totalPages || 0}
-        onInputChange={handleSearchChange}
         hiddenInput={false}
+        onInputChange={handleSearchChange}
+        filterOptions={EmployeeFilterOptions}
+        actionOptions={EmployeesAction}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
-        actionOptions={CustomerAction}
       />
     </div>
   )
