@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCart } from 'lucide-react'
 
@@ -23,7 +24,6 @@ import { IAddNewOrderItemRequest, IProduct, IProductVariant } from '@/types'
 import { publicFileURL } from '@/constants'
 import { formatCurrency, showToast } from '@/utils'
 import { useAddNewOrderItem } from '@/hooks'
-import { useParams } from 'react-router-dom'
 
 interface AddToCartDialogProps {
   onAddNewOrderItemSuccess: () => void
@@ -56,43 +56,16 @@ export default function UpdateOrderItemDialog({
       note: note,
     }
 
-    // const cartItem: ICartItem = {
-    //   id: generateCartItemId(),
-    //   slug: product.slug,
-    //   owner: getUserInfo()?.slug,
-    //   type: OrderTypeEnum.AT_TABLE, // default value, can be modified based on requirements
-    //   // branch: getUserInfo()?.branch.slug, // get branch from user info
-    //   orderItems: [
-    //     {
-    //       id: generateCartItemId(),
-    //       slug: product.slug,
-    //       image: product.image,
-    //       name: product.name,
-    //       quantity: 1,
-    //       variant: selectedVariant.slug,
-    //       price: selectedVariant.price,
-    //       description: product.description,
-    //       isLimit: product.isLimit,
-    //       // catalog: product.catalog,
-    //       note: note,
-    //     },
-    //   ],
-    //   table: '', // will be set later via addTable
-    // }
-
     addNewOrderItem(newOrderItem, {
       onSuccess: () => {
         setIsOpen(false)
         onAddNewOrderItemSuccess?.()
         showToast(tToast('toast.addNewOrderItemSuccess'))
-        // addOrderItem(cartItem)
         // Reset states
         setNote('')
-        // setSelectedVariant(product.variants[0] || null)
         setIsOpen(false)
       },
     })
-
   }
 
   return (
@@ -106,7 +79,7 @@ export default function UpdateOrderItemDialog({
         )}
       </DialogTrigger>
 
-      <DialogContent className="h-[70%] max-w-[24rem] overflow-y-auto rounded-md p-4 sm:max-w-[60rem]">
+      <DialogContent className="h-[70%] max-w-[22rem] overflow-y-auto rounded-md p-4 sm:max-w-[60rem]">
         <DialogHeader>
           <DialogTitle>{t('menu.confirmProduct')}</DialogTitle>
           <DialogDescription>

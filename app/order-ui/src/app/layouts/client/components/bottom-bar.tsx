@@ -1,9 +1,9 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { Bell, Home, SquareMenu, User } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib'
 import { ROUTE } from '@/constants'
-import { useTranslation } from 'react-i18next'
 
 export function BottomBar() {
     const location = useLocation()

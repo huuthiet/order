@@ -88,6 +88,7 @@
   "order": {
     "confirmation": "Xác nhận thanh toán",
     "openMenu": "Mở thực đơn",
+    "menu": "Thực đơn",
     "product": "Sản phẩm",
     "unitPrice": "Đơn giá",
     "quantity": "Số lượng",
