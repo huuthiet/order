@@ -23,7 +23,7 @@ export default function CustomerPage() {
   }
 
   return (
-    <div className="grid h-full grid-cols-1 gap-2">
+    <div className="mt-4 grid h-full grid-cols-1 gap-2">
       <DataTable
         columns={useUserListColumns()}
         data={data?.result.items || []}

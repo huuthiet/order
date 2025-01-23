@@ -3,8 +3,8 @@ import { ShoppingCart } from 'lucide-react'
 
 import {
   DropdownClientHeader,
-  ModeToggle,
   SelectBranchDropdown,
+  SettingsDropdown,
 } from '@/components/app/dropdown'
 import { useCartItemStore } from '@/stores'
 import { Logo } from '@/assets/images'
@@ -83,7 +83,8 @@ export function ClientHeader() {
             </NavLink>
 
             {/* Settings */}
-            <ModeToggle />
+            <SettingsDropdown />
+
             {/* Select branch */}
             <SelectBranchDropdown />
 
