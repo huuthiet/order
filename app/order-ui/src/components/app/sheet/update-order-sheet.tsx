@@ -61,12 +61,9 @@ export default function CheckoutCartSheet({ onAddNewOrderItemSuccess }: Checkout
   return (
     <Sheet>
       <SheetTrigger asChild className='fixed w-full left-4 top-20'>
-        <Button className='w-fit'>
+        <Button className='z-50 w-fit'>
           {t('order.openMenu')}
         </Button>
-        {/* <Button disabled={!orderItems?.table || orderItems?.table.slug === ''}>
-          {t('order.confirmation')}
-        </Button> */}
       </SheetTrigger>
       <SheetContent className="sm:max-w-3xl">
         <SheetHeader className="p-4">

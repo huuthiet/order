@@ -65,6 +65,8 @@
     "orderItemDeleted": "Xóa món thành công",
 
     "addNewOrderItemSuccess": "Thêm món vào đơn hàng thành công",
+    "deleteOrderItemSuccess": "Xóa món khỏi đơn hàng thành công",
+    "updateOrderTypeSuccess": "Cập nhật loại đơn hàng thành công",
 
     "createOrderTrackingSuccess": "Phân robot giao hàng thành công",
 
@@ -109,6 +111,7 @@
     "userNotFound": "Không tìm thấy người dùng",
     "fileNotFound": "Không tìm thấy tệp",
     "productNotFound": "Không tìm thấy sản phẩm",
+    "orderTypeInvalid": "Loại đơn hàng không hợp lệ",
     "productNameExist": "Tên sản phẩm đã tồn tại",
     "productNameRequired": "Tên sản phẩm là bắt buộc",
     "productLimitRequired": "Giới hạn sản phẩm là bắt buộc",

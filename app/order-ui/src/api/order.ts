@@ -16,6 +16,7 @@ import {
   IPaginationResponse,
   IOrdersQuery,
   IAddNewOrderItemRequest,
+  IUpdateOrderTypeRequest,
 } from '@/types'
 import { useDownloadStore } from '@/stores'
 
@@ -160,5 +161,22 @@ export async function deleteOrderItem(
   const response = await http.delete<IApiResponse<IOrder>>(
     `/order-items/${slug}`,
   )
+  return response.data
+}
+
+export async function updateOrderType(
+  slug: string,
+  params: IUpdateOrderTypeRequest,
+): Promise<IApiResponse<IOrder>> {
+  console.log('params', params)
+  const response = await http.patch<IApiResponse<IOrder>>(
+    `/orders/${slug}`,
+    params,
+  )
+  return response.data
+}
+
+export async function deleteOrder(slug: string): Promise<IApiResponse<IOrder>> {
+  const response = await http.delete<IApiResponse<IOrder>>(`/orders/${slug}`)
   return response.data
 }
