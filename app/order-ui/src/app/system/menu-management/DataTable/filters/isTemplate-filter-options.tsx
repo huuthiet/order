@@ -46,7 +46,6 @@ export default function DataTableFilterOptions({
       default:
         filterConditions = [];
     }
-    console.log(filterConditions);
 
     setFilterOption(filterConditions);
   };

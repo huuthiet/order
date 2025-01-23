@@ -17,13 +17,17 @@ import {
 import { ROUTE } from '@/constants'
 import { Button } from '@/components/ui'
 import { UpdateOrderSheet } from '@/components/app/sheet'
-import { useOrderBySlug } from '@/hooks'
+import { useOrderBySlug, useUpdateOrderType } from '@/hooks'
 import UpdateOrderSkeleton from '../skeleton/page'
 import { OrderTypeSelect } from '@/components/app/select'
+import { IUpdateOrderTypeRequest, OrderTypeEnum } from '@/types'
+import { showToast } from '@/utils'
 
 export default function ClientUpdateOrderPage() {
     const { t } = useTranslation('menu')
+    const { t: tToast } = useTranslation('toast')
     const { slug } = useParams()
+    const { mutate: updateOrderType } = useUpdateOrderType()
     const { data: order, isPending, refetch } = useOrderBySlug(slug as string)
     if (isPending) {
         return <UpdateOrderSkeleton />
@@ -31,12 +35,43 @@ export default function ClientUpdateOrderPage() {
     const orderItems = order?.result
 
     const handleRemoveOrderItemSuccess = () => {
-        console.log('submit')
         refetch()
     }
 
     const handleOnAddNewOrderItemSuccess = () => {
         refetch()
+    }
+
+    const handleUpdateOrderTypeSuccess = () => {
+        console.log('Update order type success')
+        refetch()
+    }
+
+    const handleChangeOrderType = (orderType: string) => {
+        // Update order type
+        if (orderType === OrderTypeEnum.AT_TABLE) {
+            const params: IUpdateOrderTypeRequest = {
+                type: orderType,
+                table: orderItems?.table.slug || null,
+            }
+            updateOrderType({ slug: slug as string, params }, {
+                onSuccess: () => {
+                    showToast(tToast('order.updateOrderTypeSuccess'))
+                    refetch()
+                }
+            })
+        } else {
+            const params = {
+                type: orderType,
+                table: null,
+            }
+            updateOrderType({ slug: slug as string, params }, {
+                onSuccess: () => {
+                    showToast(tToast('order.updateOrderTypeSuccess'))
+                    refetch()
+                }
+            })
+        }
     }
 
     if (_.isEmpty(orderItems?.orderItems)) {
@@ -71,13 +106,13 @@ export default function ClientUpdateOrderPage() {
                     </div>
 
                     {/* Table select */}
-                    <ClientUpdateOrderTableSelect defaultValue={orderItems?.table.slug} />
+                    <ClientUpdateOrderTableSelect onSuccess={handleUpdateOrderTypeSuccess} order={orderItems} defaultValue={orderItems?.table !== null ? orderItems?.table.slug : ''} />
                     {/* <ClientTableSelect /> */}
                 </div>
 
                 {/* Right content */}
                 <div className="w-full lg:w-1/2">
-                    <OrderTypeSelect orderType={orderItems?.type} />
+                    <OrderTypeSelect onChange={handleChangeOrderType} orderItems={orderItems} />
                     {/* Table list order items */}
                     <div className="mt-5">
                         <div className="grid grid-cols-7 px-4 py-3 mb-4 text-sm font-thin border rounded-md bg-muted/60">

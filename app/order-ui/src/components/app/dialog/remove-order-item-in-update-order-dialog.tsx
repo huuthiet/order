@@ -15,6 +15,7 @@ import {
 } from '@/components/ui'
 import { IOrderDetail } from '@/types'
 import { useDeleteOrderItem } from '@/hooks'
+import { showToast } from '@/utils'
 
 interface DialogDeleteCartItemProps {
   onSubmit: () => void
@@ -27,12 +28,14 @@ export default function RemoveOrderItemInUpdateOrderDialog({
 }: DialogDeleteCartItemProps) {
   const { t } = useTranslation('menu')
   const { t: tCommon } = useTranslation('common')
+  const { t: tToast } = useTranslation('toast')
   const [isOpen, setIsOpen] = useState(false)
   const { mutate: deleteOrderItem } = useDeleteOrderItem()
 
   const handleDelete = (orderItemSlug: string) => {
     deleteOrderItem(orderItemSlug, {
       onSuccess: () => {
+        showToast(tToast('toast.deleteOrderItemSuccess'))
         setIsOpen(false)
         onSubmit()
       }

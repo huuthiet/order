@@ -4,6 +4,7 @@ import {
   addNewOrderItem,
   createOrder,
   createOrderTracking,
+  deleteOrder,
   deleteOrderItem,
   exportOrderInvoice,
   exportPaymentQRCode,
@@ -11,6 +12,7 @@ import {
   getOrderBySlug,
   getOrderInvoice,
   initiatePayment,
+  updateOrderType,
 } from '@/api'
 import {
   ICreateOrderRequest,
@@ -19,6 +21,7 @@ import {
   IGetOrderInvoiceRequest,
   IOrdersQuery,
   IAddNewOrderItemRequest,
+  IUpdateOrderTypeRequest,
 } from '@/types'
 
 export const useOrders = (q: IOrdersQuery) => {
@@ -102,6 +105,30 @@ export const useDeleteOrderItem = () => {
   return useMutation({
     mutationFn: async (slug: string) => {
       return deleteOrderItem(slug)
+    },
+  })
+}
+
+//Update order type
+export const useUpdateOrderType = () => {
+  return useMutation({
+    mutationFn: async ({
+      slug,
+      params,
+    }: {
+      slug: string
+      params: IUpdateOrderTypeRequest
+    }) => {
+      return updateOrderType(slug, params)
+    },
+  })
+}
+
+//Delete order
+export const useDeleteOrder = () => {
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      return deleteOrder(slug)
     },
   })
 }

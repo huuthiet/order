@@ -51,7 +51,7 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
           )}
         </div>
         {/* Content Section - More compact */}
-        <div className="flex flex-col justify-between flex-1 p-2">
+        <div className="flex flex-col justify-between flex-1 p-2 min-h-[8rem]">
           <div>
             <h3 className="text-lg font-bold line-clamp-1">
               {item.product.name}

@@ -210,6 +210,11 @@ export interface IAddNewOrderItemRequest {
   order: string
 }
 
+export interface IUpdateOrderTypeRequest {
+  type: string
+  table: string | null
+}
+
 export interface IInitiatePaymentRequest {
   paymentMethod: string
   orderSlug: string

@@ -32,7 +32,7 @@ export function MenusInUpdateOrder({ onAddNewOrderItemSuccess, menu, isLoading }
 
   if (isLoading) {
     return (
-      <div className={`grid grid-cols-2 gap-3 lg:grid-cols-3`}>
+      <div className={`grid grid-cols-1 gap-3 lg:grid-cols-3`}>
         {[...Array(8)].map((_, index) => (
           <SkeletonMenuList key={index} />
         ))}
@@ -45,7 +45,7 @@ export function MenusInUpdateOrder({ onAddNewOrderItemSuccess, menu, isLoading }
   }
 
   return (
-    <div className={`grid grid-cols-2 gap-4 lg:grid-cols-3`}>
+    <div className={`grid grid-cols-1 gap-4 lg:grid-cols-3`}>
       {menuItems.map((item) => (
         <div
           key={item.slug}
@@ -111,7 +111,7 @@ export function MenusInUpdateOrder({ onAddNewOrderItemSuccess, menu, isLoading }
             </div>
             {item.currentStock > 0 ? (
               <div className="flex items-end justify-center w-full">
-                {/* <AddToCartDialog product={item.product} /> */}
+                <UpdateOrderItemDialog onAddNewOrderItemSuccess={onAddNewOrderItemSuccess} product={item.product} />
               </div>
             ) : (
               <Button
@@ -121,11 +121,6 @@ export function MenusInUpdateOrder({ onAddNewOrderItemSuccess, menu, isLoading }
                 {t('menu.outOfStock')}
               </Button>
             )}
-            <UpdateOrderItemDialog onAddNewOrderItemSuccess={onAddNewOrderItemSuccess} product={item.product} />
-            {/* <Button>
-                <ShoppingBag size={18} />
-                Thêm vào giỏ
-              </Button> */}
           </div>
         </div>
       ))}
