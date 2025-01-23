@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import { useTranslation } from 'react-i18next'
-import { Role } from '@/constants'
 
+import { Role } from '@/constants'
 import {
   DataTableFilterOptionsProps,
   Select,
@@ -24,7 +24,6 @@ export default function DataTableFilterOptions({
     setFilterValue(value)
 
     let filterConditions: ColumnFiltersState = []
-    console.log(value, filterValue)
 
     if (value !== 'all') {
       filterConditions = [
@@ -35,7 +34,6 @@ export default function DataTableFilterOptions({
       ]
     }
     setFilterOption(filterConditions)
-    console.log(filterConditions)
   }
 
   return (
