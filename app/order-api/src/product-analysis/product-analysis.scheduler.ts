@@ -108,7 +108,7 @@ export class ProductAnalysisScheduler {
     }
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1PM)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async refreshProductAnalysis() {
     const context = `${ProductAnalysisScheduler.name}.${this.refreshProductAnalysis.name}`;
 
