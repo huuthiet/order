@@ -50,7 +50,7 @@ export default function OrderTypeSelect() {
   return (
     <ReactSelect
       placeholder={t('menu.selectOrderType')}
-      className="w-full border-muted-foreground text-sm text-muted-foreground"
+      className="w-full text-sm border-muted-foreground text-muted-foreground"
       value={selectedType}
       options={orderTypes}
       onChange={handleChange}

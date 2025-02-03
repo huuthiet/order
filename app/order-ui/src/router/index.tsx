@@ -8,7 +8,7 @@ import {
   MenuPage,
   SystemLayout,
   LoginPage,
-  ConfirmOrderPage,
+  SystemCheckoutPage,
   TablePage,
   OrderSuccessPage,
   RegisterPage,
@@ -19,7 +19,7 @@ import {
   MenuManagementPage,
   OrderPaymentPage,
   BankConfigPage,
-  MenuDetailPage,
+  MenuDetailManagementPage,
   OrderManagementPage,
   OrderHistoryPage,
   OrderDetailPage,
@@ -172,7 +172,7 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedElement
             allowedRoles={[Role.STAFF]}
-            element={<SuspenseElement component={ConfirmOrderPage} />}
+            element={<SuspenseElement component={SystemCheckoutPage} />}
           />
         ),
       },
@@ -372,7 +372,7 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedElement
             allowedRoles={[Role.CHEF, Role.MANAGER]}
-            element={<SuspenseElement component={MenuDetailPage} />}
+            element={<SuspenseElement component={MenuDetailManagementPage} />}
           />
         ),
       },

@@ -12,10 +12,7 @@ import {
 } from '@/components/ui'
 
 import { CreateStaticPageForm } from '@/components/app/form'
-
-// interface CreateStaticPageDialogProps {
-//   content: string
-// }
+import { PlusCircledIcon } from '@radix-ui/react-icons'
 
 export default function CreateStaticPageDialog() {
   const { t } = useTranslation(['staticPage'])
@@ -27,11 +24,8 @@ export default function CreateStaticPageDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          className="h-10 gap-1 text-sm"
-          onClick={() => setIsOpen(true)}
-        >
-          {/* <PlusCircledIcon className="icon" /> */}
+        <Button className="gap-1 text-xs" onClick={() => setIsOpen(true)}>
+          <PlusCircledIcon className="h-[1.1rem] w-[1.1rem]" />
           {t('staticPage.create')}
         </Button>
       </DialogTrigger>
@@ -47,4 +41,3 @@ export default function CreateStaticPageDialog() {
     </Dialog>
   )
 }
-

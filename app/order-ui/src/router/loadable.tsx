@@ -55,9 +55,9 @@ export const MenuPage = React.lazy(() =>
   })),
 )
 
-export const ConfirmOrderPage = React.lazy(() =>
-  import('@/app/system/menu').then((module) => ({
-    default: module.ConfirmOrderPage,
+export const SystemCheckoutPage = React.lazy(() =>
+  import('@/app/system/checkout').then((module) => ({
+    default: module.SystemCheckoutPage,
   })),
 )
 
@@ -109,9 +109,9 @@ export const MenuManagementPage = React.lazy(() =>
   })),
 )
 
-export const MenuDetailPage = React.lazy(() =>
-  import('@/app/system/menu-management').then((module) => ({
-    default: module.MenuDetailPage,
+export const MenuDetailManagementPage = React.lazy(() =>
+  import('@/app/system/menu-detail-management').then((module) => ({
+    default: module.MenuDetailManagementPage,
   })),
 )
 
