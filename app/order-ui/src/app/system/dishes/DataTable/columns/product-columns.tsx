@@ -49,7 +49,11 @@ export const useProductColumns = (): ColumnDef<IProduct>[] => {
       ),
       cell: ({ row }) => {
         const createdAt = row.getValue('createdAt')
-        return createdAt ? moment(new Date(createdAt as string)).format('HH:mm DD/MM/YYYY') : ''
+        return createdAt ? (
+          <div className="text-xs">
+            {moment(new Date(createdAt as string)).format('HH:mm DD/MM/YYYY')}
+          </div>
+        ) : ''
       }
     },
     {
