@@ -68,6 +68,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-draggable": "^4.4.6",
+    "react-dropzone": "^14.3.5",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.53.2",
     "react-quill": "^2.0.0",

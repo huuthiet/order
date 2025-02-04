@@ -24,6 +24,10 @@ export { default as DeleteProductDialog } from './delete-product-dialog'
 export { default as UploadProductImageDialog } from './upload-product-image-dialog'
 export { default as UploadMultipleProductImagesDialog } from './upload-multiple-product-images-dialog'
 
+export { default as ExportAllProductsTemplateDialog } from './export-all-products-template-dialog'
+export { default as ExportProductImportTemplateDialog } from './export-product-import-template-dialog'
+export { default as ImportProductByTemplateDialog } from './import-product-by-template-dialog'
+
 export { default as CreateProductVariantDialog } from './create-product-variant-dialog'
 export { default as UpdateProductVariantDialog } from './update-product-variant-dialog'
 export { default as DeleteProductVariantDialog } from './delete-product-variant-dialog'

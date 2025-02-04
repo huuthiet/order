@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom'
 import { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal, SquareMousePointer } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +19,6 @@ import {
   UploadProductImageDialog
 } from '@/components/app/dialog'
 import { publicFileURL, ROUTE } from '@/constants'
-import { NavLink } from 'react-router-dom'
 
 export const useProductColumns = (): ColumnDef<IProduct>[] => {
   const { t } = useTranslation(['product'])
@@ -64,7 +64,7 @@ export const useProductColumns = (): ColumnDef<IProduct>[] => {
     },
     {
       id: 'actions',
-      header: tCommon('common.action'),
+      header: ({ column }) => <DataTableColumnHeader column={column} title={tCommon('common.action')} />,
       cell: ({ row }) => {
         const product = row.original
         return (
