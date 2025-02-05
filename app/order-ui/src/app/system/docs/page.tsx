@@ -1,31 +1,26 @@
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 
-// import { DataTable } from '@/components/ui'
-// import { useLoggerColumns } from './DataTable/columns'
-// import { useLogger, usePagination } from '@/hooks'
-// import { LoggerLevelFilter } from './DataTable/filters'
-
-export default function DocPage() {
-    const { t } = useTranslation(['log'])
-    // const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
-    // const { data: loggers, isLoading } = useLogger({
-    //     order: 'DESC',
-    //     page: pagination.pageIndex,
-    //     pageSize: pagination.pageSize,
-    // })
+export default function DocsPage() {
+    const { t } = useTranslation(['doc'])
 
     return (
-        <div className={`pl-4 transition-all duration-300 ease-in-out`}>
+        <div>
             <div className="sticky top-0 z-10 flex flex-col items-center gap-2 pb-4 pr-4">
                 <div className="flex flex-col flex-1 w-full">
                     <span className="flex items-center gap-1 text-lg">
                         <SquareMenu />
-                        {t('log.title')}
+                        {t('doc.title')}
                     </span>
-                    <div className="grid h-full grid-cols-1 gap-2">
-                    </div>
                 </div>
+            </div>
+
+            <div className="grid w-full grid-cols-4 gap-2">
+                {[...Array(8)].map((_, index) => (
+                    <div key={index} className='p-4 transition-all duration-200 border rounded-md hover:border-primary'>
+                        Docs
+                    </div>
+                ))}
             </div>
         </div>
     )

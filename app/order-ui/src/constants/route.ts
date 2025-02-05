@@ -46,6 +46,7 @@ export const ROUTE = {
   CONTACT: '/contact',
   HELP: '/help',
   POLICY: '/policy',
+  DOCS: '/docs',
 
   ADMIN_CONFIG: '/config',
 }
