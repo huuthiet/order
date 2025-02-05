@@ -197,6 +197,12 @@ export const ConfigPage = React.lazy(() =>
   })),
 )
 
+export const DocsPage = React.lazy(() =>
+  import('@/app/system/docs').then((module) => ({
+    default: module.DocsPage,
+  })),
+)
+
 //----------------------------------------------//
 //Client
 //Home page

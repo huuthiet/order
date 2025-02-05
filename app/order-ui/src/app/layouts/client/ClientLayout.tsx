@@ -5,6 +5,7 @@ import { cn } from '@/lib'
 import { DownloadProgress } from '@/components/app/progress'
 import { useDownloadStore } from '@/stores'
 import { ClientHeader, ClientFooter, BackToTop, BottomBar } from './components'
+import MessengerChat from '@/components/messenger/messenger-chat'
 
 export default function ClientLayout() {
   const isMobile = useIsMobile()
@@ -21,6 +22,7 @@ export default function ClientLayout() {
         {isDownloading && (
           <DownloadProgress progress={progress} fileName={fileName} />
         )}
+        <MessengerChat />
         <BackToTop />
       </main>
 
