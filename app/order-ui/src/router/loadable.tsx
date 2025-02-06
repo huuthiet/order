@@ -197,6 +197,12 @@ export const ConfigPage = React.lazy(() =>
   })),
 )
 
+export const VoucherPage = React.lazy(() =>
+  import('@/app/system/voucher').then((module) => ({
+    default: module.VoucherPage,
+  })),
+)
+
 export const DocsPage = React.lazy(() =>
   import('@/app/system/docs').then((module) => ({
     default: module.DocsPage,

@@ -37,8 +37,10 @@ export { default as UpdateProfileDialog } from './update-profile-dialog'
 export { default as CreateMenuDialog } from './create-menu-dialog'
 export { default as UpdateMenuDialog } from './update-menu-dialog'
 
+export { default as ChooseBranchDialog } from './choose-branch-dialog'
 export { default as CreateBranchDialog } from './create-branch-dialog'
 export { default as UpdateBranchDialog } from './update-branch-dialog'
+export { default as DeleteBranchDialog } from './delete-branch-dialog'
 
 export { default as CreateTableDialog } from './create-table-dialog'
 export { default as UpdateTableDialog } from './update-table-dialog'
