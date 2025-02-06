@@ -1,4 +1,9 @@
-import { IApiResponse, ICreateVoucherRequest, IVoucher } from '@/types'
+import {
+  IApiResponse,
+  ICreateVoucherRequest,
+  IUpdateVoucherRequest,
+  IVoucher,
+} from '@/types'
 import { http } from '@/utils'
 
 export async function getVouchers(): Promise<IApiResponse<IVoucher[]>> {
@@ -21,7 +26,7 @@ export async function createVoucher(
 }
 
 export async function updateVoucher(
-  data: IVoucher,
+  data: IUpdateVoucherRequest,
 ): Promise<IApiResponse<IVoucher>> {
   const response = await http.patch<IApiResponse<IVoucher>>(
     `/voucher/${data.slug}`,

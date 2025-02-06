@@ -13,6 +13,8 @@ import {
 } from '@/components/ui'
 import { IVoucher } from '@/types'
 import { showToast } from '@/utils'
+import { UpdateVoucherSheet } from '@/components/app/sheet'
+import { DeleteVoucherDialog } from '@/components/app/dialog'
 
 export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
   const { t } = useTranslation(['voucher'])
@@ -59,7 +61,7 @@ export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
         return (
           <div className="flex flex-col gap-1 text-xs sm:text-sm">
             {voucher?.title}
-            <span className='text-xs text-muted-foreground'>
+            <span className="text-xs text-muted-foreground">
               {voucher.description}
             </span>
           </div>
@@ -101,19 +103,23 @@ export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
     {
       accessorKey: 'minOrderValue',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('voucher.minOrderValue')} />
+        <DataTableColumnHeader
+          column={column}
+          title={t('voucher.minOrderValue')}
+        />
       ),
       cell: ({ row }) => {
         const voucher = row.original
-        return <div className="text-xs sm:text-sm">
-          {voucher?.minOrderValue}
-        </div>
+        return (
+          <div className="text-xs sm:text-sm">{voucher?.minOrderValue}</div>
+        )
       },
     },
     {
       id: 'actions',
       header: tCommon('common.action'),
-      cell: () => {
+      cell: ({ row }) => {
+        const voucher = row.original
         return (
           <div>
             <DropdownMenu>
@@ -127,6 +133,8 @@ export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
                 <DropdownMenuLabel>
                   {tCommon('common.action')}
                 </DropdownMenuLabel>
+                <UpdateVoucherSheet voucher={voucher} />
+                <DeleteVoucherDialog voucher={voucher} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

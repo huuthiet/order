@@ -12,6 +12,7 @@ export const createVoucherSchema = z.object({
 
 export const updateVoucherSchema = z.object({
   slug: z.string(),
+  createdAt: z.string(),
   title: z.string().min(1),
   description: z.optional(z.string()),
   code: z.string().min(1),

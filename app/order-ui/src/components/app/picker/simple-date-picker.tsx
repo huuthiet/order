@@ -1,28 +1,43 @@
-import * as React from "react"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { useTranslation } from "react-i18next"
+import * as React from 'react'
+import moment from 'moment'
+import { CalendarIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 import {
-    Button, Calendar, Popover,
+    Button,
+    Calendar,
+    Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui"
+} from '@/components/ui'
 
 interface ISimpleDatePickerProps {
+    defaultValue?: string
     onChange: (date: string) => void
 }
 
-export default function SimpleDatePicker({ onChange }: ISimpleDatePickerProps) {
-    const { t } = useTranslation("menu")
-    const [date, setDate] = React.useState<string>("")
+export default function SimpleDatePicker({
+    defaultValue,
+    onChange,
+}: ISimpleDatePickerProps) {
+    const { t } = useTranslation('menu')
+    const [date, setDate] = React.useState<string>('')
+
+    React.useEffect(() => {
+        if (defaultValue) {
+            const dateOnly = defaultValue.split('T')[0]
+            setDate(dateOnly)
+        }
+    }, [defaultValue])
 
     const handleDateChange = (selectedDate?: Date) => {
         if (selectedDate) {
-            const formattedDate = format(selectedDate, "yyyy-MM-dd")
+            const formattedDate = moment(selectedDate, 'DD/MM/YYYY').format(
+                'DD/MM/YYYY',
+            )
             setDate(formattedDate)
-            onChange(formattedDate) // Gọi callback để cập nhật state ở cha
+            onChange(formattedDate)
         }
     }
 
@@ -30,13 +45,13 @@ export default function SimpleDatePicker({ onChange }: ISimpleDatePickerProps) {
         <Popover>
             <PopoverTrigger asChild>
                 <Button
-                    variant={"outline"}
+                    variant={'outline'}
                     className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
+                        'w-full justify-start text-left font-normal',
+                        !date && 'text-muted-foreground',
                     )}
                 >
-                    <CalendarIcon />
+                    <CalendarIcon className="w-4 h-4 mr-2" />
                     {date ? date : <span>{t('menu.chooseDate')}</span>}
                 </Button>
             </PopoverTrigger>

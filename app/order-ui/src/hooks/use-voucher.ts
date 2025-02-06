@@ -8,7 +8,7 @@ import {
   updateVoucher,
 } from '@/api'
 import { QUERYKEY } from '@/constants/query'
-import { ICreateVoucherRequest, IVoucher } from '@/types'
+import { ICreateVoucherRequest, IUpdateVoucherRequest } from '@/types'
 
 export const useVouchers = () => {
   return useQuery({
@@ -35,7 +35,7 @@ export const useCreateVoucher = () => {
 
 export const useUpdateVoucher = () => {
   return useMutation({
-    mutationFn: async (data: IVoucher) => {
+    mutationFn: async (data: IUpdateVoucherRequest) => {
       return updateVoucher(data)
     },
   })
