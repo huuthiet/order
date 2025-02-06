@@ -1,3 +1,4 @@
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
@@ -10,7 +11,6 @@ import { useIsMobile } from '@/hooks'
 import { ROUTE } from '@/constants'
 import { BestSellerCarousel, StoreCarousel } from './components'
 import { AdPopup } from '@/components/app/AdPopup'
-import React from 'react'
 
 export default function HomePage() {
   const isMobile = useIsMobile()
@@ -44,8 +44,8 @@ export default function HomePage() {
           <div className="hidden col-span-1 sm:block" />
           <div className="w-full col-span-2 mt-12 text-center text-white sm:mt-0">
             <div className="flex flex-col gap-2">
-              <div className="text-4xl font-extrabold uppercase sm:text-5xl">
-                TREND COFFEE
+              <div className="text-4xl font-extrabold uppercase sm:text-4xl">
+                HOMELAND COFFEE
               </div>
             </div>
             <p className="mt-4 text-sm sm:text-base">
@@ -94,7 +94,7 @@ export default function HomePage() {
             <div className="flex justify-center sm:col-span-2">
               <div className="flex flex-col items-start gap-4 sm:w-2/3">
                 <div className="flex flex-col gap-2">
-                  <span className="text-3xl font-extrabold">TREND Coffee</span>
+                  <span className="text-2xl font-extrabold">HOMELAND Coffee</span>
                   <span className="text-muted-foreground">
                     Không gian hiện đại, ấm cúng – nơi gắn kết những câu chuyện
                     và tạo nên kỷ niệm khó quên.

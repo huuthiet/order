@@ -49,4 +49,5 @@ export const ROUTE = {
   DOCS: '/docs',
 
   ADMIN_CONFIG: '/config',
+  ADMIN_VOUCHER: '/voucher',
 }
