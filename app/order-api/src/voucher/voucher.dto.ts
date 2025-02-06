@@ -2,6 +2,7 @@ import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { BaseResponseDto } from 'src/app/base.dto';
 
 export class CreateVoucherDto {
   @ApiProperty()
@@ -40,9 +41,9 @@ export class CreateVoucherDto {
   endDate: Date;
 }
 
-export class UpdateVoucherDto {}
+export class UpdateVoucherDto extends CreateVoucherDto {}
 
-export class VoucherResponseDto {
+export class VoucherResponseDto extends BaseResponseDto {
   @ApiProperty()
   @AutoMap()
   title: string;

@@ -10,6 +10,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
 import { VoucherException } from './voucher.exception';
 import { VoucherValidation } from './voucher.validation';
+import _ from 'lodash';
 
 @Injectable()
 export class VoucherService {
@@ -30,9 +31,9 @@ export class VoucherService {
       CreateVoucherDto,
       Voucher,
     );
-    const createdVoucher = await this.transactionService.execute(
+    const createdVoucher = await this.transactionService.execute<Voucher>(
       async (manager) => {
-        await manager.save(voucher);
+        return await manager.save(voucher);
       },
       (result) => {
         this.logger.log(`Voucher created successfully: ${result}`, context);
@@ -50,18 +51,94 @@ export class VoucherService {
   }
 
   async findAll() {
-    return `This action returns all voucher`;
+    const context = `${VoucherService.name}.${this.findAll.name}`;
+    try {
+      const vouchers = await this.voucherRepository.find();
+      return this.mapper.mapArray(vouchers, Voucher, VoucherResponseDto);
+    } catch (error) {
+      this.logger.error(error.message, error.stack, context);
+      throw new VoucherException(
+        VoucherValidation.FIND_ALL_VOUCHER_FAILED,
+        error.message,
+      );
+    }
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} voucher`;
+  async findOne(slug: string) {
+    const context = `${VoucherService.name}.${this.findOne.name}`;
+    try {
+      const voucher = await this.voucherRepository.findOne({
+        where: { slug },
+      });
+      return this.mapper.map(voucher, Voucher, VoucherResponseDto);
+    } catch (error) {
+      this.logger.error(error.message, error.stack, context);
+      throw new VoucherException(
+        VoucherValidation.FIND_ONE_VOUCHER_FAILED,
+        error.message,
+      );
+    }
   }
 
-  async update(id: number, updateVoucherDto: UpdateVoucherDto) {
-    return `This action updates a #${id} voucher`;
+  async update(slug: string, updateVoucherDto: UpdateVoucherDto) {
+    const context = `${VoucherService.name}.${this.update.name}`;
+    const voucher = await this.voucherRepository.findOne({
+      where: { slug },
+    });
+    if (!voucher) {
+      throw new VoucherException(VoucherValidation.VOUCHER_NOT_FOUND);
+    }
+    Object.assign(voucher, updateVoucherDto);
+
+    const updatedVoucher = await this.transactionService.execute<Voucher>(
+      async (manager) => {
+        return await manager.save(voucher);
+      },
+      (result) => {
+        this.logger.log(`Voucher updated successfully: ${result}`, context);
+      },
+      (error) => {
+        this.logger.error(
+          `Failed to updated voucher: ${error.message}`,
+          error.stack,
+          context,
+        );
+        throw new VoucherException(
+          VoucherValidation.UPDATE_VOUCHER_FAILED,
+          error.message,
+        );
+      },
+    );
+    return this.mapper.map(updatedVoucher, Voucher, VoucherResponseDto);
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} voucher`;
+  async remove(slug: string) {
+    const context = `${VoucherService.name}.${this.remove.name}`;
+    const voucher = await this.voucherRepository.findOne({
+      where: { slug },
+    });
+    if (!voucher) {
+      throw new VoucherException(VoucherValidation.VOUCHER_NOT_FOUND);
+    }
+    const deletedVoucher = await this.transactionService.execute<Voucher>(
+      async (manager) => {
+        return await manager.remove(voucher);
+      },
+      (result) => {
+        this.logger.log(`Voucher deleted successfully: ${result}`, context);
+      },
+      (error) => {
+        this.logger.error(
+          `Failed to delete voucher: ${error.message}`,
+          error.stack,
+          context,
+        );
+        throw new VoucherException(
+          VoucherValidation.DELETE_VOUCHER_FAILED,
+          error.message,
+        );
+      },
+    );
+    return this.mapper.map(deletedVoucher, Voucher, VoucherResponseDto);
   }
 }

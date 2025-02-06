@@ -6,37 +6,117 @@ import {
   Patch,
   Param,
   Delete,
+  HttpStatus,
+  HttpCode,
+  ValidationPipe,
 } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
-import { CreateVoucherDto } from './voucher.dto';
+import { CreateVoucherDto, VoucherResponseDto } from './voucher.dto';
 import { UpdateVoucherDto } from './voucher.dto';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { HasRoles } from 'src/role/roles.decorator';
+import { RoleEnum } from 'src/role/role.enum';
+import { ApiResponseWithType } from 'src/app/app.decorator';
+import { AppResponseDto } from 'src/app/app.dto';
 
 @Controller('voucher')
+@ApiTags('Voucher')
+@ApiBearerAuth()
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
   @Post()
-  create(@Body() createVoucherDto: CreateVoucherDto) {
-    return this.voucherService.create(createVoucherDto);
+  @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.SuperAdmin)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create voucher' })
+  @ApiResponseWithType({
+    status: HttpStatus.CREATED,
+    description: 'Voucher has been created successfully',
+    type: VoucherResponseDto,
+  })
+  async create(
+    @Body(new ValidationPipe({ transform: true }))
+    createVoucherDto: CreateVoucherDto,
+  ) {
+    const result = await this.voucherService.create(createVoucherDto);
+    return {
+      message: 'Voucher has been created successfully',
+      statusCode: HttpStatus.CREATED,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VoucherResponseDto>;
   }
 
   @Get()
-  findAll() {
-    return this.voucherService.findAll();
+  @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Admin, RoleEnum.Manager)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Retrieve all voucher' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'All voucher have been retrieved successfully',
+    type: VoucherResponseDto,
+    isArray: true,
+  })
+  async findAll() {
+    const result = await this.voucherService.findAll();
+    return {
+      message: 'All voucher have been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VoucherResponseDto[]>;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.voucherService.findOne(+id);
+  @Get(':slug')
+  @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Admin, RoleEnum.Manager)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Retrieve voucher' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Voucher has been retrieved successfully',
+    type: VoucherResponseDto,
+  })
+  async findOne(@Param('slug') slug: string) {
+    const result = await this.voucherService.findOne(slug);
+    return {
+      message: 'Voucher has been retrieved successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VoucherResponseDto>;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVoucherDto: UpdateVoucherDto) {
-    return this.voucherService.update(+id, updateVoucherDto);
+  @Patch(':slug')
+  @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Admin, RoleEnum.Manager)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update voucher' })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'Voucher has been updated successfully',
+    type: VoucherResponseDto,
+  })
+  async update(
+    @Param('slug') slug: string,
+    @Body(new ValidationPipe({ transform: true }))
+    updateVoucherDto: UpdateVoucherDto,
+  ) {
+    const result = await this.voucherService.update(slug, updateVoucherDto);
+    return {
+      message: 'Voucher has been updated successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VoucherResponseDto>;
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.voucherService.remove(+id);
+  @Delete(':slug')
+  async remove(@Param('slug') slug: string) {
+    const result = await this.voucherService.remove(slug);
+    return {
+      message: 'Voucher has been deleted successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result,
+    } as AppResponseDto<VoucherResponseDto>;
   }
 }

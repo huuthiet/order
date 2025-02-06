@@ -5,7 +5,7 @@ import { Column, Entity } from 'typeorm';
 @Entity('voucher_tbl')
 export class Voucher extends Base {
   @AutoMap()
-  @Column({ name: 'code_column' })
+  @Column({ name: 'code_column', unique: true })
   code: string;
 
   @AutoMap()
