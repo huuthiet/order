@@ -6,8 +6,8 @@ import { useVoucherColumns } from './DataTable/columns'
 import { usePagination, useVouchers } from '@/hooks'
 import { EmployeesAction } from './DataTable/actions'
 
-export default function VoucherPage() {
-    const { t } = useTranslation(['voucher'])
+export default function PromotionPage() {
+    const { t } = useTranslation(['promotion'])
     const { handlePageChange, handlePageSizeChange } = usePagination()
     const { data, isLoading } = useVouchers()
 
@@ -17,7 +17,7 @@ export default function VoucherPage() {
                 <div className="flex flex-col flex-1 w-full">
                     <span className="flex items-center gap-1 text-lg">
                         <SquareMenu />
-                        {t('voucher.voucherTitle')}
+                        {t('promotion.promotionTitle')}
                     </span>
                     <div className="grid h-full grid-cols-1 gap-2 mt-4">
                         <DataTable
