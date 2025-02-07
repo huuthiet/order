@@ -4,6 +4,7 @@ export interface IVoucher extends IBase {
   title: string
   description?: string
   code: string
+  value: number
   maxUsage: number
   minOrderValue: number
   startDate: string
@@ -14,6 +15,7 @@ export interface ICreateVoucherRequest {
   title: string
   description?: string
   code: string
+  value: number
   maxUsage: number
   minOrderValue: number
   startDate: string
@@ -25,6 +27,7 @@ export interface IUpdateVoucherRequest {
   title: string
   description?: string
   code: string
+  value: number
   maxUsage: number
   minOrderValue: number
   startDate: string

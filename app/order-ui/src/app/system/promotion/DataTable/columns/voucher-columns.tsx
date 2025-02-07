@@ -1,4 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
+import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 import { MoreHorizontal, Copy } from 'lucide-react'
 
@@ -9,13 +10,9 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-  TooltipProvider,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from '@/components/ui'
 import { IVoucher } from '@/types'
-import { formatCurrency, showToast } from '@/utils'
+import { showToast } from '@/utils'
 import { UpdateVoucherSheet } from '@/components/app/sheet'
 import { DeleteVoucherDialog } from '@/components/app/dialog'
 
@@ -31,13 +28,27 @@ export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
 
   return [
     {
+      accessorKey: 'createdAt',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('voucher.createdAt')} />
+      ),
+      cell: ({ row }) => {
+        const createdAt = row.getValue('createdAt')
+        return (
+          <div className="text-xs sm:text-sm">
+            {createdAt ? moment(createdAt).format('HH:mm DD/MM/YYYY') : ''}
+          </div>
+        )
+      },
+    },
+    {
       accessorKey: 'slug',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('voucher.slug')} />
       ),
       cell: ({ row }) => {
         const user = row.original
-        return <div className="text-xs">{user?.slug}</div>
+        return <div className="text-xs sm:text-sm">{user?.slug}</div>
       },
     },
     {
@@ -48,7 +59,7 @@ export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
       cell: ({ row }) => {
         const voucher = row.original
         return (
-          <div className="flex flex-col gap-1 text-xs">
+          <div className="flex flex-col gap-1 text-xs sm:text-sm">
             {voucher?.title}
             <span className="text-xs text-muted-foreground">
               {voucher.description}
@@ -67,23 +78,14 @@ export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
         return (
           <div className="flex items-center gap-2 text-xs sm:text-sm">
             {voucher?.code}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-6 h-6"
-                    onClick={() => handleCopyCode(voucher?.code)}
-                  >
-                    <Copy className="w-4 h-4 text-primary" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {t('voucher.copyCode')}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-6 h-6"
+              onClick={() => handleCopyCode(voucher?.code)}
+            >
+              <Copy className="w-4 h-4 text-primary" />
+            </Button>
           </div>
         )
       },
@@ -109,7 +111,7 @@ export const useVoucherColumns = (): ColumnDef<IVoucher>[] => {
       cell: ({ row }) => {
         const voucher = row.original
         return (
-          <div className="text-xs sm:text-sm">{formatCurrency(voucher?.minOrderValue)}</div>
+          <div className="text-xs sm:text-sm">{voucher?.minOrderValue}</div>
         )
       },
     },

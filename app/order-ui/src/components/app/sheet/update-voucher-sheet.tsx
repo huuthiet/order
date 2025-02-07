@@ -52,10 +52,27 @@ export default function UpdateVoucherSheet({
     },
   })
 
-  const handleDateChange = (
-    fieldName: 'startDate' | 'endDate',
-    date: string,
-  ) => {
+  const isDateBeforeToday = (date: Date) => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    return date < today
+  }
+
+  const isDateBeforeStartDate = (date: Date) => {
+    const startDate = form.getValues('startDate')
+    if (!startDate) return false
+    const startDateObj = new Date(startDate)
+    return date <= startDateObj
+  }
+
+  const handleDateChange = (fieldName: 'startDate' | 'endDate', date: string) => {
+    if (fieldName === 'startDate') {
+      // Nếu thay đổi ngày bắt đầu, xóa ngày kết thúc nếu nó trước ngày bắt đầu mới
+      const currentEndDate = form.getValues('endDate')
+      if (currentEndDate && new Date(currentEndDate) <= new Date(date)) {
+        form.setValue('endDate', '')
+      }
+    }
     form.setValue(fieldName, date)
   }
 
@@ -89,7 +106,7 @@ export default function UpdateVoucherSheet({
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex gap-1 items-center">
               <span className="text-destructive">*</span>
               {t('voucher.name')}
             </FormLabel>
@@ -107,7 +124,7 @@ export default function UpdateVoucherSheet({
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex gap-1 items-center">
               <span className="text-destructive">*</span>
               {t('voucher.description')}
             </FormLabel>
@@ -128,15 +145,15 @@ export default function UpdateVoucherSheet({
         name="startDate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex gap-1 items-center">
               <span className="text-destructive">*</span>
               {t('voucher.startDate')}
             </FormLabel>
             <FormControl>
               <SimpleDatePicker
                 {...field}
-                defaultValue={field.value}
                 onChange={(date) => handleDateChange('startDate', date)}
+                disabledDates={isDateBeforeToday}
               />
             </FormControl>
             <FormMessage />
@@ -150,15 +167,15 @@ export default function UpdateVoucherSheet({
         name="endDate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex gap-1 items-center">
               <span className="text-destructive">*</span>
               {t('voucher.endDate')}
             </FormLabel>
             <FormControl>
               <SimpleDatePicker
                 {...field}
-                defaultValue={field.value}
                 onChange={(date) => handleDateChange('endDate', date)}
+                disabledDates={isDateBeforeStartDate}
               />
             </FormControl>
             <FormMessage />
@@ -172,7 +189,7 @@ export default function UpdateVoucherSheet({
         name="code"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex gap-1 items-center">
               <span className="text-destructive">*</span>
               {t('voucher.code')}
             </FormLabel>
@@ -194,7 +211,7 @@ export default function UpdateVoucherSheet({
         name="maxUsage"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex gap-1 items-center">
               <span className="text-destructive">*</span>
               {t('voucher.maxUsage')}
             </FormLabel>
@@ -218,7 +235,7 @@ export default function UpdateVoucherSheet({
         name="minOrderValue"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex gap-1 items-center">
               <span className="text-destructive">*</span>
               {t('voucher.minOrderValue')}
             </FormLabel>
@@ -263,7 +280,7 @@ export default function UpdateVoucherSheet({
                   className="space-y-4"
                 >
                   {/* Nhóm: Tên và Mô tả */}
-                  <div className="p-4 bg-white border rounded-md">
+                  <div className="p-4 bg-white rounded-md border">
                     <div className="grid grid-cols-1 gap-2">
                       {formFields.name}
                       {formFields.description}
@@ -271,19 +288,19 @@ export default function UpdateVoucherSheet({
                   </div>
 
                   {/* Nhóm: Ngày bắt đầu và Kết thúc */}
-                  <div className="grid grid-cols-2 gap-2 p-4 bg-white border rounded-md">
+                  <div className="grid grid-cols-2 gap-2 p-4 bg-white rounded-md border">
                     {formFields.startDate}
                     {formFields.endDate}
                   </div>
 
                   {/* Nhóm: Mã giảm giá & Số lượng */}
-                  <div className="grid grid-cols-2 gap-2 p-4 bg-white border rounded-md">
+                  <div className="grid grid-cols-2 gap-2 p-4 bg-white rounded-md border">
                     {formFields.code}
                     {formFields.maxUsage}
                   </div>
 
                   {/* Nhóm: Giá trị đơn hàng tối thiểu */}
-                  <div className="p-4 bg-white border rounded-md">
+                  <div className="p-4 bg-white rounded-md border">
                     {formFields.minOrderValue}
                   </div>
                 </form>

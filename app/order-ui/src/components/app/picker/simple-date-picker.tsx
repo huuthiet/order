@@ -13,32 +13,43 @@ import {
 } from '@/components/ui'
 
 interface ISimpleDatePickerProps {
-    defaultValue?: string
+    value?: string
     onChange: (date: string) => void
+    disabledDates?: (date: Date) => boolean
 }
 
 export default function SimpleDatePicker({
-    defaultValue,
+    value,
     onChange,
+    disabledDates,
 }: ISimpleDatePickerProps) {
     const { t } = useTranslation('menu')
-    const [date, setDate] = React.useState<string>('')
+    const [date, setDate] = React.useState<Date | undefined>(undefined)
 
+    // Update internal date when value prop changes
     React.useEffect(() => {
-        if (defaultValue) {
-            const dateOnly = defaultValue.split('T')[0]
-            setDate(dateOnly)
+        if (value) {
+            const momentDate = moment(value, ['YYYY-MM-DD', 'DD/MM/YYYY'])
+            if (momentDate.isValid()) {
+                setDate(momentDate.toDate())
+            }
+        } else {
+            setDate(undefined)
         }
-    }, [defaultValue])
+    }, [value])
 
     const handleDateChange = (selectedDate?: Date) => {
         if (selectedDate) {
-            const formattedDate = moment(selectedDate, 'DD/MM/YYYY').format(
-                'DD/MM/YYYY',
-            )
-            setDate(formattedDate)
+            setDate(selectedDate)
+            // Format date as YYYY-MM-DD for consistency
+            const formattedDate = moment(selectedDate).format('YYYY-MM-DD')
             onChange(formattedDate)
         }
+    }
+
+    const formatDisplayDate = (date?: Date) => {
+        if (!date) return ''
+        return moment(date).format('DD/MM/YYYY')
     }
 
     return (
@@ -52,14 +63,15 @@ export default function SimpleDatePicker({
                     )}
                 >
                     <CalendarIcon className="w-4 h-4 mr-2" />
-                    {date ? date : <span>{t('menu.chooseDate')}</span>}
+                    {date ? formatDisplayDate(date) : <span>{t('menu.chooseDate')}</span>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
                 <Calendar
                     mode="single"
-                    selected={date ? new Date(date) : undefined}
+                    selected={date}
                     onSelect={handleDateChange}
+                    disabled={disabledDates}
                     initialFocus
                 />
             </PopoverContent>

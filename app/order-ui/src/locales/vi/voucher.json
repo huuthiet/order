@@ -24,6 +24,7 @@
     "term": "Điều kiện tối thiểu",
     "noTerm": "Không có điều kiện",
     "minValue": "Giá trị tối thiểu",
+    "enterMinOrderValue": "Nhập giá trị đơn hàng tối thiểu",
     "enterMaxUsage": "Nhập số lần sử dụng tối đa",
 
     "confirmCreateVoucher": "Xác nhận tạo voucher",
@@ -34,6 +35,14 @@
 
     "delete": "Xóa voucher",
     "deleteVoucherWarning1": "Bạn sắp sửa xóa voucher ",
-    "deleteVoucherConfirmation": "Bạn có chắc chắn muốn xóa voucher này không?"
+    "deleteVoucherConfirmation": "Bạn có chắc chắn muốn xóa voucher này không?",
+
+    "list": "Danh sách voucher",
+    "search": "Tìm kiếm voucher",
+    "enterVoucher": "Nhập mã giảm giá",
+    "apply": "Áp dụng",
+    "use": "Sử dụng",
+    "maxApply": "Áp dụng tối đa",
+    "complete": "Hoàn thành"
   }
 }
