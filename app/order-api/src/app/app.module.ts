@@ -50,6 +50,7 @@ import { StaticPageModule } from 'src/static-page/static-page.module';
 import { ProductAnalysisModule } from 'src/product-analysis/product-analysis.module';
 import { PromotionModule } from 'src/promotion/promotion.module';
 import { ApplicablePromotionModule } from 'src/applicable-promotion/applicable-promotion.module';
+import { VoucherModule } from 'src/voucher/voucher.module';
 
 @Module({
   imports: [
@@ -115,7 +116,8 @@ import { ApplicablePromotionModule } from 'src/applicable-promotion/applicable-p
     StaticPageModule,
     ProductAnalysisModule,
     PromotionModule,
-    ApplicablePromotionModule
+    ApplicablePromotionModule,
+    VoucherModule,
   ],
   controllers: [AppController],
   providers: [

@@ -18,9 +18,11 @@ services:
       retries: 5
     ports:
       - 6379:6379
+    restart: unless-stopped
 
   order-api:
     image: ghcr.io/homeslands/order-api:dev
+    restart: unless-stopped
     healthcheck:
       test:
         [
@@ -96,6 +98,7 @@ services:
       interval: 5s
       timeout: 60s # Increase timeout to give MySQL more time
       retries: 5
+    restart: unless-stopped
 
   order-ui:
     image: ghcr.io/homeslands/order-ui:dev
@@ -104,7 +107,7 @@ services:
       interval: 10s # Increase interval between health checks
       timeout: 10s # Increase timeout for slower responses
       retries: 5
-    restart: always
+    restart: unless-stopped
     ports:
       - "5173:5173"
 
@@ -132,25 +135,25 @@ services:
     depends_on:
       - postgres
 
-  otel-lgtm:
-    image: grafana/otel-lgtm:latest
-    ports:
-      - "3005:3000" # Grafana UI
-      - "4317:4317" # OTLP gRPC
-      - "4318:4318" # OTLP HTTP
-    environment:
-      GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL}
-      GF_SERVER_SERVE_FROM_SUB_PATH: ${GF_SERVER_SERVE_FROM_SUB_PATH}
-      ENABLE_LOGS_LOKI: ${ENABLE_LOGS_LOKI}
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    volumes:
-      - grafana_data:/var/lib/grafana
+  # otel-lgtm:
+  #   image: grafana/otel-lgtm:latest
+  #   ports:
+  #     - "3005:3000" # Grafana UI
+  #     - "4317:4317" # OTLP gRPC
+  #     - "4318:4318" # OTLP HTTP
+  #   environment:
+  #     GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL}
+  #     GF_SERVER_SERVE_FROM_SUB_PATH: ${GF_SERVER_SERVE_FROM_SUB_PATH}
+  #     ENABLE_LOGS_LOKI: ${ENABLE_LOGS_LOKI}
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 10s
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
 
 networks:
   default:

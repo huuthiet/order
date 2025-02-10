@@ -25,6 +25,7 @@ import { TableValidation } from 'src/table/table.validation';
 import { TrackingValidation } from 'src/tracking/tracking.validation';
 import { UserValidation } from 'src/user/user.validation';
 import { VariantValidation } from 'src/variant/variant.validation';
+import { VoucherValidation } from 'src/voucher/voucher.validation';
 import { WorkflowValidation } from 'src/workflow/workflow.validation';
 
 export type TErrorCodeValue = {
@@ -69,7 +70,8 @@ export const AppValidation: TErrorCode = {
   ...RevenueValidation,
   ...BranchValidation,
   ...PromotionValidation,
-  ...ApplicablePromotionValidation
+  ...ApplicablePromotionValidation,
+  ...VoucherValidation,
 };
 
 const errorCodeKeys = Object.keys(AppValidation);
