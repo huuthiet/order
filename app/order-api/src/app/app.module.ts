@@ -48,6 +48,8 @@ import { RevenueModule } from 'src/revenue/revenue.module';
 import { BranchRevenueModule } from 'src/branch-revenue/branch-revenue.module';
 import { StaticPageModule } from 'src/static-page/static-page.module';
 import { ProductAnalysisModule } from 'src/product-analysis/product-analysis.module';
+import { PromotionModule } from 'src/promotion/promotion.module';
+import { ApplicablePromotionModule } from 'src/applicable-promotion/applicable-promotion.module';
 
 @Module({
   imports: [
@@ -112,6 +114,8 @@ import { ProductAnalysisModule } from 'src/product-analysis/product-analysis.mod
     BranchRevenueModule,
     StaticPageModule,
     ProductAnalysisModule,
+    PromotionModule,
+    ApplicablePromotionModule
   ],
   controllers: [AppController],
   providers: [
