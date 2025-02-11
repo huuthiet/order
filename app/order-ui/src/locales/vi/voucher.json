@@ -9,7 +9,8 @@
     "maxUsage": "Số voucher tối đa",
     "minOrderValue": "Giá trị đơn hàng tối thiểu",
     "copyCode": "Sao chép mã giảm giá",
-
+    "discountValue": "Giảm ",
+    "orderValue": "giá trị đơn hàng",
     "create": "Tạo voucher",
     "name": "Tên voucher",
     "enterVoucherName": "Nhập tên voucher",

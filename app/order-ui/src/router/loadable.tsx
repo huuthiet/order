@@ -203,6 +203,12 @@ export const VoucherPage = React.lazy(() =>
   })),
 )
 
+export const PromotionPage = React.lazy(() =>
+  import('@/app/system/promotion').then((module) => ({
+    default: module.PromotionPage,
+  })),
+)
+
 export const DocsPage = React.lazy(() =>
   import('@/app/system/docs').then((module) => ({
     default: module.DocsPage,

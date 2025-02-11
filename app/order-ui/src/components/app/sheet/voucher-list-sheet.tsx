@@ -17,6 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
   Label,
+  SheetFooter,
 } from '@/components/ui'
 import { useVouchers } from '@/hooks'
 import { formatCurrency } from '@/utils'
@@ -45,9 +46,9 @@ export default function VoucherListSheet() {
           </div>
         </Button>
       </SheetTrigger>
-      <SheetContent className="sm:max-w-xl">
-        <SheetHeader className="p-4">
-          <SheetTitle className="text-primary">
+      <SheetContent className='sm:max-w-xl'>
+        <SheetHeader className='p-4'>
+          <SheetTitle className='text-primary'>
             {t('voucher.list')}
           </SheetTitle>
         </SheetHeader>
@@ -80,25 +81,28 @@ export default function VoucherListSheet() {
               </div>
               <div className='grid grid-cols-1 gap-4'>
                 {voucherListData?.map((voucher) => (
-                  <div className='grid grid-cols-7 gap-2 p-2 bg-white rounded-md h-36'>
+                  <div className='grid h-32 grid-cols-7 gap-2 p-2 bg-white rounded-md sm:h-36'>
                     <div className='flex items-center justify-center w-full col-span-2 rounded-md bg-muted-foreground/10'>
                       <Ticket size={56} className='text-muted-foreground' />
                       {/* <img src={HomelandLogo} alt="chua-thoa-dieu-kien" className="rounded-md" /> */}
                     </div>
                     <div className='flex flex-col justify-between w-full col-span-3'>
                       <div className='flex flex-col gap-1'>
-                        <span className='text-sm text-muted-foreground'>
+                        <span className='text-xs sm:text-sm text-muted-foreground'>
                           {voucher.title}
                         </span>
-                        <span className='text-xs text-muted-foreground/60'>Cho đơn hàng từ {formatCurrency(voucher.minOrderValue)}</span>
-                        <span className='px-2 py-1 mt-2 text-sm font-bold border rounded-md w-fit text-muted-foreground'>
-                          {voucher.code}
+                        <span className='text-xs italic text-primary'>
+                          {t('voucher.discountValue')}{voucher.value}% {t('voucher.orderValue')}
                         </span>
+                        <span className='hidden sm:text-xs text-muted-foreground/60'>Cho đơn hàng từ {formatCurrency(voucher.minOrderValue)}</span>
+                        {/* <span className='px-2 py-1 mt-2 text-xs font-bold border rounded-md sm:text-sm w-fit text-muted-foreground'>
+                          {voucher.code}
+                        </span> */}
                       </div>
                       <span className='text-xs text-muted-foreground'>HSD: {moment(voucher.endDate).format('DD/MM/YYYY')}</span>
                     </div>
                     <div className='flex flex-col items-end justify-between col-span-2'>
-                      <TooltipProvider>
+                      <TooltipProvider delayDuration={100}>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button variant="ghost" className='h-8 p-2 text-muted-foreground'>
@@ -135,6 +139,11 @@ export default function VoucherListSheet() {
               </div>
             </div>
           </ScrollArea>
+          <SheetFooter className="p-4">
+            <Button className='w-full' onClick={() => setSheetOpen(false)}>
+              {t('voucher.complete')}
+            </Button>
+          </SheetFooter>
         </div>
       </SheetContent>
     </Sheet>
