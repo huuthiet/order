@@ -1,5 +1,4 @@
 volumes:
-  mysql:
   redis_data:
   postgres_data:
 
@@ -71,9 +70,6 @@ services:
       OTEL_LGTM_URL: ${OTEL_LGTM_URL}
 
       TZ: Asia/Ho_Chi_Minh
-    depends_on:
-      mysql_db:
-        condition: service_healthy
     ports:
       - 8080:8080
     # deploy:
