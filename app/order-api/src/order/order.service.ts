@@ -134,6 +134,14 @@ export class OrderService {
     // Construct order
     const order: Order = await this.constructOrder(requestData);
 
+    // Get order items
+    const orderItems = await this.constructOrderItems(
+      requestData.branch,
+      requestData.orderItems,
+    );
+    this.logger.log(`Number of order items: ${orderItems.length}`, context);
+    order.orderItems = orderItems;
+
     // Get voucher
     let voucher: Voucher = null;
     try {
@@ -154,13 +162,6 @@ export class OrderService {
       voucher.remainingUsage -= 1;
     }
 
-    // Get order items
-    const orderItems = await this.constructOrderItems(
-      requestData.branch,
-      requestData.orderItems,
-    );
-    this.logger.log(`Number of order items: ${orderItems.length}`, context);
-    order.orderItems = orderItems;
     order.voucher = voucher;
     order.subtotal = await this.orderUtils.getOrderSubtotal(order, voucher);
 
@@ -175,7 +176,7 @@ export class OrderService {
         await manager.save(currentMenuItems);
 
         // Update remaining quantity of voucher
-        await manager.save(voucher);
+        if (voucher) await manager.save(voucher);
 
         this.logger.log(
           `Number of menu items: ${currentMenuItems.length} updated successfully`,

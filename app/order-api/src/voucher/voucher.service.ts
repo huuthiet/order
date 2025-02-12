@@ -131,7 +131,10 @@ export class VoucherService {
         return await manager.save(voucher);
       },
       (result) => {
-        this.logger.log(`Voucher updated successfully: ${result}`, context);
+        this.logger.log(
+          `Voucher updated successfully: ${result.code}`,
+          context,
+        );
       },
       (error) => {
         this.logger.error(

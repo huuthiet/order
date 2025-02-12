@@ -69,6 +69,7 @@ export class VoucherUtils {
         },
       });
     } catch (error) {}
+
     if (order) {
       throw new VoucherException(VoucherValidation.VOUCHER_ALREADY_USED);
     }
