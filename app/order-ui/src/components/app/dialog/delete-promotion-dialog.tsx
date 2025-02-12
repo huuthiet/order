@@ -18,7 +18,7 @@ import { IPromotion } from '@/types'
 
 import { useDeletePromotion } from '@/hooks'
 import { showToast } from '@/utils'
-import { QUERYKEY } from '@/constants/query'
+import { QUERYKEY } from '@/constants'
 import { useUserStore } from '@/stores'
 
 export default function DeletePromotionDialog({ promotion }: { promotion: IPromotion }) {

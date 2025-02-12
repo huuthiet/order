@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { DataTableColumnHeader, Checkbox } from '@/components/ui'
 import { IProduct } from '@/types'
 import { publicFileURL } from '@/constants'
-import { AddMenuItemDialog } from '@/components/app/dialog'
 
 interface ProductColumnsProps {
   onSelect?: (product: IProduct, isSelected: boolean) => void
@@ -49,16 +48,6 @@ export const useProductColumns = ({
       enableHiding: false,
     },
     {
-      accessorKey: 'actions',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('product.actions')} />
-      ),
-      cell: ({ row }) => {
-        const product = row.original
-        return <AddMenuItemDialog product={product} />
-      },
-    },
-    {
       accessorKey: 'image',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('product.image')} />
@@ -79,12 +68,6 @@ export const useProductColumns = ({
         <DataTableColumnHeader column={column} title={t('product.name')} />
       ),
     },
-    // {
-    //   accessorKey: 'slug',
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title={t('product.name')} />
-    //   ),
-    // },
     {
       accessorKey: 'catalog.name',
       header: ({ column }) => (

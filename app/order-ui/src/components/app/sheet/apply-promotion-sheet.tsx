@@ -40,6 +40,8 @@ export default function ApplyPromotionSheet({
 
   const productsData = products?.result
 
+  console.log('productsData', productsData, promotion)
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -102,6 +104,7 @@ export default function ApplyPromotionSheet({
           </ScrollArea>
           <SheetFooter className="p-4">
             <ConfirmApplyPromotionDialog
+              disabled={!applyPromotionRequest || !applyPromotionRequest.applicableSlug}
               applyPromotionData={applyPromotionRequest}
               isOpen={isOpen}
               onOpenChange={setIsOpen}

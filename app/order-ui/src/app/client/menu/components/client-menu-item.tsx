@@ -33,10 +33,9 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
   }
 
   return (
-    // <NavLink key={item.slug} to={`${ROUTE.CLIENT_MENU_ITEM}?slug=${item.slug}`}>
     <div
       key={item.slug}
-      className="flex min-h-[20rem] hover:scale-105 flex-col rounded-xl border bg-white backdrop-blur-md transition-all duration-300"
+      className="flex min-h-[22rem] hover:scale-105 flex-col justify-between rounded-xl border bg-white backdrop-blur-md transition-all duration-300"
     >
       <NavLink to={`${ROUTE.CLIENT_MENU_ITEM}?slug=${item.slug}`}>
         {/* Image Section with Ribbon Discount Tag */}
@@ -73,29 +72,30 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
                   <div className='flex flex-row items-center gap-1'>
                     {item.promotionValue > 0 ? (
                       <div className='flex flex-col items-start justify-start gap-1 mt-2'>
+                        <span className="text-sm sm:text-lg text-primary">
+                          {(() => {
+                            const range = getPriceRange(item.product.variants)
+                            if (!range) return formatCurrency(0)
+                            return range.isSinglePrice
+                              ? `${formatCurrency((range.min) * (1 - item.promotionValue / 100))}` : `${formatCurrency(range.min * (1 - item.promotionValue / 100))}`
+                          })()}
+                        </span>
                         <div className='flex flex-row items-center gap-3'>
                           <span className="text-sm line-through text-muted-foreground/70">
                             {(() => {
                               const range = getPriceRange(item.product.variants)
                               if (!range) return formatCurrency(0)
                               return range.isSinglePrice
-                                && `${formatCurrency((range.min))}`
+                                ? `${formatCurrency((range.min))}` : `${formatCurrency(range.min)}`
                             })()}
                           </span>
                           {item.promotionValue > 0 && (
                             <Badge className="text-xs bg-destructive hover:bg-destructive">
-                              -{item.promotionValue}%
+                              {t('menu.discount')} {item.promotionValue}%
                             </Badge>
                           )}
                         </div>
-                        <span className="text-sm font-bold sm:text-lg text-primary">
-                          {(() => {
-                            const range = getPriceRange(item.product.variants)
-                            if (!range) return formatCurrency(0)
-                            return range.isSinglePrice
-                              && `${formatCurrency((range.min) * (1 - item.promotionValue / 100))}`
-                          })()}
-                        </span>
+
                       </div>) : (
                       <span className="text-sm font-bold sm:text-lg text-primary">
                         {(() => {
@@ -127,7 +127,7 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
       {item.currentStock > 0 ? (
         <div className="flex justify-center w-full gap-2 p-2">
           {isMobile ? (
-            <ClientAddToCartDrawer product={item.product} />
+            <ClientAddToCartDrawer product={item} />
           ) : (
             <ClientAddToCartDialog product={item} />
           )}
@@ -141,7 +141,5 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
         </Button>
       )}
     </div>
-
-    // </NavLink>
   )
 }

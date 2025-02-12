@@ -241,7 +241,7 @@ export const ClientProductDetailPage = React.lazy(() =>
 //Cart page
 export const ClientCartPage = React.lazy(() =>
   import('@/app/client/cart').then((module) => ({
-    default: module.ClientCartPage,
+    default: module.CartPage,
   })),
 )
 

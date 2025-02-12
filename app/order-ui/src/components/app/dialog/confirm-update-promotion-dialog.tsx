@@ -15,7 +15,7 @@ import {
 import { IUpdatePromotionRequest } from '@/types'
 import { useUpdatePromotion } from '@/hooks'
 import { showToast } from '@/utils'
-import { QUERYKEY } from '@/constants/query'
+import { QUERYKEY } from '@/constants'
 
 interface IConfirmUpdatePromotionDialogProps {
   isOpen: boolean

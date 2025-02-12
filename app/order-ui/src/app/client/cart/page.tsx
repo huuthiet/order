@@ -15,11 +15,14 @@ import { Button } from '@/components/ui'
 import { ClientTableSelect, OrderTypeSelect } from '@/components/app/select'
 import { OrderTypeEnum } from '@/types'
 import { VoucherListSheet } from '@/components/app/sheet'
+import { formatCurrency } from '@/utils'
 
-export function ClientCartPage() {
+export default function ClientCartPage() {
   const { t } = useTranslation('menu')
   const { getCartItems } = useCartItemStore()
   const cartItems = getCartItems()
+
+  const subTotal = _.sumBy(cartItems?.orderItems, (item) => item.price * item.quantity)
 
   if (_.isEmpty(cartItems?.orderItems)) {
     return (
@@ -72,8 +75,6 @@ export function ClientCartPage() {
                 <Trash2 size={18} />
               </span>
             </div>
-
-
             <div className="flex flex-col border rounded-md">
               {cartItems?.orderItems.map((item) => (
                 <div
@@ -113,6 +114,54 @@ export function ClientCartPage() {
               ))}
             </div>
             <VoucherListSheet />
+            <div>
+              {getCartItems()?.voucher && (
+                <div className="flex justify-start w-full">
+                  <div className="flex flex-col items-start">
+                    <div className='flex items-center gap-2 mt-2'>
+                      <span className='text-xs text-muted-foreground'>
+                        {t('order.usedVoucher')}:&nbsp;
+                      </span>
+                      <span className="px-3 py-1 text-xs font-semibold border rounded-full text-primary bg-primary/20 border-primary">
+                        -{`${formatCurrency(getCartItems()?.voucher?.value || 0)}`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col items-end justify-between pt-4 mt-4 border-t border-muted-foreground/40">
+              <div className="flex flex-col items-start justify-between w-full">
+                <div className='flex flex-col items-start justify-start w-full gap-1'>
+                  <div className='flex items-center justify-between w-full gap-2 text-xs text-muted-foreground'>
+                    {t('order.subtotal')}:&nbsp;
+                    <span>
+                      {`${subTotal.toLocaleString('vi-VN')}đ`}
+                    </span>
+                  </div>
+                  <div className='flex items-center justify-between w-full gap-2 text-xs text-muted-foreground'>
+                    <span>
+                      {t('order.discount')}:&nbsp;
+                    </span>
+                    <span className='text-green-500'>
+                      -{`${formatCurrency(cartItems?.voucher?.value || 0)}`}
+                    </span>
+                  </div>
+                  <div className='flex items-center justify-between w-full gap-2 pt-2 mt-4 font-semibold border-t text-md'>
+                    <span>
+                      {t('order.totalPayment')}:&nbsp;
+                    </span>
+                    <span className='font-bold text-primary text-md'>
+                      {`${formatCurrency((subTotal - (cartItems?.voucher?.value || 0)))}`}
+                    </span>
+                  </div>
+                  <span className='text-xs text-muted-foreground'>
+                    {t('order.vat')}
+                  </span>
+                </div>
+
+              </div>
+            </div>
           </div>
           {/* Button */}
           <div className="flex justify-end w-full">

@@ -49,6 +49,10 @@ export default function ClientAddToCartDialog({
   const handleAddToCart = () => {
     if (!selectedVariant) return
 
+    const finalPrice = product.promotionValue > 0
+      ? selectedVariant.price * (1 - product.promotionValue / 100)
+      : selectedVariant.price;
+
     const cartItem: ICartItem = {
       id: generateCartItemId(),
       slug: product.slug,
@@ -63,7 +67,7 @@ export default function ClientAddToCartDialog({
           name: product.product.name,
           quantity: 1,
           variant: selectedVariant.slug,
-          price: selectedVariant.price,
+          price: finalPrice, // Use the calculated final price
           description: product.product.description,
           isLimit: product.product.isLimit,
           // catalog: product.catalog,

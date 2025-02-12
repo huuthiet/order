@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { ShoppingCart } from 'lucide-react'
+import { TriangleAlert } from 'lucide-react'
 
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogDescription,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui'
@@ -15,7 +16,7 @@ import {
 import { IApplyPromotionRequest } from '@/types'
 import { useApplyPromotion } from '@/hooks'
 import { showToast } from '@/utils'
-import { QUERYKEY } from '@/constants/query'
+import { QUERYKEY } from '@/constants'
 
 interface IConfirmApplyPromotionDialogProps {
   isOpen: boolean
@@ -66,12 +67,16 @@ export default function ConfirmApplyPromotionDialog({
 
       <DialogContent className="max-w-[22rem] rounded-md px-6 sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="pb-4 border-b">
-            <div className="flex items-center gap-2 text-primary">
-              <ShoppingCart className="w-6 h-6" />
-              {t('promotion.update')}
+
+          <DialogTitle className="pb-4 border-b border-primary text-primary">
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="w-6 h-6" />
+              {t('promotion.applyPromotion')}
             </div>
           </DialogTitle>
+          <DialogDescription className="p-2 rounded-md bg-primary/10 text-primary">
+            {tCommon('common.deleteNote')}
+          </DialogDescription>
 
           <div className="py-4 text-sm text-gray-500">
             {t('promotion.confirmApplyPromotion')}

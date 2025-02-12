@@ -15,7 +15,7 @@ import {
 import { ICreatePromotionRequest } from '@/types'
 import { useCreatePromotion } from '@/hooks'
 import { showToast } from '@/utils'
-import { QUERYKEY } from '@/constants/query'
+import { QUERYKEY } from '@/constants'
 
 interface IConfirmCreatePromotionDialogProps {
   isOpen: boolean

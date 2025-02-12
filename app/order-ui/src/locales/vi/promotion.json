@@ -30,7 +30,7 @@
     "deletePromotionConfirmation": "Bạn có chắc chắn muốn xóa khuyến mãi này không?",
 
     "applyPromotion": "Áp dụng khuyến mãi",
-    "confirmApplyPromotion": "Xác nhận áp dụng khuyến mãi",
+    "confirmApplyPromotion": "Xác nhận áp dụng khuyến mãi. Lưu ý: Sau khi áp dụng, khuyến mãi sẽ không thể chỉnh sửa giá trị.",
     "apply": "Áp dụng",
     "applyFromToday": "Áp dụng từ hôm nay"
   }
