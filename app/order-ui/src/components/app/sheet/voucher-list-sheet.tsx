@@ -48,7 +48,7 @@ export default function VoucherListSheet() {
       showToast(tToast('toast.removeVoucherSuccess'))
     } else {
       addVoucher(voucher)
-      // setSheetOpen(false)
+      setSheetOpen(false)
       showToast(tToast('toast.applyVoucherSuccess'))
     }
   }

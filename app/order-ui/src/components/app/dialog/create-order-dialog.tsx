@@ -17,8 +17,7 @@ import { ICartItem, ICreateOrderRequest } from '@/types'
 import { useCreateOrder } from '@/hooks'
 import { showErrorToast, showToast } from '@/utils'
 import { Role, ROUTE } from '@/constants'
-import { useCartItemStore, useUserStore } from '@/stores'
-import { useBranchStore } from '@/stores/branch.store'
+import { useCartItemStore, useUserStore, useBranchStore } from '@/stores'
 
 interface IPlaceOrderDialogProps {
   disabled?: boolean

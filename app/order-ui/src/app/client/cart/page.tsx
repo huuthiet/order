@@ -23,6 +23,8 @@ export default function ClientCartPage() {
   const cartItems = getCartItems()
 
   const subTotal = _.sumBy(cartItems?.orderItems, (item) => item.price * item.quantity)
+  const discount = subTotal * (cartItems?.voucher?.value || 0) / 100
+  const totalAfterDiscount = subTotal - (subTotal * (cartItems?.voucher?.value || 0) / 100)
 
   if (_.isEmpty(cartItems?.orderItems)) {
     return (
@@ -43,7 +45,7 @@ export default function ClientCartPage() {
       {/* Order type selection */}
       <div className="flex flex-col gap-4 lg:flex-row">
         {/* Left content */}
-        <div className="w-full lg:w-2/3">
+        <div className="w-full lg:w-1/2">
           {/* Note */}
           <div className="flex items-end justify-between">
             <div className="flex items-center gap-1">
@@ -59,7 +61,7 @@ export default function ClientCartPage() {
         </div>
 
         {/* Right content */}
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/2">
           <OrderTypeSelect />
           {/* Table list order items */}
           <div className="my-4">
@@ -123,20 +125,20 @@ export default function ClientCartPage() {
                         {t('order.usedVoucher')}:&nbsp;
                       </span>
                       <span className="px-3 py-1 text-xs font-semibold border rounded-full text-primary bg-primary/20 border-primary">
-                        -{`${formatCurrency(getCartItems()?.voucher?.value || 0)}`}
+                        -{`${formatCurrency(discount)}`}
                       </span>
                     </div>
                   </div>
                 </div>
               )}
             </div>
-            <div className="flex flex-col items-end justify-between pt-4 mt-4 border-t border-muted-foreground/40">
+            <div className="flex flex-col items-end justify-between p-2 pt-4 mt-4 border rounded-md">
               <div className="flex flex-col items-start justify-between w-full">
                 <div className='flex flex-col items-start justify-start w-full gap-1'>
                   <div className='flex items-center justify-between w-full gap-2 text-xs text-muted-foreground'>
                     {t('order.subtotal')}:&nbsp;
                     <span>
-                      {`${subTotal.toLocaleString('vi-VN')}đ`}
+                      {`${formatCurrency(subTotal)}`}
                     </span>
                   </div>
                   <div className='flex items-center justify-between w-full gap-2 text-xs text-muted-foreground'>
@@ -144,7 +146,7 @@ export default function ClientCartPage() {
                       {t('order.discount')}:&nbsp;
                     </span>
                     <span className='text-green-500'>
-                      -{`${formatCurrency(cartItems?.voucher?.value || 0)}`}
+                      -{`${formatCurrency(discount)}`}
                     </span>
                   </div>
                   <div className='flex items-center justify-between w-full gap-2 pt-2 mt-4 font-semibold border-t text-md'>
@@ -152,14 +154,13 @@ export default function ClientCartPage() {
                       {t('order.totalPayment')}:&nbsp;
                     </span>
                     <span className='font-bold text-primary text-md'>
-                      {`${formatCurrency((subTotal - (cartItems?.voucher?.value || 0)))}`}
+                      {`${formatCurrency(totalAfterDiscount)}`}
                     </span>
                   </div>
                   <span className='text-xs text-muted-foreground'>
                     {t('order.vat')}
                   </span>
                 </div>
-
               </div>
             </div>
           </div>
