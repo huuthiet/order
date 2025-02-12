@@ -83,7 +83,6 @@ axiosInstance.interceptors.request.use(
       isAuthenticated,
     } = authStore
 
-    const currentToken = authStore.token
     if (config.url) {
       if (isPublicRoute(config.url, config.method || '')) return config
     }
