@@ -14,7 +14,6 @@ import {
 } from '@/components/ui'
 
 import { ICartItem, ICreateOrderRequest } from '@/types'
-
 import { useCreateOrder } from '@/hooks'
 import { showErrorToast, showToast } from '@/utils'
 import { Role, ROUTE } from '@/constants'
@@ -62,6 +61,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
         variant: orderItem.variant,
         note: orderItem.note || '',
       })),
+      voucher: order.voucher?.slug || null,
     }
 
     // Gọi API để tạo đơn hàng.

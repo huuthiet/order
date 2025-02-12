@@ -14,28 +14,30 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { IVoucher } from '@/types'
+import { IPromotion } from '@/types'
 
-import { useDeleteVoucher } from '@/hooks'
+import { useDeletePromotion } from '@/hooks'
 import { showToast } from '@/utils'
 import { QUERYKEY } from '@/constants'
+import { useUserStore } from '@/stores'
 
-export default function DeleteVoucherDialog({ voucher }: { voucher: IVoucher }) {
+export default function DeletePromotionDialog({ promotion }: { promotion: IPromotion }) {
   const queryClient = useQueryClient()
-  const { t } = useTranslation(['voucher'])
+  const { t } = useTranslation(['promotion'])
   const { t: tCommon } = useTranslation('common')
   const { t: tToast } = useTranslation('toast')
-  const { mutate: deleteVoucher } = useDeleteVoucher()
+  const { userInfo } = useUserStore()
+  const { mutate: deletePromotion } = useDeletePromotion()
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleSubmit = (voucherSlug: string) => {
-    deleteVoucher(voucherSlug, {
+  const handleSubmit = (promotionSlug: string) => {
+    deletePromotion(promotionSlug, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: [QUERYKEY.vouchers],
+          queryKey: [QUERYKEY.promotions, userInfo?.branch.slug],
         })
         setIsOpen(false)
-        showToast(tToast('toast.deleteVoucherSuccess'))
+        showToast(tToast('toast.deletePromotionSuccess'))
       },
     })
   }
@@ -50,7 +52,7 @@ export default function DeleteVoucherDialog({ voucher }: { voucher: IVoucher }) 
             onClick={() => setIsOpen(true)}
           >
             <Trash2 className="icon" />
-            {t('voucher.delete')}
+            {t('promotion.delete')}
           </Button>
         </DialogTrigger>
       </DialogTrigger>
@@ -60,7 +62,7 @@ export default function DeleteVoucherDialog({ voucher }: { voucher: IVoucher }) 
           <DialogTitle className="pb-4 border-b border-destructive text-destructive">
             <div className="flex items-center gap-2">
               <TriangleAlert className="w-6 h-6" />
-              {t('voucher.delete')}
+              {t('promotion.delete')}
             </div>
           </DialogTitle>
           <DialogDescription className="p-2 bg-red-100 rounded-md text-destructive">
@@ -68,10 +70,10 @@ export default function DeleteVoucherDialog({ voucher }: { voucher: IVoucher }) 
           </DialogDescription>
 
           <div className="py-4 text-sm text-muted-foreground">
-            {t('voucher.deleteVoucherWarning1')}{' '}
-            <span className="font-bold">{voucher?.title}</span> <br />
+            {t('promotion.deletePromotionWarning1')}{' '}
+            <span className="font-bold">{promotion?.title}</span> <br />
             <br />
-            {t('voucher.deleteVoucherConfirmation')}
+            {t('promotion.deletePromotionConfirmation')}
           </div>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-center gap-2">
@@ -80,7 +82,7 @@ export default function DeleteVoucherDialog({ voucher }: { voucher: IVoucher }) 
           </Button>
           <Button
             variant="destructive"
-            onClick={() => voucher && handleSubmit(voucher.slug || '')}
+            onClick={() => promotion && handleSubmit(promotion.slug || '')}
           >
             {tCommon('common.confirmDelete')}
           </Button>

@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { ShoppingCart } from 'lucide-react'
+import { TriangleAlert } from 'lucide-react'
 
 import {
   Button,
@@ -8,49 +8,47 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogDescription,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui'
 
-import { IUpdateVoucherRequest } from '@/types'
-import { useUpdateVoucher } from '@/hooks'
+import { IApplyPromotionRequest } from '@/types'
+import { useApplyPromotion } from '@/hooks'
 import { showToast } from '@/utils'
 import { QUERYKEY } from '@/constants'
 
-interface IConfirmUpdateVoucherDialogProps {
+interface IConfirmApplyPromotionDialogProps {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
   onCloseSheet: () => void
-  voucher: IUpdateVoucherRequest | null
+  applyPromotionData: IApplyPromotionRequest | null
   disabled?: boolean
-  onSuccess?: () => void
 }
 
-export default function ConfirmUpdateVoucherDialog({
+export default function ConfirmApplyPromotionDialog({
   isOpen,
   onOpenChange,
   onCloseSheet,
-  voucher,
+  applyPromotionData,
   disabled,
-  onSuccess
-}: IConfirmUpdateVoucherDialogProps) {
+}: IConfirmApplyPromotionDialogProps) {
   const queryClient = useQueryClient()
-  const { t } = useTranslation(['voucher'])
+  const { t } = useTranslation(['promotion'])
   const { t: tCommon } = useTranslation('common')
   const { t: tToast } = useTranslation('toast')
-  const { mutate: updateVoucher } = useUpdateVoucher()
+  const { mutate: applyPromotion } = useApplyPromotion()
 
-  const handleSubmit = (voucher: IUpdateVoucherRequest) => {
-    if (!voucher) return
-    updateVoucher(voucher, {
+  const handleSubmit = (promotion: IApplyPromotionRequest) => {
+    if (!promotion) return
+    applyPromotion(promotion, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: [QUERYKEY.vouchers]
+          queryKey: [QUERYKEY.promotions]
         })
         onOpenChange(false)
         onCloseSheet() // Close the sheet after success
-        onSuccess?.()
-        showToast(tToast('toast.updateVoucherSuccess'))
+        showToast(tToast('toast.applyPromotionSuccess'))
       },
     })
   }
@@ -63,21 +61,25 @@ export default function ConfirmUpdateVoucherDialog({
           className="flex items-center w-full text-sm rounded-full sm:w-[10rem]"
           onClick={() => onOpenChange(true)}
         >
-          {t('voucher.update')}
+          {t('promotion.apply')}
         </Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-[22rem] rounded-md px-6 sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="pb-4 border-b">
-            <div className="flex items-center gap-2 text-primary">
-              <ShoppingCart className="w-6 h-6" />
-              {t('voucher.update')}
+
+          <DialogTitle className="pb-4 border-b border-primary text-primary">
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="w-6 h-6" />
+              {t('promotion.applyPromotion')}
             </div>
           </DialogTitle>
+          <DialogDescription className="p-2 rounded-md bg-primary/10 text-primary">
+            {tCommon('common.deleteNote')}
+          </DialogDescription>
 
           <div className="py-4 text-sm text-gray-500">
-            {t('voucher.confirmUpdateVoucher')}
+            {t('promotion.confirmApplyPromotion')}
             <br />
           </div>
         </DialogHeader>
@@ -89,8 +91,8 @@ export default function ConfirmUpdateVoucherDialog({
           >
             {tCommon('common.cancel')}
           </Button>
-          <Button onClick={() => voucher && handleSubmit(voucher)}>
-            {t('voucher.update')}
+          <Button onClick={() => applyPromotionData && handleSubmit(applyPromotionData)}>
+            {t('promotion.update')}
           </Button>
         </DialogFooter>
       </DialogContent>

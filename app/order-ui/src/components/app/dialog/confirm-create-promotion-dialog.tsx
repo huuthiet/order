@@ -12,45 +12,45 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { IUpdateVoucherRequest } from '@/types'
-import { useUpdateVoucher } from '@/hooks'
+import { ICreatePromotionRequest } from '@/types'
+import { useCreatePromotion } from '@/hooks'
 import { showToast } from '@/utils'
 import { QUERYKEY } from '@/constants'
 
-interface IConfirmUpdateVoucherDialogProps {
+interface IConfirmCreatePromotionDialogProps {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
   onCloseSheet: () => void
-  voucher: IUpdateVoucherRequest | null
+  promotion: ICreatePromotionRequest | null
   disabled?: boolean
   onSuccess?: () => void
 }
 
-export default function ConfirmUpdateVoucherDialog({
+export default function ConfirmCreatePromotionDialog({
   isOpen,
   onOpenChange,
   onCloseSheet,
-  voucher,
+  promotion,
   disabled,
   onSuccess
-}: IConfirmUpdateVoucherDialogProps) {
+}: IConfirmCreatePromotionDialogProps) {
   const queryClient = useQueryClient()
-  const { t } = useTranslation(['voucher'])
+  const { t } = useTranslation(['promotion'])
   const { t: tCommon } = useTranslation('common')
   const { t: tToast } = useTranslation('toast')
-  const { mutate: updateVoucher } = useUpdateVoucher()
+  const { mutate: createPromotion } = useCreatePromotion()
 
-  const handleSubmit = (voucher: IUpdateVoucherRequest) => {
-    if (!voucher) return
-    updateVoucher(voucher, {
+  const handleSubmit = (promotion: ICreatePromotionRequest) => {
+    if (!promotion) return
+    createPromotion(promotion, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: [QUERYKEY.vouchers]
+          queryKey: [QUERYKEY.promotions]
         })
         onOpenChange(false)
         onCloseSheet() // Close the sheet after success
-        onSuccess?.()
-        showToast(tToast('toast.updateVoucherSuccess'))
+        onSuccess?.() // Thêm callback onSuccess
+        showToast(tToast('toast.createPromotionSuccess'))
       },
     })
   }
@@ -63,7 +63,7 @@ export default function ConfirmUpdateVoucherDialog({
           className="flex items-center w-full text-sm rounded-full sm:w-[10rem]"
           onClick={() => onOpenChange(true)}
         >
-          {t('voucher.update')}
+          {t('promotion.create')}
         </Button>
       </DialogTrigger>
 
@@ -72,12 +72,12 @@ export default function ConfirmUpdateVoucherDialog({
           <DialogTitle className="pb-4 border-b">
             <div className="flex items-center gap-2 text-primary">
               <ShoppingCart className="w-6 h-6" />
-              {t('voucher.update')}
+              {t('promotion.create')}
             </div>
           </DialogTitle>
 
           <div className="py-4 text-sm text-gray-500">
-            {t('voucher.confirmUpdateVoucher')}
+            {t('promotion.confirmCreatePromotion')}
             <br />
           </div>
         </DialogHeader>
@@ -89,8 +89,8 @@ export default function ConfirmUpdateVoucherDialog({
           >
             {tCommon('common.cancel')}
           </Button>
-          <Button onClick={() => voucher && handleSubmit(voucher)}>
-            {t('voucher.update')}
+          <Button onClick={() => promotion && handleSubmit(promotion)}>
+            {t('promotion.create')}
           </Button>
         </DialogFooter>
       </DialogContent>
