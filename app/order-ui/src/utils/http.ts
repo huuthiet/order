@@ -50,7 +50,6 @@ const publicRoutes = [
   { path: /^\/auth\/login$/, methods: ['post'] },
   { path: /^\/auth\/register$/, methods: ['post'] },
   { path: /^\/auth\/refresh$/, methods: ['post'] },
-  { path: /^\/static-page\/[^/]+$/, methods: ['get'] },
   { path: /^\/auth\/forgot-password$/, methods: ['post'] },
   { path: /^\/auth\/forgot-password\/token$/, methods: ['post'] },
   { path: /^\/menu\/specific$/, methods: ['get'] },
@@ -58,7 +57,8 @@ const publicRoutes = [
   { path: /^\/branch$/, methods: ['get'] },
   { path: /^\/menu-item\/[^/]+$/, methods: ['get'] },
   { path: /^\/product-analysis\/top-sell\/branch\/[^/]+$/, methods: ['get'] },
-  { path: /^\/static-pages\/[^/]+$/, methods: ['get'] },
+  { path: /^\/catalogs$/, methods: ['get'] },
+  { path: /^\/static-page\/[^/]+$/, methods: ['get'] },
 ]
 
 const isPublicRoute = (url: string, method: string): boolean => {
