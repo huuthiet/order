@@ -22,18 +22,26 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui'
-import { useIsMobile, useVouchers } from '@/hooks'
+import { useIsMobile, useValidateVoucher, useVouchers } from '@/hooks'
 import { formatCurrency, showToast } from '@/utils'
-import { IVoucher } from '@/types'
-import { useCartItemStore } from '@/stores'
+import { IValidateVoucherRequest, IVoucher } from '@/types'
+import { useCartItemStore, useThemeStore, useUserStore } from '@/stores'
 
-export default function VoucherListSheet() {
-  const { t } = useTranslation(['voucher'])
+interface IVoucherListSheetProps {
+  defaultValue?: string // slug của voucher được chọn mặc định
+}
+
+export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProps) {
   const isMobile = useIsMobile()
+  const { getTheme } = useThemeStore()
+  const { t } = useTranslation(['voucher'])
   const { t: tToast } = useTranslation('toast')
+  const { userInfo } = useUserStore()
   const { cartItems, addVoucher, removeVoucher } = useCartItemStore()
+  const { mutate: validateVoucher } = useValidateVoucher()
   const [sheetOpen, setSheetOpen] = useState(false)
   const { data: voucherList } = useVouchers()
+  const [selectedVoucher, setSelectedVoucher] = useState<string | undefined>(defaultValue)
 
   const voucherListData = voucherList?.result
 
@@ -42,14 +50,28 @@ export default function VoucherListSheet() {
     showToast(tToast('toast.copyCodeSuccess'))
   }
 
+  const isVoucherSelected = (voucherSlug: string) => {
+    return cartItems?.voucher?.slug === voucherSlug || selectedVoucher === voucherSlug
+  }
+
   const handleToggleVoucher = (voucher: IVoucher) => {
-    if (cartItems?.voucher?.slug === voucher.slug) {
+    if (isVoucherSelected(voucher.slug)) {
       removeVoucher()
+      setSelectedVoucher(undefined)
       showToast(tToast('toast.removeVoucherSuccess'))
     } else {
-      addVoucher(voucher)
-      setSheetOpen(false)
-      showToast(tToast('toast.applyVoucherSuccess'))
+      const validateVoucherParam: IValidateVoucherRequest = {
+        voucher: voucher.slug,
+        user: userInfo?.slug || '',
+      }
+      validateVoucher(validateVoucherParam, {
+        onSuccess: () => {
+          addVoucher(voucher)
+          setSelectedVoucher(voucher.slug)
+          setSheetOpen(false)
+          showToast(tToast('toast.applyVoucherSuccess'))
+        }
+      })
     }
   }
 
@@ -61,7 +83,7 @@ export default function VoucherListSheet() {
             <div className='flex items-center gap-1'>
               <TicketPercent className='icon text-primary' />
               <span className='text-xs text-muted-foreground'>
-                Sử dụng mã giảm giá
+                {t('voucher.useVoucher')}
               </span>
             </div>
             <div>
@@ -77,7 +99,7 @@ export default function VoucherListSheet() {
           </SheetTitle>
         </SheetHeader>
         <div className="flex flex-col h-full bg-transparent backdrop-blur-md">
-          <ScrollArea className="max-h-[calc(100vh-8rem)] flex-1 gap-4 p-4 bg-muted-foreground/10">
+          <ScrollArea className={`max-h-[calc(100vh-8rem)] flex-1 gap-4 p-4 bg-${getTheme() === 'light' ? 'white' : 'black'}`}>
             {/* Voucher search */}
             <div className="flex flex-col flex-1">
               <div className='grid items-center grid-cols-5 gap-2'>
@@ -105,9 +127,9 @@ export default function VoucherListSheet() {
               </div>
               <div className='grid grid-cols-1 gap-4'>
                 {voucherListData?.map((voucher) => (
-                  cartItems?.voucher?.slug === voucher.slug ? (
-                    <div className='grid h-32 grid-cols-7 gap-2 p-2 border rounded-md bg-primary/10 border-primary sm:h-36' key={voucher.slug}>
-                      <div className='flex items-center justify-center w-full col-span-2 rounded-md bg-muted-foreground/10'>
+                  isVoucherSelected(voucher.slug) ? (
+                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 border rounded-md bg-${getTheme() === 'light' ? 'primary/10' : 'black'} border-primary sm:h-36`} key={voucher.slug}>
+                      <div className={`flex items-center justify-center w-full col-span-2 rounded-md bg-${getTheme() === 'light' ? 'white' : 'black'}`}>
                         <Ticket size={56} className='text-muted-foreground' />
                         {/* <img src={HomelandLogo} alt="chua-thoa-dieu-kien" className="rounded-md" /> */}
                       </div>
@@ -135,7 +157,7 @@ export default function VoucherListSheet() {
                                   <CircleHelp />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent side="bottom" className="w-[18rem] p-4 bg-white rounded-md shadow-md text-muted-foreground">
+                              <TooltipContent side="bottom" className={`w-[18rem] p-4 bg-${getTheme() === 'light' ? 'white' : 'black'} rounded-md shadow-md text-muted-foreground`}>
                                 <div className="flex flex-col justify-between gap-4">
                                   <div className="grid grid-cols-5">
                                     <span className="col-span-2 text-muted-foreground/70">Mã</span>
@@ -171,7 +193,7 @@ export default function VoucherListSheet() {
                                 <CircleHelp />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[20rem] mr-2 p-4 bg-white rounded-md shadow-md text-muted-foreground">
+                            <PopoverContent className={`w-[20rem] mr-2 p-4 bg-${getTheme() === 'light' ? 'white' : 'black'} rounded-md shadow-md text-muted-foreground`}>
                               <div className="flex flex-col justify-between gap-4">
                                 <div className="grid grid-cols-5">
                                   <span className="col-span-2 text-muted-foreground/70">Mã</span>
@@ -201,13 +223,13 @@ export default function VoucherListSheet() {
                           </Popover>
                         )}
                         <Button onClick={() => handleToggleVoucher(voucher)}>
-                          {cartItems.voucher.slug ? t('voucher.remove') : t('voucher.use')}
+                          {isVoucherSelected(voucher.slug) ? t('voucher.remove') : t('voucher.use')}
                         </Button>
                         {/* <img src={VoucherNotValid} alt="chua-thoa-dieu-kien" className="w-1/2" /> */}
                       </div>
                     </div>
                   ) : (
-                    <div className='grid h-32 grid-cols-7 gap-2 p-2 bg-white rounded-md sm:h-36' key={voucher.slug}>
+                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 ${getTheme() === 'light' ? 'bg-white' : 'bg-black border'} rounded-md sm:h-36`} key={voucher.slug}>
                       <div className='flex items-center justify-center w-full col-span-2 rounded-md bg-muted-foreground/10'>
                         <Ticket size={56} className='text-muted-foreground' />
                         {/* <img src={HomelandLogo} alt="chua-thoa-dieu-kien" className="rounded-md" /> */}
@@ -235,7 +257,7 @@ export default function VoucherListSheet() {
                                 <CircleHelp />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent side="bottom" className="w-[18rem] p-4 bg-white rounded-md shadow-md text-muted-foreground">
+                            <TooltipContent side="bottom" className={`w-[18rem] p-4 ${getTheme() === 'light' ? 'bg-white' : 'bg-black border'} rounded-md shadow-md text-muted-foreground`}>
                               <div className="flex flex-col justify-between gap-4">
                                 <div className="grid grid-cols-5">
                                   <span className="col-span-2 text-muted-foreground/70">Mã</span>
@@ -256,7 +278,7 @@ export default function VoucherListSheet() {
                           </Tooltip>
                         </TooltipProvider>
                         <Button onClick={() => handleToggleVoucher(voucher)}>
-                          {t('voucher.use')}
+                          {isVoucherSelected(voucher.slug) ? t('voucher.remove') : t('voucher.use')}
                         </Button>
                         {/* <img src={VoucherNotValid} alt="chua-thoa-dieu-kien" className="w-1/2" /> */}
                       </div>

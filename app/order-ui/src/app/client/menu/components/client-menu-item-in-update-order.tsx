@@ -5,17 +5,18 @@ import { IMenuItem, IProduct } from '@/types'
 import { publicFileURL, ROUTE } from '@/constants'
 import { Badge, Button } from '@/components/ui'
 import { formatCurrency } from '@/utils'
-import { ClientAddToCartDialog } from '@/components/app/dialog'
+import { AddNewOrderItemDialog } from '@/components/app/dialog'
 import { ClientAddToCartDrawer } from '@/components/app/drawer'
 import { useIsMobile } from '@/hooks'
 import { PromotionTag } from '@/components/app/badge'
 import { useThemeStore } from '@/stores'
 
-interface IClientMenuItemProps {
+interface IClientMenuItemInUpdateOrderProps {
+  onSuccess: () => void
   item: IMenuItem
 }
 
-export function ClientMenuItem({ item }: IClientMenuItemProps) {
+export function ClientMenuItemIUpdateOrder({ onSuccess, item }: IClientMenuItemInUpdateOrderProps) {
   const { t } = useTranslation('menu')
   const { getTheme } = useThemeStore()
   const isMobile = useIsMobile()
@@ -131,7 +132,7 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
           {isMobile ? (
             <ClientAddToCartDrawer product={item} />
           ) : (
-            <ClientAddToCartDialog product={item} />
+            <AddNewOrderItemDialog product={item} onSuccess={onSuccess} />
           )}
         </div>
       ) : (

@@ -3,13 +3,13 @@ import { Outlet } from 'react-router-dom'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib'
 import { DownloadProgress } from '@/components/app/progress'
-import { useDownloadStore } from '@/stores'
+import { useDownloadStore, useThemeStore } from '@/stores'
 import { ClientHeader, ClientFooter, BackToTop, BottomBar } from './components'
 import { ChooseBranchDialog } from '@/components/app/dialog'
-// import MessengerChat from '@/components/messenger/messenger-chat'
 
 export default function ClientLayout() {
   const isMobile = useIsMobile()
+  const { getTheme } = useThemeStore()
   const { progress, fileName, isDownloading } = useDownloadStore()
 
   return (
@@ -18,7 +18,7 @@ export default function ClientLayout() {
       <ClientHeader />
 
       {/* Main content */}
-      <main className={cn(isMobile ? 'pb-16' : '')}>
+      <main className={cn(isMobile ? 'pb-16' : '', getTheme() === 'light' ? 'bg-white' : 'bg-black')}>
         <ChooseBranchDialog />
         <Outlet />
         {isDownloading && (
