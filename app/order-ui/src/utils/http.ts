@@ -83,8 +83,6 @@ axiosInstance.interceptors.request.use(
       isAuthenticated,
     } = authStore
 
-    const currentToken = authStore.token
-    console.log('currentToken', currentToken, config.url)
     if (config.url) {
       if (isPublicRoute(config.url, config.method || '')) return config
     }
@@ -119,7 +117,6 @@ axiosInstance.interceptors.request.use(
         isRefreshing = false
       }
     } else if (isRefreshing) {
-      console.log('token', currentToken)
       return new Promise((resolve, reject) => {
         failedQueue.push({
           resolve: (currentToken: string) => {
@@ -134,7 +131,6 @@ axiosInstance.interceptors.request.use(
     }
 
     if (token) {
-      console.log('currentToken exists', token)
       config.headers['Authorization'] = `Bearer ${token}`
       if (!(config as CustomAxiosRequestConfig).doNotShowLoading) {
         useLoadingStore.getState().setIsLoading(true)
@@ -145,7 +141,6 @@ axiosInstance.interceptors.request.use(
         requestStore.incrementRequestQueueSize()
       }
     }
-    console.log('config', config)
     return config
   },
   (error) => {
