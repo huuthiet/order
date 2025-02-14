@@ -51,6 +51,8 @@
     "use": "Sử dụng",
     "remove": "Bỏ chọn",
     "maxApply": "Áp dụng tối đa",
-    "complete": "Hoàn thành"
+    "complete": "Hoàn thành",
+    "minOrderNotMet": "Chưa đạt giá trị tối thiểu",
+    "expired": "Voucher đã hết hạn"
   }
 }

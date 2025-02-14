@@ -22,13 +22,14 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui'
+import VoucherNotValid from '@/assets/images/chua-thoa-dieu-kien.svg'
 import { useIsMobile, useValidateVoucher, useVouchers } from '@/hooks'
 import { formatCurrency, showToast } from '@/utils'
 import { IValidateVoucherRequest, IVoucher } from '@/types'
 import { useCartItemStore, useThemeStore, useUserStore } from '@/stores'
 
 interface IVoucherListSheetProps {
-  defaultValue?: string // slug của voucher được chọn mặc định
+  defaultValue?: string
 }
 
 export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProps) {
@@ -54,6 +55,8 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
     return cartItems?.voucher?.slug === voucherSlug || selectedVoucher === voucherSlug
   }
 
+  const subTotal = cartItems?.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0) || 0
+
   const handleToggleVoucher = (voucher: IVoucher) => {
     if (isVoucherSelected(voucher.slug)) {
       removeVoucher()
@@ -73,6 +76,12 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
         }
       })
     }
+  }
+
+  const isVoucherValid = (voucher: IVoucher) => {
+    const isValidAmount = voucher.minOrderValue <= subTotal;
+    const isValidDate = moment().isBefore(moment(voucher.endDate));
+    return isValidAmount && isValidDate;
   }
 
   return (
@@ -107,7 +116,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                   <TicketPercent className="absolute text-gray-400 -translate-y-1/2 left-2 top-1/2" />
                   <Input
                     placeholder={t('voucher.enterVoucher')}
-                    className="pl-10" // Đẩy nội dung sang phải để tránh icon
+                    className="pl-10"
                   />
                 </div>
                 <Button className='col-span-1'>
@@ -140,6 +149,9 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                           </span>
                           <span className='text-xs italic text-primary'>
                             {t('voucher.discountValue')}{voucher.value}% {t('voucher.orderValue')}
+                          </span>
+                          <span className='text-xs italic text-primary'>
+                            {voucher.description}
                           </span>
                           <span className='hidden sm:text-xs text-muted-foreground/60'>Cho đơn hàng từ {formatCurrency(voucher.minOrderValue)}</span>
                           {/* <span className='px-2 py-1 mt-2 text-xs font-bold border rounded-md sm:text-sm w-fit text-muted-foreground'>
@@ -222,14 +234,27 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                             </PopoverContent>
                           </Popover>
                         )}
-                        <Button onClick={() => handleToggleVoucher(voucher)}>
-                          {isVoucherSelected(voucher.slug) ? t('voucher.remove') : t('voucher.use')}
-                        </Button>
-                        {/* <img src={VoucherNotValid} alt="chua-thoa-dieu-kien" className="w-1/2" /> */}
+                        {isVoucherValid(voucher) ? (
+                          <Button
+                            onClick={() => handleToggleVoucher(voucher)}
+                            variant={isVoucherSelected(voucher.slug) ? "destructive" : "default"}
+                          >
+                            {isVoucherSelected(voucher.slug) ? t('voucher.remove') : t('voucher.use')}
+                          </Button>
+                        ) : (
+                          <div className="flex flex-col items-end gap-1">
+                            <img src={VoucherNotValid} alt="chua-thoa-dieu-kien" className="w-1/2" />
+                            <span className="text-xs text-destructive">
+                              {voucher.minOrderValue > subTotal
+                                ? t('voucher.minOrderNotMet')
+                                : t('voucher.expired')}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (
-                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 ${getTheme() === 'light' ? 'bg-white' : ' border'} rounded-md sm:h-36`} key={voucher.slug}>
+                    <div className={`grid h-32 grid-cols-7 border gap-2 p-2 ${getTheme() === 'light' ? 'bg-white' : ' border'} rounded-md sm:h-36`} key={voucher.slug}>
                       <div className='flex items-center justify-center w-full col-span-2 rounded-md bg-muted-foreground/10'>
                         <Ticket size={56} className='text-muted-foreground' />
                         {/* <img src={HomelandLogo} alt="chua-thoa-dieu-kien" className="rounded-md" /> */}
@@ -241,6 +266,26 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                           </span>
                           <span className='text-xs italic text-primary'>
                             {t('voucher.discountValue')}{voucher.value}% {t('voucher.orderValue')}
+                          </span>
+                          <span className='flex items-center text-sm text-muted-foreground w-fit'>
+                            {voucher.code}
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="w-6 h-6"
+                                    onClick={() => handleCopyCode(voucher?.code)}
+                                  >
+                                    <Copy className="w-4 h-4 text-primary" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {t('voucher.copyCode')}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </span>
                           <span className='hidden sm:text-xs text-muted-foreground/60'>Cho đơn hàng từ {formatCurrency(voucher.minOrderValue)}</span>
                           {/* <span className='px-2 py-1 mt-2 text-xs font-bold border rounded-md sm:text-sm w-fit text-muted-foreground'>
@@ -277,10 +322,23 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                        <Button onClick={() => handleToggleVoucher(voucher)}>
-                          {isVoucherSelected(voucher.slug) ? t('voucher.remove') : t('voucher.use')}
-                        </Button>
-                        {/* <img src={VoucherNotValid} alt="chua-thoa-dieu-kien" className="w-1/2" /> */}
+                        {isVoucherValid(voucher) ? (
+                          <Button
+                            onClick={() => handleToggleVoucher(voucher)}
+                            variant={isVoucherSelected(voucher.slug) ? "destructive" : "default"}
+                          >
+                            {isVoucherSelected(voucher.slug) ? t('voucher.remove') : t('voucher.use')}
+                          </Button>
+                        ) : (
+                          <div className="flex flex-col items-end gap-1">
+                            <img src={VoucherNotValid} alt="chua-thoa-dieu-kien" className="w-1/2" />
+                            <span className="text-xs text-destructive">
+                              {voucher.minOrderValue > subTotal
+                                ? t('voucher.minOrderNotMet')
+                                : t('voucher.expired')}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )
