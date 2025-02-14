@@ -45,6 +45,7 @@ import {
   StaticPageDetailPage,
   DocsPage,
   VoucherPage,
+  PromotionPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
 import { ClientLayout } from '@/app/layouts/client'
@@ -182,7 +183,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: `${ROUTE.STAFF_ORDER_PAYMENT}/:slug`,
+    path: `${ROUTE.STAFF_ORDER_PAYMENT}`,
     element: (
       <Suspense fallback={<SkeletonCart />}>
         <SuspenseElement component={SystemLayout} />
@@ -597,6 +598,25 @@ export const router = createBrowserRouter([
           <ProtectedElement
             allowedRoles={[Role.MANAGER, Role.ADMIN, Role.SUPER_ADMIN]}
             element={<SuspenseElement component={VoucherPage} />}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: ROUTE.ADMIN_PROMOTION,
+    element: (
+      <Suspense fallback={<SkeletonCart />}>
+        <SuspenseElement component={SystemLayout} />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedElement
+            allowedRoles={[Role.MANAGER, Role.ADMIN, Role.SUPER_ADMIN]}
+            element={<SuspenseElement component={PromotionPage} />}
           />
         ),
       },
