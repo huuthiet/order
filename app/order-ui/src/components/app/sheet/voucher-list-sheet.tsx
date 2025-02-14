@@ -229,7 +229,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                       </div>
                     </div>
                   ) : (
-                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 ${getTheme() === 'light' ? 'bg-white' : 'bg-black border'} rounded-md sm:h-36`} key={voucher.slug}>
+                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 ${getTheme() === 'light' ? 'bg-white' : ' border'} rounded-md sm:h-36`} key={voucher.slug}>
                       <div className='flex items-center justify-center w-full col-span-2 rounded-md bg-muted-foreground/10'>
                         <Ticket size={56} className='text-muted-foreground' />
                         {/* <img src={HomelandLogo} alt="chua-thoa-dieu-kien" className="rounded-md" /> */}
@@ -257,7 +257,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                                 <CircleHelp />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent side="bottom" className={`w-[18rem] p-4 ${getTheme() === 'light' ? 'bg-white' : 'bg-black border'} rounded-md shadow-md text-muted-foreground`}>
+                            <TooltipContent side="bottom" className={`w-[18rem] p-4 ${getTheme() === 'light' ? 'bg-white' : ' border'} rounded-md shadow-md text-muted-foreground`}>
                               <div className="flex flex-col justify-between gap-4">
                                 <div className="grid grid-cols-5">
                                   <span className="col-span-2 text-muted-foreground/70">Mã</span>

@@ -20,8 +20,10 @@ import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import { OrderTypeEnum } from '@/types'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 import { formatCurrency } from '@/utils'
+import { useThemeStore } from '@/stores'
 
 export default function OrderDetailPage() {
+  const { getTheme } = useThemeStore()
   const { t } = useTranslation(['menu'])
   const { slug } = useParams()
   const { data: orderDetail } = useOrderBySlug(slug as string)
@@ -31,8 +33,8 @@ export default function OrderDetailPage() {
     <div className="mb-10">
       <div className="flex flex-col gap-2">
         {/* Title */}
-        <div className="sticky top-0 z-10 flex flex-col items-center gap-2 bg-gray-50 pb-4">
-          <span className="flex w-full items-center justify-start gap-1 text-lg">
+        <div className="top-0 z-10 flex flex-col items-center gap-2 pb-4">
+          <span className="flex items-center justify-start w-full gap-1 text-lg">
             <SquareMenu />
             {t('order.orderDetail')}{' '}
             <span className="text-muted-foreground">
@@ -43,14 +45,14 @@ export default function OrderDetailPage() {
 
         <div className="flex flex-col gap-4 lg:flex-row">
           {/* Left, info */}
-          <div className="flex w-full flex-col gap-4 lg:w-3/4">
+          <div className="flex flex-col w-full gap-4 lg:w-3/4">
             {/* Order info */}
-            <div className="flex items-center justify-between rounded-sm border border-gray-200 bg-slate-100 p-3">
+            <div className="flex items-center justify-between p-3 border rounded-sm">
               <div className="">
                 <p className="flex items-center gap-2 pb-2">
                   <span className="font-bold">Đơn hàng:</span>{' '}
                   <span className="text-primary">
-                    {orderDetail?.result?.slug}
+                    #{orderDetail?.result?.slug}
                   </span>
                   <OrderStatusBadge order={orderDetail?.result || undefined} />
                 </p>
@@ -72,8 +74,8 @@ export default function OrderDetailPage() {
             </div>
             {/* Order owner info */}
             <div className="flex gap-2">
-              <div className="w-1/2 rounded-sm border border-gray-200">
-                <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+              <div className="w-1/2 border rounded-sm">
+                <div className="px-3 py-2 font-bold uppercase">
                   Khách hàng
                 </div>
                 <div className="px-3 py-2 text-xs">
@@ -85,8 +87,8 @@ export default function OrderDetailPage() {
                   </p>
                 </div>
               </div>
-              <div className="w-1/2 rounded-sm border border-gray-200">
-                <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+              <div className="w-1/2 border rounded-sm">
+                <div className="px-3 py-2 font-bold uppercase">
                   Loại đơn hàng
                 </div>
                 <div className="px-3 py-2 text-sm">
@@ -106,9 +108,9 @@ export default function OrderDetailPage() {
             </div>
             {/* Order table */}
             <div className="overflow-x-auto">
-              <Table className="min-w-full table-auto border-collapse border border-gray-300">
+              <Table className="min-w-full border border-collapse table-auto">
                 <TableCaption>A list of orders.</TableCaption>
-                <TableHeader className="rounded bg-gray-200">
+                <TableHeader className={`rounded ${getTheme() === 'light' ? 'bg-muted-foreground/10' : ''}`}>
                   <TableRow>
                     <TableHead className="">{t('order.product')}</TableHead>
                     <TableHead>{t('order.size')}</TableHead>
@@ -128,14 +130,14 @@ export default function OrderDetailPage() {
                         <img
                           src={`${publicFileURL}/${item.variant.product.image}`}
                           alt={item.variant.product.image}
-                          className="h-12 w-20 rounded-lg object-cover sm:h-16 sm:w-24"
+                          className="object-cover w-20 h-12 rounded-lg sm:h-16 sm:w-24"
                         />
                         {item.variant.product.name}
                       </TableCell>
                       <TableCell>{item.variant.size.name}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
                       <TableCell className="text-right">
-                        {`${formatCurrency(orderDetail.result.subtotal || 0)}`}
+                        {`${formatCurrency(item.variant.price || 0)}`}
                       </TableCell>
                       <TableCell className="text-right">
                         {`${formatCurrency((item.variant.price || 0) * item.quantity)}`}
@@ -148,15 +150,15 @@ export default function OrderDetailPage() {
           </div>
 
           {/* Right, payment*/}
-          <div className="flex w-full flex-col gap-2 lg:w-1/4">
+          <div className="flex flex-col w-full gap-2 lg:w-1/4">
             {/* Payment method, status */}
-            <div className="rounded-sm border border-gray-200">
-              <div className="bg-slate-100 px-3 py-2 font-bold uppercase">
+            <div className="border rounded-sm">
+              {/* <div className="px-3 py-2 font-bold uppercase">
                 Phương thức thanh toán
-              </div>
+              </div> */}
               <div className="px-3 py-2">
-                <p className="flex items-center gap-1 pb-2">
-                  <span className="col-span-1 text-xs font-semibold">
+                <p className="flex flex-col items-start gap-1 pb-2">
+                  <span className="col-span-1 text-sm font-bold">
                     {t('paymentMethod.title')}
                   </span>
                   <span className="text-xs">
@@ -164,8 +166,8 @@ export default function OrderDetailPage() {
                       <>
                         {orderDetail?.result?.payment.paymentMethod ===
                           'bank-transfer' && (
-                          <span>{t('paymentMethod.bankTransfer')}</span>
-                        )}
+                            <span>{t('paymentMethod.bankTransfer')}</span>
+                          )}
                         {orderDetail?.result?.payment.paymentMethod ===
                           'cash' && <span>{t('paymentMethod.cash')}</span>}
                       </>
@@ -187,7 +189,7 @@ export default function OrderDetailPage() {
               </div>
             </div>
             {/* Total */}
-            <div className="flex flex-col gap-2 rounded-sm border border-gray-200 p-2">
+            <div className="flex flex-col gap-2 p-2 border rounded-sm">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-500">Tạm tính</p>
                 <p>{`${formatCurrency(orderDetail?.result?.subtotal || 0)}`}</p>
@@ -212,7 +214,7 @@ export default function OrderDetailPage() {
             <Button
               className="w-full bg-primary"
               onClick={() => {
-                navigate('/order-history')
+                navigate(-1)
               }}
             >
               Quay lại

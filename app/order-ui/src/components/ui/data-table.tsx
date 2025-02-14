@@ -52,6 +52,7 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { useDebouncedInput } from '@/hooks'
+import { useThemeStore } from '@/stores'
 
 interface DataTablePaginationProps<TData> {
   table: ReactTable<TData>
@@ -111,6 +112,7 @@ export function DataTable<TData, TValue>({
   actionOptions: DataTableActionOptions,
   rowClassName,
 }: DataTableProps<TData, TValue>) {
+  const { getTheme } = useThemeStore()
   const { t } = useTranslation('common')
   const { inputValue, setInputValue, debouncedInputValue } = useDebouncedInput()
 
@@ -220,9 +222,10 @@ export function DataTable<TData, TValue>({
                   }
                   className={cn(
                     'relative cursor-pointer hover:bg-primary/20',
-                    index % 2 === 0 ? 'bg-white' : 'bg-muted-foreground/5',
-                    rowClassName ? rowClassName(row.original) : '',
+                    (index % 2 === 0 && getTheme() === 'light') ? 'bg-white' : 'bg-muted-foreground/15',
+                    rowClassName ? rowClassName(row.original) : ''
                   )}
+
                   onClick={() => onRowClick && onRowClick(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (

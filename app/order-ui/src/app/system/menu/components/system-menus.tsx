@@ -50,7 +50,7 @@ export default function SystemMenus({ menu, isLoading }: IMenuProps) {
       {menuItems.map((item) => (
         <div
           key={item.slug}
-          className="flex flex-col justify-between rounded-xl min-h-[14rem] border bg-white backdrop-blur-md"
+          className="flex flex-col justify-between rounded-xl min-h-[14rem] border backdrop-blur-md"
         >
           {/* Image Section with Discount Tag */}
           <div className="relative">

@@ -18,12 +18,14 @@ import { IStaticPage } from '@/types'
 import { useDeleteStaticPage } from '@/hooks'
 import { showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
+import { useThemeStore } from '@/stores'
 
 export default function DeleteStaticPageDialog({
   staticPage,
 }: {
   staticPage: IStaticPage
 }) {
+  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['staticPage'])
   const { t: tCommon } = useTranslation('common')
@@ -66,7 +68,7 @@ export default function DeleteStaticPageDialog({
               {t('staticPage.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className="p-2 bg-red-100 rounded-md text-destructive">
+          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

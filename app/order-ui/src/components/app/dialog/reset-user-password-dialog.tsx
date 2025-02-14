@@ -18,8 +18,10 @@ import { IUserInfo } from '@/types'
 import { useResetPassword } from '@/hooks'
 import { showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
+import { useThemeStore } from '@/stores'
 
 export default function ResetPasswordDialog({ user }: { user: IUserInfo }) {
+  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['user'])
   const { t: tCommon } = useTranslation('common')
@@ -41,7 +43,7 @@ export default function ResetPasswordDialog({ user }: { user: IUserInfo }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex w-full justify-start" asChild>
+      <DialogTrigger className="flex justify-start w-full" asChild>
         <DialogTrigger asChild>
           <Button
             variant="ghost"
@@ -57,13 +59,13 @@ export default function ResetPasswordDialog({ user }: { user: IUserInfo }) {
       {user.email && (
         <DialogContent className="max-w-[22rem] rounded-md sm:max-w-[32rem]">
           <DialogHeader>
-            <DialogTitle className="border-b pb-4">
+            <DialogTitle className="pb-4 border-b">
               <div className="flex items-center gap-2 border-destructive text-destructive">
-                <TriangleAlert className="h-6 w-6" />
+                <TriangleAlert className="w-6 h-6" />
                 {t('users.resetPassword')}
               </div>
             </DialogTitle>
-            <DialogDescription className="rounded-md bg-red-100 p-2 text-destructive">
+            <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
               {tCommon('common.deleteNote')}
             </DialogDescription>
 
@@ -91,13 +93,13 @@ export default function ResetPasswordDialog({ user }: { user: IUserInfo }) {
       {!user.email && (
         <DialogContent className="max-w-[22rem] rounded-md sm:max-w-[32rem]">
           <DialogHeader>
-            <DialogTitle className="border-b pb-4">
+            <DialogTitle className="pb-4 border-b">
               <div className="flex items-center gap-2 border-destructive text-destructive">
-                <TriangleAlert className="h-6 w-6" />
+                <TriangleAlert className="w-6 h-6" />
                 {t('users.resetPassword')}
               </div>
             </DialogTitle>
-            <DialogDescription className="rounded-md bg-red-100 p-2 text-destructive">
+            <DialogDescription className="p-2 bg-red-100 rounded-md text-destructive">
               {tCommon('common.deleteNote')}
             </DialogDescription>
 

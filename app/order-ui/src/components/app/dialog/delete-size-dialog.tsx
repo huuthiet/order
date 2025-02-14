@@ -18,8 +18,10 @@ import { ISize } from '@/types'
 import { useDeleteSize } from '@/hooks'
 import { showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
+import { useThemeStore } from '@/stores'
 
 export default function DeleteSizeDialog({ size }: { size: ISize }) {
+  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { t: tCommon } = useTranslation('common')
@@ -41,7 +43,7 @@ export default function DeleteSizeDialog({ size }: { size: ISize }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="flex w-full justify-start" asChild>
+      <DialogTrigger className="flex justify-start w-full" asChild>
         <DialogTrigger asChild>
           <Button
             variant="ghost"
@@ -56,13 +58,13 @@ export default function DeleteSizeDialog({ size }: { size: ISize }) {
 
       <DialogContent className="max-w-[22rem] rounded-md sm:max-w-[32rem]">
         <DialogHeader>
-          <DialogTitle className="border-b border-destructive pb-4 text-destructive">
+          <DialogTitle className="pb-4 border-b border-destructive text-destructive">
             <div className="flex items-center gap-2">
-              <TriangleAlert className="h-6 w-6" />
+              <TriangleAlert className="w-6 h-6" />
               {t('size.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className="rounded-md bg-red-100 p-2 text-destructive">
+          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

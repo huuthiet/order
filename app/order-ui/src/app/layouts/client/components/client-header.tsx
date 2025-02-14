@@ -6,7 +6,7 @@ import {
   SelectBranchDropdown,
   SettingsDropdown,
 } from '@/components/app/dropdown'
-import { useCartItemStore, useThemeStore } from '@/stores'
+import { useCartItemStore } from '@/stores'
 import { HomelandLogo } from '@/assets/images'
 import { ROUTE } from '@/constants'
 import { Button } from '@/components/ui'
@@ -15,10 +15,9 @@ import { useIsMobile } from '@/hooks'
 
 export function ClientHeader() {
   const isMobile = useIsMobile()
-  const { getTheme } = useThemeStore()
   const { getCartItems } = useCartItemStore()
   return (
-    <header className={`sticky top-0 z-30 w-full ${getTheme() === 'light' ? 'bg-white' : 'bg-black'} shadow-md text-muted-foreground backdrop-blur-lg`}>
+    <header className={`sticky top-0 z-30 w-full shadow-md text-muted-foreground backdrop-blur-lg`}>
       <div className="container">
         <div className="flex items-center justify-between w-full h-14">
           {/* Left content*/}

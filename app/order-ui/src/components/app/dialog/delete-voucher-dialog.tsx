@@ -19,8 +19,10 @@ import { IVoucher } from '@/types'
 import { useDeleteVoucher } from '@/hooks'
 import { showToast } from '@/utils'
 import { QUERYKEY } from '@/constants'
+import { useThemeStore } from '@/stores'
 
 export default function DeleteVoucherDialog({ voucher }: { voucher: IVoucher }) {
+  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['voucher'])
   const { t: tCommon } = useTranslation('common')
@@ -63,7 +65,7 @@ export default function DeleteVoucherDialog({ voucher }: { voucher: IVoucher }) 
               {t('voucher.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className="p-2 bg-red-100 rounded-md text-destructive">
+          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

@@ -3,7 +3,7 @@ import { useLocation, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSidebar } from '@/components/ui'
 import { useMemo } from 'react'
-import { useUserStore } from '@/stores'
+import { useThemeStore, useUserStore } from '@/stores'
 
 import {
   Collapsible,
@@ -36,6 +36,7 @@ import { cn } from '@/lib'
 import { ROUTE } from '@/constants'
 
 export function AppSidebar() {
+  const { getTheme } = useThemeStore()
   const { t } = useTranslation('sidebar')
   const { userInfo } = useUserStore()
   const location = useLocation()
@@ -67,7 +68,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       variant="inset"
-      className="z-50 border-r shadow-2xl bg-slate-50 shadow-gray-300"
+      className={`z-50 border-r ${getTheme() === 'light' ? 'bg-white shadow-2xl shadow-gray-300' : ''} `}
       collapsible="icon"
     >
       <SidebarHeader>

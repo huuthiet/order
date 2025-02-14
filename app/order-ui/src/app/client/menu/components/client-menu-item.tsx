@@ -37,7 +37,7 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
   return (
     <div
       key={item.slug}
-      className={`flex min-h-[22rem] ${getTheme() === 'light' ? 'bg-white' : 'bg-black'} hover:scale-105 flex-col justify-between rounded-xl border bg-white backdrop-blur-md transition-all duration-300 ease-in-out`}
+      className={`flex min-h-[22rem] ${getTheme() === 'light' ? 'bg-white' : ''} hover:scale-105 flex-col justify-between rounded-xl border backdrop-blur-md transition-all duration-300 ease-in-out`}
     >
       <NavLink to={`${ROUTE.CLIENT_MENU_ITEM}?slug=${item.slug}`}>
         {/* Image Section with Ribbon Discount Tag */}

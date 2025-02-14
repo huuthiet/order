@@ -25,8 +25,10 @@ import { ICreateVoucherRequest } from '@/types'
 import { SimpleDatePicker } from '../picker'
 import { createVoucherSchema, TCreateVoucherSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useThemeStore } from '@/stores'
 
 export default function CreateVoucherSheet() {
+  const { getTheme } = useThemeStore()
   const { t } = useTranslation(['voucher'])
   const [isOpen, setIsOpen] = useState(false)
   const [formData, setFormData] = useState<ICreateVoucherRequest | null>(null)
@@ -298,7 +300,7 @@ export default function CreateVoucherSheet() {
               <Form {...form}>
                 <form id="voucher-form" onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                   {/* Nhóm: Tên và Mô tả */}
-                  <div className="p-4 bg-white border rounded-md">
+                  <div className={`p-4 border ${getTheme() === 'light' ? 'bg-white' : ''} rounded-md`}>
                     <div className="grid grid-cols-1 gap-2">
                       {formFields.name}
                       {formFields.description}
@@ -306,19 +308,19 @@ export default function CreateVoucherSheet() {
                   </div>
 
                   {/* Nhóm: Ngày bắt đầu và Kết thúc */}
-                  <div className="grid grid-cols-2 gap-2 p-4 bg-white border rounded-md">
+                  <div className={`grid grid-cols-2 gap-2 p-4 ${getTheme() === 'light' ? 'bg-white' : ''} border rounded-md`}>
                     {formFields.startDate}
                     {formFields.endDate}
                   </div>
 
                   {/* Nhóm: Mã giảm giá & Số lượng */}
-                  <div className="grid grid-cols-2 gap-2 p-4 bg-white border rounded-md">
+                  <div className={`grid grid-cols-2 gap-2 p-4 ${getTheme() === 'light' ? 'bg-white' : ''} border rounded-md`}>
                     {formFields.code}
                     {formFields.maxUsage}
                   </div>
 
                   {/* Nhóm: Giá trị đơn hàng tối thiểu */}
-                  <div className="grid grid-cols-2 gap-2 p-4 bg-white border rounded-md">
+                  <div className={`grid grid-cols-2 gap-2 p-4 ${getTheme() === 'light' ? 'bg-white' : ''} border rounded-md`}>
                     {formFields.minOrderValue}
                     {formFields.value}
                   </div>

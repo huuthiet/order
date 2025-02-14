@@ -55,7 +55,7 @@ export default function OrderTypeSelect() {
       styles={{
         control: (baseStyles) => ({
           ...baseStyles,
-          backgroundColor: getTheme() === 'light' ? 'white' : 'black',
+          backgroundColor: getTheme() === 'light' ? 'white' : '',
           borderColor: getTheme() === 'light' ? '#e2e8f0' : '#2d2d2d',
         }),
         menu: (baseStyles) => ({
