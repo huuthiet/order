@@ -25,7 +25,7 @@ import {
 import { useIsMobile, useValidateVoucher, useVouchers } from '@/hooks'
 import { formatCurrency, showToast } from '@/utils'
 import { IValidateVoucherRequest, IVoucher } from '@/types'
-import { useCartItemStore, useUserStore } from '@/stores'
+import { useCartItemStore, useThemeStore, useUserStore } from '@/stores'
 
 interface IVoucherListSheetProps {
   defaultValue?: string // slug của voucher được chọn mặc định
@@ -33,6 +33,7 @@ interface IVoucherListSheetProps {
 
 export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProps) {
   const isMobile = useIsMobile()
+  const { getTheme } = useThemeStore()
   const { t } = useTranslation(['voucher'])
   const { t: tToast } = useTranslation('toast')
   const { userInfo } = useUserStore()
@@ -98,7 +99,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
           </SheetTitle>
         </SheetHeader>
         <div className="flex flex-col h-full bg-transparent backdrop-blur-md">
-          <ScrollArea className={`max-h-[calc(100vh-8rem)] flex-1 gap-4 p-4 bg-white dark:bg-black`}>
+          <ScrollArea className={`max-h-[calc(100vh-8rem)] flex-1 gap-4 p-4 bg-${getTheme() === 'light' ? 'white' : 'black'}`}>
             {/* Voucher search */}
             <div className="flex flex-col flex-1">
               <div className='grid items-center grid-cols-5 gap-2'>
@@ -127,8 +128,8 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
               <div className='grid grid-cols-1 gap-4'>
                 {voucherListData?.map((voucher) => (
                   isVoucherSelected(voucher.slug) ? (
-                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 border rounded-md bg-primary/10 dark:bg-black border-primary sm:h-36`} key={voucher.slug}>
-                      <div className={`flex items-center justify-center w-full col-span-2 rounded-md bg-white dark:bg-black`}>
+                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 border rounded-md bg-${getTheme() === 'light' ? 'primary/10' : 'black'} border-primary sm:h-36`} key={voucher.slug}>
+                      <div className={`flex items-center justify-center w-full col-span-2 rounded-md bg-${getTheme() === 'light' ? 'white' : 'black'}`}>
                         <Ticket size={56} className='text-muted-foreground' />
                         {/* <img src={HomelandLogo} alt="chua-thoa-dieu-kien" className="rounded-md" /> */}
                       </div>
@@ -156,7 +157,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                                   <CircleHelp />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent side="bottom" className={`w-[18rem] p-4 bg-white dark:bg-black rounded-md shadow-md text-muted-foreground`}>
+                              <TooltipContent side="bottom" className={`w-[18rem] p-4 bg-${getTheme() === 'light' ? 'white' : 'black'} rounded-md shadow-md text-muted-foreground`}>
                                 <div className="flex flex-col justify-between gap-4">
                                   <div className="grid grid-cols-5">
                                     <span className="col-span-2 text-muted-foreground/70">Mã</span>
@@ -192,7 +193,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                                 <CircleHelp />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className={`w-[20rem] mr-2 p-4 bg-white dark:bg-black rounded-md shadow-md text-muted-foreground`}>
+                            <PopoverContent className={`w-[20rem] mr-2 p-4 bg-${getTheme() === 'light' ? 'white' : 'black'} rounded-md shadow-md text-muted-foreground`}>
                               <div className="flex flex-col justify-between gap-4">
                                 <div className="grid grid-cols-5">
                                   <span className="col-span-2 text-muted-foreground/70">Mã</span>
@@ -228,7 +229,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                       </div>
                     </div>
                   ) : (
-                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 bg-white dark:border rounded-md sm:h-36`} key={voucher.slug}>
+                    <div className={`grid h-32 grid-cols-7 gap-2 p-2 ${getTheme() === 'light' ? 'bg-white' : ' border'} rounded-md sm:h-36`} key={voucher.slug}>
                       <div className='flex items-center justify-center w-full col-span-2 rounded-md bg-muted-foreground/10'>
                         <Ticket size={56} className='text-muted-foreground' />
                         {/* <img src={HomelandLogo} alt="chua-thoa-dieu-kien" className="rounded-md" /> */}
@@ -256,7 +257,7 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                                 <CircleHelp />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent side="bottom" className={`w-[18rem] p-4 bg-white dark:border rounded-md shadow-md text-muted-foreground`}>
+                            <TooltipContent side="bottom" className={`w-[18rem] p-4 ${getTheme() === 'light' ? 'bg-white' : ' border'} rounded-md shadow-md text-muted-foreground`}>
                               <div className="flex flex-col justify-between gap-4">
                                 <div className="grid grid-cols-5">
                                   <span className="col-span-2 text-muted-foreground/70">Mã</span>
