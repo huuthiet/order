@@ -17,10 +17,8 @@ import {
 import { IBranch } from '@/types'
 import { useDeleteBranch } from '@/hooks'
 import { showToast } from '@/utils'
-import { useThemeStore } from '@/stores'
 
 export default function DeleteBranchDialog({ branch }: { branch: IBranch }) {
-  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['branch'])
   const { t: tCommon } = useTranslation('common')
@@ -63,7 +61,7 @@ export default function DeleteBranchDialog({ branch }: { branch: IBranch }) {
               {t('branch.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

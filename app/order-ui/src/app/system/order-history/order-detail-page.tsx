@@ -20,10 +20,8 @@ import OrderStatusBadge from '@/components/app/badge/order-status-badge'
 import { OrderTypeEnum } from '@/types'
 import PaymentStatusBadge from '@/components/app/badge/payment-status-badge'
 import { formatCurrency } from '@/utils'
-import { useThemeStore } from '@/stores'
 
 export default function OrderDetailPage() {
-  const { getTheme } = useThemeStore()
   const { t } = useTranslation(['menu'])
   const { slug } = useParams()
   const { data: orderDetail } = useOrderBySlug(slug as string)
@@ -110,7 +108,7 @@ export default function OrderDetailPage() {
             <div className="overflow-x-auto">
               <Table className="min-w-full border border-collapse table-auto">
                 <TableCaption>A list of orders.</TableCaption>
-                <TableHeader className={`rounded ${getTheme() === 'light' ? 'bg-muted-foreground/10' : ''}`}>
+                <TableHeader className={`rounded bg-muted-foreground/10 dark:bg-transparent`}>
                   <TableRow>
                     <TableHead className="">{t('order.product')}</TableHead>
                     <TableHead>{t('order.size')}</TableHead>

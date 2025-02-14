@@ -14,7 +14,7 @@ import {
   Label,
 } from '@/components/ui'
 import { IOrderItem } from '@/types'
-import { useCartItemStore, useThemeStore } from '@/stores'
+import { useCartItemStore } from '@/stores'
 
 interface DialogDeleteCartItemProps {
   cartItem: IOrderItem
@@ -23,7 +23,6 @@ interface DialogDeleteCartItemProps {
 export default function DeleteCartItemDialog({
   cartItem,
 }: DialogDeleteCartItemProps) {
-  const { getTheme } = useThemeStore()
   const { t } = useTranslation('menu')
   const { t: tCommon } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
@@ -47,7 +46,7 @@ export default function DeleteCartItemDialog({
             <TriangleAlert />
             {t('order.deleteItem')}
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
         </DialogHeader>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Trash2, TriangleAlert } from 'lucide-react'
 
@@ -17,11 +18,8 @@ import { ISize } from '@/types'
 
 import { useDeleteSize } from '@/hooks'
 import { showToast } from '@/utils'
-import { useQueryClient } from '@tanstack/react-query'
-import { useThemeStore } from '@/stores'
 
 export default function DeleteSizeDialog({ size }: { size: ISize }) {
-  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { t: tCommon } = useTranslation('common')
@@ -64,7 +62,7 @@ export default function DeleteSizeDialog({ size }: { size: ISize }) {
               {t('size.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

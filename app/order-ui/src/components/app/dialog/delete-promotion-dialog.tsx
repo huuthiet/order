@@ -19,10 +19,9 @@ import { IPromotion } from '@/types'
 import { useDeletePromotion } from '@/hooks'
 import { showToast } from '@/utils'
 import { QUERYKEY } from '@/constants'
-import { useThemeStore, useUserStore } from '@/stores'
+import { useUserStore } from '@/stores'
 
 export default function DeletePromotionDialog({ promotion }: { promotion: IPromotion }) {
-  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['promotion'])
   const { t: tCommon } = useTranslation('common')
@@ -66,7 +65,7 @@ export default function DeletePromotionDialog({ promotion }: { promotion: IPromo
               {t('promotion.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

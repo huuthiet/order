@@ -17,10 +17,8 @@ import {
 
 import { useDeleteProductImage } from '@/hooks'
 import { showToast } from '@/utils'
-import { useThemeStore } from '@/stores'
 
 export default function DeleteProductImageDialog({ image }: { image: string }) {
-  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { slug } = useParams()
@@ -66,7 +64,7 @@ export default function DeleteProductImageDialog({ image }: { image: string }) {
               {t('product.deleteImage')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

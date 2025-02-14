@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { KeyRound, TriangleAlert } from 'lucide-react'
 
@@ -17,11 +18,8 @@ import { IUserInfo } from '@/types'
 
 import { useResetPassword } from '@/hooks'
 import { showToast } from '@/utils'
-import { useQueryClient } from '@tanstack/react-query'
-import { useThemeStore } from '@/stores'
 
 export default function ResetPasswordDialog({ user }: { user: IUserInfo }) {
-  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['user'])
   const { t: tCommon } = useTranslation('common')
@@ -65,7 +63,7 @@ export default function ResetPasswordDialog({ user }: { user: IUserInfo }) {
                 {t('users.resetPassword')}
               </div>
             </DialogTitle>
-            <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+            <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
               {tCommon('common.deleteNote')}
             </DialogDescription>
 

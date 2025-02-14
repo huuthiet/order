@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Trash2, TriangleAlert } from 'lucide-react'
 
@@ -17,9 +19,6 @@ import { IProductVariant } from '@/types'
 
 import { useDeleteProductVariant } from '@/hooks'
 import { showToast } from '@/utils'
-import { useQueryClient } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
-import { useThemeStore } from '@/stores'
 
 export default function DeleteProductVariantDialog({
   productVariant,
@@ -27,7 +26,6 @@ export default function DeleteProductVariantDialog({
   productVariant: IProductVariant
 }) {
   const queryClient = useQueryClient()
-  const { getTheme } = useThemeStore()
   const { t } = useTranslation(['product'])
   const { t: tCommon } = useTranslation('common')
   const { slug } = useParams()
@@ -70,7 +68,7 @@ export default function DeleteProductVariantDialog({
               {t('productVariant.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

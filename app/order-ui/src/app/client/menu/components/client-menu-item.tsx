@@ -9,7 +9,6 @@ import { ClientAddToCartDialog } from '@/components/app/dialog'
 import { ClientAddToCartDrawer } from '@/components/app/drawer'
 import { useIsMobile } from '@/hooks'
 import { PromotionTag } from '@/components/app/badge'
-import { useThemeStore } from '@/stores'
 
 interface IClientMenuItemProps {
   item: IMenuItem
@@ -17,7 +16,6 @@ interface IClientMenuItemProps {
 
 export function ClientMenuItem({ item }: IClientMenuItemProps) {
   const { t } = useTranslation('menu')
-  const { getTheme } = useThemeStore()
   const isMobile = useIsMobile()
 
   const getPriceRange = (variants: IProduct['variants']) => {
@@ -37,7 +35,7 @@ export function ClientMenuItem({ item }: IClientMenuItemProps) {
   return (
     <div
       key={item.slug}
-      className={`flex min-h-[22rem] ${getTheme() === 'light' ? 'bg-white' : ''} hover:scale-105 flex-col justify-between rounded-xl border backdrop-blur-md transition-all duration-300 ease-in-out`}
+      className={`flex min-h-[22rem] bg-white dark:bg-transparent hover:scale-105 flex-col justify-between rounded-xl border backdrop-blur-md transition-all duration-300 ease-in-out`}
     >
       <NavLink to={`${ROUTE.CLIENT_MENU_ITEM}?slug=${item.slug}`}>
         {/* Image Section with Ribbon Discount Tag */}

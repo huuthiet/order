@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Trash2, TriangleAlert } from 'lucide-react'
 
@@ -17,8 +18,6 @@ import { IMenuItem } from '@/types'
 
 import { useDeleteMenuItem } from '@/hooks'
 import { showToast } from '@/utils'
-import { useQueryClient } from '@tanstack/react-query'
-import { useThemeStore } from '@/stores'
 
 export default function DeleteMenuItemDialog({
   menuItem,
@@ -26,7 +25,6 @@ export default function DeleteMenuItemDialog({
   menuItem: IMenuItem
 }) {
   const queryClient = useQueryClient()
-  const { getTheme } = useThemeStore()
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation('common')
   const { t: tToast } = useTranslation('toast')
@@ -67,7 +65,7 @@ export default function DeleteMenuItemDialog({
               {t('menu.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

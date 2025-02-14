@@ -18,7 +18,6 @@ import { ISystemConfig } from '@/types'
 
 import { useDeleteSystemConfig } from '@/hooks'
 import { showToast } from '@/utils'
-import { useThemeStore } from '@/stores'
 
 export default function DeleteSystemConfigDialog({
   systemConfig,
@@ -27,7 +26,6 @@ export default function DeleteSystemConfigDialog({
   systemConfig: ISystemConfig
   onClose: () => void
 }) {
-  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['config'])
   const { t: tCommon } = useTranslation('common')
@@ -71,7 +69,7 @@ export default function DeleteSystemConfigDialog({
               {t('config.deleteSystemConfig')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 

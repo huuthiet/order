@@ -23,7 +23,6 @@ import {
 } from '@/types'
 import { useProducts } from '@/hooks'
 import { useProductColumns } from '@/app/system/promotion/DataTable/columns'
-import { useThemeStore } from '@/stores'
 
 interface IApplyPromotionSheetProps {
   promotion: IPromotion
@@ -32,7 +31,6 @@ interface IApplyPromotionSheetProps {
 export default function ApplyPromotionSheet({
   promotion,
 }: IApplyPromotionSheetProps) {
-  const { getTheme } = useThemeStore()
   const { t } = useTranslation(['promotion'])
   const [isOpen, setIsOpen] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -79,7 +77,7 @@ export default function ApplyPromotionSheet({
         <div className="flex flex-col h-full bg-transparent backdrop-blur-md">
           <ScrollArea className="max-h-[calc(100vh-8rem)] flex-1 gap-4">
             {/* Product List */}
-            <div className={`p-4 ${getTheme() === 'light' ? 'bg-white' : ''} border rounded-md`}>
+            <div className={`p-4 bg-white dark:bg-transparent border rounded-md`}>
               <div className="grid grid-cols-1 gap-2">
                 <DataTable
                   columns={useProductColumns({ onSelect: handleProductSelect })}

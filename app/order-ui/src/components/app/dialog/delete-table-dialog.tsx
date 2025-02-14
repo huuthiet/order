@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Trash2, TriangleAlert } from 'lucide-react'
 
@@ -17,8 +18,6 @@ import { ITable } from '@/types'
 
 import { useDeleteTable } from '@/hooks'
 import { showToast } from '@/utils'
-import { useQueryClient } from '@tanstack/react-query'
-import { useThemeStore } from '@/stores'
 
 interface DeleteTableDialogProps {
   table: ITable | null
@@ -29,7 +28,6 @@ export default function DeleteTableDialog({
   table,
   onContextOpen,
 }: DeleteTableDialogProps) {
-  const { getTheme } = useThemeStore()
   const queryClient = useQueryClient()
   const { t } = useTranslation(['table'])
   const { t: tCommon } = useTranslation('common')
@@ -78,7 +76,7 @@ export default function DeleteTableDialog({
               {t('table.delete')}
             </div>
           </DialogTitle>
-          <DialogDescription className={`rounded-md ${getTheme() === 'light' ? 'bg-red-100 ' : ''} p-2 text-destructive`}>
+          <DialogDescription className={`rounded-md bg-red-100 dark:bg-transparent p-2 text-destructive`}>
             {tCommon('common.deleteNote')}
           </DialogDescription>
 
