@@ -25,8 +25,8 @@ export class ApplicablePromotionController {
   })
   @ApiOperation({ summary: 'Create new applicable promotion' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  @Public()
-  // @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Manager, RoleEnum.Admin)
+  // @Public()
+  @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Manager, RoleEnum.Admin)
   async createApplicablePromotion(
     @Body(
       new ValidationPipe({
@@ -56,8 +56,8 @@ export class ApplicablePromotionController {
   })
   @ApiOperation({ summary: 'Create many applicable promotions' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  @Public()
-  // @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Manager, RoleEnum.Admin)
+  // @Public()
+  @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Manager, RoleEnum.Admin)
   async createManyApplicablePromotion(
     @Body(
       new ValidationPipe({
@@ -79,8 +79,8 @@ export class ApplicablePromotionController {
   }
 
   @Delete(':slug')
-  @Public()
-  // @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Admin, RoleEnum.Manager)
+  // @Public()
+  @HasRoles(RoleEnum.SuperAdmin, RoleEnum.Admin, RoleEnum.Manager)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete applicable promotion' })
   @ApiResponseWithType({
