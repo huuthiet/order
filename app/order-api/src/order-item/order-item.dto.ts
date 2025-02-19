@@ -34,7 +34,7 @@ export class CreateOrderItemRequestDto {
 
   @AutoMap()
   @ApiProperty({ description: 'The slug of order', example: 'order-slug-123' })
-  @IsOptional()
+  @IsNotEmpty({ message: 'Invalid slug of order' })
   order?: string;
 }
 
