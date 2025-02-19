@@ -24,6 +24,11 @@ import { VariantModule } from 'src/variant/variant.module';
 import { MenuModule } from 'src/menu/menu.module';
 import { VoucherModule } from 'src/voucher/voucher.module';
 import { OrderListener } from './order.listener';
+import { OrderItemUtils } from 'src/order-item/order-item.utils';
+import { OrderItem } from 'src/order-item/order-item.entity';
+import { Promotion } from 'src/promotion/promotion.entity';
+import { PromotionUtils } from 'src/promotion/promotion.utils';
+import { ApplicablePromotion } from 'src/applicable-promotion/applicable-promotion.entity';
 
 @Module({
   imports: [
@@ -36,6 +41,9 @@ import { OrderListener } from './order.listener';
       Tracking,
       Menu,
       MenuItem,
+      OrderItem,
+      Promotion,
+      ApplicablePromotion
     ]),
     RobotConnectorModule,
     DbModule,
@@ -55,6 +63,8 @@ import { OrderListener } from './order.listener';
     OrderScheduler,
     OrderUtils,
     OrderListener,
+    OrderItemUtils,
+    PromotionUtils
   ],
   exports: [OrderService, OrderUtils],
 })
