@@ -1,16 +1,19 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { StaticPageService } from "./static-page.service";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { StaticPage } from "./static-page.entity";
-import { MockType, repositoryMockFactory } from "src/test-utils/repository-mock.factory";
-import { MAPPER_MODULE_PROVIDER } from "src/app/app.constants";
-import { mapperMockFactory } from "src/test-utils/mapper-mock.factory";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { Repository } from "typeorm";
-import { Mapper } from "@automapper/core";
-import { StaticPageException } from "./static-page.exception";
-import { CreateStaticPageDto, UpdateStaticPageDto } from "./static-page.dto";
-import { StaticPageValidation } from "./static-page.validation";
+import { Test, TestingModule } from '@nestjs/testing';
+import { StaticPageService } from './static-page.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { StaticPage } from './static-page.entity';
+import {
+  MockType,
+  repositoryMockFactory,
+} from 'src/test-utils/repository-mock.factory';
+import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
+import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Repository } from 'typeorm';
+import { Mapper } from '@automapper/core';
+import { StaticPageException } from './static-page.exception';
+import { CreateStaticPageDto, UpdateStaticPageDto } from './static-page.dto';
+import { StaticPageValidation } from './static-page.validation';
 
 describe('StaticPageService', () => {
   let service: StaticPageService;
@@ -51,20 +54,19 @@ describe('StaticPageService', () => {
     });
 
     it('should throw an error if static page key already exist', async () => {
-      const createStaticPage = {
-        key: 'ABOUT-US',
-        title: 'About Us',
-        content: 'This is about us',
-      } as CreateStaticPageDto;
       const staticPage = {
-        key: "",
-        title: "",
-        content: "",
-        id: "",
-        slug: "",
+        key: '',
+        title: '',
+        content: '',
+        id: '',
+        slug: '',
       } as StaticPage;
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(staticPage);
-      await expect(service.create(staticPage)).rejects.toThrow(StaticPageException);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        staticPage,
+      );
+      await expect(service.create(staticPage)).rejects.toThrow(
+        StaticPageException,
+      );
     });
 
     it('should create a static page success', async () => {
@@ -77,13 +79,17 @@ describe('StaticPageService', () => {
         key: 'ABOUT-US',
         title: 'About Us',
         content: 'This is about us',
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
       } as StaticPage;
-      
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(undefined);
+
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        undefined,
+      );
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
-      (staticPageRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
+      (staticPageRepositoryMock.save as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
       const result = await service.create(staticPage);
       expect(result).toEqual(mockOutput);
@@ -97,7 +103,9 @@ describe('StaticPageService', () => {
 
     it('should throw an error if static page not found', async () => {
       const key = 'ABOUT-US';
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(undefined);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        undefined,
+      );
       await expect(service.getByKey(key)).rejects.toThrow(StaticPageException);
     });
 
@@ -107,10 +115,12 @@ describe('StaticPageService', () => {
         key: 'ABOUT-US',
         title: 'About Us',
         content: 'This is about us',
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
       } as StaticPage;
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
       const result = await service.getByKey(key);
       expect(result).toEqual(mockOutput);
@@ -128,8 +138,12 @@ describe('StaticPageService', () => {
         title: 'About Us',
         content: 'This is about us',
       } as UpdateStaticPageDto;
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(undefined);
-      await expect(service.update(slug, updateStaticPage)).rejects.toThrow(StaticPageException);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        undefined,
+      );
+      await expect(service.update(slug, updateStaticPage)).rejects.toThrow(
+        StaticPageException,
+      );
     });
 
     it('should throw exception if service.validateUpdatedKey throws', async () => {
@@ -143,15 +157,23 @@ describe('StaticPageService', () => {
         key: 'ABOUT-US',
         title: 'About Us',
         content: 'This is about us',
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
       } as StaticPage;
-      
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
-      jest.spyOn(service, 'validateUpdatedKey').mockRejectedValue(
-        new StaticPageException(StaticPageValidation.STATIC_PAGE_KEY_ALREADY_EXIST)
+
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        mockOutput,
       );
-      await expect(service.update(slug, updateStaticPage)).rejects.toThrow(StaticPageException);
+      jest
+        .spyOn(service, 'validateUpdatedKey')
+        .mockRejectedValue(
+          new StaticPageException(
+            StaticPageValidation.STATIC_PAGE_KEY_ALREADY_EXIST,
+          ),
+        );
+      await expect(service.update(slug, updateStaticPage)).rejects.toThrow(
+        StaticPageException,
+      );
     });
 
     it('should update static page success', async () => {
@@ -165,13 +187,17 @@ describe('StaticPageService', () => {
         key: 'ABOUT-US',
         title: 'About Us',
         content: 'This is about us',
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
       } as StaticPage;
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       jest.spyOn(service, 'validateUpdatedKey').mockResolvedValue();
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
-      (staticPageRepositoryMock.save as jest.Mock).mockResolvedValue(mockOutput);
+      (staticPageRepositoryMock.save as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       (mapperMock.map as jest.Mock).mockImplementationOnce(() => mockOutput);
       const result = await service.update(slug, updateStaticPage);
       expect(result).toEqual(mockOutput);
@@ -188,16 +214,20 @@ describe('StaticPageService', () => {
         key: 'ABOUT-US',
         title: 'About Us',
         content: 'This is about us',
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
       } as StaticPage;
       const updateStaticPage = {
         key: 'UPDATED-ABOUT-US',
         title: 'About Us',
         content: 'This is about us',
       } as UpdateStaticPageDto;
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(staticPage);
-      await expect(service.validateUpdatedKey(staticPage, updateStaticPage)).rejects.toThrow(StaticPageException);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        staticPage,
+      );
+      await expect(
+        service.validateUpdatedKey(staticPage, updateStaticPage),
+      ).rejects.toThrow(StaticPageException);
     });
   });
 
@@ -208,7 +238,9 @@ describe('StaticPageService', () => {
 
     it('should throw an error if static page not found', async () => {
       const slug = 'about-us-slug';
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(undefined);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        undefined,
+      );
       await expect(service.remove(slug)).rejects.toThrow(StaticPageException);
     });
 
@@ -218,11 +250,15 @@ describe('StaticPageService', () => {
         key: 'ABOUT-US',
         title: 'About Us',
         content: 'This is about us',
-        id: "",
-        slug: "",
+        id: '',
+        slug: '',
       } as StaticPage;
-      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(mockOutput);
-      (staticPageRepositoryMock.remove as jest.Mock).mockResolvedValue(mockOutput);
+      (staticPageRepositoryMock.findOne as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
+      (staticPageRepositoryMock.remove as jest.Mock).mockResolvedValue(
+        mockOutput,
+      );
       (mapperMock.map as jest.Mock).mockReturnValue(mockOutput);
       const result = await service.remove(slug);
       expect(result).toEqual(mockOutput);

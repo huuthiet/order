@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, ValidateIf } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 import { CatalogResponseDto } from 'src/catalog/catalog.dto';
 import { VariantResponseDto } from 'src/variant/variant.dto';
@@ -136,7 +136,4 @@ export class GetProductRequestDto {
   })
   @IsOptional()
   expectedPromotion?: string;
-
 }
-
-

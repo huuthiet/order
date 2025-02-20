@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   MockType,
   repositoryMockFactory,
@@ -170,8 +171,6 @@ describe('TrackingScheduler', () => {
       jest
         .spyOn(trackingScheduler, 'getAllOrdersByTrackingId')
         .mockResolvedValue(orders);
-      const result =
-        await trackingScheduler.updateStatusOrder('mock-tracking-id');
 
       expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
     });
@@ -218,8 +217,6 @@ describe('TrackingScheduler', () => {
       jest
         .spyOn(trackingScheduler, 'getAllOrdersByTrackingId')
         .mockResolvedValue(orders);
-      const result =
-        await trackingScheduler.updateStatusOrder('mock-tracking-id');
 
       expect(orderRepositoryMock.save).toHaveBeenCalledWith(mockOutput);
     });
