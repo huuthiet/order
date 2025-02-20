@@ -49,8 +49,8 @@ export default function ClientAddToCartDialog({
   const handleAddToCart = () => {
     if (!selectedVariant) return
 
-    const finalPrice = product.promotion && product.promotion.value > 0
-      ? selectedVariant.price * (1 - product.promotion.value / 100)
+    const finalPrice = product.promotion && product?.promotion?.value > 0
+      ? selectedVariant.price * (1 - product?.promotion?.value / 100)
       : selectedVariant.price;
 
     const cartItem: ICartItem = {
@@ -151,7 +151,7 @@ export default function ClientAddToCartDialog({
                       .map((variant) => (
                         <SelectItem key={variant.slug} value={variant.slug}>
                           {variant.size.name.toUpperCase()} -{' '}
-                          {product.promotion && product.promotion.value > 0 ? formatCurrency((variant.price) * (1 - (product.promotion.value) / 100)) : formatCurrency(variant.price)}
+                          {product.promotion && product?.promotion?.value > 0 ? formatCurrency((variant.price) * (1 - (product?.promotion?.value) / 100)) : formatCurrency(variant.price)}
                         </SelectItem>
                       ))}
                   </SelectContent>
