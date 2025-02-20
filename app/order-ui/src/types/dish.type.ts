@@ -215,6 +215,7 @@ export interface IAddNewOrderItemRequest {
   quantity: number
   variant: string
   note: string
+  promotion: string
   order: string
 }
 

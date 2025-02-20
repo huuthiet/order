@@ -81,7 +81,7 @@ export const usePromotionColumns = (): ColumnDef<IPromotion>[] => {
       cell: ({ row }) => {
         const promotion = row.original
         return <div>
-          <div className="text-xs sm:text-sm">{promotion.value}%</div>
+          <div className="text-xs sm:text-sm">{promotion?.value}%</div>
         </div>
       },
     },
