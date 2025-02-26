@@ -3,13 +3,18 @@ import { ACBConnectorService } from './acb-connector.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
 import { MAPPER_MODULE_PROVIDER } from 'src/app/app.constants';
-import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
+import {
+  MockType,
+  repositoryMockFactory,
+} from 'src/test-utils/repository-mock.factory';
 import { ACBConnectorConfig } from './acb-connector.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 describe('ACBConnectorService', () => {
   let service: ACBConnectorService;
-  // let acbConfigRepositoryMock: MockType<Repository<ACBConnectorConfig>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let acbConfigRepositoryMock: MockType<Repository<ACBConnectorConfig>>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
