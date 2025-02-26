@@ -32,7 +32,7 @@ export class CreateTableRequestDto {
 export class UpdateTableRequestDto {
   @AutoMap()
   @ApiProperty({ description: 'The name of table', example: 'Bàn 1' })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: INVALID_TABLE_NAME })
   name: string;
 
   @AutoMap()

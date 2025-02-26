@@ -165,7 +165,6 @@ export class TableService {
       if (requestData.location !== table.location) {
         // Validate location if location is provided
         await this.validateTableLocation(requestData.location);
-        // Update old location metadata
       }
 
     // update table
@@ -175,7 +174,8 @@ export class TableService {
 
     const updatedTable = await this.transactionManagerService.execute<Table>(
       async (manager) => {
-        return await manager.save(table);
+        const updatedTable = await manager.save(table);
+        return updatedTable;
       },
       (result) => {
         this.logger.log(`Table ${result.name} updated successfully`, context);
@@ -200,14 +200,26 @@ export class TableService {
    */
   async remove(slug: string): Promise<number> {
     const context = `${TableService.name}.${this.remove.name}`;
-    const table = await this.tableRepository.findOneBy({ slug });
-    if (!table) {
-      this.logger.warn(`Table ${slug} not found`, context);
-      throw new TableException(TableValidation.TABLE_NOT_FOUND);
-    }
-    const deleted = await this.tableRepository.softDelete({ slug });
-    this.logger.log(`Table ${slug} deleted successfully`, context);
-    return deleted.affected || 0;
+    const table = await this.tableUtils.getTable({ where: { slug } });
+
+    const deleted = await this.transactionManagerService.execute<Table>(
+      async (manager) => {
+        return await manager.remove(Table, table);
+      },
+      () => {
+        this.logger.log(`Table ${slug} deleted successfully`, context);
+      },
+      (error) => {
+        this.logger.error(
+          `Error deleting table: ${error.message}`,
+          error.stack,
+          context,
+        );
+        throw new TableException(TableValidation.DELETE_TABLE_FAILED);
+      },
+    );
+    const effected = 1;
+    return deleted ? effected : 0;
   }
 
   private async validateTableLocation(locationId: string) {
