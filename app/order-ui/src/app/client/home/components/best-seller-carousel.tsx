@@ -31,7 +31,6 @@ export default function BestSellerCarousel() {
     size: pagination.pageSize,
     branch: branch && branch?.slug,
   })
-
   // Add effect to refetch when branch changes
   useEffect(() => {
     refetch()

@@ -16,8 +16,10 @@ export default function SwiperBanner({ bannerData }: { bannerData: IBanner[] }):
         <Swiper
             pagination={{
                 dynamicBullets: true,
+                clickable: true,
             }}
-            loop={true}
+            slidesPerView={1}
+            initialSlide={1}
             modules={[Autoplay, Pagination, Navigation]}
             className='relative h-[70vh] w-full'
         >

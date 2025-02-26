@@ -8,6 +8,7 @@ import { ROUTE } from '@/constants'
 import { BestSellerCarousel, StoreCarousel } from './components'
 import { AdPopup } from '@/components/app/AdPopup'
 import SwiperBanner from './components/banner'
+import NewProduct from './components/new-product'
 export default function HomePage() {
   const { t } = useTranslation('home')
   const { data: banner } = useBanners()
@@ -54,16 +55,16 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        {/* Section 2: Sản phẩm bán chạy */}
+        {/* Section 2: Sản phẩm mới */}
         <div className="container">
           <motion.div
-            className="flex flex-col items-start w-full gap-4 h-fit"
+            className="flex flex-col items-start w-full h-[25rem] gap-4"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeInVariants}
           >
-            <div className="w-full flex-between">
+            <div className="w-full flex-between mb-4">
               <div className="primary-highlight">
                 {t('home.newProduct')}
               </div>
@@ -73,7 +74,7 @@ export default function HomePage() {
                 </Button>
               </NavLink>
             </div>
-            <BestSellerCarousel />
+            <NewProduct />
           </motion.div>
         </div>
 

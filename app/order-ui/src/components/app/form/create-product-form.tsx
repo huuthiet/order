@@ -20,7 +20,7 @@ import { ICreateProductRequest } from '@/types'
 import { useCreateProduct } from '@/hooks'
 import { showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
-import { IsLimitSwitch } from '@/components/app/switch'
+import { IsLimitSwitch, IsTopSaleSwitch, IsNewProductSwitch } from '@/components/app/switch'
 import { CatalogSelect } from '@/components/app/select'
 
 interface IFormCreateProductProps {
