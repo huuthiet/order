@@ -12,7 +12,6 @@ import { useBanners, useIsMobile } from '@/hooks'
 import { ROUTE } from '@/constants'
 import { BestSellerCarousel, StoreCarousel } from './components'
 import { AdPopup } from '@/components/app/AdPopup'
-import MessengerChat from '@/components/messenger/messenger-chat'
 
 export default function HomePage() {
   const { t } = useTranslation('home')
@@ -72,7 +71,6 @@ export default function HomePage() {
           </div>
           <div className="hidden col-span-1 sm:block" />
         </motion.div>
-        <MessengerChat />
 
         {/* Section 2: Sản phẩm bán chạy */}
         <div className="container">
