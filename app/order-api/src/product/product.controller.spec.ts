@@ -109,6 +109,8 @@ describe('ProductController', () => {
         isLimit: false,
         catalog: new CatalogResponseDto(),
         variants: [],
+        isTopSell: false,
+        isNew: false,
       };
       const mockOutput = [product];
 
