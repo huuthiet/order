@@ -99,6 +99,7 @@ export class ProductController {
   @ApiOperation({ summary: 'Create new product' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Chef)
+  // @Public()
   async createProduct(
     @Body(
       new ValidationPipe({
@@ -165,6 +166,7 @@ export class ProductController {
     example: '',
   })
   @HasRoles(RoleEnum.Manager, RoleEnum.Admin, RoleEnum.Chef, RoleEnum.Staff)
+  // @Public()
   async updateProduct(
     @Param('slug') slug: string,
     @Body(

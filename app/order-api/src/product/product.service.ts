@@ -188,6 +188,7 @@ export class ProductService {
     const product = await this.productRepository.findOneBy({
       name: createProductDto.name,
     });
+
     if (product) {
       this.logger.error(
         ProductValidation.PRODUCT_NAME_EXIST.message,
@@ -238,6 +239,8 @@ export class ProductService {
         catalog: {
           slug: query.catalog,
         },
+        isTopSell: query.isTopSell,
+        isNew: query.isNew,
       },
       relations: ['catalog', 'variants.size'],
     });
@@ -315,6 +318,8 @@ export class ProductService {
       `Product ${updatedProduct.name} updated successfully`,
       context,
     );
+
+    // product = await this.productRepository.findOneBy({ slug });
 
     const productDto = this.mapper.map(
       updatedProduct,
