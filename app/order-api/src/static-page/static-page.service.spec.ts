@@ -13,7 +13,6 @@ import { Repository } from 'typeorm';
 import { Mapper } from '@automapper/core';
 import { StaticPageException } from './static-page.exception';
 import { CreateStaticPageDto, UpdateStaticPageDto } from './static-page.dto';
-import { StaticPageValidation } from './static-page.validation';
 
 describe('StaticPageService', () => {
   let service: StaticPageService;

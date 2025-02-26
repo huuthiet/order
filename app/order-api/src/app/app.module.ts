@@ -119,7 +119,7 @@ import { BannerModule } from 'src/banner/banner.module';
     PromotionModule,
     ApplicablePromotionModule,
     VoucherModule,
-    BannerModule
+    BannerModule,
   ],
   controllers: [AppController],
   providers: [
