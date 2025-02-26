@@ -82,7 +82,7 @@ export default function DeletePromotionDialog({ promotion }: { promotion: IPromo
           </Button>
           <Button
             variant="destructive"
-            onClick={() => promotion && handleSubmit(promotion.slug || '')}
+            onClick={() => promotion && handleSubmit(promotion?.slug || '')}
           >
             {tCommon('common.confirmDelete')}
           </Button>
