@@ -64,6 +64,7 @@
     "react-facebook": "^9.0.12",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.53.2",
+    "react-messenger-customer-chat": "^0.8.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.27.0",
     "react-select": "^5.8.3",
