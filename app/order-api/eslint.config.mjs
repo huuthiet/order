@@ -39,7 +39,7 @@ export default [
 
       parserOptions: {
         project: 'tsconfig.json',
-        tsconfigRootDir: 'D:\\Workspaces\\work\\smart-order\\app\\order-api',
+        tsconfigRootDir: __dirname,
       },
     },
 
