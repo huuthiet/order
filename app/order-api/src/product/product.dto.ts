@@ -194,7 +194,7 @@ export class GetProductRequestDto {
 
   @AutoMap()
   @ApiProperty({
-    description: 'The option get product is to sell',
+    description: 'The option get product is top sell',
     example: true,
     required: false,
   })
