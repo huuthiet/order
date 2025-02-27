@@ -11,7 +11,7 @@ export default function IsTopSaleSwitch({ defaultValue, onChange }: IIsTopSaleSw
     return (
         <>
             <div className="flex items-center gap-4 py-2">
-                <Label>{t('product.isTopSale')}</Label>
+                <Label>{t('product.isTopSell')}</Label>
                 <Switch defaultChecked={defaultValue} onCheckedChange={onChange} />
             </div>
         </>

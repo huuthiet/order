@@ -50,9 +50,9 @@
     "enterProductDescription": "Enter dish description",
     "productCatalog": "Dish catalog",
     "selectProductCatalog": "Select dish catalog",
-    "isLimited": "Is limited",
-    "isTopSale": "Top sale",
-    "isNewPoduct": "New dish",
+    "isLimited": "Limited",
+    "isTopSell": "Top sale",
+    "isNew": "New dish",
     "update": "Update dish",
     "updateProductDescription": "Fill in the information to update the dish",
     "uploadImage": "Upload image",
@@ -65,6 +65,7 @@
     "createdAt": "Created at",
     "name": "Name",
     "catalog": "Catalog",
-    "description": "Description"
+    "description": "Description",
+    "highlight": "Highlight"
   }
 }

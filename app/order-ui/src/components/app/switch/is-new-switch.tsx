@@ -6,12 +6,12 @@ interface IIsNewProductSwitchProps {
     onChange: (checked: boolean) => void
 }
 
-export default function IsTopSaleSwitch({ defaultValue, onChange }: IIsNewProductSwitchProps) {
+export default function IsNewProductSwitch({ defaultValue, onChange }: IIsNewProductSwitchProps) {
     const { t } = useTranslation(['product'])
     return (
         <>
             <div className="flex items-center gap-4 py-2">
-                <Label>{t('product.isNewPoduct')}</Label>
+                <Label>{t('product.isNew')}</Label>
                 <Switch defaultChecked={defaultValue} onCheckedChange={onChange} />
             </div>
         </>
