@@ -19,7 +19,7 @@ export class VoucherScheduler {
     private readonly transactionManagerService: TransactionManagerService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleActiveVouchers() {
     const context = `${VoucherScheduler.name}.${this.handleActiveVouchers.name}`;
     this.logger.log(`Running active vouchers scheduler`, context);
@@ -62,7 +62,7 @@ export class VoucherScheduler {
     );
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleInactiveVouchers() {
     const context = `${VoucherScheduler.name}.${this.handleInactiveVouchers.name}`;
     this.logger.log(`Running inactive vouchers scheduler`, context);
