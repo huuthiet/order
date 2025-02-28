@@ -54,6 +54,7 @@ const publicRoutes = [
   { path: /^\/auth\/forgot-password\/token$/, methods: ['post'] },
   { path: /^\/menu\/specific$/, methods: ['get'] },
   { path: /^\/products\/[^/]+$/, methods: ['get'] }, // get product by slug
+  { path: /^\/products$/, methods: ['get'] },
   { path: /^\/branch$/, methods: ['get'] },
   { path: /^\/menu-item\/[^/]+$/, methods: ['get'] },
   { path: /^\/product-analysis\/top-sell\/branch\/[^/]+$/, methods: ['get'] },
@@ -90,12 +91,10 @@ axiosInstance.interceptors.request.use(
     }
 
     if (!isAuthenticated()) {
-      console.log('User is not authenticated')
       return Promise.reject(new Error('User is not authenticated'))
     }
 
     if (expireTime && isTokenExpired(expireTime) && !isRefreshing) {
-      console.log('refreshToken', refreshToken)
       isRefreshing = true
       try {
         const response: AxiosResponse<IApiResponse<IRefreshTokenResponse>> =
