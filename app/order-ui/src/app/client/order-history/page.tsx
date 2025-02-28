@@ -23,9 +23,7 @@ import { OrderTypeEnum } from '@/types'
 
 export default function OrderHistoryPage() {
   const { t } = useTranslation(['menu'])
-  // const [searchParams] = useSearchParams()
   const { slug } = useParams()
-  // const slug = searchParams.get('order')
   const { data: orderDetail } = useOrderBySlug(slug as string)
   const navigate = useNavigate()
 
@@ -33,8 +31,8 @@ export default function OrderHistoryPage() {
     <div className="container py-5">
       <div className="flex flex-col gap-2">
         {/* Title */}
-        <div className="sticky z-10 flex flex-col items-center gap-2 py-2 bg-white -top-1">
-          <span className="flex items-center justify-start w-full gap-1 text-lg">
+        <div className="sticky -top-1 z-10 flex flex-col items-center gap-2 bg-white py-2">
+          <span className="flex w-full items-center justify-start gap-1 text-lg">
             <SquareMenu />
             {t('order.orderDetail')}{' '}
             {/* <span className="text-muted-foreground">
@@ -46,9 +44,9 @@ export default function OrderHistoryPage() {
 
         <div className="flex flex-col gap-4 lg:flex-row">
           {/* Left, info */}
-          <div className="flex flex-col w-full gap-4 lg:w-3/4">
+          <div className="flex w-full flex-col gap-4 lg:w-3/4">
             {/* Order info */}
-            <div className="flex items-center justify-between p-3 border rounded-sm border-muted-foreground/30">
+            <div className="flex items-center justify-between rounded-sm border border-muted-foreground/30 p-3">
               <div className="">
                 <p className="flex items-center gap-2 pb-2">
                   <span className="font-bold">Đơn hàng:</span>{' '}
@@ -70,8 +68,8 @@ export default function OrderHistoryPage() {
             </div>
             {/* Order owner info */}
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <div className="border rounded-sm border-muted-foreground/30 sm:grid-cols-2">
-                <div className="px-3 py-2 font-bold bg-muted-foreground/10">
+              <div className="rounded-sm border border-muted-foreground/30 sm:grid-cols-2">
+                <div className="bg-muted-foreground/10 px-3 py-2 font-bold">
                   Khách hàng
                 </div>
                 <div className="px-3 py-2">
@@ -80,8 +78,8 @@ export default function OrderHistoryPage() {
                   </p>
                 </div>
               </div>
-              <div className="border rounded-sm border-muted-foreground/30 sm:grid-cols-2">
-                <div className="px-3 py-2 font-bold bg-muted-foreground/10">
+              <div className="rounded-sm border border-muted-foreground/30 sm:grid-cols-2">
+                <div className="bg-muted-foreground/10 px-3 py-2 font-bold">
                   Loại đơn hàng
                 </div>
                 <div className="px-3 py-2 text-sm">
@@ -97,7 +95,7 @@ export default function OrderHistoryPage() {
             </div>
             {/* Order table */}
             <div className="overflow-x-auto">
-              <Table className="min-w-full border border-collapse table-auto border-muted-foreground/20">
+              <Table className="min-w-full table-auto border-collapse border border-muted-foreground/20">
                 <TableCaption>A list of orders.</TableCaption>
                 <TableHeader className="rounded bg-muted-foreground/10">
                   <TableRow>
@@ -150,8 +148,8 @@ export default function OrderHistoryPage() {
           {/* Right, payment*/}
           <div className="grid w-full grid-cols-1 gap-2 lg:w-1/4">
             {/* Payment method, status */}
-            <div className="border rounded-sm border-muted-foreground/30">
-              <div className="px-3 py-2 font-bold bg-muted-foreground/10">
+            <div className="rounded-sm border border-muted-foreground/30">
+              <div className="bg-muted-foreground/10 px-3 py-2 font-bold">
                 {t('paymentMethod.title')}
               </div>
               <div className="px-3 py-2">
@@ -185,8 +183,8 @@ export default function OrderHistoryPage() {
               </div>
             </div>
             {/* Total */}
-            <div className="border rounded-sm border-muted-foreground/30">
-              <div className="px-3 py-2 font-bold bg-muted-foreground/10">
+            <div className="rounded-sm border border-muted-foreground/30">
+              <div className="bg-muted-foreground/10 px-3 py-2 font-bold">
                 Thông tin thanh toán
               </div>
               <div className="px-3 py-2">
@@ -200,7 +198,7 @@ export default function OrderHistoryPage() {
                 </div>
                 <Separator className="my-2" />
                 <div className="flex items-center justify-between">
-                  <p className="font-semibold text-md">Tổng tiền thanh toán</p>
+                  <p className="text-md font-semibold">Tổng tiền thanh toán</p>
                   <p className="text-xl font-bold text-primary">{`${formatCurrency(orderDetail?.result?.subtotal || 0)}`}</p>
                 </div>
                 <div className="flex items-center justify-between">

@@ -40,7 +40,7 @@ export default function CustomerOrderTabsContent({
   } = useOrders({
     page: pagination.pageIndex,
     size: pagination.pageSize,
-    ownerSlug: userInfo?.slug,
+    owner: userInfo?.slug,
     order: 'DESC',
     hasPaging: true,
     status: status === OrderStatus.ALL ? undefined : status,
