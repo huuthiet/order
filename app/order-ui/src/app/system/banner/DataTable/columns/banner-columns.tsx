@@ -89,7 +89,7 @@ export const useBannerColumns = (): ColumnDef<IBanner>[] => {
                 <DropdownMenuLabel>
                   {tCommon('common.action')}
                 </DropdownMenuLabel>
-                <NavLink to={`${ROUTE.ADMIN_BANNER}/${banner.slug}`}>
+                <NavLink to={`${banner.slug}`}>
                   <Button variant="ghost" className="flex justify-start gap-1 px-2">
                     <SquareMousePointer className='icon' />
                     {tCommon('common.viewAndEdit')}
