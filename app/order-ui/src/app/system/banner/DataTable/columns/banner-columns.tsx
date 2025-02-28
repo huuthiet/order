@@ -15,8 +15,6 @@ import {
 import { IBanner } from '@/types'
 import { DeleteBannerDialog, UploadBannerBannerDialog } from '@/components/app/dialog'
 
-import { ROUTE } from '@/constants'
-
 export const useBannerColumns = (): ColumnDef<IBanner>[] => {
   const { t } = useTranslation(['banner'])
   const { t: tCommon } = useTranslation(['common'])
