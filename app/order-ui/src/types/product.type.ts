@@ -20,11 +20,11 @@ export interface IProduct {
 }
 
 export interface IProductRequest {
-  exceptedPromotion?: string | null,
-  catalog?: string | null,
-  expectedPromotion?: string | null,
-  isTopSell?: boolean | null,
-  isNew?: boolean | null,
+  exceptedPromotion?: string
+  catalog?: string
+  expectedPromotion?: string
+  isTopSell?: boolean
+  isNew?: boolean
 }
 
 export interface ITopProduct {

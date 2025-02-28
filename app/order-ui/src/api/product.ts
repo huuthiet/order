@@ -19,7 +19,7 @@ import { saveAs } from 'file-saver'
 import { useAuthStore } from '@/stores'
 
 export async function getAllProducts(
-  params?: IProductRequest | null,
+  params?: IProductRequest,
 ): Promise<IApiResponse<IProduct[]>> {
   const response = await http.get<IApiResponse<IProduct[]>>('/products', { params })
   return response.data

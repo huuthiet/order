@@ -49,7 +49,6 @@ export const UpdateProductForm: React.FC<IFormUpdateProductProps> = ({
       catalog: product.catalog.slug || '',
     },
   })
-  console.log(product)
 
   const handleSubmit = (data: IUpdateProductRequest) => {
     updateProduct(data, {
