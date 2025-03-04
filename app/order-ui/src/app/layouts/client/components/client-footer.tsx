@@ -1,9 +1,11 @@
-import { HomelandLogo, Store1 } from '@/assets/images'
+import { HomelandLogo } from '@/assets/images'
 import { ROUTE } from '@/constants'
 import { FacebookIcon, YoutubeIcon } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
 export function ClientFooter() {
+
   return (
     <footer className="text-white bg-primary">
       <div className="container py-6">
@@ -37,12 +39,20 @@ export function ClientFooter() {
             <span className="text-sm">Chính sách bảo mật</span>
           </div>
           <div className="relative flex flex-col items-start justify-center col-span-1 gap-4">
-            <div className="relative">
-              <img
-                src={Store1}
-                alt="store"
-                className="w-full h-40 rounded-sm"
-              />
+            <div className="relative w-[85%]">
+              <div className='w-full h-40 rounded-sm'>
+                <APIProvider apiKey={"AIzaSyCVwwlv1Q3FKlJUZTV-ab5hknaivIDv87o"}>
+                  <Map
+                    className='w-full h-full rounded-md border-2 border-white'
+                    defaultCenter={{ lat: 10.858258, lng: 106.784329 }}
+                    defaultZoom={15}
+                    gestureHandling={'greedy'}
+                    disableDefaultUI={true}
+                  >
+                    <Marker position={{ lat: 10.858258, lng: 106.784329 }} />
+                  </Map>
+                </APIProvider>
+              </div>
               <img
                 src={HomelandLogo}
                 alt="logo"

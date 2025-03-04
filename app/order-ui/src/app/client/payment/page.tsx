@@ -14,6 +14,7 @@ import { ClientPaymentMethodSelect } from '@/components/app/select'
 import { Label } from '@radix-ui/react-context-menu'
 import { PaymentCountdown } from '@/components/app/countdown/PaymentCountdown'
 import { OrderStatus } from '@/types'
+import { usePaymentMethosStore } from '@/stores'
 
 export function ClientPaymentPage() {
   const { t } = useTranslation(['menu'])
@@ -21,13 +22,10 @@ export function ClientPaymentPage() {
   const [searchParams] = useSearchParams()
   const slug = searchParams.get('order')
   const navigate = useNavigate()
-  const [paymentMethod, setPaymentMethod] = useState<string>('')
   const { data: order, refetch: refetchOrder } = useOrderBySlug(slug as string)
-  const { mutate: initiatePayment, isPending: isPendingInitiatePayment } =
-    useInitiatePayment()
-  const { mutate: exportPayment, isPending: isPendingExportPayment } =
-    useExportPayment()
-  const [qrCode, setQrCode] = useState<string>('')
+  const { mutate: initiatePayment, isPending: isPendingInitiatePayment } = useInitiatePayment()
+  const { mutate: exportPayment, isPending: isPendingExportPayment } = useExportPayment()
+  const { qrCode, setQrCode, paymentMethod, setPaymentMethod, clearStore } = usePaymentMethosStore()
   const [paymentSlug, setPaymentSlug] = useState<string>('')
   const [isPolling, setIsPolling] = useState<boolean>(true) // Start polling initially
   const [timeRemainingInSec, setTimeRemainingInSec] = useState<number>(0)
@@ -54,6 +52,7 @@ export function ClientPaymentPage() {
           if (newTime <= 0) {
             setIsExpired(true)
             setIsPolling(false)
+            clearStore()
             if (timerInterval) clearInterval(timerInterval)
           }
           return newTime
@@ -64,7 +63,7 @@ export function ClientPaymentPage() {
     return () => {
       if (timerInterval) clearInterval(timerInterval)
     }
-  }, [timeRemainingInSec])
+  }, [timeRemainingInSec, clearStore])
 
   useEffect(() => {
     let pollingInterval: NodeJS.Timeout | null = null
@@ -84,7 +83,7 @@ export function ClientPaymentPage() {
     }
   }, [isPolling, refetchOrder, navigate, slug])
 
-  const handleSelectPaymentMethod = (selectedPaymentMethod: string) => {
+  const handleSelectPaymentMethod = (selectedPaymentMethod: PaymentMethod) => {
     setPaymentMethod(selectedPaymentMethod)
     setIsPolling(false) // Stop polling after selecting payment method
   }
@@ -129,7 +128,7 @@ export function ClientPaymentPage() {
     })
   }
 
-  if (_.isEmpty(order?.result || isExpired)) {
+  if (_.isEmpty(order?.result) || isExpired) {
     return (
       <div className="container py-20 lg:h-[60vh]">
         <div className="flex flex-col items-center justify-center gap-5">
@@ -146,7 +145,6 @@ export function ClientPaymentPage() {
       </div>
     )
   }
-
   return (
     <div className="container py-10">
       <PaymentCountdown timeRemaining={timeRemainingInSec} />
@@ -281,13 +279,14 @@ export function ClientPaymentPage() {
         <ClientPaymentMethodSelect
           // isExpired={isExpired}
           // timeRemaining={timeRemainingInSec}
-          qrCode={qrCode ? qrCode : ''}
+          paymentMethod={paymentMethod}
+          qrCode={qrCode}
           total={order?.result ? order?.result.subtotal : 0}
           onSubmit={handleSelectPaymentMethod}
         />
         <div className="flex justify-end py-6">
           {(paymentMethod === PaymentMethod.BANK_TRANSFER ||
-            paymentMethod === PaymentMethod.CASH) && (
+            paymentMethod === PaymentMethod.CASH) && !qrCode && (
               <div className="flex gap-2">
                 {!paymentSlug && (
                   <Button

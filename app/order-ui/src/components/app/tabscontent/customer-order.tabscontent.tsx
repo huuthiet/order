@@ -77,23 +77,24 @@ export default function CustomerOrderTabsContent({
         orders.map((orderItem) => (
           <div key={orderItem.slug} className="mb-6 border rounded-md">
             {/* Header */}
-            <div className="flex items-center gap-1 px-4 py-4 border-b rounded-t-md w-full">
+            <div className={`flex items-center gap-1 px-4 py-4 border-b rounded-t-md w-full cursor-pointer `}
+              onClick={() => handleExtend(orderItem)} >
               <div className={`flex flex-col ${orderItem.isExtend ? 'w-1/2' : 'w-1/3'}`} >
                 <span className='md:text-[14px] text-[12px]' >{t('order.orderId')} : {orderItem.slug}</span>
                 <span className="text-xs text-muted-foreground">
                   {moment(orderItem.createdAt).format('hh:mm:ss DD/MM/YYYY')}
                 </span>
               </div>
-              <div className={`flex items-center gap-4 transition-all duration-500 ${orderItem.isExtend ? 'w-1/2 justify-end' : 'w-1/3 justify-center'}`}>
+              <div className={`flex items-center gap-4 transition-all duration-500 ${orderItem.isExtend ? 'w-1/2 justify-end' : 'w-1/3 justify-center'} `}>
                 <OrderStatusBadge order={orderItem} />
-                {orderItem.isExtend && <ChevronUp onClick={() => handleExtend(orderItem)} />}
+                {orderItem.isExtend && <ChevronUp />}
               </div>
               <div className={`flex items-center justify-end gap-2 transition-all duration-500 ${orderItem.isExtend && 'hidden'} w-1/3`}>
                 <div className='md:text-[14px] text-[12px] flex flex-col md:flex-row'>
                   <span className='text-start'>{t('order.total')} ({orderItem.orderItems.length} {t('order.items')}):</span>
                   <span className='ms-2 text-orange-500 font-bold'>{`${formatCurrency(orderItem.subtotal)}`}</span>
                 </div>
-                <ChevronDown onClick={() => handleExtend(orderItem)} />
+                <ChevronDown />
               </div>
             </div>
 

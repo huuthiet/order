@@ -5,9 +5,6 @@ import { LandingPageBackground, LandingPageBackgroundMobile } from '@/assets/ima
 import { useIsMobile } from '@/hooks';
 import React from 'react';
 import { IBanner } from '@/types';
-import { NavLink } from 'react-router-dom';
-import { Button } from '@/components/ui';
-import { ROUTE } from '@/constants';
 import { publicFileURL } from '@/constants/env'
 
 export default function SwiperBanner({ bannerData }: { bannerData: IBanner[] }): React.ReactElement {
@@ -43,14 +40,6 @@ export default function SwiperBanner({ bannerData }: { bannerData: IBanner[] }):
                                 .substring(0, 100) : 'Hương vị đẳng cấp, khơi nguồn cảm hứng cho mọi khoảnh khắc.'}
 
                         </p>
-                        <div className="flex justify-center gap-4 mt-6 sm:flex-row">
-                            <NavLink to={ROUTE.CLIENT_MENU}>
-                                <Button className="w-full">Thực đơn</Button>
-                            </NavLink>
-                            <Button variant="outline" className="text-white bg-transparent">
-                                Tìm hiểu thêm
-                            </Button>
-                        </div>
                     </div>
                     <div className="hidden col-span-1 sm:block" />
                 </SwiperSlide>
