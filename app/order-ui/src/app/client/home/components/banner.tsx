@@ -22,8 +22,9 @@ export default function SwiperBanner({ bannerData }: { bannerData: IBanner[] }):
         >
             {bannerData?.map((banner, index) =>
                 <SwiperSlide
+                    onClick={() => window.open("https://sandbox.order.cmsiot.net/api/api-docs#/ApplicablePromotion/ApplicablePromotionController_getSpecific", '_blank')}
                     key={index}
-                    className='bg-cover bg-center w-full h-[95%] grid grid-cols-1 justify-center px-4 sm:grid-cols-6 sm:items-center sm:px-0'
+                    className='bg-cover bg-center w-full h-[95%] grid grid-cols-1 justify-center px-4 sm:grid-cols-6 sm:items-center sm:px-0 cursor-pointer'
                     style={{
                         backgroundImage: `url(${isMobile ? LandingPageBackgroundMobile : publicFileURL + "/" + banner.image || LandingPageBackground})`,
                     }}>

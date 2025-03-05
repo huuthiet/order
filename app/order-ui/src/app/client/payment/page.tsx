@@ -15,9 +15,11 @@ import { Label } from '@radix-ui/react-context-menu'
 import { PaymentCountdown } from '@/components/app/countdown/PaymentCountdown'
 import { OrderStatus } from '@/types'
 import { usePaymentMethosStore } from '@/stores'
+import { Helmet } from 'react-helmet'
 
 export function ClientPaymentPage() {
   const { t } = useTranslation(['menu'])
+  const { t: tHelmet } = useTranslation('helmet')
   const { t: tToast } = useTranslation(['toast'])
   const [searchParams] = useSearchParams()
   const slug = searchParams.get('order')
@@ -147,6 +149,13 @@ export function ClientPaymentPage() {
   }
   return (
     <div className="container py-10">
+      <Helmet>
+        <meta charSet='utf-8' />
+        <title>
+          {tHelmet('helmet.payment.title')}
+        </title>
+        <meta name='description' content={tHelmet('helmet.payment.title')} />
+      </Helmet>
       <PaymentCountdown timeRemaining={timeRemainingInSec} />
       <span className="flex items-center justify-start w-full gap-1 text-lg">
         <SquareMenu />
