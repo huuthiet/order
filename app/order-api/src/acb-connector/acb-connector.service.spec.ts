@@ -19,7 +19,6 @@ import { ACBConnectorConfigException } from './acb-connector.exception';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
 import { ACBConnectorUtils } from './acb-connector.utils';
 import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
-import { ACBConnectorValidation } from './acb-connector.validation';
 
 describe('ACBConnectorService', () => {
   let service: ACBConnectorService;
