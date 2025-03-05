@@ -148,13 +148,6 @@ export default function OrderHistoryPage() {
                           {item.variant.product.name} - Size{' '}
                           {item.variant.size.name.toUpperCase()}
                         </span>
-                        <NavLink
-                          to={`${ROUTE.CLIENT_MENU}/${item.variant.product.slug}`}
-                        >
-                          <Button variant="outline">
-                            {t('order.buyAgain')}
-                          </Button>
-                        </NavLink>
                       </TableCell>
                       {/* <TableCell className='text-center'>{item.quantity}</TableCell> */}
                       <TableCell className="text-right">

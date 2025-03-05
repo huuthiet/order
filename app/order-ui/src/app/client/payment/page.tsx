@@ -24,7 +24,7 @@ export function ClientPaymentPage() {
   const [searchParams] = useSearchParams()
   const slug = searchParams.get('order')
   const navigate = useNavigate()
-  const { data: order, refetch: refetchOrder } = useOrderBySlug(slug as string)
+  const { data: order, refetch: refetchOrder, isFetching } = useOrderBySlug(slug as string)
   const { mutate: initiatePayment, isPending: isPendingInitiatePayment } = useInitiatePayment()
   const { mutate: exportPayment, isPending: isPendingExportPayment } = useExportPayment()
   const { qrCode, setQrCode, paymentMethod, setPaymentMethod, clearStore } = usePaymentMethosStore()
@@ -38,7 +38,7 @@ export function ClientPaymentPage() {
       const createdAt = moment(order.result.createdAt)
       const now = moment()
       const timePassed = now.diff(createdAt, 'seconds')
-      const remainingTime = 600 - timePassed // 10 minutes
+      const remainingTime = 20 - timePassed // 10 minutes
       setTimeRemainingInSec(remainingTime > 0 ? remainingTime : 0)
       setIsExpired(remainingTime <= 0)
     }
@@ -130,7 +130,7 @@ export function ClientPaymentPage() {
     })
   }
 
-  if (_.isEmpty(order?.result) || isExpired) {
+  if ((_.isEmpty(order?.result) || isExpired) && !isFetching) {
     return (
       <div className="container py-20 lg:h-[60vh]">
         <div className="flex flex-col items-center justify-center gap-5">
