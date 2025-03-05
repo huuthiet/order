@@ -38,7 +38,7 @@ export function ClientPaymentPage() {
       const createdAt = moment(order.result.createdAt)
       const now = moment()
       const timePassed = now.diff(createdAt, 'seconds')
-      const remainingTime = 20 - timePassed // 10 minutes
+      const remainingTime = 600 - timePassed // 10 minutes
       setTimeRemainingInSec(remainingTime > 0 ? remainingTime : 0)
       setIsExpired(remainingTime <= 0)
     }
