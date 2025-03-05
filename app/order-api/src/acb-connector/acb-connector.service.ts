@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ACBConnectorConfig } from './acb-connector.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import {
   ACBConnectorConfigResponseDto,
   CreateACBConnectorConfigRequestDto,
@@ -91,7 +91,7 @@ export class ACBConnectorService {
     const context = `${ACBConnectorService.name}.${this.update.name}`;
     const config = await this.acbConnectorUtils.getAcbConfig({
       where: {
-        slug,
+        slug: slug ?? IsNull(),
       },
     });
 

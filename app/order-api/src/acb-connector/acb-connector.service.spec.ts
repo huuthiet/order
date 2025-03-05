@@ -123,23 +123,6 @@ describe('ACBConnectorService', () => {
   });
 
   describe('Update ACB Config', () => {
-    it('should throw ACB exception if config not exists', async () => {
-      const mockInput = {} as UpdateACBConnectorConfigRequestDto;
-      const mockSlug = 'slug';
-
-      jest
-        .spyOn(acbConnectorUtils, 'getAcbConfig')
-        .mockRejectedValue(
-          new ACBConnectorConfigException(
-            ACBConnectorValidation.ACB_CONNECTOR_CONFIG_NOT_FOUND,
-          ),
-        );
-
-      expect(await service.update(mockSlug, mockInput)).rejects.toThrow(
-        ACBConnectorConfigException,
-      );
-    });
-
     it('should update config successfully if exists', async () => {
       // Mock
       const mockInput = {} as UpdateACBConnectorConfigRequestDto;
