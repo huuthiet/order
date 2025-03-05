@@ -6,7 +6,6 @@ import { useIsMobile } from '@/hooks';
 import React from 'react';
 import { IBanner } from '@/types';
 import { publicFileURL } from '@/constants/env'
-import { bg } from 'date-fns/locale';
 
 export default function SwiperBanner({ bannerData }: { bannerData: IBanner[] }): React.ReactElement {
     const isMobile = useIsMobile();
