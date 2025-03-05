@@ -16,7 +16,7 @@ export const usePriceRangeStore = create<IPriceRangeStore>()(
       },
     }),
     {
-      name: 'price-range-store', // Key lưu vào localStorage
+      name: 'price-range-store',
     },
   ),
 )

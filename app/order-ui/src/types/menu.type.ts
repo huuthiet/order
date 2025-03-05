@@ -90,7 +90,7 @@ export interface IUpdateMenuItemRequest {
 }
 
 export interface IMenuItemStore {
-  menuItems: IAddMenuItemRequest[] // Thay đổi từ string[] sang IAddMenuItemRequest[]
+  menuItems: IAddMenuItemRequest[]
   getMenuItems: () => IAddMenuItemRequest[]
   addMenuItem: (item: IAddMenuItemRequest) => void
   removeMenuItem: (productSlug: string) => void
