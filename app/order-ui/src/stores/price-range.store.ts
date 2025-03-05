@@ -7,7 +7,7 @@ export const usePriceRangeStore = create<IPriceRangeStore>()(
   persist(
     (set) => ({
       minPrice: 0,
-      maxPrice: 0,
+      maxPrice: 10_000_000,
       setPriceRange: (minPrice: number, maxPrice: number) => {
         set({ minPrice, maxPrice })
       },
