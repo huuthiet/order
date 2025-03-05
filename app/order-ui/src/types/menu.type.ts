@@ -31,6 +31,7 @@ export interface IAllMenuRequest {
   pageSize: number | 10
   order: 'ASC' | 'DESC'
   branch?: string
+  isTemplate?: boolean
 }
 
 export interface ISpecificMenuRequest {
