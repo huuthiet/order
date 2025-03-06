@@ -20,9 +20,11 @@ export interface IProduct {
 }
 
 export interface IProductRequest {
-  exceptedPromotion?: string
   catalog?: string
-  expectedPromotion?: string
+  promotion?: string
+  isAppliedPromotion?: boolean
+  menu?: string
+  inMenu?: boolean
   isTopSell?: boolean
   isNew?: boolean
 }

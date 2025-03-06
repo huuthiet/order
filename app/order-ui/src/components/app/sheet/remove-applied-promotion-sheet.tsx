@@ -31,7 +31,7 @@ export default function RemoveAppliedPromotionSheet({
   const [sheetOpen, setSheetOpen] = useState(false)
   const [applyPromotionRequest, setApplyPromotionRequest] =
     useState<IApplyPromotionRequest | null>(null)
-  const { data: products, isLoading } = useProducts({ expectedPromotion: promotion?.slug })
+  const { data: products, isLoading } = useProducts({ promotion: promotion?.slug, isAppliedPromotion: true })
   const [isApplyFromToday, setIsApplyFromToday] = useState(false)
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
 
