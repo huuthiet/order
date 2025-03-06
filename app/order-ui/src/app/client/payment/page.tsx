@@ -14,7 +14,7 @@ import { ClientPaymentMethodSelect } from '@/components/app/select'
 import { Label } from '@radix-ui/react-context-menu'
 import { PaymentCountdown } from '@/components/app/countdown/PaymentCountdown'
 import { OrderStatus } from '@/types'
-import { usePaymentMethosStore } from '@/stores'
+import { usePaymentMethodStore } from '@/stores'
 import { Helmet } from 'react-helmet'
 
 export function ClientPaymentPage() {
@@ -27,7 +27,7 @@ export function ClientPaymentPage() {
   const { data: order, refetch: refetchOrder, isFetching } = useOrderBySlug(slug as string)
   const { mutate: initiatePayment, isPending: isPendingInitiatePayment } = useInitiatePayment()
   const { mutate: exportPayment, isPending: isPendingExportPayment } = useExportPayment()
-  const { qrCode, setQrCode, paymentMethod, setPaymentMethod, clearStore } = usePaymentMethosStore()
+  const { qrCode, setQrCode, paymentMethod, setPaymentMethod, clearStore } = usePaymentMethodStore()
   const [paymentSlug, setPaymentSlug] = useState<string>('')
   const [isPolling, setIsPolling] = useState<boolean>(true) // Start polling initially
   const [timeRemainingInSec, setTimeRemainingInSec] = useState<number>(0)
