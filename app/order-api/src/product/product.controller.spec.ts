@@ -111,6 +111,7 @@ describe('ProductController', () => {
         variants: [],
         isTopSell: false,
         isNew: false,
+        saleQuantityHistory: 0,
       };
       const mockOutput = [product];
 

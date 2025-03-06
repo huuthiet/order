@@ -30,7 +30,6 @@ export class PromotionUtils {
     relations?: string[],
   ): Promise<Promotion> {
     const context = `${PromotionUtils.name}.${this.getPromotion.name}`;
-
     const promotion = await this.promotionRepository.findOne({
       where,
       relations,
