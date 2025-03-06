@@ -77,7 +77,8 @@
     "deleteMenuItem": "Xóa món",
     "deleteMenuItemWarning1": "Bạn có chắc muốn xóa món ",
     "deleteMenuItemConfirmation": " khỏi thực đơn không?",
-    "searchProduct": "Tìm kiếm sản phẩm"
+    "searchProduct": "Tìm kiếm sản phẩm",
+    "all": "Tất cả"
   },
   "order": {
     "orderId": "Đơn hàng",
