@@ -13,6 +13,7 @@ import { PromotionUtils } from 'src/promotion/promotion.utils';
 import { Promotion } from 'src/promotion/promotion.entity';
 import { ApplicablePromotion } from 'src/applicable-promotion/applicable-promotion.entity';
 import { ProductUtils } from './product.utils';
+import { MenuModule } from 'src/menu/menu.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProductUtils } from './product.utils';
       ApplicablePromotion,
     ]),
     FileModule,
+    MenuModule,
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile, PromotionUtils, ProductUtils],

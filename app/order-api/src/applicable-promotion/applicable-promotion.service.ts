@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ApplicablePromotion } from './applicable-promotion.entity';
 import {
   DataSource,
+  FindOneOptions,
   FindOptionsWhere,
   LessThanOrEqual,
   MoreThanOrEqual,
@@ -351,12 +352,11 @@ export class ApplicablePromotionService {
     const context = `${ApplicablePromotionService.name}.${this.deleteMultiApplicablePromotion.name}`;
 
     try {
-      const promotionFindOptionsWhere: FindOptionsWhere<Promotion> = {
-        slug: requestData.promotion,
+      const promotionFindOptionsWhere: FindOneOptions<Promotion> = {
+        where: { slug: requestData.promotion },
       };
       const promotion = await this.promotionUtils.getPromotion(
         promotionFindOptionsWhere,
-        ['branch'],
       );
       const today = new Date();
       today.setHours(7, 0, 0, 0);
