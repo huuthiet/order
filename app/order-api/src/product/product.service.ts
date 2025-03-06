@@ -233,7 +233,6 @@ export class ProductService {
   async getAllProducts(
     query: GetProductRequestDto,
   ): Promise<ProductResponseDto[]> {
-    console.log(query);
     let products = await this.productRepository.find({
       where: {
         catalog: {
