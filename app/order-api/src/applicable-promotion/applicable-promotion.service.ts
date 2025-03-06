@@ -369,13 +369,12 @@ export class ApplicablePromotionService {
       );
     }
 
-    const promotionFindOptionsWhere: FindOptionsWhere<Promotion> = {
-      applicablePromotions: { id: applicablePromotion.id },
-    };
-    const promotion = await this.promotionUtils.getPromotion(
-      promotionFindOptionsWhere,
-      ['branch'],
-    );
+    const promotion = await this.promotionUtils.getPromotion({
+      where: {
+        applicablePromotions: { id: applicablePromotion.id },
+      },
+      relations: ['branch'],
+    });
 
     const today = new Date();
     today.setHours(7, 0, 0, 0);
