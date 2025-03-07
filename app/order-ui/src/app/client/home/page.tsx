@@ -10,6 +10,7 @@ import { AdPopup } from '@/components/app/AdPopup'
 import SwiperBanner from './components/banner'
 import SliderProduct from './components/slider-product'
 import { Helmet } from 'react-helmet'
+
 export default function HomePage() {
   const { t } = useTranslation('home')
   const { t: tHelmet } = useTranslation('helmet')
