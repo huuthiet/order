@@ -3,13 +3,18 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui'
-import { useBanners, useProducts } from '@/hooks'
+import { useBanners, useProducts, useSpecificMenu } from '@/hooks'
 import { ROUTE } from '@/constants'
-import { StoreCarousel } from './components'
+import {
+  SliderMenuPromotion,
+  SliderProduct,
+  StoreCarousel,
+  SwiperBanner,
+} from './components'
 import { AdPopup } from '@/components/app/AdPopup'
-import SwiperBanner from './components/banner'
-import SliderProduct from './components/slider-product'
 import { Helmet } from 'react-helmet'
+import moment from 'moment'
+import { useBranchStore } from '@/stores'
 
 export default function HomePage() {
   const { t } = useTranslation('home')
@@ -25,12 +30,18 @@ export default function HomePage() {
       transition: { duration: 0.8, ease: 'easeOut' },
     },
   }
-
+  const { branch } = useBranchStore()
   const { data: products, isFetching } = useProducts({})
   const bestSellerProducts =
     products?.result?.filter((product) => product.isTopSell) || []
   const newProducts = products?.result?.filter((product) => product.isNew) || []
-
+  const { data: specificMenu, isFetching: fechMenupromotion } = useSpecificMenu(
+    {
+      date: moment().format('YYYY-MM-DD'),
+      branch: branch ? branch?.slug : '',
+      promotion: true,
+    },
+  )
   return (
     <React.Fragment>
       <AdPopup />
@@ -68,7 +79,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Section 2: New products */}
+        {/* Section 3: New products */}
         {newProducts.length > 0 && (
           <div className="container">
             <motion.div
@@ -89,7 +100,33 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Section 3: Info */}
+        {/* Section 4: Top promotion */}
+        {newProducts.length > 0 && (
+          <div className="container">
+            <motion.div
+              className="flex h-[28rem] w-full flex-col items-start gap-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={fadeInVariants}
+            >
+              <div className="flex-between w-full">
+                <div className="primary-highlight">
+                  {t('home.topPromotion')}
+                </div>
+                <NavLink to={ROUTE.CLIENT_MENU}>
+                  <Button>{t('home.viewMore')}</Button>
+                </NavLink>
+              </div>
+              <SliderMenuPromotion
+                menus={specificMenu?.result?.menuItems}
+                isFetching={fechMenupromotion}
+              />
+            </motion.div>
+          </div>
+        )}
+
+        {/* Section 5: Info */}
         <div className="container">
           <motion.div
             className="grid w-full grid-cols-1 items-start gap-4 p-4 sm:grid-cols-5"
