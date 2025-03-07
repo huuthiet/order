@@ -21,12 +21,12 @@ export interface IProduct {
 
 export interface IProductRequest {
   catalog?: string
-  promotion?: string
+  promotion?: string // get all products base on promotion
   isAppliedPromotion?: boolean
-  menu?: string
-  inMenu?: boolean
   isTopSell?: boolean
   isNew?: boolean
+  inMenu?: boolean
+  menu?: string //Slug of the menu, get all products in the menu
 }
 
 export interface ITopProduct {
