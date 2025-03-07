@@ -55,7 +55,9 @@ describe('Banner API', () => {
           slug: 'test-banner',
           title: 'Test Banner',
           content: 'Test Content',
-          imageUrl: 'http://example.com/image.jpg',
+          url: 'http://example.com',
+          useButtonUrl: true,
+          image: 'http://example.com/image.jpg',
           isActive: true,
         },
       }
@@ -71,8 +73,8 @@ describe('Banner API', () => {
     const bannerData = {
       title: 'Test Banner',
       content: 'Test Content',
-      imageUrl: 'http://example.com/image.jpg',
-      isActive: true,
+      url: 'http://example.com',
+      useButtonUrl: true,
     }
 
     it('should call create banner endpoint with correct data', async () => {
@@ -95,8 +97,10 @@ describe('Banner API', () => {
       slug: 'test-banner',
       title: 'Updated Banner',
       content: 'Updated Description',
-      image: 'http://example.com/updated-image.jpg',
-      status: 'inactive',
+      url: 'http://example.com',
+      useButtonUrl: true,
+      isActive: true,
+      image: 'http://example.com/image.jpg',
     }
 
     it('should call update banner endpoint with correct data', async () => {
