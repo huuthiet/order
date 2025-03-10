@@ -17,12 +17,12 @@ import { IOrder } from '@/types'
 import { useDeleteOrder } from '@/hooks'
 import { showToast } from '@/utils'
 
-export default function DeleteSizeDialog({
+export default function CancelOrderDialog({
   order,
   onSuccess,
 }: {
   order: IOrder
-  onSuccess: () => void
+  onSuccess?: () => void
 }) {
   const { t: tToast } = useTranslation('toast')
   const { t } = useTranslation(['menu'])
@@ -35,7 +35,7 @@ export default function DeleteSizeDialog({
       onSuccess: () => {
         setIsOpen(false)
         showToast(tToast('toast.handleCancelOrderSuccess'))
-        onSuccess()
+        onSuccess?.()
       },
     })
   }
