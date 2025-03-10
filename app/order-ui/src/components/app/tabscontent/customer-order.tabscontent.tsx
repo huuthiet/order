@@ -136,10 +136,10 @@ export default function CustomerOrderTabsContent({
                   </div>
                   {orderItem.status === OrderStatus.PENDING && (
                     <div className="flex gap-2 mt-2 sm:mt-0">
-                      <Button variant="outline" onClick={() => handleUpdateOrder(orderItem)}>
+                      <CancelOrderDialog onSuccess={refetch} order={orderItem} />
+                      <Button className='text-orange-500 border-orange-500 hover:text-white hover:bg-orange-500' variant="outline" onClick={() => handleUpdateOrder(orderItem)}>
                         {t('order.updateOrder')}
                       </Button>
-                      <CancelOrderDialog onSuccess={refetch} order={orderItem} />
                     </div>
                   )}
 

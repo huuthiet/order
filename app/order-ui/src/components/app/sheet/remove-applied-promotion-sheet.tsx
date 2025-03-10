@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {  useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trash2 } from 'lucide-react'
 
@@ -15,7 +15,7 @@ import {
   Switch,
 } from '@/components/ui'
 import { RemoveAppliedPromotionDialog } from '@/components/app/dialog'
-import { IApplyPromotionRequest, IProduct, IPromotion } from '@/types'
+import { IApplyPromotionRequest, IPromotion } from '@/types'
 import { useProducts } from '@/hooks'
 import { useProductColumns } from '@/app/system/promotion/DataTable/columns'
 
@@ -33,7 +33,6 @@ export default function RemoveAppliedPromotionSheet({
     useState<IApplyPromotionRequest | null>(null)
   const { data: products, isLoading } = useProducts({ promotion: promotion?.slug, isAppliedPromotion: true })
   const [isApplyFromToday, setIsApplyFromToday] = useState(false)
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
 
   const productsData = products?.result
   const handleClick = (e: React.MouseEvent) => {
@@ -41,23 +40,14 @@ export default function RemoveAppliedPromotionSheet({
     e.stopPropagation()
     setSheetOpen(true)
   }
-  const handleProductSelect = (product: IProduct, isSelected: boolean) => {
-    setSelectedProducts((prev) => {
-      if (isSelected) {
-        return [...prev, product.slug]
-      }
-      return prev.filter((slug) => slug !== product.slug)
-    })
 
-    const applyPromotionRequest: IApplyPromotionRequest = {
-      applicableSlugs: isSelected
-        ? [...selectedProducts, product.slug]
-        : selectedProducts.filter((slug) => slug !== product.slug),
+  const handleSelectionChange = (selectedSlugs: string[]) => {
+    setApplyPromotionRequest({
+      applicableSlugs: selectedSlugs,
       promotion: promotion?.slug,
       type: 'product',
       isApplyFromToday: isApplyFromToday || true,
-    }
-    setApplyPromotionRequest(applyPromotionRequest)
+    })
   }
   return (
     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -86,8 +76,7 @@ export default function RemoveAppliedPromotionSheet({
               <div className="grid grid-cols-1 gap-2">
                 <DataTable
                   columns={useProductColumns({
-                    onSelect: (product, isSelected) =>
-                      handleProductSelect(product, isSelected),
+                    onSelectionChange: handleSelectionChange,
                   })}
                   data={productsData || []}
                   isLoading={isLoading}
@@ -108,7 +97,7 @@ export default function RemoveAppliedPromotionSheet({
           <SheetFooter className="p-4">
             <RemoveAppliedPromotionDialog
               disabled={
-                !applyPromotionRequest || !applyPromotionRequest.applicableSlugs
+                !applyPromotionRequest || applyPromotionRequest.applicableSlugs.length === 0
               }
               applyPromotionData={applyPromotionRequest}
               isOpen={isOpen}

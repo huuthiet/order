@@ -37,3 +37,10 @@ export interface IApplyPromotionRequest {
   type: string
   promotion: string //Promotion slug
 }
+
+export interface IRemoveAppliedPromotionRequest {
+  promotion: string
+  applicableSlugs: string[]
+  type: string
+}
+
