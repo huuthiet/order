@@ -45,8 +45,8 @@ export const UpdateEmployeeForm: React.FC<IFormUpdateEmployeeProps> = ({
       lastName: employee.lastName,
       dob: employee.dob,
       email: employee.email,
-      address: employee.address,
-      branch: employee.branch.slug || '',
+      address: employee?.address || '',
+      branch: employee?.branch?.slug || '',
     },
   })
 
