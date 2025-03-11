@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui'
 
-import { IApplyPromotionRequest } from '@/types'
+import { IApplyPromotionRequest, IRemoveAppliedPromotionRequest } from '@/types'
 import { useRemoveAppliedPromotion } from '@/hooks'
 import { showToast } from '@/utils'
 import { QUERYKEY } from '@/constants'
@@ -41,7 +41,12 @@ export default function ConfirmRemoveAppliedPromotionDialog({
 
   const handleSubmit = (appliedPromotionSlug: string) => {
     if (!appliedPromotionSlug) return
-    removeAppliedPromotion(appliedPromotionSlug, {
+    const data: IRemoveAppliedPromotionRequest = {
+      promotion: applyPromotionData?.promotion || "",
+      applicableSlugs: applyPromotionData?.applicableSlugs || [],
+      type: applyPromotionData?.type || 'product',
+    }
+    removeAppliedPromotion(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [QUERYKEY.promotions]
