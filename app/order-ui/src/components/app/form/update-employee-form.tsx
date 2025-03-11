@@ -170,7 +170,7 @@ export const UpdateEmployeeForm: React.FC<IFormUpdateEmployeeProps> = ({
           <FormItem>
             <FormLabel>{t('employee.branch')}</FormLabel>
             <FormControl>
-              <BranchSelect defaultValue={employee.branch.slug} {...field} />
+              <BranchSelect defaultValue={employee?.branch?.slug} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
