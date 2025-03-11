@@ -7,8 +7,6 @@ import {
     Trash2,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { UpdateOrderQuantitySelector } from '@/components/app/button'
 import {
     RemoveOrderItemInUpdateOrderDialog,
 } from '@/components/app/dialog'
@@ -24,6 +22,7 @@ import { ClientMenuTabs } from '@/components/app/tabs'
 import { useEffect, useState } from 'react'
 import TableSelect from '@/components/app/select/table-select'
 import { UpdateOrderNoteInput } from '@/components/app/input'
+import UpdateOrderQuantity from './components/update-quantity'
 
 export default function ClientUpdateOrderPage() {
     const { t } = useTranslation('menu')
@@ -80,9 +79,7 @@ export default function ClientUpdateOrderPage() {
             }
         })
     }
-    if (isPending) {
-        return <UpdateOrderSkeleton />
-    }
+    if (isPending) { return <UpdateOrderSkeleton /> }
 
     if (_.isEmpty(orderItems?.orderItems)) {
         return (
@@ -190,7 +187,7 @@ export default function ClientUpdateOrderPage() {
                                                 </div>
                                             </div>
                                             <div className="flex justify-center col-span-2">
-                                                <UpdateOrderQuantitySelector cartItem={item} />
+                                                <UpdateOrderQuantity orderItem={item} onSuccess={refetch} />
                                             </div><div className="col-span-2 text-center">
                                                 <span className="text-sm font-semibold text-primary">
                                                     {`${formatCurrency(item?.promotion ? item?.variant?.price * (1 - item?.promotion?.value / 100) * item.quantity : item?.variant?.price * item.quantity)}`}
