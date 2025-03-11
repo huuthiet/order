@@ -189,7 +189,7 @@ describe('Promotion API', () => {
 
       const result = await RemoveProductPromotion(applyData)
       expect(http.delete).toHaveBeenCalledWith(
-        '/applicable-promotion/applicable-promo-1',
+        '/applicable-promotion/', { data: applyData },
       )
       expect(result).toEqual(mockResponse.data)
     })
