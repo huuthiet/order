@@ -1,4 +1,4 @@
-import {  useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trash2 } from 'lucide-react'
 
@@ -12,7 +12,6 @@ import {
   ScrollArea,
   SheetFooter,
   DataTable,
-  Switch,
 } from '@/components/ui'
 import { RemoveAppliedPromotionDialog } from '@/components/app/dialog'
 import { IApplyPromotionRequest, IPromotion } from '@/types'
@@ -32,7 +31,6 @@ export default function RemoveAppliedPromotionSheet({
   const [applyPromotionRequest, setApplyPromotionRequest] =
     useState<IApplyPromotionRequest | null>(null)
   const { data: products, isLoading } = useProducts({ promotion: promotion?.slug, isAppliedPromotion: true })
-  const [isApplyFromToday, setIsApplyFromToday] = useState(false)
 
   const productsData = products?.result
   const handleClick = (e: React.MouseEvent) => {
@@ -46,7 +44,6 @@ export default function RemoveAppliedPromotionSheet({
       applicableSlugs: selectedSlugs,
       promotion: promotion?.slug,
       type: 'product',
-      isApplyFromToday: isApplyFromToday || true,
     })
   }
   return (
@@ -83,13 +80,6 @@ export default function RemoveAppliedPromotionSheet({
                   pages={1}
                   onPageChange={() => { }}
                   onPageSizeChange={() => { }}
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is-applied-from-today"
-                  checked={isApplyFromToday}
-                  onCheckedChange={setIsApplyFromToday}
                 />
               </div>
             </div>

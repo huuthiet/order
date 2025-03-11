@@ -12,8 +12,6 @@ import {
   ScrollArea,
   SheetFooter,
   DataTable,
-  Label,
-  Switch,
 } from '@/components/ui'
 import { ConfirmApplyPromotionDialog } from '@/components/app/dialog'
 import { IApplyPromotionRequest, IPromotion } from '@/types'
@@ -33,7 +31,6 @@ export default function ApplyPromotionSheet({
   const [applyPromotionRequest, setApplyPromotionRequest] =
     useState<IApplyPromotionRequest | null>(null)
   const { data: products, isLoading } = useProducts({ promotion: promotion?.slug, isAppliedPromotion: false })
-  const [isApplyFromToday, setIsApplyFromToday] = useState(false)
 
   const productsData = products?.result
 
@@ -48,7 +45,6 @@ export default function ApplyPromotionSheet({
       applicableSlugs: selectedSlugs,
       promotion: promotion?.slug,
       type: 'product',
-      isApplyFromToday: isApplyFromToday || true,
     })
   }
   return (
@@ -86,16 +82,6 @@ export default function ApplyPromotionSheet({
                   onPageChange={() => { }}
                   onPageSizeChange={() => { }}
                 />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is-applied-from-today"
-                  checked={isApplyFromToday}
-                  onCheckedChange={setIsApplyFromToday}
-                />
-                <Label htmlFor="is-applied-from-today">
-                  {t('promotion.applyFromToday')}
-                </Label>
               </div>
             </div>
           </ScrollArea>
