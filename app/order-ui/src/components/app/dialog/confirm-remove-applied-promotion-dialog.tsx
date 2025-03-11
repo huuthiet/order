@@ -63,7 +63,7 @@ export default function ConfirmRemoveAppliedPromotionDialog({
       <DialogTrigger asChild>
         <Button
           disabled={disabled}
-          className="flex items-center w-full text-sm rounded-full sm:w-[10rem]"
+          className="flex items-center w-full text-sm rounded-full lg:w-fit"
           onClick={() => onOpenChange(true)}
         >
           {t('promotion.removeAppliedPromotion')}
