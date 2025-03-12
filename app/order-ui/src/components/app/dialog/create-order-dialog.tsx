@@ -83,7 +83,7 @@ export default function PlaceOrderDialog({ disabled }: IPlaceOrderDialogProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={!disabled}
+          disabled={disabled}
           className="flex items-center w-full text-sm rounded-full"
           onClick={() => setIsOpen(true)}
         >

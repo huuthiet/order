@@ -55,7 +55,7 @@ export function CartContent() {
       </div>
 
       {/* Selected table */}
-      {getCartItems()?.type === OrderTypeEnum.AT_TABLE && (
+      {getCartItems()?.type === OrderTypeEnum.AT_TABLE ? (
         <div className="flex items-center gap-1 px-4 mt-4 text-sm">
           {getCartItems()?.table ? (
             <div className='flex items-center gap-1'>
@@ -70,6 +70,8 @@ export function CartContent() {
             </p>
           )}
         </div>
+      ) : (
+        <div className='h-9' />
       )}
 
       {/* Cart Items - Scrollable area */}
@@ -85,7 +87,7 @@ export function CartContent() {
                   key={`${item.slug}`}
                   className="flex flex-row items-center gap-2 rounded-xl"
                 >
-                  {/* Hình ảnh sản phẩm */}
+                  {/* Product image */}
                   <img
                     src={`${publicFileURL}/${item.image}`}
                     alt={item.name}
@@ -164,7 +166,7 @@ export function CartContent() {
           <div className='flex justify-end w-full'>
             <div className='flex justify-end w-1/2'>
               <CreateOrderDialog
-                disabled={!(cartItems && !cartItems.table)}
+                disabled={!cartItems || (cartItems.type === OrderTypeEnum.AT_TABLE && !cartItems.table)}
               />
             </div>
           </div>
