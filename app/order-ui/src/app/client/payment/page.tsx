@@ -294,7 +294,7 @@ export function ClientPaymentPage() {
             </div>
           </div>
         </div>
-        {/* Lựa chọn phương thức thanh toán */}
+        {/* Payment method */}
         <ClientPaymentMethodSelect
           // isExpired={isExpired}
           // timeRemaining={timeRemainingInSec}
