@@ -12,10 +12,9 @@ import {
   ScrollArea,
   SheetFooter,
   DataTable,
-  Switch,
 } from '@/components/ui'
 import { RemoveAppliedPromotionDialog } from '@/components/app/dialog'
-import { IApplyPromotionRequest, IProduct, IPromotion } from '@/types'
+import { IApplyPromotionRequest, IPromotion } from '@/types'
 import { useProducts } from '@/hooks'
 import { useProductColumns } from '@/app/system/promotion/DataTable/columns'
 
@@ -31,9 +30,7 @@ export default function RemoveAppliedPromotionSheet({
   const [sheetOpen, setSheetOpen] = useState(false)
   const [applyPromotionRequest, setApplyPromotionRequest] =
     useState<IApplyPromotionRequest | null>(null)
-  const { data: products, isLoading } = useProducts({ expectedPromotion: promotion?.slug })
-  const [isApplyFromToday, setIsApplyFromToday] = useState(false)
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
+  const { data: products, isLoading } = useProducts({ promotion: promotion?.slug, isAppliedPromotion: true })
 
   const productsData = products?.result
   const handleClick = (e: React.MouseEvent) => {
@@ -41,30 +38,20 @@ export default function RemoveAppliedPromotionSheet({
     e.stopPropagation()
     setSheetOpen(true)
   }
-  const handleProductSelect = (product: IProduct, isSelected: boolean) => {
-    setSelectedProducts((prev) => {
-      if (isSelected) {
-        return [...prev, product.slug]
-      }
-      return prev.filter((slug) => slug !== product.slug)
-    })
 
-    const applyPromotionRequest: IApplyPromotionRequest = {
-      applicableSlugs: isSelected
-        ? [...selectedProducts, product.slug]
-        : selectedProducts.filter((slug) => slug !== product.slug),
+  const handleSelectionChange = (selectedSlugs: string[]) => {
+    setApplyPromotionRequest({
+      applicableSlugs: selectedSlugs,
       promotion: promotion?.slug,
       type: 'product',
-      isApplyFromToday: isApplyFromToday || true,
-    }
-    setApplyPromotionRequest(applyPromotionRequest)
+    })
   }
   return (
     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="w-full justify-start gap-1 bg-destructive/10 px-2 text-destructive"
+          className="justify-start w-full gap-1 px-2 bg-destructive/10 text-destructive"
           onClick={handleClick}
         >
           <Trash2 className="icon" />
@@ -77,7 +64,7 @@ export default function RemoveAppliedPromotionSheet({
             {t('promotion.removeAppliedPromotion')}
           </SheetTitle>
         </SheetHeader>
-        <div className="flex h-full flex-col bg-transparent backdrop-blur-md">
+        <div className="flex flex-col h-full bg-transparent backdrop-blur-md">
           <ScrollArea className="max-h-[calc(100vh-8rem)] flex-1 gap-4">
             {/* Product List */}
             <div
@@ -86,8 +73,7 @@ export default function RemoveAppliedPromotionSheet({
               <div className="grid grid-cols-1 gap-2">
                 <DataTable
                   columns={useProductColumns({
-                    onSelect: (product, isSelected) =>
-                      handleProductSelect(product, isSelected),
+                    onSelectionChange: handleSelectionChange,
                   })}
                   data={productsData || []}
                   isLoading={isLoading}
@@ -96,19 +82,12 @@ export default function RemoveAppliedPromotionSheet({
                   onPageSizeChange={() => { }}
                 />
               </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is-applied-from-today"
-                  checked={isApplyFromToday}
-                  onCheckedChange={setIsApplyFromToday}
-                />
-              </div>
             </div>
           </ScrollArea>
           <SheetFooter className="p-4">
             <RemoveAppliedPromotionDialog
               disabled={
-                !applyPromotionRequest || !applyPromotionRequest.applicableSlugs
+                !applyPromotionRequest || applyPromotionRequest.applicableSlugs.length === 0
               }
               applyPromotionData={applyPromotionRequest}
               isOpen={isOpen}

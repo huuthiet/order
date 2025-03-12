@@ -16,10 +16,13 @@ import { MenuItemUtils } from 'src/menu-item/menu-item.utils';
 import moment from 'moment';
 import { OrderItemException } from './order-item.exception';
 import { OrderItemValidation } from './order-item.validation';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { PromotionUtils } from 'src/promotion/promotion.utils';
 import { MenuUtils } from 'src/menu/menu.utils';
+import { Order } from 'src/order/order.entity';
+import _ from 'lodash';
+import { OrderScheduler } from 'src/order/order.scheduler';
+import { OrderException } from 'src/order/order.exception';
+import { OrderValidation } from 'src/order/order.validation';
 
 @Injectable()
 export class OrderItemService {
@@ -31,10 +34,9 @@ export class OrderItemService {
     private readonly transactionManagerService: TransactionManagerService,
     private readonly orderUtils: OrderUtils,
     private readonly menuItemUtils: MenuItemUtils,
-    @InjectRepository(OrderItem)
-    private readonly orderItemRepository: Repository<OrderItem>,
     private readonly promotionUtils: PromotionUtils,
     private readonly menuUtils: MenuUtils,
+    private readonly orderScheduler: OrderScheduler,
   ) {}
 
   async updateOrderItem(slug: string, requestData: UpdateOrderItemRequestDto) {
@@ -81,7 +83,10 @@ export class OrderItemService {
     orderItem.variant = variant;
     orderItem.quantity = requestData.quantity;
     orderItem.promotion = menuItem.promotion;
-    orderItem.subtotal = this.orderItemUtils.calculateSubTotal(orderItem);
+    orderItem.subtotal = this.orderItemUtils.calculateSubTotal(
+      orderItem,
+      menuItem.promotion,
+    );
     if (requestData.note) orderItem.note = requestData.note;
 
     await this.transactionManagerService.execute(
@@ -92,17 +97,10 @@ export class OrderItemService {
         // Update menu item
         const menuItem = await this.menuItemUtils.getCurrentMenuItem(
           orderItem,
-          // new Date(moment().format('YYYY-MM-DD')),
           date,
           requestData.action,
         );
         await manager.save(menuItem);
-
-        // Update order
-        const { order } = orderItem;
-
-        order.subtotal = await this.orderUtils.getOrderSubtotal(order);
-        await manager.save(order);
       },
       () => {
         this.logger.log(`Order item updated: ${slug}`, context);
@@ -115,6 +113,34 @@ export class OrderItemService {
         );
         throw new OrderItemException(
           OrderItemValidation.UPDATE_ORDER_ITEM_ERROR,
+        );
+      },
+    );
+
+    // Update order subtotal
+    const order = await this.orderUtils.getOrder({
+      where: {
+        id: orderItem.order.id,
+      },
+    });
+
+    order.subtotal = await this.orderUtils.getOrderSubtotal(order);
+    await this.transactionManagerService.execute(
+      async (manager) => {
+        await manager.save(order);
+      },
+      () => {
+        this.logger.log(`Order updated: ${order.slug}`, context);
+      },
+      (error) => {
+        this.logger.error(
+          `Error when updating order: ${error.message}`,
+          error.stack,
+          context,
+        );
+        throw new OrderException(
+          OrderValidation.UPDATE_ORDER_ERROR,
+          error.message,
         );
       },
     );
@@ -135,7 +161,7 @@ export class OrderItemService {
       where: { slug: orderSlug },
     });
 
-    await this.transactionManagerService.execute(
+    const updatedOrder = await this.transactionManagerService.execute<Order>(
       async (manager) => {
         // Update menu items
         const menuItem = await this.menuItemUtils.getCurrentMenuItem(
@@ -156,7 +182,7 @@ export class OrderItemService {
 
         // Update order
         order.subtotal = await this.orderUtils.getOrderSubtotal(order);
-        await manager.save(order);
+        return await manager.save(order);
       },
       () => {
         this.logger.log(`Order item deleted: ${slug}`, context);
@@ -172,6 +198,11 @@ export class OrderItemService {
         );
       },
     );
+
+    // Delete order if no order items
+    if (_.isEmpty(updatedOrder.orderItems)) {
+      this.orderScheduler.addCancelOrderJob(orderSlug, 0);
+    }
   }
 
   /**
@@ -233,7 +264,10 @@ export class OrderItemService {
     orderItem.variant = variant;
     orderItem.order = order;
     orderItem.promotion = menuItem.promotion;
-    orderItem.subtotal = this.orderItemUtils.calculateSubTotal(orderItem);
+    orderItem.subtotal = this.orderItemUtils.calculateSubTotal(
+      orderItem,
+      menuItem.promotion,
+    );
 
     // Update order
     order.orderItems.push(orderItem);

@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 
@@ -5,7 +6,6 @@ import { DataTable } from '@/components/ui'
 import { useOrders, usePagination } from '@/hooks'
 import { useUserStore } from '@/stores'
 import { useOrderHistoryColumns } from './DataTable/columns'
-import { Helmet } from 'react-helmet'
 
 export default function OrderHistoryPage() {
   const { t } = useTranslation(['menu'])
@@ -17,7 +17,7 @@ export default function OrderHistoryPage() {
     page: pagination.pageIndex,
     size: pagination.pageSize,
     order: 'DESC',
-    branchSlug: userInfo?.branch.slug,
+    branchSlug: userInfo?.branch?.slug || '',
     hasPaging: true,
   })
 
@@ -37,9 +37,9 @@ export default function OrderHistoryPage() {
       <div className="grid h-full grid-cols-1">
         <DataTable
           columns={useOrderHistoryColumns()}
-          data={data?.result.items || []}
+          data={data?.result?.items || []}
           isLoading={isLoading}
-          pages={data?.result.totalPages || 0}
+          pages={data?.result?.totalPages || 0}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
         />

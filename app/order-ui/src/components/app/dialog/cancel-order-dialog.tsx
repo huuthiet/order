@@ -16,16 +16,14 @@ import {
 import { IOrder } from '@/types'
 import { useDeleteOrder } from '@/hooks'
 import { showToast } from '@/utils'
-// import { useQueryClient } from '@tanstack/react-query'
 
-export default function DeleteSizeDialog({
+export default function CancelOrderDialog({
   order,
   onSuccess,
 }: {
   order: IOrder
-  onSuccess: () => void
+  onSuccess?: () => void
 }) {
-  // const queryClient = useQueryClient()
   const { t: tToast } = useTranslation('toast')
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation('common')
@@ -35,12 +33,9 @@ export default function DeleteSizeDialog({
   const handleSubmit = (orderSlug: string) => {
     deleteOrder(orderSlug, {
       onSuccess: () => {
-        // queryClient.invalidateQueries({
-        //   queryKey: ['orders'],
-        // })
         setIsOpen(false)
         showToast(tToast('toast.handleCancelOrderSuccess'))
-        onSuccess()
+        onSuccess?.()
       },
     })
   }
@@ -51,7 +46,7 @@ export default function DeleteSizeDialog({
         <DialogTrigger asChild>
           <Button
             variant="destructive"
-            className="gap-1 px-2 text-sm"
+            className="gap-1 px-2 text-sm bg-white border border-gray-500 text-gray-500 hover:bg-gray-500 hover:text-white"
             onClick={() => setIsOpen(true)}
           >
             {t('order.cancelOrder')}
