@@ -46,7 +46,7 @@ export default function SliderMenu({ menus, isFetching, type }: ISliderMenuPromo
             }}
             initialSlide={0}
             modules={[Autoplay, Pagination]}
-            className="mySwiper w-full h-full overflow-visible"
+            className="mySwiper w-full h-full overflow-y-visible"
         >
             {!isFetching ? menus?.map((item, index) => {
                 const imageProduct = item?.product?.image ? publicFileURL + "/" + item.product.image : Com

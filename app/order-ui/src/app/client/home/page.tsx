@@ -19,7 +19,7 @@ import { IMenuItem } from '@/types'
 export default function HomePage() {
   const { t } = useTranslation('home')
   const { t: tHelmet } = useTranslation('helmet')
-  const { data: banner } = useBanners()
+  const { data: banner } = useBanners({ isActive: true })
   const bannerData = banner?.result || []
   // Animation Variants
   const fadeInVariants = {
@@ -82,7 +82,7 @@ export default function HomePage() {
               className="flex h-[28rem] w-full flex-col items-start gap-4"
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.1 }}
               variants={fadeInVariants}
             >
               <div className="flex-between w-full">

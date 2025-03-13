@@ -125,7 +125,7 @@ export function ClientPaymentPage() {
       },
     })
   }
-  if (order?.error && isExpired) {
+  if (_.isEmpty(order?.result) || isExpired) {
     return (
       <div className="container py-20 lg:h-[60vh]">
         <div className="flex flex-col items-center justify-center gap-5">
