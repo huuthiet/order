@@ -181,11 +181,11 @@ const errorCodes: { [key: number]: string } = {
   152000: 'toast.bannerNotFound',
   152001: 'toast.createBannerFailed',
   152002: 'toast.updateBannerFailed',
-  1010010: 'toast.invalidOrderOwner',
-  1010011: 'toast.invalidOrderApproval',
-  1010012: 'toast.invalidOrderItems',
-  1010013: 'toast.updateOrderError',
-  1010014: 'toast.invalidOrderSlug',
+  101010: 'toast.invalidOrderOwner',
+  101011: 'toast.invalidOrderApproval',
+  101012: 'toast.invalidOrderItems',
+  101013: 'toast.updateOrderError',
+  101014: 'toast.invalidOrderSlug',
 }
 
 export function showToast(message: string) {
