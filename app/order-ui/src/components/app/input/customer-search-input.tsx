@@ -4,15 +4,22 @@ import { useCartItemStore } from '@/stores'
 import { useEffect, useState } from 'react'
 import { IUserInfo } from '@/types'
 import { useDebouncedInput, usePagination, useUsers } from '@/hooks'
-import { Input } from '@/components/ui'
+import {
+    Button, Input, Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui'
+import { CircleX } from 'lucide-react'
 
 export default function CustomerSearchInput() {
     const { t } = useTranslation(['menu'])
+    const { t: tCommon } = useTranslation(['common'])
     const [users, setUsers] = useState<IUserInfo[]>([])
     const { pagination } = usePagination()
     const [selectedUser, setSelectedUser] = useState<IUserInfo | null>(null)
     const { inputValue, setInputValue, debouncedInputValue } = useDebouncedInput()
-    const { getCartItems, addCustomerInfo } = useCartItemStore()
+    const { getCartItems, addCustomerInfo, removeCustomerInfo } = useCartItemStore()
     const cartItems = getCartItems()
 
     const { data: userByPhoneNumber } = useUsers(
@@ -48,6 +55,12 @@ export default function CustomerSearchInput() {
             setSelectedUser(null)
         }
     }, [cartItems])
+
+    const handleRemoveOwner = () => {
+        setSelectedUser(null)
+        setInputValue('')
+        removeCustomerInfo()
+    }
     return (
         <div className='flex flex-col gap-3'>
             {/* Customer Information */}
@@ -60,9 +73,25 @@ export default function CustomerSearchInput() {
                     />
                 </div>
                 {selectedUser ? (
-                    <span className='px-4 py-1 text-sm border rounded-full border-primary text-primary bg-primary/20 w-fit'>
-                        {selectedUser.firstName} {selectedUser.lastName} - {selectedUser.phonenumber}
-                    </span>
+                    <div className='flex items-center gap-2'>
+                        <span className='px-4 py-1 text-sm border rounded-full border-primary text-primary bg-primary/20 w-fit'>
+                            {selectedUser.firstName} {selectedUser.lastName} - {selectedUser.phonenumber}
+                        </span>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost"
+                                        onClick={() => handleRemoveOwner()}
+                                    >
+                                        <CircleX />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{tCommon('common.cancel')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
                 ) : (
                     <p className="h-7 text-muted-foreground" />
                 )}

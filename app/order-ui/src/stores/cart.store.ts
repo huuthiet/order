@@ -36,6 +36,20 @@ export const useCartItemStore = create<ICartItemStore>()(
         }
       },
 
+      removeCustomerInfo: () => {
+        const { cartItems } = get()
+        if (cartItems) {
+          set({
+            cartItems: {
+              ...cartItems,
+              owner: '',
+              ownerFullName: '',
+              ownerPhoneNumber: '',
+            },
+          })
+        }
+      },
+
       addApprovalBy: (approvalBy: string) => {
         const { cartItems } = get()
         if (cartItems) {
