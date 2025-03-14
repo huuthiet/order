@@ -98,7 +98,8 @@ export class OrderItemService {
         const menuItem = await this.menuItemUtils.getCurrentMenuItem(
           orderItem,
           date,
-          requestData.action,
+          // If when increment order item, we need to decrement menu item
+          requestData.action === 'increment' ? 'decrement' : 'increment',
         );
         await manager.save(menuItem);
       },
@@ -124,7 +125,10 @@ export class OrderItemService {
       },
     });
 
-    order.subtotal = await this.orderUtils.getOrderSubtotal(order);
+    order.subtotal = await this.orderUtils.getOrderSubtotal(
+      order,
+      order.voucher,
+    );
     await this.transactionManagerService.execute(
       async (manager) => {
         await manager.save(order);
@@ -168,6 +172,7 @@ export class OrderItemService {
           orderItem,
           new Date(moment().format('YYYY-MM-DD')),
           'increment',
+          orderItem.quantity,
         );
         await manager.save(menuItem);
 
@@ -181,7 +186,10 @@ export class OrderItemService {
         await manager.remove(OrderItem, orderItem);
 
         // Update order
-        order.subtotal = await this.orderUtils.getOrderSubtotal(order);
+        order.subtotal = await this.orderUtils.getOrderSubtotal(
+          order,
+          order.voucher,
+        );
         return await manager.save(order);
       },
       () => {
@@ -271,7 +279,10 @@ export class OrderItemService {
 
     // Update order
     order.orderItems.push(orderItem);
-    order.subtotal = await this.orderUtils.getOrderSubtotal(order);
+    order.subtotal = await this.orderUtils.getOrderSubtotal(
+      order,
+      order.voucher,
+    );
 
     const createdOrderItem =
       await this.transactionManagerService.execute<OrderItem>(
@@ -283,7 +294,7 @@ export class OrderItemService {
           const menuItem = await this.menuItemUtils.getCurrentMenuItem(
             orderItem,
             date,
-            'increment',
+            'decrement',
           );
           await manager.save(menuItem);
 
