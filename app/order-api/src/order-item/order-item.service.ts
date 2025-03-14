@@ -282,9 +282,8 @@ export class OrderItemService {
           // Update menu items
           const menuItem = await this.menuItemUtils.getCurrentMenuItem(
             orderItem,
-            // new Date(moment().format('YYYY-MM-DD')),
             date,
-            'decrement',
+            'increment',
           );
           await manager.save(menuItem);
 
