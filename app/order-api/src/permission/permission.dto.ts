@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty } from 'class-validator';
 import { BaseResponseDto } from 'src/app/base.dto';
 import { AuthorityResponseDto } from 'src/authority/authority.dto';
-import { RoleResponseDto } from 'src/role/role.dto';
 
 export class CreatePermissionDto {
   @AutoMap()
@@ -20,11 +19,11 @@ export class CreatePermissionDto {
 export class DeletePermissionDto {}
 
 export class PermissionResponseDto extends BaseResponseDto {
-  @AutoMap()
-  @ApiProperty()
-  role: RoleResponseDto;
+  // @AutoMap()
+  // @ApiProperty()
+  // role: RoleResponseDto;
 
   @AutoMap()
   @ApiProperty()
-  authorities: AuthorityResponseDto[];
+  authority: AuthorityResponseDto;
 }

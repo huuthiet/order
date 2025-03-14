@@ -11,6 +11,8 @@ import { RoleException } from 'src/role/role.exception';
 import { RoleValidation } from 'src/role/role.validation';
 import { Authority } from 'src/authority/authority.entity';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
+import { PermissionValidation } from './permission.validation';
+import { PermissionException } from './permission.exception';
 
 @Injectable()
 export class PermissionService {
@@ -28,52 +30,73 @@ export class PermissionService {
     private readonly transactionMaangerService: TransactionManagerService,
   ) {}
 
-  async create(createPermissionDto: CreatePermissionDto) {
-    const context = `${PermissionService.name}.${this.create.name}`;
+  async bulkCreate(createPermissionDto: CreatePermissionDto) {
+    const context = `${PermissionService.name}.${this.bulkCreate.name}`;
     const role = await this.roleRepository.findOne({
       where: {
         slug: createPermissionDto.role,
       },
     });
-    if (role) throw new RoleException(RoleValidation.ROLE_NOT_FOUND);
+    if (!role) throw new RoleException(RoleValidation.ROLE_NOT_FOUND);
 
     const authorities = await this.authorityRepository.findBy({
       slug: In([...createPermissionDto.authorities]),
     });
 
-    const permission = this.mapper.map(
-      createPermissionDto,
-      CreatePermissionDto,
-      Permission,
-    );
-    Object.assign(permission, {
-      role,
-      authorities,
+    for (const authority of authorities) {
+      const permission = await this.permissionRepository.findOne({
+        where: {
+          role: {
+            slug: role.slug,
+          },
+          authority: {
+            slug: authority.slug,
+          },
+        },
+      });
+      if (permission)
+        throw new PermissionException(PermissionValidation.PERMISSION_EXISTED);
+    }
+
+    const permissions = authorities.map((authority) => {
+      const permission = this.mapper.map(
+        createPermissionDto,
+        CreatePermissionDto,
+        Permission,
+      );
+      Object.assign(permission, {
+        role,
+        authority,
+      });
+      return permission;
     });
 
-    const createdPermission =
-      await this.transactionMaangerService.execute<Permission>(
-        async (manager) => {
-          return await manager.save(permission);
-        },
-        (result) => {
-          this.logger.log(
-            `Permission ${result.id} created successfully`,
-            context,
-          );
-        },
-        (error) => {
-          this.logger.error(
-            `Failed to create permission: ${error.message}`,
-            error.stack,
-            context,
-          );
-          throw new Error('Failed to create permission');
-        },
-      );
+    const createdPermissions = await this.transactionMaangerService.execute<
+      Permission[]
+    >(
+      async (manager) => {
+        return await manager.save(permissions);
+      },
+      (result) => {
+        this.logger.log(
+          `Permissions ${result.map((item) => `${item.role?.name} - ${item.authority.name}`).join(', ')} created successfully`,
+          context,
+        );
+      },
+      (error) => {
+        this.logger.error(
+          `Failed to create permission: ${error.message}`,
+          error.stack,
+          context,
+        );
+        throw new PermissionException(
+          PermissionValidation.PERMISSION_CREATE_FAILED,
+        );
+      },
+    );
 
-    return this.mapper.map(
-      createdPermission,
+    return this.mapper.mapArray(
+      createdPermissions,
       Permission,
       PermissionResponseDto,
     );
@@ -101,7 +124,9 @@ export class PermissionService {
           error.stack,
           context,
         );
-        throw new Error('Failed to remove permission');
+        throw new PermissionException(
+          PermissionValidation.PERMISSION_REMOVE_FAILED,
+        );
       },
     );
 

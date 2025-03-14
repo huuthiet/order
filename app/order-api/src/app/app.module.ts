@@ -55,6 +55,7 @@ import { BannerModule } from 'src/banner/banner.module';
 import { LoggerMiddleware } from 'src/logger/logger.middleware';
 import { AuthorityModule } from 'src/authority/authority.module';
 import { AuthorityGroupModule } from 'src/authority-group/authority-group.module';
+import { PermissionModule } from 'src/permission/permission.module';
 
 @Module({
   imports: [
@@ -125,6 +126,7 @@ import { AuthorityGroupModule } from 'src/authority-group/authority-group.module
     BannerModule,
     AuthorityModule,
     AuthorityGroupModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [

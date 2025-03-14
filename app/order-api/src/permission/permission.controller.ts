@@ -10,11 +10,13 @@ import {
 } from '@nestjs/common';
 import { PermissionService } from './permission.service';
 import { CreatePermissionDto, PermissionResponseDto } from './permission.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { AppResponseDto } from 'src/app/app.dto';
 
 @Controller('permission')
+@ApiTags('Permission')
+@ApiBearerAuth()
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
@@ -27,17 +29,17 @@ export class PermissionController {
     type: PermissionResponseDto,
     isArray: true,
   })
-  async create(
+  async bulkCreate(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     createPermissionDto: CreatePermissionDto,
   ) {
-    const result = await this.permissionService.create(createPermissionDto);
+    const result = await this.permissionService.bulkCreate(createPermissionDto);
     return {
-      message: 'Permission have been created successfully',
+      message: 'Permissions have been created successfully',
       statusCode: HttpStatus.CREATED,
       timestamp: new Date().toISOString(),
       result,
-    } as AppResponseDto<PermissionResponseDto>;
+    } as AppResponseDto<PermissionResponseDto[]>;
   }
 
   @Delete(':slug')

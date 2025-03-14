@@ -17,7 +17,7 @@ export class Role extends Base {
   @Column({ name: 'description_column', type: 'tinytext' })
   description: string;
 
-  @AutoMap()
+  @AutoMap(() => Permission)
   @OneToMany(() => Permission, (p) => p.role)
   permissions: Permission[];
 }

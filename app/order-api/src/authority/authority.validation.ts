@@ -8,4 +8,4 @@ export type TAuthorityErrorCode = Record<
   TErrorCodeValue
 >;
 
-export const BranchValidation: TAuthorityErrorCode = {};
+export const AuthorityValidation: TAuthorityErrorCode = {};

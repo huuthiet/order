@@ -29,37 +29,49 @@ export class AuthorityScheduler {
       return;
     }
 
-    const filePath = path.resolve('public/json/authorities.json'); // Adjust the path accordingly
-    const authorityJSON = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    let authorityJSON = [];
 
-    let authorityGroups: AuthorityGroup[] = [];
-
-    if (_.isArray(authorityJSON)) {
-      authorityGroups = authorityJSON.map(
-        (item: {
-          group: string;
-          code: string;
-          authorities: {
-            name: string;
-            code: string;
-            description: string;
-          }[];
-        }) => {
-          const authorityGroup = new AuthorityGroup();
-          authorityGroup.name = item.group;
-          authorityGroup.code = item.code;
-          const authorities = item.authorities.map((authority) => {
-            const auth = new Authority();
-            auth.name = authority.name;
-            auth.code = authority.code;
-            auth.description = authority.description;
-            return auth;
-          });
-          authorityGroup.authorities = authorities;
-          return authorityGroup;
-        },
+    try {
+      const filePath = path.resolve('public/json/authorities.json'); // Adjust the path accordingly
+      authorityJSON = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch (error) {
+      this.logger.error(
+        `Error while reading authorities json file: ${error.message}`,
+        error.stack,
+        context,
       );
+      return;
     }
+
+    if (!_.isArray(authorityJSON)) {
+      this.logger.warn(`Invalid authorities.json format`, context);
+      return;
+    }
+
+    const authorityGroups = authorityJSON.map(
+      (item: {
+        group: string;
+        code: string;
+        authorities: {
+          name: string;
+          code: string;
+          description: string;
+        }[];
+      }) => {
+        const authorityGroup = new AuthorityGroup();
+        authorityGroup.name = item.group;
+        authorityGroup.code = item.code;
+        const authorities = item.authorities.map((authority) => {
+          const auth = new Authority();
+          auth.name = authority.name;
+          auth.code = authority.code;
+          auth.description = authority.description;
+          return auth;
+        });
+        authorityGroup.authorities = authorities;
+        return authorityGroup;
+      },
+    );
 
     await this.transactionManagerService.execute<AuthorityGroup[]>(
       async (manager) => {
