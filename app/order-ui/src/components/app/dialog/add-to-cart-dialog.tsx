@@ -76,7 +76,6 @@ export default function AddToCartDialog({
       ],
       table: '', // will be set later via addTable
     }
-
     addCartItem(cartItem)
     // Reset states
     setNote('')

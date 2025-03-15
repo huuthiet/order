@@ -176,7 +176,7 @@ export default function OrderHistoryPage() {
 
                       {/* Cột tổng giá */}
                       <TableCell className="w-1/4 font-semibold text-right">
-                        {formatCurrency((item?.variant?.price || 0) * item?.quantity)}
+                        {formatCurrency(item?.subtotal || 0)}
                       </TableCell>
                     </TableRow>
                   ))}

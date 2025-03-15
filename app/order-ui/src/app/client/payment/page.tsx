@@ -95,7 +95,8 @@ export function ClientPaymentPage() {
 
   const handleSelectPaymentMethod = (selectedPaymentMethod: PaymentMethod) => {
     setPaymentMethod(selectedPaymentMethod)
-    setIsPolling(false) // Stop polling after selecting payment method
+    if (selectedPaymentMethod === PaymentMethod.BANK_TRANSFER && qrCode) setIsPolling(true)
+    else setIsPolling(false) // Stop polling after selecting payment method
   }
 
   const handleConfirmPayment = () => {
