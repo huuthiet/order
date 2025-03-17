@@ -46,6 +46,8 @@ import { Voucher } from 'src/voucher/voucher.entity';
 import { OrderItemUtils } from 'src/order-item/order-item.utils';
 import { Promotion } from 'src/promotion/promotion.entity';
 import { PromotionUtils } from 'src/promotion/promotion.utils';
+import { MenuItemValidation } from 'src/menu-item/menu-item.validation';
+import { MenuItemException } from 'src/menu-item/menu-item.exception';
 
 @Injectable()
 export class OrderService {
@@ -322,15 +324,30 @@ export class OrderService {
       },
       relations: ['promotion'],
     });
+    if (menuItem.isLocked) {
+      this.logger.warn(MenuItemValidation.MENU_ITEM_IS_LOCKED.message, context);
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_IS_LOCKED);
+    }
     //  limit product
-    if (item.quantity > menuItem.currentStock) {
+    if (item.quantity === Infinity) {
       this.logger.warn(
-        OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY.message,
         context,
       );
       throw new OrderException(
-        OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY,
       );
+    }
+    if (menuItem.defaultStock !== null) {
+      if (item.quantity > menuItem.currentStock) {
+        this.logger.warn(
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
+          context,
+        );
+        throw new OrderException(
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+        );
+      }
     }
 
     const promotion: Promotion = menuItem.promotion;

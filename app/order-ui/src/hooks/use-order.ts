@@ -23,12 +23,13 @@ import {
   IAddNewOrderItemRequest,
   IUpdateOrderTypeRequest,
   IUpdateOrderItemRequest,
+  IUpdateNoteRequest,
 } from '@/types'
-import { updateOrderItem } from '../api/order'
+import { updateNoteOrderItem, updateOrderItem } from '../api/order'
 
 export const useOrders = (q: IOrdersQuery) => {
   return useQuery({
-    queryKey: ['orders', JSON.stringify(q)],
+    queryKey: ['orders', q],
     queryFn: () => getAllOrders(q),
     placeholderData: keepPreviousData,
   })
@@ -107,6 +108,14 @@ export const useUpdateOrderItem = () => {
   return useMutation({
     mutationFn: async ({ slug, data }: { slug: string, data: IUpdateOrderItemRequest }) => {
       return updateOrderItem(slug, data)
+    },
+  })
+}
+
+export const useUpdateNoteOrderItem = () => {
+  return useMutation({
+    mutationFn: async ({ slug, data }: { slug: string, data: IUpdateNoteRequest }) => {
+      return updateNoteOrderItem(slug, data)
     },
   })
 }

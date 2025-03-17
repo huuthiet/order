@@ -62,6 +62,7 @@ export interface IOrderItem {
   image: string
   name: string
   quantity: number
+  size: string
   variant: string
   price: number
   description: string
@@ -235,6 +236,9 @@ export interface IUpdateOrderItemRequest {
   variant: string | IProductVariant
   promotion?: string | IPromotion
   action?: string
+}
+export interface IUpdateNoteRequest {
+  note: string
 }
 
 export interface IInitiatePaymentRequest {

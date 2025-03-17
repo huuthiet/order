@@ -24,6 +24,8 @@ import _ from 'lodash';
 import { OrderScheduler } from 'src/order/order.scheduler';
 import { OrderException } from 'src/order/order.exception';
 import { OrderValidation } from 'src/order/order.validation';
+import { MenuItemValidation } from 'src/menu-item/menu-item.validation';
+import { MenuItemException } from 'src/menu-item/menu-item.exception';
 
 @Injectable()
 export class OrderItemService {
@@ -99,6 +101,16 @@ export class OrderItemService {
   ): Promise<OrderItemResponseDto> {
     const context = `${OrderItemService.name}.${this.updateOrderItem.name}`;
 
+    if (requestData.quantity === Infinity) {
+      this.logger.warn(
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY.message,
+        context,
+      );
+      throw new OrderException(
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY,
+      );
+    }
+
     if (!requestData.action) {
       this.logger.warn('Action is required', context);
       throw new OrderItemException(OrderItemValidation.INVALID_ACTION);
@@ -131,6 +143,10 @@ export class OrderItemService {
       },
       relations: ['promotion'],
     });
+    if (menuItem.isLocked) {
+      this.logger.warn(MenuItemValidation.MENU_ITEM_IS_LOCKED.message, context);
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_IS_LOCKED);
+    }
 
     await this.promotionUtils.validatePromotionWithMenuItem(
       requestData.promotion,
@@ -284,16 +300,22 @@ export class OrderItemService {
   async createOrderItem(
     requestData: CreateOrderItemRequestDto,
   ): Promise<OrderItemResponseDto> {
-    // validate stock
-    // validate promotion
-    // validate voucher
-    // # Time in createdDate of order;
     const context = `${OrderItemService.name}.${this.createOrderItem.name}`;
     const order = await this.orderUtils.getOrder({
       where: {
         slug: requestData.order,
       },
     });
+
+    if (requestData.quantity === Infinity) {
+      this.logger.warn(
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY.message,
+        context,
+      );
+      throw new OrderException(
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY,
+      );
+    }
 
     const variant = await this.variantUtils.getVariant({
       where: {
@@ -321,6 +343,10 @@ export class OrderItemService {
       },
       relations: ['promotion'],
     });
+    if (menuItem.isLocked) {
+      this.logger.warn(MenuItemValidation.MENU_ITEM_IS_LOCKED.message, context);
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_IS_LOCKED);
+    }
 
     await this.promotionUtils.validatePromotionWithMenuItem(
       requestData.promotion,
