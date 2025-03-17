@@ -239,7 +239,9 @@ export class OrderService {
    */
   async constructOrder(data: CreateOrderRequestDto): Promise<Order> {
     // Get branch
-    const branch = await this.branchUtils.getBranch({ slug: data.branch });
+    const branch = await this.branchUtils.getBranch({
+      where: { slug: data.branch },
+    });
 
     // Get table if order type is at table
     let table: Table = null;
