@@ -6,6 +6,7 @@ import { Mapper } from '@automapper/core';
 import {
   CreateOrderItemRequestDto,
   OrderItemResponseDto,
+  updateOrderItemNoteRequestDto,
   UpdateOrderItemRequestDto,
 } from './order-item.dto';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
@@ -39,7 +40,63 @@ export class OrderItemService {
     private readonly orderScheduler: OrderScheduler,
   ) {}
 
-  async updateOrderItem(slug: string, requestData: UpdateOrderItemRequestDto) {
+  /**
+   * Handles order item note update
+   * @param {string} slug
+   * @param {updateOrderItemNoteRequestDto} requestData
+   * @returns {Promise<OrderItemResponseDto>} Result when updating order item note
+   * @throws {OrderItemException} Error when updating order item note error
+   *
+   */
+  async updateOrderItemNote(
+    slug: string,
+    requestData: updateOrderItemNoteRequestDto,
+  ): Promise<OrderItemResponseDto> {
+    const context = `${OrderItemService.name}.${this.updateOrderItemNote.name}`;
+    const orderItem = await this.orderItemUtils.getOrderItem({
+      where: { slug },
+    });
+
+    orderItem.note = requestData.note;
+
+    const updatedOrderItem =
+      await this.transactionManagerService.execute<OrderItem>(
+        async (manager) => {
+          return await manager.save(orderItem);
+        },
+        (result) => {
+          this.logger.log(
+            `Order item note updated: ${result.variant?.product?.name}`,
+            context,
+          );
+        },
+        (error) => {
+          this.logger.error(
+            `Error when updating order item note: ${error.message}`,
+            error.stack,
+            context,
+          );
+          throw new OrderItemException(
+            OrderItemValidation.UPDATE_ORDER_ITEM_ERROR,
+          );
+        },
+      );
+
+    return this.mapper.map(updatedOrderItem, OrderItem, OrderItemResponseDto);
+  }
+
+  /**
+   * Handles order item update
+   * @param {string} slug
+   * @param {UpdateOrderItemRequestDto} requestData
+   * @returns {Promise<OrderItemResponseDto>} Result when updating order item
+   * @throws {OrderItemException} Error when updating order item error
+   * @throws {OrderException} Error when updating order error
+   */
+  async updateOrderItem(
+    slug: string,
+    requestData: UpdateOrderItemRequestDto,
+  ): Promise<OrderItemResponseDto> {
     const context = `${OrderItemService.name}.${this.updateOrderItem.name}`;
 
     if (!requestData.action) {
@@ -60,7 +117,7 @@ export class OrderItemService {
 
     const menu = await this.menuUtils.getMenu({
       where: {
-        branch: { id: orderItem.order.branch.id },
+        branch: { id: orderItem.order?.branch?.id },
         date,
       },
     });
@@ -89,34 +146,39 @@ export class OrderItemService {
     );
     if (requestData.note) orderItem.note = requestData.note;
 
-    await this.transactionManagerService.execute(
-      async (manager) => {
-        // Update order item
-        await manager.save(orderItem);
+    const updatedOrderItem =
+      await this.transactionManagerService.execute<OrderItem>(
+        async (manager) => {
+          // Update order item
+          const updatedOrderItem = await manager.save(orderItem);
 
-        // Update menu item
-        const menuItem = await this.menuItemUtils.getCurrentMenuItem(
-          orderItem,
-          date,
-          // If when increment order item, we need to decrement menu item
-          requestData.action === 'increment' ? 'decrement' : 'increment',
-        );
-        await manager.save(menuItem);
-      },
-      () => {
-        this.logger.log(`Order item updated: ${slug}`, context);
-      },
-      (error) => {
-        this.logger.error(
-          `Error when updating order item: ${error.message}`,
-          error.stack,
-          context,
-        );
-        throw new OrderItemException(
-          OrderItemValidation.UPDATE_ORDER_ITEM_ERROR,
-        );
-      },
-    );
+          // Update menu item
+          const menuItem = await this.menuItemUtils.getCurrentMenuItem(
+            orderItem,
+            date,
+            // If when increment order item, we need to decrement menu item
+            requestData.action === 'increment' ? 'decrement' : 'increment',
+          );
+          await manager.save(menuItem);
+          return updatedOrderItem;
+        },
+        (result) => {
+          this.logger.log(
+            `Order item updated: ${result.variant?.product?.name}`,
+            context,
+          );
+        },
+        (error) => {
+          this.logger.error(
+            `Error when updating order item: ${error.message}`,
+            error.stack,
+            context,
+          );
+          throw new OrderItemException(
+            OrderItemValidation.UPDATE_ORDER_ITEM_ERROR,
+          );
+        },
+      );
 
     // Update order subtotal
     const order = await this.orderUtils.getOrder({
@@ -148,6 +210,7 @@ export class OrderItemService {
         );
       },
     );
+    return this.mapper.map(updatedOrderItem, OrderItem, OrderItemResponseDto);
   }
 
   /**
