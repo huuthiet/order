@@ -46,6 +46,8 @@ import { Voucher } from 'src/voucher/voucher.entity';
 import { OrderItemUtils } from 'src/order-item/order-item.utils';
 import { Promotion } from 'src/promotion/promotion.entity';
 import { PromotionUtils } from 'src/promotion/promotion.utils';
+import { MenuItemValidation } from 'src/menu-item/menu-item.validation';
+import { MenuItemException } from 'src/menu-item/menu-item.exception';
 
 @Injectable()
 export class OrderService {
@@ -96,11 +98,33 @@ export class OrderService {
         : null;
     order.type = requestData.type;
     order.table = table;
-    order.subtotal = await this.orderUtils.getOrderSubtotal(order);
+
+    const voucher = await this.voucherUtils.getVoucher({
+      where: {
+        slug: requestData.voucher ?? IsNull(),
+      },
+    });
+
+    if (voucher) {
+      await this.voucherUtils.validateVoucher(voucher);
+      await this.voucherUtils.validateVoucherUsage(voucher, order.owner.slug);
+      await this.voucherUtils.validateMinOrderValue(voucher, order);
+      // Update remaining quantity of voucher
+      voucher.remainingUsage -= 1;
+    }
+
+    const previousVoucher = order.voucher;
+    if (previousVoucher) {
+      previousVoucher.remainingUsage += 1;
+    }
+
+    order.voucher = voucher;
+    order.subtotal = await this.orderUtils.getOrderSubtotal(order, voucher);
 
     // Update order
     const updatedOrder = await this.transactionManagerService.execute<Order>(
       async (manager) => {
+        if (previousVoucher) await manager.save(previousVoucher);
         const updatedOrder = await manager.save(order);
         return updatedOrder;
       },
@@ -298,15 +322,30 @@ export class OrderService {
       },
       relations: ['promotion'],
     });
+    if (menuItem.isLocked) {
+      this.logger.warn(MenuItemValidation.MENU_ITEM_IS_LOCKED.message, context);
+      throw new MenuItemException(MenuItemValidation.MENU_ITEM_IS_LOCKED);
+    }
     //  limit product
-    if (item.quantity > menuItem.currentStock) {
+    if (item.quantity === Infinity) {
       this.logger.warn(
-        OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY.message,
         context,
       );
       throw new OrderException(
-        OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+        OrderValidation.REQUEST_QUANTITY_MUST_OTHER_INFINITY,
       );
+    }
+    if (menuItem.defaultStock !== null) {
+      if (item.quantity > menuItem.currentStock) {
+        this.logger.warn(
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY.message,
+          context,
+        );
+        throw new OrderException(
+          OrderValidation.REQUEST_QUANTITY_EXCESS_CURRENT_QUANTITY,
+        );
+      }
     }
 
     const promotion: Promotion = menuItem.promotion;
