@@ -259,11 +259,15 @@ export class OrderService {
     }
 
     // Get owner
-    const owner = await this.userUtils.getUser({ slug: data.owner });
+    const owner = await this.userUtils.getUser({
+      where: { slug: data.owner },
+    });
 
     // Get cashier
     const approvalBy = await this.userUtils.getUser({
-      slug: data.approvalBy,
+      where: {
+        slug: data.approvalBy,
+      },
     });
 
     const order = this.mapper.map(data, CreateOrderRequestDto, Order);
