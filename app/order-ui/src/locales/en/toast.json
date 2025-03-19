@@ -55,6 +55,7 @@
     "addNewOrderItemSuccess": "Item added to order successfully",
     "deleteOrderItemSuccess": "Order item deleted successfully",
     "updateOrderTypeSuccess": "Order type updated successfully",
+
     "createOrderTrackingSuccess": "Robot delivery assigned successfully",
     "exportInvoiceSuccess": "Invoice exported successfully",
     "exportPaymentSuccess": "Payment QR code exported successfully",
@@ -91,7 +92,15 @@
     "createBannerSuccess": "Banner created successfully",
     "updateBannerSuccess": "Banner updated successfully",
     "deleteBannerSuccess": "Banner deleted successfully",
-    
+
+    "createRoleSuccess": "Role created successfully",
+    "updateRoleSuccess": "Role updated successfully",
+    "deleteRoleSuccess": "Role deleted successfully",
+
+    "createPermissionSuccess": "Permission created successfully",
+    "updatePermissionSuccess": "Permission updated successfully",
+    "deletePermissionSuccess": "Permission deleted successfully",
+
     "downloadQrSuccess": "QR code downloaded successfully",
     "downloadQrError": "QR code download failed",
 
@@ -268,6 +277,7 @@
     "invalidOrderApproval": "Invalid order approval",
     "invalidOrderItems": "Invalid order items",
     "updateOrderError": "Error updating order",
-    "invalidOrderSlug": "Invalid order slug"
+    "invalidOrderSlug": "Invalid order slug",
+    "permissionExists": "Permission already exists"
   }
 }
