@@ -352,9 +352,10 @@ export default function VoucherListSheet({ defaultValue }: IVoucherListSheetProp
                 </span>
               </div>
               <div className='grid grid-cols-1 gap-4'>
-                {voucherListData?.map((voucher) =>
-                  renderVoucherCard(voucher, bestVoucher?.slug === voucher.slug)
-                )}
+                {voucherListData.length > 0 ?
+                  voucherListData?.map((voucher) =>
+                    renderVoucherCard(voucher, bestVoucher?.slug === voucher.slug)
+                  ) : <div>{t('voucher.noVoucher')}</div>}
               </div>
             </div>
           </ScrollArea>
