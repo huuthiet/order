@@ -35,7 +35,7 @@ export class ChefAreaService {
     requestData: CreateChefAreaRequestDto,
   ): Promise<ChefAreaResponseDto> {
     const branch = await this.branchUtils.getBranch({
-      slug: requestData.branch,
+      where: { slug: requestData.branch },
     });
     const chefArea = this.mapper.map(
       requestData,
@@ -61,7 +61,7 @@ export class ChefAreaService {
     const where: FindOneOptions<ChefArea> = { relations: ['branch'] };
     if (query.branch) {
       const branch = await this.branchUtils.getBranch({
-        slug: query.branch,
+        where: { slug: query.branch },
       });
       Object.assign(where, {
         branch,
@@ -102,7 +102,7 @@ export class ChefAreaService {
       where: { slug },
     });
     const branch = await this.branchUtils.getBranch({
-      slug: requestData.branch,
+      where: { slug: requestData.branch },
     });
     const chefAreaData = this.mapper.map(
       requestData,
