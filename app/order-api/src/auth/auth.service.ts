@@ -611,13 +611,15 @@ export class AuthService {
     const refreshPayload: AuthJwtPayload = {
       sub: payload.sub,
       jti: payload.jti,
+      exp: Math.floor(Date.now() / 1000) + this.refeshableDuration,
     };
     return {
-      accessToken: this.jwtService.sign(payload),
-      expireTime: moment().add(this.duration, 'seconds').toString(),
-      refreshToken: this.jwtService.sign(refreshPayload, {
-        expiresIn: this.refeshableDuration,
+      accessToken: this.jwtService.sign({
+        ...payload,
+        exp: Math.floor(Date.now() / 1000) + this.duration,
       }),
+      expireTime: moment().add(this.duration, 'seconds').toString(),
+      refreshToken: this.jwtService.sign(refreshPayload),
       expireTimeRefreshToken: moment()
         .add(this.refeshableDuration, 'seconds')
         .toString(),
@@ -793,6 +795,7 @@ export class AuthService {
       where: {
         id: payload.sub,
       },
+      relations: ['branch', 'role.permissions.authority.authorityGroup'],
     });
     payload.scope = this.authUtils.buildScope(user);
 
