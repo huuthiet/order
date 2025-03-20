@@ -57,13 +57,13 @@ export function AppSidebar() {
   // Translate all sidebar routes
   const translatedRoutes = sidebarRoutes.map(translatedSidebarRoute)
 
-  // Lọc routes theo role của user
+  // Lọc routes theo permission 
   const filteredRoutes = useMemo(() => {
     if (!decoded.scope) return []
 
     return translatedRoutes.filter((route) => {
-      // Kiểm tra role cho phép
-      return !route.permission || JSON.stringify(decoded.scope).includes(route.permission)
+      // Kiểm tra permission cho phép
+      return route?.permission && JSON.stringify(decoded.scope).includes(route.permission)
     })
   }, [translatedRoutes, decoded])
 
