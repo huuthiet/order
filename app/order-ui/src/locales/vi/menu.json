@@ -113,6 +113,7 @@
     "promotion": "Mã giảm giá",
     "enterPromotion": "Nhập mã giảm giá",
     "apply": "Áp dụng",
+    "productClassification": "Phân loại sản phẩm: ",
     "subTotal": "Tạm tính",
     "total": "Tổng tiền hàng",
     "discount": "Giảm giá",
@@ -223,6 +224,7 @@
     "canceled": "Đã hủy",
     "notPaid": "Chưa thanh toán",
     "timeRemaining": "Thời gian thanh toán còn lại: ",
-    "timeExpired": "Đơn hàng đã hết hạn thanh toán"
+    "timeExpired": "Đơn hàng đã hết hạn thanh toán",
+    "downloadQRCode": "Tải QR code"
   }
 }
