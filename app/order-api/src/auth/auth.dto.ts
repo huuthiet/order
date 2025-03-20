@@ -223,5 +223,5 @@ export class RegisterAuthResponseDto {
 export class AuthJwtPayload {
   sub: string;
   jti: string;
-  scope: string;
+  scope?: string;
 }
