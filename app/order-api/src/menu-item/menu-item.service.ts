@@ -264,16 +264,43 @@ export class MenuItemService {
 
     if (menuItem.product) {
       if (!menuItem.product.isLimit) {
-        this.logger.warn(ProductValidation.PRODUCT_NOT_LIMIT.message, context);
-        throw new ProductException(ProductValidation.PRODUCT_NOT_LIMIT);
+        Object.assign(menuItem, {
+          isLocked: updateMenuItemDto.isLocked,
+          defaultStock: null,
+          currentStock: null,
+        } as MenuItem);
+      } else {
+        if (updateMenuItemDto.isResetCurrentStock) {
+          Object.assign(menuItem, {
+            isLocked: updateMenuItemDto.isLocked,
+            defaultStock: menuItem.currentStock,
+            currentStock: updateMenuItemDto.defaultStock,
+          } as MenuItem);
+        } else {
+          if (menuItem.currentStock > updateMenuItemDto.defaultStock) {
+            this.logger.warn(
+              MenuItemValidation
+                .UPDATE_CURRENT_STOCK_MUST_LARGER_OR_EQUAL_EXISTED_CURRENT_STOCK
+                .message,
+              context,
+            );
+            throw new MenuItemException(
+              MenuItemValidation.UPDATE_CURRENT_STOCK_MUST_LARGER_OR_EQUAL_EXISTED_CURRENT_STOCK,
+            );
+          }
+
+          Object.assign(menuItem, {
+            isLocked: updateMenuItemDto.isLocked,
+            defaultStock: menuItem.currentStock,
+            currentStock:
+              menuItem.currentStock +
+              (updateMenuItemDto.defaultStock - menuItem.defaultStock),
+          } as MenuItem);
+        }
       }
     }
 
     // limit product
-    Object.assign(menuItem, {
-      ...updateMenuItemDto,
-      currentStock: updateMenuItemDto.defaultStock,
-    } as MenuItem);
 
     await this.menuItemRepository.manager.transaction(async (manager) => {
       try {
