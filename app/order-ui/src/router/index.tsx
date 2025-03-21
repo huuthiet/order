@@ -3,7 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 
 import { SkeletonCart } from '@/components/app/skeleton'
 import { SuspenseElement } from '@/components/app/elements'
-import { Role, ROUTE, RoutePermissions } from '@/constants'
+import { ROUTE } from '@/constants'
 import {
   MenuPage,
   SystemLayout,
