@@ -276,7 +276,7 @@ export class MenuItemService {
       if (updateMenuItemDto.isResetCurrentStock) {
         Object.assign(menuItem, {
           isLocked: updateMenuItemDto.isLocked,
-          defaultStock: menuItem.currentStock,
+          defaultStock: updateMenuItemDto.defaultStock,
           currentStock: updateMenuItemDto.defaultStock,
         } as MenuItem);
       } else {
@@ -294,10 +294,10 @@ export class MenuItemService {
 
         Object.assign(menuItem, {
           isLocked: updateMenuItemDto.isLocked,
-          defaultStock: menuItem.currentStock,
           currentStock:
             menuItem.currentStock +
             (updateMenuItemDto.defaultStock - menuItem.defaultStock),
+          defaultStock: updateMenuItemDto.defaultStock,
         } as MenuItem);
       }
     }
