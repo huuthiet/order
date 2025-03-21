@@ -57,13 +57,14 @@ export function AppSidebar() {
   // Translate all sidebar routes
   const translatedRoutes = sidebarRoutes.map(translatedSidebarRoute)
 
-  // Lọc routes theo permission 
+  // Filter routes by permission
   const filteredRoutes = useMemo(() => {
     if (!decoded.scope) return []
 
     return translatedRoutes.filter((route) => {
-      // Kiểm tra permission cho phép
-      return route?.permission && JSON.stringify(decoded.scope).includes(route.permission)
+      // Check if route has permission and user has that permission
+      // return !route.permission || true
+      return JSON.stringify(decoded.scope).includes(route.permission)
     })
   }, [translatedRoutes, decoded])
 
