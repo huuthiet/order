@@ -28,7 +28,7 @@ export function MenuItemCard({ menuItem }: MenuItemCardProps) {
   }
 
   return (
-    <div className="relative flex flex-col items-center justify-start gap-2 p-2 border group rounded-xl">
+    <div className="relative flex flex-col items-center justify-between gap-2 p-2 border group rounded-xl">
       <div className="absolute inset-0 flex items-start justify-end transition-opacity opacity-0 group-hover:opacity-100">
         <div className="flex flex-row gap-2 p-4 bg-transparent rounded-md">
           <UpdateMenuItemDialog menuItem={menuItem} />
@@ -45,12 +45,14 @@ export function MenuItemCard({ menuItem }: MenuItemCardProps) {
       ) : (
         <div className="w-full h-40 rounded-md bg-muted/50" />
       )}
-      <h3 className="flex justify-start w-full font-bold text-md">
-        {menuItem.product.name}
-      </h3>
-      <p className="flex justify-start w-full text-sm text-muted-foreground">
-        {menuItem.product.description || t('menu.noDescription')}
-      </p>
+      <div className='flex flex-col justify-start w-full gap-2'>
+        <h3 className="flex justify-start w-full text-lg font-bold">
+          {menuItem.product.name}
+        </h3>
+        <p className="flex justify-start w-full text-sm text-muted-foreground">
+          {menuItem.product.description || t('menu.noDescription')}
+        </p>
+      </div>
       <div className="flex flex-col justify-between w-full gap-1 mt-2 text-sm font-medium">
         <span>
           {t('menu.stock')} {menuItem.currentStock}/{menuItem.defaultStock}
