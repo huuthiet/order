@@ -4,7 +4,8 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiResponseWithType } from 'src/app/app.decorator';
 import { ChefOrderResponseDto } from './chef-order.dto';
 import { AppResponseDto } from 'src/app/app.dto';
-import { Public } from 'src/auth/public.decorator';
+import { HasRoles } from 'src/role/roles.decorator';
+import { RoleEnum } from 'src/role/role.enum';
 
 @ApiTags('Chef Order')
 @Controller('chef-order')
@@ -13,7 +14,12 @@ export class ChefOrderController {
   constructor(private readonly chefOrderService: ChefOrderService) {}
 
   @Post('order/:slug')
-  @Public()
+  @HasRoles(
+    RoleEnum.SuperAdmin,
+    RoleEnum.Admin,
+    RoleEnum.Manager,
+    RoleEnum.Staff,
+  )
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create chef orders from an order' })
   @ApiResponseWithType({
