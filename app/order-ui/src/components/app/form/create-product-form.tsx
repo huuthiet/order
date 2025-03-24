@@ -33,29 +33,32 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
   const queryClient = useQueryClient()
   const { t } = useTranslation(['product'])
   const { mutate: createProduct } = useCreateProduct()
+  const defaultForm: TCreateProductSchema = {
+    name: '',
+    description: '',
+    isLimit: false,
+    isTopSell: false,
+    isNew: false,
+    catalog: '',
+  }
   const form = useForm<TCreateProductSchema>({
     resolver: zodResolver(createProductSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      isLimit: false,
-      isTopSell: false,
-      isNew: false,
-      catalog: '',
-    },
+    defaultValues: defaultForm,
   })
 
-  const handleSubmit = (data: ICreateProductRequest) => {
+  const handleSubmit = (data: ICreateProductRequest, shouldCloseForm: boolean) => {
     createProduct(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ['products'],
         })
-        onSubmit(false)
-        form.reset()
+        if (shouldCloseForm) {
+          onSubmit(false); // Đóng form nếu cần
+        }
+        form.reset(defaultForm)
         showToast(t('toast.createProductSuccess'))
       },
-    })
+       })
   }
 
   const formFields = {
@@ -100,7 +103,7 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           render={({ field }) => (
             <FormItem className="flex items-center  gap-4">
               <FormControl className="flex items-center p-0">
-                <IsLimitSwitch defaultValue={false} {...field} />
+                <IsLimitSwitch defaultValue={form.watch("isLimit")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -112,7 +115,7 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           render={({ field }) => (
             <FormItem className="flex items-center gap-4 ">
               <FormControl className="flex items-center p-0">
-                <IsTopSaleSwitch defaultValue={false} {...field} />
+                <IsTopSaleSwitch defaultValue={form.watch("isTopSell")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -124,7 +127,7 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           render={({ field }) => (
             <FormItem className="flex items-center">
               <FormControl className="flex items-center p-0">
-                <IsNewProductSwitch defaultValue={false} {...field} />
+                <IsNewProductSwitch defaultValue={form.watch("isNew")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -140,7 +143,7 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           <FormItem>
             <FormLabel>{t('product.productCatalog')}</FormLabel>
             <FormControl>
-              <CatalogSelect {...field} />
+              <CatalogSelect defaultValue={form.watch("catalog")} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -152,7 +155,7 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
   return (
     <div className="mt-3">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form className="space-y-6">
           <div className="grid grid-cols-1 gap-2">
             {Object.keys(formFields).map((key) => (
               <React.Fragment key={key}>
@@ -160,10 +163,13 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
               </React.Fragment>
             ))}
           </div>
-          <div className="flex justify-end">
-            <Button className="flex justify-end" type="submit">
-              {t('product.create')}
+          <div className="flex justify-end gap-4">
+            <Button className="flex justify-end" type="submit" onClick={form.handleSubmit((data) => handleSubmit(data, true))}>
+              {t('product.btnCreate')}
             </Button>
+            {/* <Button className="flex justify-end" type="submit" onClick={form.handleSubmit((data) => handleSubmit(data, false))}>
+              {t('product.btnCreateAndContinue')}
+            </Button> */}
           </div>
         </form>
       </Form>
