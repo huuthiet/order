@@ -15,6 +15,8 @@ import {
 import { IRole } from '@/types'
 
 import { ROUTE } from '@/constants'
+import { UpdateRoleDialog } from '@/components/app/dialog'
+import DeleteRoleDialog from '@/components/app/dialog/delete-role-dialog'
 
 export const useRoleListColumns = (): ColumnDef<IRole>[] => {
   const { t } = useTranslation(['role'])
@@ -53,7 +55,7 @@ export const useRoleListColumns = (): ColumnDef<IRole>[] => {
         const user = row.original
         return (
           <div className="text-xs sm:text-sm">
-            {t(`role.${user.name}`)}
+            {user.name}
           </div>
         )
       },
@@ -102,6 +104,10 @@ export const useRoleListColumns = (): ColumnDef<IRole>[] => {
                     {tCommon('common.viewDetail')}
                   </Button>
                 </NavLink>
+                <UpdateRoleDialog role={role} />
+                
+                {/* <DeleteRoleDialog role={role} /> */}
+               
                 {/* <UserInfoDialog user={user} /> */}
                 {/* <ResetPasswordDialog user={user} /> */}
                 {/* <UpdateUserRoleDialog user={user} /> */}
