@@ -12,6 +12,8 @@ import {
   Form,
   Button,
   Textarea,
+  Label,
+  Switch,
 } from '@/components/ui'
 import { createProductSchema, TCreateProductSchema } from '@/schemas'
 
@@ -20,7 +22,6 @@ import { ICreateProductRequest } from '@/types'
 import { useCreateProduct } from '@/hooks'
 import { showToast } from '@/utils'
 import { useQueryClient } from '@tanstack/react-query'
-import { IsLimitSwitch, IsNewProductSwitch, IsTopSaleSwitch, } from '@/components/app/switch'
 import { CatalogSelect } from '@/components/app/select'
 
 interface IFormCreateProductProps {
@@ -58,7 +59,7 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
         form.reset(defaultForm)
         showToast(t('toast.createProductSuccess'))
       },
-       })
+    })
   }
 
   const formFields = {
@@ -103,7 +104,12 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           render={({ field }) => (
             <FormItem className="flex items-center  gap-4">
               <FormControl className="flex items-center p-0">
-                <IsLimitSwitch defaultValue={form.watch("isLimit")} {...field} />
+                {/* <IsLimitSwitch {...field} /> */}
+                <div className="flex items-center gap-4 py-2">
+                  <Label>{t('product.isLimited')}</Label>
+                  <Switch checked={field.value}
+                    onCheckedChange={field.onChange} />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -115,7 +121,11 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           render={({ field }) => (
             <FormItem className="flex items-center gap-4 ">
               <FormControl className="flex items-center p-0">
-                <IsTopSaleSwitch defaultValue={form.watch("isTopSell")} {...field} />
+                <div className="flex items-center gap-4 py-2">
+                  <Label>{t('product.isTopSell')}</Label>
+                  <Switch checked={field.value}
+                    onCheckedChange={field.onChange} />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -127,7 +137,11 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           render={({ field }) => (
             <FormItem className="flex items-center">
               <FormControl className="flex items-center p-0">
-                <IsNewProductSwitch defaultValue={form.watch("isNew")} {...field} />
+                <div className="flex items-center gap-4 py-2">
+                  <Label>{t('product.isNew')}</Label>
+                  <Switch checked={field.value}
+                    onCheckedChange={field.onChange} />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -143,7 +157,7 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
           <FormItem>
             <FormLabel>{t('product.productCatalog')}</FormLabel>
             <FormControl>
-              <CatalogSelect defaultValue={form.watch("catalog")} {...field} />
+              <CatalogSelect {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -164,12 +178,13 @@ export const CreateProductForm: React.FC<IFormCreateProductProps> = ({
             ))}
           </div>
           <div className="flex justify-end gap-4">
-            <Button className="flex justify-end" type="submit" onClick={form.handleSubmit((data) => handleSubmit(data, true))}>
+            <Button className="bg-white text-orange-500 border border-orange-500 hover:bg-orange-100" type="submit" onClick={form.handleSubmit((data) => handleSubmit(data, false))}>
+              {t('product.btnCreateAndContinue')}
+            </Button>
+            <Button type="submit" onClick={form.handleSubmit((data) => handleSubmit(data, true))}>
               {t('product.btnCreate')}
             </Button>
-            {/* <Button className="flex justify-end" type="submit" onClick={form.handleSubmit((data) => handleSubmit(data, false))}>
-              {t('product.btnCreateAndContinue')}
-            </Button> */}
+
           </div>
         </form>
       </Form>
