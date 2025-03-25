@@ -20,8 +20,8 @@ import { formatCurrency } from '@/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { cn } from '@/lib'
 import { IUserInfo, OrderTypeEnum } from '@/types'
-import OrderTypeSelect from '../select/order-type-in-update-order-select'
 import { CreateOrderDialog } from '../dialog'
+import { OrderTypeSelect } from '../select'
 
 export default function CartDrawer({ className = '' }: { className?: string }) {
   const { t } = useTranslation(['menu'])
