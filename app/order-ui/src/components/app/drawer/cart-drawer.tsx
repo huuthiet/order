@@ -69,14 +69,14 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
           </Button>
         </div>
       </DrawerTrigger>
-      <DrawerContent className="h-[90%]">
-        <div className="pb-10 mx-4">
+      <DrawerContent className="h-[90%] ">
+        <div className="pb-10 mx-4 overflow-y-scroll scrollbar-hidden [&::-webkit-scrollbar]:hidden">
           <DrawerHeader>
             <DrawerTitle>{t('menu.order')}</DrawerTitle>
             <DrawerDescription>{t('menu.orderDescription')}</DrawerDescription>
           </DrawerHeader>
           {cartItems && cartItems?.orderItems?.length > 0 ? (
-            <div className='flex flex-col gap-3 max-h-[55%] min-h-[55%]'>
+            <div className='flex flex-col gap-3  min-h-[55%]'>
               {/* Order type selection */}
               <div className="flex flex-col gap-2 py-2">
                 <CustomerSearchInput />
@@ -190,7 +190,7 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                     </Button>
                   </DrawerClose>
                   {/* Order button */}
-                  <div className='flex justify-end w-full'>
+                  <div className='flex justify-end w-full h-24'>
                     <CreateOrderDialog
                       disabled={!cartItems || (cartItems.type === OrderTypeEnum.AT_TABLE && !cartItems.table)}
                     />
