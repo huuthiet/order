@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { ShoppingCart, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -17,15 +18,19 @@ import { QuantitySelector } from '@/components/app/button'
 import { CartNoteInput, CustomerSearchInput } from '@/components/app/input'
 import { publicFileURL } from '@/constants'
 import { formatCurrency } from '@/utils'
-import { useEffect, useMemo, useState } from 'react'
 import { cn } from '@/lib'
 import { IUserInfo, OrderTypeEnum } from '@/types'
 import { CreateOrderDialog } from '../dialog'
-import { OrderTypeSelect } from '../select'
+import { OrderTypeSelect, SystemTableSelect } from '../select'
 
 export default function CartDrawer({ className = '' }: { className?: string }) {
   const { t } = useTranslation(['menu'])
   const { t: tCommon } = useTranslation(['common'])
+  const drawerCloseRef = useRef<HTMLButtonElement>(null)
+
+  const handleOrderSuccess = () => {
+    drawerCloseRef.current?.click()
+  }
 
   const [, setSelectedUser] = useState<IUserInfo | null>(null)
   const { getCartItems, removeCartItem } = useCartItemStore()
@@ -78,9 +83,15 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
           {cartItems && cartItems?.orderItems?.length > 0 ? (
             <div className='overflow-y-auto flex flex-col gap-3 max-h-[55%] min-h-[55%]'>
               {/* Order type selection */}
-              <div className="flex flex-col gap-2 py-2">
+              <div className="flex flex-col gap-4 py-2">
                 <CustomerSearchInput />
                 <OrderTypeSelect />
+                <div className='flex flex-col gap-1'>
+                  <span className='text-sm text-muted-foreground'>
+                    {t('menu.table')}
+                  </span>
+                  <SystemTableSelect />
+                </div>
               </div>
               {/* Selected table */}
               {getCartItems()?.type === OrderTypeEnum.AT_TABLE ? (
@@ -183,7 +194,7 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                   </div>
                 </div>
                 <div className="grid flex-row grid-cols-2 gap-2 mt-4">
-                  <DrawerClose asChild>
+                  <DrawerClose ref={drawerCloseRef} asChild>
                     <Button
                       variant="outline"
                       className="w-full border border-gray-400 rounded-full"
@@ -194,6 +205,7 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                   {/* Order button */}
                   <div className='flex justify-end w-full'>
                     <CreateOrderDialog
+                      onSuccessfulOrder={handleOrderSuccess}
                       disabled={!cartItems || (cartItems.type === OrderTypeEnum.AT_TABLE && !cartItems.table)}
                     />
                   </div>
