@@ -20,13 +20,14 @@ export default function ClientLayout() {
       clearStore()
     }
   }, [location.pathname, clearStore])
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <ClientHeader />
 
       {/* Main content */}
-      <main className={cn('flex-1', isMobile ? 'pb-16' : '')}>
+      <main className={cn('flex-grow', isMobile ? 'pb-16' : '')}>
         <ChooseBranchDialog />
         <Outlet />
         {isDownloading && (
