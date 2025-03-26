@@ -18,7 +18,7 @@ import { ICreateChefAreaProductRequest } from '@/types'
 import { useProducts } from '@/hooks'
 import { useProductColumns } from '@/app/system/chef-area/DataTable/columns'
 import { ConfirmAddChefAreaProductDialog } from '../dialog'
-import { useAuthStore, useUserStore } from '@/stores'
+import { useUserStore } from '@/stores'
 
 export default function AddProductInChefAreaSheet() {
   const { t } = useTranslation(['chefArea'])
