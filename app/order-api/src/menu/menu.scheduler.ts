@@ -85,9 +85,14 @@ export class MenuScheduler {
               );
             const newItem = new MenuItem();
             newItem.promotion = promotion;
-            // limit product
-            newItem.currentStock = newItem.defaultStock;
-            newItem.product = newItem.product;
+            newItem.product = item.product;
+
+            // Assign stock if product is limited
+            if (item.product.isLimit) {
+              newItem.defaultStock = item.defaultStock;
+              newItem.currentStock = item.defaultStock;
+            }
+
             return newItem;
           }),
         );
@@ -133,7 +138,7 @@ export class MenuScheduler {
     branches: Branch[],
     dayIndex: number,
   ): Promise<Menu[]> {
-    const templateMenus = await Promise.all(
+    const menusSettledResults = await Promise.allSettled(
       branches.map(async (branch) => {
         const menu = await this.menuRepository.findOne({
           where: { branch: { id: branch.id }, dayIndex, isTemplate: true },
@@ -143,7 +148,10 @@ export class MenuScheduler {
       }),
     );
 
-    return templateMenus;
+    return menusSettledResults
+      .filter((item) => item.status === 'fulfilled')
+      .map((item) => item.value)
+      .filter((item) => item);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
