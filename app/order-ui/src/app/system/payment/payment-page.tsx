@@ -43,8 +43,7 @@ export default function PaymentPage() {
   const discount = order?.result.orderItems ?
     order.result.orderItems.reduce((sum, item) => sum + ((item.promotion ? item.variant.price * item.quantity * (item.promotion.value / 100) : 0)), 0) : 0;
 
-  const voucherDiscount = order?.result.voucher ? order.result.voucher.value : 0;
-
+  const voucherDiscount = order?.result.voucher ? (originalTotal - discount) * ((order.result.voucher.value) / 100) : 0;
   useEffect(() => {
     if (isExpired) {
       setIsPolling(false)

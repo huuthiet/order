@@ -86,7 +86,7 @@ export default function PlaceOrderDialog({ disabled, onSuccessfulOrder }: IPlace
       <DialogTrigger asChild>
         <Button
           disabled={disabled}
-          className="flex items-center w-full text-sm rounded-full"
+          className="flex items-center w-fit text-sm rounded-full"
           onClick={() => setIsOpen(true)}
         >
           {t('order.create')}

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import _ from 'lodash'
 import { ShoppingCart, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -22,6 +23,7 @@ import { cn } from '@/lib'
 import { IUserInfo, OrderTypeEnum } from '@/types'
 import { CreateOrderDialog } from '../dialog'
 import { OrderTypeSelect, SystemTableSelect } from '../select'
+import { VoucherListSheet } from '../sheet'
 
 export default function CartDrawer({ className = '' }: { className?: string }) {
   const { t } = useTranslation(['menu'])
@@ -36,22 +38,9 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
   const { getCartItems, removeCartItem } = useCartItemStore()
   const cartItems = getCartItems()
 
-  const subtotal = useMemo(() => {
-    return cartItems?.orderItems?.reduce((acc, orderItem) => {
-      return acc + (orderItem.price || 0) * orderItem.quantity
-    }, 0) || 0
-  }, [cartItems])
-
-  const discount = useMemo(() => {
-    return cartItems?.orderItems.reduce(
-      (sum, item) => sum + (item.promotionValue ? item.price * item.quantity * item.promotionValue / 100 : 0),
-      0
-    ) || 0;
-  }, [cartItems]);
-
-  const total = useMemo(() => {
-    return subtotal - discount;
-  }, [subtotal, discount]);
+  const subTotal = _.sumBy(cartItems?.orderItems, (item) => item.price * item.quantity)
+  const discount = subTotal * (cartItems?.voucher?.value || 0) / 100
+  const totalAfterDiscount = subTotal - (subTotal * (cartItems?.voucher?.value || 0) / 100)
 
   // check if cartItems is null, setSelectedUser to null
   useEffect(() => {
@@ -74,14 +63,14 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
           </Button>
         </div>
       </DrawerTrigger>
-      <DrawerContent className="h-[90%]">
-        <div className="pb-10 mx-4">
+      <DrawerContent className="h-[90%] ">
+        <div className="pb-10 mx-4 overflow-y-scroll scrollbar-hidden [&::-webkit-scrollbar]:hidden">
           <DrawerHeader>
             <DrawerTitle>{t('menu.order')}</DrawerTitle>
             <DrawerDescription>{t('menu.orderDescription')}</DrawerDescription>
           </DrawerHeader>
           {cartItems && cartItems?.orderItems?.length > 0 ? (
-            <div className='overflow-y-auto flex flex-col gap-3 max-h-[55%] min-h-[55%]'>
+            <div className='flex flex-col gap-3  min-h-[55%]'>
               {/* Order type selection */}
               <div className="flex flex-col gap-4 py-2">
                 <CustomerSearchInput />
@@ -94,7 +83,7 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                 </div>
               </div>
               {/* Selected table */}
-              {getCartItems()?.type === OrderTypeEnum.AT_TABLE ? (
+              {getCartItems()?.type === OrderTypeEnum.AT_TABLE && (
                 <div className="flex items-center text-sm">
                   {getCartItems()?.table ? (
                     <div className='flex items-center gap-1'>
@@ -109,10 +98,8 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                     </p>
                   )}
                 </div>
-              ) : (
-                <div className='h-9' />
               )}
-              <div className="flex flex-col gap-4 py-2 space-y-2">
+              <div className="overflow-y-scroll [&::-webkit-scrollbar]:hidden scrollbar-hiden flex flex-col gap-4 py-2 space-y-2">
                 {cartItems ? (
                   cartItems?.orderItems?.map((item) => (
                     <div
@@ -156,6 +143,7 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                         </div>
                       </div>
                       <CartNoteInput cartItem={item} />
+                      <VoucherListSheet />
                     </div>
                   ))
                 ) : (
@@ -176,7 +164,7 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('menu.total')}</span>
-                    <span>{`${formatCurrency(subtotal || 0)}`}</span>
+                    <span>{`${formatCurrency(subTotal || 0)}`}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
@@ -189,28 +177,29 @@ export default function CartDrawer({ className = '' }: { className?: string }) {
                   <div className="flex justify-between pt-2 font-medium border-t">
                     <span className="font-semibold">{t('menu.subTotal')}</span>
                     <span className="text-lg font-bold text-primary">
-                      {`${formatCurrency(total)}`}
+                      {`${formatCurrency(totalAfterDiscount)}`}
                     </span>
                   </div>
                 </div>
-                <div className="grid flex-row grid-cols-2 gap-2 mt-4">
+
+
+                {/* Order button */}
+                <div className='flex justify-end w-full h-24 gap-4 mt-2'>
                   <DrawerClose ref={drawerCloseRef} asChild>
                     <Button
                       variant="outline"
-                      className="w-full border border-gray-400 rounded-full"
+                      className="border border-gray-400 rounded-full w-fit"
                     >
                       {tCommon('common.close')}
                     </Button>
                   </DrawerClose>
-                  {/* Order button */}
-                  <div className='flex justify-end w-full'>
-                    <CreateOrderDialog
-                      onSuccessfulOrder={handleOrderSuccess}
-                      disabled={!cartItems || (cartItems.type === OrderTypeEnum.AT_TABLE && !cartItems.table)}
-                    />
-                  </div>
+                  <CreateOrderDialog
+                    onSuccessfulOrder={handleOrderSuccess}
+                    disabled={!cartItems || (cartItems.type === OrderTypeEnum.AT_TABLE && !cartItems.table)}
+                  />
                 </div>
-              </div>)}
+              </div>
+            )}
           </DrawerFooter>
         </div>
       </DrawerContent>
