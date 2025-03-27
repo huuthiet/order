@@ -23,7 +23,7 @@ import {
   OrderManagementPage,
   OrderHistoryPage,
   OrderDetailPage,
-  UserListPage,
+  EmployeeListPage,
   ForgotPasswordPage,
   ConfigPage,
   ForgotPasswordAndResetPasswordPage,
@@ -52,6 +52,7 @@ import {
   RoleDetailPage,
   ChefAreaPage,
   ChefAreaDetailPage,
+  ChefOrderPage,
   // VoucherAndPromotionPage,
 } from './loadable'
 import ProtectedElement from '@/components/app/elements/protected-element'
@@ -258,6 +259,24 @@ export const router = createBrowserRouter([
         ],
       },
       {
+        path: ROUTE.STAFF_CHEF_ORDER,
+        element: (
+          <Suspense fallback={<SkeletonCart />}>
+            <SuspenseElement component={SystemLayout} />
+          </Suspense>
+        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedElement
+                element={<SuspenseElement component={ChefOrderPage} />}
+              />
+            ),
+          },
+        ],
+      },
+      {
         path: ROUTE.STAFF_ORDER_HISTORY,
         element: (
           <Suspense fallback={<SkeletonCart />}>
@@ -422,7 +441,7 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedElement
                 // allowedRoles={[Role.MANAGER, Role.ADMIN, Role.SUPER_ADMIN]}
-                element={<SuspenseElement component={UserListPage} />}
+                element={<SuspenseElement component={EmployeeListPage} />}
               />
             ),
           },
