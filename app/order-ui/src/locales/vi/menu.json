@@ -196,7 +196,11 @@
     "currentOrder": "Đơn hàng chính",
     "refreshOrdersInTheSameTable": "Lưu ý: Bạn nên làm mới trang để lấy dữ liệu mới nhất",
     "refresh": "Làm mới dữ liệu",
-    "loadOrdersInTheSameTable": "Lấy các đơn cùng bàn"
+    "loadOrdersInTheSameTable": "Lấy các đơn cùng bàn",
+    "noCooked": "Chưa làm",
+    "cooking": "Đang làm",
+    "cooked": "Đã làm xong",
+    "delivered": "Đã giao"
   },
   "table": {
     "title": "Danh sách bàn"

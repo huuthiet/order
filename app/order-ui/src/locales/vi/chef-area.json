@@ -40,6 +40,7 @@
     "pending": "Chờ làm",
     "inProgress": "Đang làm",
     "completed": "Hoàn thành",
+    "items": "món",
 
     "updateStatus": "Cập nhật trạng thái",
     "confirmUpdateStatus": "Xác nhận cập nhật trạng thái đơn hàng",
