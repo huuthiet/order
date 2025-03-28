@@ -41,6 +41,10 @@
     "pending": "Chờ làm",
     "inProgress": "Đang làm",
     "completed": "Hoàn thành",
+    "items": "món",
+    "cookingStatus": "Trạng thái nấu",
+    "waitingToStart": "Chờ bắt đầu",
+    "cooking": "Đang làm",
 
     "updateStatus": "Cập nhật trạng thái",
     "confirmUpdateStatus": "Xác nhận cập nhật trạng thái đơn hàng",
