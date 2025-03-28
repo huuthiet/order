@@ -16,7 +16,6 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import _ from 'lodash';
 import { ChefOrderUtils } from 'src/chef-order/chef-order.utils';
 import { ChefOrderStatus } from 'src/chef-order/chef-order.constants';
-import { User } from 'src/user/user.entity';
 import { NotificationUtils } from 'src/notification/notification.utils';
 
 @Injectable()
