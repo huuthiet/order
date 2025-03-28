@@ -24,8 +24,6 @@ export class ChefOrderItemService {
   constructor(
     @InjectRepository(ChefOrderItem)
     private readonly chefOrderItemRepository: Repository<ChefOrderItem>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     @InjectMapper()
     private readonly mapper: Mapper,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
