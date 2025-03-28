@@ -1,8 +1,6 @@
 import { IBase } from './base.type'
 import { IBranch } from './branch.type'
-import { ITrackingOrderItems } from './dish.type'
 import { IProduct, IProductVariant } from './product.type'
-import { IPromotion } from './promotion.type'
 
 export enum ChefOrderStatus {
   PENDING = 'pending',
@@ -58,45 +56,32 @@ export interface IGetChefOrderRequest {
   status?: string
 }
 
+export interface IChefOrders extends IBase {
+  status: ChefOrderStatus
+  order: IChefOrderInfo
+  chefOrderItems: ISpecificChefOrderItemInfo[]
+}
+
 export interface IChefSpecificOrder extends IBase {
-  chefOrderItems: ISpecificChefOrderItem[]
+  chefOrderItems: ISpecificChefOrderItemInfo[]
   status: ChefOrderStatus
 }
 
-export interface ISpecificChefOrderItems extends IBase {
-  quantity: number
-  subtotal: number
-  note: string
-  variant: IProductVariant
+export interface ISpecificChefOrderItemInfo extends IBase {
   status: ChefOrderItemStatus
-}
-
-export interface ISpecificChefOrderItem extends IBase {
+  defaultQuantity: number
+  orderItem: ISpecificChefOrderItemDetail
   chefOrder: {
     createdAt: string
     slug: string
   }
-  defaultQuantity: number
-  orderItem: ISpecificChefOrderItems
-  status: ChefOrderItemStatus
 }
 
-export interface IChefOrderItems extends IBase {
-  index?: number
-  id: string
+export interface ISpecificChefOrderItemDetail extends IBase {
   quantity: number
   subtotal: number
   note: string
   variant: IProductVariant
-  trackingOrderItems: ITrackingOrderItems[]
-  promotion?: IPromotion
-  chefOrderItems?: IChefOrderItemStatus[]
-  status: {
-    PENDING: number
-    COMPLETED: number
-    FAILED: number
-    RUNNING: number
-  }
 }
 
 export interface IChefOrderItemStatus extends IBase {
@@ -108,12 +93,6 @@ export interface IChefOrderInfo extends IBase {
   subtotal: number
   status: string
   type: string
-}
-
-export interface IChefOrders extends IBase {
-  status: ChefOrderStatus
-  order: IChefOrderInfo
-  chefOrderItems: IChefOrderItems[]
 }
 
 export interface IUpdateChefOrderStatusRequest {

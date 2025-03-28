@@ -22,7 +22,6 @@ export default function ChefOrderItemDetailSheet({
   const { t: tCommon } = useTranslation(['common'])
   const { t } = useTranslation(['chefArea'])
 
-  // console.log('chefOrder', chefOrder)
   const { data, refetch } = useGetSpecificChefOrder(
     enableFetch ? (chefOrder?.slug ?? '') : '',
   )
@@ -42,19 +41,18 @@ export default function ChefOrderItemDetailSheet({
     return () => clearInterval(interval) // Cleanup
   }, [data, refetch])
   const specificChefOrderDetail = data?.result.chefOrderItems || []
-  // console.log('specificChefOrderDetail in sheet', specificChefOrderDetail)
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="w-[90%] overflow-y-auto p-2">
         <SheetHeader>
-          <SheetTitle className="flex justify-between items-center mt-8">
+          <SheetTitle className="flex items-center justify-between mt-8">
             {t('chefOrder.chefOrderDetail')}
           </SheetTitle>
         </SheetHeader>
         <div className="mt-4">
           {chefOrder ? (
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2 p-2 rounded-lg border-2 border-primary bg-primary/5 sm:p-4">
+              <div className="flex flex-col gap-2 p-2 border-2 rounded-lg border-primary bg-primary/5 sm:p-4">
                 <ChefOrderItemList chefOrderItemData={specificChefOrderDetail} />
               </div>
             </div>

@@ -19,7 +19,7 @@ export default function OrderItemList({
       </span>
 
       <div className="flex flex-col w-full">
-        <ScrollArea className="">
+        <ScrollArea>
           {orderDetailData?.orderItems?.map((item) => (
             <div key={item.slug} className="grid gap-4 items-center w-full">
               <OrderItemDetail order={item} />
