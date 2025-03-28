@@ -1,6 +1,7 @@
 {
   "chefArea": {
     "title": "Khu vực bếp",
+    "createDescription": "Tạo khu vực bếp",
     "createdAt": "Ngày tạo",
     "productManagement": "Quản lý món",
     "currentProduct": "Món hiện tại",
