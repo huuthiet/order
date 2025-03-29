@@ -15,6 +15,7 @@ import { IOrder, OrderStatus } from '@/types'
 import { usePendingOrdersColumns } from './DataTable/columns'
 import { OrderItemDetailSheet } from '@/components/app/sheet'
 import { OrderFilter } from './DataTable/filters'
+import { useSearchParams } from 'react-router-dom'
 export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
   const { t: tHelmet } = useTranslation('helmet')
@@ -33,6 +34,20 @@ export default function OrderManagementPage() {
   const { data: orderDetail } = useOrderBySlug(orderSlug)
   const { pagination, handlePageChange, handlePageSizeChange } = usePagination()
   const [status, setStatus] = useState<OrderStatus | 'all'>('all')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [slug, setSlug] = useState(searchParams.get('slug') || '')
+
+  useEffect(() => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev)
+      newParams.set('slug', slug)
+      return newParams
+    })
+    setIsSheetOpen(slug !== '')
+    if (slug !== '') {
+      setOrderSlug(slug)
+    }
+  }, [setSearchParams, slug, setIsSheetOpen, setOrderSlug])
 
   const handleCloseSheet = () => {
     setIsSheetOpen(false)
@@ -64,6 +79,7 @@ export default function OrderManagementPage() {
   const handleOrderClick = (order: IOrder) => {
     clearSelectedItems()
     setOrderSlug(order.slug)
+    setSlug(order.slug)
     setSelectedRow(order.slug)
     setIsSheetOpen(true)
   }
@@ -121,7 +137,6 @@ export default function OrderManagementPage() {
         />
 
         <OrderItemDetailSheet
-          order={orderSlug}
           isOpen={isSheetOpen}
           onClose={handleCloseSheet}
         />
