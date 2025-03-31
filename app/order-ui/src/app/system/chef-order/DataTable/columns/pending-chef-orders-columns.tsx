@@ -101,7 +101,7 @@ export const usePendingChefOrdersColumns = (): ColumnDef<IChefOrders>[] => {
       cell: ({ row }) => {
         const status = row.original.status
         return (
-          <span className="text-sm text-muted-foreground">
+          <span className="text-muted-foreground">
             <ChefOrderStatusBadge status={status} />
           </span>
         )
