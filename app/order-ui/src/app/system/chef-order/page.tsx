@@ -14,16 +14,16 @@ import { useSelectedChefOrderStore } from '@/stores'
 export default function ChefOrderPage() {
   const { t } = useTranslation(['chefArea'])
   const { t: tHelmet } = useTranslation('helmet')
-  const { isSheetOpen, setIsSheetOpen, selectedRow, setSelectedRow, chefOrderByChefAreaSlug, chefOrder, setChefOrder } = useSelectedChefOrderStore()
+  const { isSheetOpen, setIsSheetOpen, selectedRow, setSelectedRow, chefOrderStatus, chefOrderByChefAreaSlug, chefOrder, setChefOrder } = useSelectedChefOrderStore()
 
   const { handlePageChange, handlePageSizeChange } = usePagination()
-
   const handleCloseSheet = () => {
     setIsSheetOpen(false)
   }
 
   const chefOrderParams: IGetChefOrderRequest = {
     chefArea: chefOrderByChefAreaSlug,
+    ...(chefOrderStatus !== 'all' && { status: chefOrderStatus })
   }
 
   const {
@@ -72,7 +72,7 @@ export default function ChefOrderPage() {
           data={chefOrders?.result || []}
           columns={usePendingChefOrdersColumns()}
           pages={1}
-          actionOptions={ChefOrderActionOptions}
+          actionOptions={ChefOrderActionOptions()}
           onRowClick={handleChefOrderClick}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}

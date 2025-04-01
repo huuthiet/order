@@ -6,10 +6,12 @@ export interface ISelectedChefOrderStore {
   selectedRow: string
   isSheetOpen: boolean
   chefOrder?: IChefOrders
+  chefOrderStatus: string
   setChefOrderByChefAreaSlug: (slug: string) => void
   setChefOrder: (chefOrder: IChefOrders) => void
   setSelectedRow: (row: string) => void
   setIsSheetOpen: (isOpen: boolean) => void
+  setChefOrderStatus: (status: string) => void
   clearSelectedChefOrder: () => void
 }
 

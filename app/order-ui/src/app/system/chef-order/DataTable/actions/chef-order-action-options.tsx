@@ -1,28 +1,31 @@
 import { FC } from 'react'
 
-import { ChefAreaSelect } from '@/components/app/select'
+import { ChefAreaSelect, ChefOrderStatusSelect } from '@/components/app/select'
 import { IChefOrders } from '@/types'
 import { DataTableActionOptionsProps } from '@/components/ui'
 import { useSelectedChefOrderStore, useUserStore } from '@/stores'
 import { useGetChefAreas } from '@/hooks'
 
-const ChefOrderActionOptions: FC<DataTableActionOptionsProps<IChefOrders>> = () => {
+export default function ChefOrderActionOptions(): FC<DataTableActionOptionsProps<IChefOrders>> {
   const { userInfo } = useUserStore()
-  const { data, isLoading } = useGetChefAreas(userInfo?.branch?.slug || '')
+  const { data } = useGetChefAreas(userInfo?.branch?.slug || '')
   const chefAreas = data?.result || []
-  const { setChefOrderByChefAreaSlug, chefOrderByChefAreaSlug } = useSelectedChefOrderStore()
+  const { setChefOrderByChefAreaSlug, chefOrderByChefAreaSlug, setChefOrderStatus, chefOrderStatus } = useSelectedChefOrderStore()
 
-  if (isLoading) {
-    return null // or a loading spinner if preferred
+  return function ActionOptions() {
+
+    return (
+      <>
+        <ChefOrderStatusSelect
+          onSelect={setChefOrderStatus}
+          value={chefOrderStatus}
+        />
+        <ChefAreaSelect
+          chefAreas={chefAreas}
+          onSelect={setChefOrderByChefAreaSlug}
+          value={chefOrderByChefAreaSlug}
+        />
+      </>
+    )
   }
-
-  return (
-    <ChefAreaSelect
-      chefAreas={chefAreas}
-      onSelect={setChefOrderByChefAreaSlug}
-      value={chefOrderByChefAreaSlug}
-    />
-  )
 }
-
-export default ChefOrderActionOptions

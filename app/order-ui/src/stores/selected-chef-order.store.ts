@@ -8,11 +8,13 @@ export const useSelectedChefOrderStore = create<ISelectedChefOrderStore>()(
       chefOrderByChefAreaSlug: '',
       selectedRow: '',
       isSheetOpen: false,
+      chefOrderStatus: '',
       setChefOrderByChefAreaSlug: (slug: string) =>
         set({ chefOrderByChefAreaSlug: slug }),
       setChefOrder: (chefOrder: IChefOrders) => set({ chefOrder }),
       setSelectedRow: (row: string) => set({ selectedRow: row }),
       setIsSheetOpen: (isOpen: boolean) => set({ isSheetOpen: isOpen }),
+      setChefOrderStatus: (status: string) => set({ chefOrderStatus: status }),
       clearSelectedChefOrder: () =>
         set({
           chefOrderByChefAreaSlug: '',
