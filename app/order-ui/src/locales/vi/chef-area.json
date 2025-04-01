@@ -30,6 +30,8 @@
     "slug": "Mã đơn hàng",
     "createdAt": "Ngày tạo",
     "productName": "Tên món",
+    "quantity": "Số lượng",
+    "location": "Vị trí",
     "note": "Ghi chú",
     "noNote": "Không có ghi chú",
     "status": "Trạng thái",
@@ -49,6 +51,8 @@
     "complete": "Hoàn thành",
     "selectChefArea": "Chọn khu vực bếp",
     "selectChefOrderStatus": "Chọn trạng thái đơn hàng",
-    "chefOrderDetail": "Chi tiết đơn hàng"
+    "chefOrderDetail": "Chi tiết đơn hàng",
+    "table": "Bàn",
+    "take-out": "Mang đi"
   }
 }

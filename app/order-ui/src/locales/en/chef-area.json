@@ -29,6 +29,8 @@
     "slug": "Order code",
     "createdAt": "Created at",
     "productName": "Product name",
+    "quantity": "Quantity",
+    "location": "Location",
     "note": "Note",
     "noNote": "No note",
     "status": "Status",
@@ -44,6 +46,8 @@
     "complete": "Complete",
     "selectChefArea": "Select chef area",
     "selectChefOrderStatus": "Select chef order status",
-    "chefOrderDetail": "Order detail"
+    "chefOrderDetail": "Order detail",
+    "take-out": "Take out",
+    "table": "Table"
   }
 }
