@@ -58,7 +58,7 @@ export const usePendingChefOrdersColumns = (): ColumnDef<IChefOrders>[] => {
         <DataTableColumnHeader column={column} title={t('chefOrder.slug')} />
       ),
       cell: ({ row }) => {
-        const slug = row.original.slug
+        const slug = row.original.order.slug
         return <span className="text-sm text-muted-foreground">{slug}</span>
       },
     },

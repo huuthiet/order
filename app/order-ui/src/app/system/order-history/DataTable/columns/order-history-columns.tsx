@@ -161,6 +161,7 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                     <NavLink
                       to={`${ROUTE.STAFF_ORDER_PAYMENT}?order=${order.slug}`}
                       className="flex justify-start items-center w-full"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <Button
                         variant="ghost"
@@ -175,7 +176,10 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                 {/* Export payment */}
                 {order?.payment?.slug && (
                   <Button
-                    onClick={() => handleExportPayment(order.payment!.slug)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleExportPayment(order.payment!.slug);
+                    }}
                     variant="ghost"
                     className="flex gap-1 justify-start px-2 w-full"
                   >
@@ -188,7 +192,10 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                 {order?.slug &&
                   order?.payment?.statusCode === paymentStatus.COMPLETED && (
                     <Button
-                      onClick={() => handleExportOrderInvoice(order.slug)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleExportOrderInvoice(order.slug);
+                      }}
                       variant="ghost"
                       className="flex gap-1 justify-start px-2 w-full"
                     >
@@ -198,7 +205,11 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                   )}
 
                 {/* Cancel order */}
-                {!(order && order.status === OrderStatus.PAID && order.payment.statusCode === paymentStatus.COMPLETED) && <OutlineCancelOrderDialog order={order} />}
+                {!(order && order.status === OrderStatus.PAID && order.payment.statusCode === paymentStatus.COMPLETED) && (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <OutlineCancelOrderDialog order={order} />
+                  </div>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
@@ -9,31 +9,12 @@ import { DataTable } from '@/components/ui'
 import { usePendingChefOrdersColumns } from './DataTable/columns'
 import { ChefOrderItemDetailSheet } from '@/components/app/sheet'
 import { ChefOrderActionOptions } from './DataTable/actions'
-import { useSearchParams } from 'react-router-dom'
+import { useSelectedChefOrderStore } from '@/stores'
 
 export default function ChefOrderPage() {
   const { t } = useTranslation(['chefArea'])
   const { t: tHelmet } = useTranslation('helmet')
-  const [chefOrderSlug, setChefOrderSlug] = useState<string>('')
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [selectedRow, setSelectedRow] = useState<IChefOrders>()
-  const [enableFetch, setEnableFetch] = useState(false)
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [slug, setSlug] = useState(searchParams.get('slug') || selectedRow)
-
-  useEffect(() => {
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev)
-      if (slug === '') {
-        newParams.delete('slug')
-        newParams.set('slug', selectedRow?.slug || '')
-      }
-      return newParams
-    })
-
-    setIsSheetOpen(slug !== '')
-
-  }, [slug, setSearchParams, setIsSheetOpen, selectedRow])
+  const { isSheetOpen, setIsSheetOpen, selectedRow, setSelectedRow, chefOrderByChefAreaSlug, chefOrder, setChefOrder } = useSelectedChefOrderStore()
 
   const { handlePageChange, handlePageSizeChange } = usePagination()
 
@@ -42,7 +23,7 @@ export default function ChefOrderPage() {
   }
 
   const chefOrderParams: IGetChefOrderRequest = {
-    chefArea: chefOrderSlug,
+    chefArea: chefOrderByChefAreaSlug,
   }
 
   const {
@@ -65,14 +46,9 @@ export default function ChefOrderPage() {
     return () => clearInterval(interval) // Cleanup
   }, [chefOrders, refetch])
 
-  const handleSelect = (slug: string) => {
-    setChefOrderSlug(slug)
-  }
-
   const handleChefOrderClick = (chefOrder: IChefOrders) => {
-    setSelectedRow(chefOrder)
-    setSlug(chefOrder.slug)
-    setEnableFetch(true)
+    setSelectedRow(chefOrder.slug)
+    setChefOrder(chefOrder)
     setIsSheetOpen(true)
   }
 
@@ -96,19 +72,19 @@ export default function ChefOrderPage() {
           data={chefOrders?.result || []}
           columns={usePendingChefOrdersColumns()}
           pages={1}
-          actionOptions={ChefOrderActionOptions({ onSelect: handleSelect })}
+          actionOptions={ChefOrderActionOptions}
           onRowClick={handleChefOrderClick}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           rowClassName={(row) =>
-            row.slug === selectedRow?.slug
+            row.slug === selectedRow
               ? 'bg-primary/20 border border-primary'
               : ''
           }
         />
         <ChefOrderItemDetailSheet
-          chefOrder={selectedRow}
-          enableFetch={enableFetch}
+          chefOrder={chefOrder}
+          enableFetch={true}
           isOpen={isSheetOpen}
           onClose={handleCloseSheet}
         />

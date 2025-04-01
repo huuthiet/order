@@ -30,6 +30,7 @@
     "slug": "Mã đơn hàng",
     "createdAt": "Ngày tạo",
     "productName": "Tên món",
+    "quantity": "Số lượng",
     "note": "Ghi chú",
     "noNote": "Không có ghi chú",
     "status": "Trạng thái",

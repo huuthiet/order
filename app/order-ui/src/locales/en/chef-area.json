@@ -29,6 +29,7 @@
     "slug": "Order code",
     "createdAt": "Created at",
     "productName": "Product name",
+    "quantity": "Quantity",
     "note": "Note",
     "noNote": "No note",
     "status": "Status",
