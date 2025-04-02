@@ -11,6 +11,7 @@ import {
   IUpdateChefAreaRequest,
   IUpdateChefOrderItemStatusRequest,
   IUpdateChefOrderStatusRequest,
+  IPaginationResponse,
 } from '@/types'
 import { http } from '@/utils'
 
@@ -101,7 +102,7 @@ export async function removeProductFromChefArea(
 
 export async function getChefOrders(
   data: IGetChefOrderRequest,
-): Promise<IApiResponse<IChefOrders[]>> {
+): Promise<IApiResponse<IPaginationResponse<IChefOrders>>> {
   const response = await http.get(`/chef-order`, {
     // @ts-expect-error doNotShowLoading is not in AxiosRequestConfig
     doNotShowLoading: true,

@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { SquareMenu } from 'lucide-react'
 
-import { useGetChefOrders, usePagination } from '@/hooks'
+import { useDebouncedInput, useGetChefOrders, usePagination } from '@/hooks'
 import { IChefOrders, IGetChefOrderRequest } from '@/types'
 import { DataTable } from '@/components/ui'
 import { usePendingChefOrdersColumns } from './DataTable/columns'
@@ -15,14 +15,21 @@ export default function ChefOrderPage() {
   const { t } = useTranslation(['chefArea'])
   const { t: tHelmet } = useTranslation('helmet')
   const { isSheetOpen, setIsSheetOpen, selectedRow, setSelectedRow, chefOrderStatus, chefOrderByChefAreaSlug, chefOrder, setChefOrder } = useSelectedChefOrderStore()
+  const { setInputValue, debouncedInputValue } = useDebouncedInput()
+  const { pagination, setPagination, handlePageChange, handlePageSizeChange } = usePagination()
+  const [startDate, setStartDate] = useState<string | null>(null)
+  const [endDate, setEndDate] = useState<string | null>(null)
 
-  const { handlePageChange, handlePageSizeChange } = usePagination()
   const handleCloseSheet = () => {
     setIsSheetOpen(false)
   }
-
   const chefOrderParams: IGetChefOrderRequest = {
     chefArea: chefOrderByChefAreaSlug,
+    order: debouncedInputValue || undefined,
+    page: pagination.pageIndex,
+    size: pagination.pageSize,
+    startDate: startDate || undefined,
+    endDate: endDate || undefined,
     ...(chefOrderStatus !== 'all' && { status: chefOrderStatus })
   }
 
@@ -31,6 +38,14 @@ export default function ChefOrderPage() {
     isLoading,
     refetch,
   } = useGetChefOrders(chefOrderParams)
+
+  useEffect(() => {
+    setPagination(prev => ({
+      ...prev,
+      pageIndex: 1
+    }))
+  }, [debouncedInputValue, chefOrderStatus, chefOrderByChefAreaSlug, startDate, endDate, setPagination])
+
   //polling useOrders every 5 seconds
   useEffect(() => {
     if (!chefOrders) return
@@ -69,10 +84,17 @@ export default function ChefOrderPage() {
       <div className="grid grid-cols-1 gap-2 h-full">
         <DataTable
           isLoading={isLoading}
-          data={chefOrders?.result || []}
+          data={chefOrders?.items || []}
           columns={usePendingChefOrdersColumns()}
-          pages={1}
+          pages={chefOrders?.totalPages || 1}
           actionOptions={ChefOrderActionOptions()}
+          hiddenInput={false}
+          hiddenDatePicker={false}
+          onInputChange={setInputValue}
+          onDateChange={(start, end) => {
+            setStartDate(start)
+            setEndDate(end)
+          }}
           onRowClick={handleChefOrderClick}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
