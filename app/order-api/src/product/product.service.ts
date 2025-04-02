@@ -548,6 +548,22 @@ export class ProductService {
 
       const normalizedData = this.dataStandardization(validationData.data);
 
+      // check duplicate product name
+      const duplicateNames = normalizedData
+        .map((item) => item[1])
+        .filter((name, index, array) => array.indexOf(name) !== index);
+
+      if (duplicateNames.length > 0) {
+        this.logger.warn(
+          ProductValidation.DUPLICATE_PRODUCT_NAME.message,
+          context,
+        );
+        throw new ProductException(
+          ProductValidation.DUPLICATE_PRODUCT_NAME,
+          `Duplicate product names: ${duplicateNames.join(', ')}`,
+        );
+      }
+
       const createdCatalogsAndSizes =
         await this.getListCreatedCatalogsAndSizes(normalizedData);
 
@@ -566,6 +582,17 @@ export class ProductService {
         );
 
         for (const productData of normalizedData) {
+          const existProductName = await this.productRepository.findOneBy({
+            name: productData[1],
+          });
+          if (existProductName) {
+            this.logger.warn(
+              ProductValidation.PRODUCT_NAME_EXIST.message,
+              context,
+            );
+            throw new ProductException(ProductValidation.PRODUCT_NAME_EXIST);
+          }
+
           let catalog = await this.catalogRepository.findOneBy({
             name: productData[2],
           });
