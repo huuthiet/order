@@ -5,7 +5,15 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Product } from './product.entity';
-import { DataSource, In, IsNull, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  IsNull,
+  Not,
+  Repository,
+} from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,6 +41,7 @@ import { FileException } from 'src/file/file.exception';
 import { PromotionUtils } from 'src/promotion/promotion.utils';
 import { MenuUtils } from 'src/menu/menu.utils';
 import { BranchUtils } from 'src/branch/branch.utils';
+import { AppPaginatedResponseDto } from 'src/app/app.dto';
 
 @Injectable()
 export class ProductService {
@@ -298,7 +307,99 @@ export class ProductService {
       );
     }
 
-    return this.mapper.mapArray(products, Product, ProductResponseDto);
+    const productsDto = this.mapper.mapArray(
+      products,
+      Product,
+      ProductResponseDto,
+    );
+
+    return productsDto;
+  }
+
+  async getAllProductsPagination(
+    query: GetProductRequestDto,
+  ): Promise<AppPaginatedResponseDto<ProductResponseDto>> {
+    const findOptionsWhere: FindOptionsWhere<Product> = {
+      catalog: {
+        slug: query.catalog,
+      },
+      isTopSell: query.isTopSell,
+      isNew: query.isNew,
+    };
+
+    if (query.promotion) {
+      const promotion = await this.promotionUtils.getPromotion({
+        where: { slug: query.promotion },
+      });
+      const applicableProductIds = promotion.applicablePromotions.map(
+        (item) => item.applicableId,
+      );
+      findOptionsWhere.id = query.isAppliedPromotion
+        ? In(applicableProductIds)
+        : Not(In(applicableProductIds));
+    }
+
+    if (query.branch) {
+      const branch = await this.branchUtils.getBranch({
+        where: { slug: query.branch },
+        relations: ['chefAreas.productChefAreas.product'],
+      });
+
+      const branchProductIds = branch.chefAreas.flatMap((chefArea) =>
+        chefArea.productChefAreas.map(
+          (productChefArea) => productChefArea.product.id,
+        ),
+      );
+
+      findOptionsWhere.id = query.isAppliedBranchForChefArea
+        ? In(branchProductIds)
+        : Not(In(branchProductIds));
+    }
+
+    if (query.menu) {
+      const menu = await this.menuUtils.getMenu({
+        where: { slug: query.menu ?? IsNull() },
+      });
+      const productIdsInMenu = menu.menuItems.map((item) => item.product.id);
+      findOptionsWhere.id = query.inMenu
+        ? In(productIdsInMenu)
+        : Not(In(productIdsInMenu));
+    }
+
+    const findManyOptions: FindManyOptions<Product> = {
+      where: findOptionsWhere,
+      relations: ['catalog', 'variants.size'],
+      order: { createdAt: 'DESC' },
+    };
+
+    if (query.hasPaging) {
+      Object.assign(findManyOptions, {
+        skip: (query.page - 1) * query.size,
+        take: query.size,
+      });
+    }
+
+    const [products, total] =
+      await this.productRepository.findAndCount(findManyOptions);
+    const totalPages = Math.ceil(total / query.size);
+    const hasNext = query.page < totalPages;
+    const hasPrevious = query.page > 1;
+
+    const productsDto = this.mapper.mapArray(
+      products,
+      Product,
+      ProductResponseDto,
+    );
+
+    return {
+      hasNext,
+      hasPrevios: hasPrevious,
+      items: productsDto,
+      total,
+      page: query.hasPaging ? query.page : 1,
+      pageSize: query.hasPaging ? query.size : total,
+      totalPages,
+    } as AppPaginatedResponseDto<ProductResponseDto>;
   }
 
   /**
@@ -317,6 +418,14 @@ export class ProductService {
     const product = await this.productRepository.findOneBy({ slug });
     if (!product)
       throw new ProductException(ProductValidation.PRODUCT_NOT_FOUND);
+
+    const existProductName = await this.productRepository.findOneBy({
+      name: requestData.name,
+    });
+    if (existProductName) {
+      this.logger.warn(ProductValidation.PRODUCT_NAME_EXIST.message, context);
+      throw new ProductException(ProductValidation.PRODUCT_NAME_EXIST);
+    }
 
     // limit product -> update current, template menu item
     if (product.isLimit !== requestData.isLimit) {
