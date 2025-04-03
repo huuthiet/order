@@ -28,8 +28,6 @@ export default function ChefOrderPage() {
     size: pagination.pageSize,
     chefArea: chefOrderByChefAreaSlug,
     order: debouncedInputValue || undefined,
-    page: pagination.pageIndex,
-    size: pagination.pageSize,
     startDate: startDate || undefined,
     endDate: endDate || undefined,
     ...(chefOrderStatus !== 'all' && { status: chefOrderStatus })
