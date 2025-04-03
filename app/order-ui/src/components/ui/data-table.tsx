@@ -21,6 +21,7 @@ import {
   ChevronRightIcon,
   Loader2Icon,
   MoveRight,
+  RefreshCcw,
   SearchIcon,
 } from 'lucide-react'
 import {
@@ -100,6 +101,7 @@ interface DataTableProps<TData, TValue> {
   pages: number
   hiddenInput?: boolean
   hiddenDatePicker?: boolean
+  onRefresh?: () => void
   onPageChange: (pageIndex: number) => void
   onPageSizeChange: (pageSize: number) => void
   onRowClick?: (row: TData) => void
@@ -126,6 +128,7 @@ export function DataTable<TData, TValue>({
   pages,
   hiddenInput = true,
   hiddenDatePicker = true,
+  onRefresh,
   onPageChange,
   onPageSizeChange,
   onRowClick,
@@ -201,12 +204,16 @@ export function DataTable<TData, TValue>({
     }
   }
 
+  const handleRefresh = () => {
+    onRefresh?.()
+  }
+
   return (
     <div className="w-full">
       <div
-        className={`flex ${!hiddenInput || !hiddenDatePicker ? 'justify-between' : 'justify-end'} items-end flex-wrap gap-2`}
+        className={`flex ${!hiddenInput || !hiddenDatePicker ? 'justify-between' : 'justify-between'} items-end flex-wrap gap-2`}
       >
-        <div className="flex flex-col gap-2 items-start justify-start ">
+        <div className="flex gap-2 justify-start items-start">
           {/* Input search */}
           {!hiddenInput && (
             <div className="relative w-[350px]">
@@ -220,8 +227,8 @@ export function DataTable<TData, TValue>({
             </div>
           )}
           {!hiddenDatePicker && (
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="flex items-center gap-2 w-[350px]">
+            <div className="flex flex-wrap gap-2 items-center">
+              <div className="flex gap-2 items-center w-fit">
                 <div className="flex-1">
                   <SimpleDatePicker
                     value={startDate || undefined}
@@ -248,7 +255,15 @@ export function DataTable<TData, TValue>({
             </div>
           )}
         </div>
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex gap-2 items-center w-fit">
+          {onRefresh && (
+            <Button variant="outline" onClick={handleRefresh}>
+              <RefreshCcw className="w-4 h-4 text-muted-foreground" />
+              <span className='text-muted-foreground'>
+                {t('dataTable.refresh')}
+              </span>
+            </Button>
+          )}
           {/* Actions */}
           {DataTableActionOptions && <DataTableActionOptions table={table} />}
           {/* Filter */}
