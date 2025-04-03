@@ -24,6 +24,8 @@ export default function ChefOrderPage() {
     setIsSheetOpen(false)
   }
   const chefOrderParams: IGetChefOrderRequest = {
+    page: pagination.pageIndex,
+    size: pagination.pageSize,
     chefArea: chefOrderByChefAreaSlug,
     order: debouncedInputValue || undefined,
     page: pagination.pageIndex,
