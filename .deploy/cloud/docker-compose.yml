@@ -4,6 +4,7 @@ volumes:
   postgres_data:
   nginx_proxy_manager_data:
   letsencrypt:
+  grafana_data:
 
 services:
   redis:
@@ -148,6 +149,24 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    environment:
+      ENABLE_LOGS_LOKI: true
+      GF_SERVER_ROOT_URL: https://trendcoffee.net/grafana
+      GF_SERVER_SERVE_FROM_SUB_PATH: true
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 networks:
   default:
