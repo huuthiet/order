@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -104,6 +104,7 @@ interface DataTableProps<TData, TValue> {
   onPageSizeChange: (pageSize: number) => void
   onRowClick?: (row: TData) => void
   onInputChange?: (value: string) => void
+  periodOfTime?: string
   onDateChange?: (startDate: string | null, endDate: string | null) => void
   filterOptions?: React.FC<DataTableFilterOptionsProps<TData>>
   actionOptions?: React.FC<DataTableActionOptionsProps<TData>>
@@ -130,6 +131,7 @@ export function DataTable<TData, TValue>({
   onPageSizeChange,
   onRowClick,
   onInputChange,
+  periodOfTime,
   onDateChange,
   filterOptions: DataTableFilterOptions,
   actionOptions: DataTableActionOptions,
@@ -139,10 +141,14 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const { t } = useTranslation('common')
   const { inputValue, setInputValue, debouncedInputValue } = useDebouncedInput()
-  const today = new Date()
+  const today = useMemo(() => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }, []);
   today.setHours(0, 0, 0, 0)
-  const [startDate, setStartDate] = useState<string | null>(() => moment(today).format('YYYY-MM-DD'))
-  const [endDate, setEndDate] = useState<string | null>(() => moment(today).format('YYYY-MM-DD'))
+  const [startDate, setStartDate] = useState<string | null>(null)
+  const [endDate, setEndDate] = useState<string | null>(null)
 
   // Add effect to call onInputChange when debounced value changes
   useEffect(() => {
@@ -185,7 +191,7 @@ export function DataTable<TData, TValue>({
     debugTable: true,
   })
 
-  const handlePeriodOfTimeChange = (periodOfTime: string) => {
+  const handlePeriodOfTimeChange = useCallback((periodOfTime: string) => {
     if (periodOfTime === 'today') {
       setStartDate(moment(today).format('YYYY-MM-DD'))
       setEndDate(moment(today).format('YYYY-MM-DD'))
@@ -199,7 +205,7 @@ export function DataTable<TData, TValue>({
       setStartDate(moment(today).subtract(1, 'year').format('YYYY-MM-DD'))
       setEndDate(moment(today).format('YYYY-MM-DD'))
     }
-  }
+  }, [today])
 
   return (
     <div className="w-full">
@@ -244,7 +250,7 @@ export function DataTable<TData, TValue>({
                   />
                 </div>
               </div>
-              <PeriodOfTimeSelect onChange={handlePeriodOfTimeChange} />
+              <PeriodOfTimeSelect periodOfTime={periodOfTime} onChange={handlePeriodOfTimeChange} />
             </div>
           )}
         </div>
