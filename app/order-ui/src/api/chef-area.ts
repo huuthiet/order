@@ -12,7 +12,6 @@ import {
   IUpdateChefAreaRequest,
   IUpdateChefOrderItemStatusRequest,
   IUpdateChefOrderStatusRequest,
-  IPaginationResponse,
 } from '@/types'
 import { http } from '@/utils'
 

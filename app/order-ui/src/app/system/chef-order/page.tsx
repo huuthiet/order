@@ -26,11 +26,15 @@ export default function ChefOrderPage() {
   const chefOrderParams: IGetChefOrderRequest = {
     page: pagination.pageIndex,
     size: pagination.pageSize,
-    chefArea: chefOrderByChefAreaSlug,
     order: debouncedInputValue || undefined,
-    startDate: startDate || undefined,
-    endDate: endDate || undefined,
-    ...(chefOrderStatus !== 'all' && { status: chefOrderStatus })
+    ...(debouncedInputValue ? {} :
+      {
+        chefArea: chefOrderByChefAreaSlug,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        ...(chefOrderStatus !== 'all' && { status: chefOrderStatus })
+      }
+    )
   }
 
   const {

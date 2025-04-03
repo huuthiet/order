@@ -55,6 +55,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useDebouncedInput } from '@/hooks'
 import { SimpleDatePicker } from '../app/picker'
+import { PeriodOfTimeSelect } from '../app/select'
 
 interface DataTablePaginationProps<TData> {
   table: ReactTable<TData>
@@ -184,12 +185,28 @@ export function DataTable<TData, TValue>({
     debugTable: true,
   })
 
+  const handlePeriodOfTimeChange = (periodOfTime: string) => {
+    if (periodOfTime === 'today') {
+      setStartDate(moment(today).format('YYYY-MM-DD'))
+      setEndDate(moment(today).format('YYYY-MM-DD'))
+    } else if (periodOfTime === 'inWeek') {
+      setStartDate(moment(today).subtract(1, 'week').format('YYYY-MM-DD'))
+      setEndDate(moment(today).format('YYYY-MM-DD'))
+    } else if (periodOfTime === 'inMonth') {
+      setStartDate(moment(today).subtract(1, 'month').format('YYYY-MM-DD'))
+      setEndDate(moment(today).format('YYYY-MM-DD'))
+    } else if (periodOfTime === 'inYear') {
+      setStartDate(moment(today).subtract(1, 'year').format('YYYY-MM-DD'))
+      setEndDate(moment(today).format('YYYY-MM-DD'))
+    }
+  }
+
   return (
     <div className="w-full">
       <div
         className={`flex ${!hiddenInput || !hiddenDatePicker ? 'justify-between' : 'justify-end'} items-end flex-wrap gap-2`}
       >
-        <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center justify-start ">
+        <div className="flex flex-col gap-2 items-start justify-start ">
           {/* Input search */}
           {!hiddenInput && (
             <div className="relative w-[350px]">
@@ -203,28 +220,31 @@ export function DataTable<TData, TValue>({
             </div>
           )}
           {!hiddenDatePicker && (
-            <div className="flex items-center gap-2 w-[350px]">
-              <div className="flex-1">
-                <SimpleDatePicker
-                  value={startDate || undefined}
-                  onChange={setStartDate}
-                  disabledDates={endDate ? (date: Date) => {
-                    const endDateObj = new Date(endDate.split('/').reverse().join('-'))
-                    return date > endDateObj
-                  } : undefined}
-                />
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2 w-[350px]">
+                <div className="flex-1">
+                  <SimpleDatePicker
+                    value={startDate || undefined}
+                    onChange={setStartDate}
+                    disabledDates={endDate ? (date: Date) => {
+                      const endDateObj = new Date(endDate.split('/').reverse().join('-'))
+                      return date > endDateObj
+                    } : undefined}
+                  />
+                </div>
+                <MoveRight className="icon" />
+                <div className="flex-1">
+                  <SimpleDatePicker
+                    value={endDate || undefined}
+                    onChange={setEndDate}
+                    disabledDates={startDate ? (date: Date) => {
+                      const startDateObj = new Date(startDate.split('/').reverse().join('-'))
+                      return date < startDateObj
+                    } : undefined}
+                  />
+                </div>
               </div>
-              <MoveRight className="icon" />
-              <div className="flex-1">
-                <SimpleDatePicker
-                  value={endDate || undefined}
-                  onChange={setEndDate}
-                  disabledDates={startDate ? (date: Date) => {
-                    const startDateObj = new Date(startDate.split('/').reverse().join('-'))
-                    return date < startDateObj
-                  } : undefined}
-                />
-              </div>
+              <PeriodOfTimeSelect onChange={handlePeriodOfTimeChange} />
             </div>
           )}
         </div>
