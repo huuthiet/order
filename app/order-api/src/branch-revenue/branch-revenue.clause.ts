@@ -125,9 +125,9 @@ export const getSpecificRangeBranchRevenueClause = `
     LEFT JOIN 
         OrderItemSummary AS oi ON o.id_column = oi.order_id
     WHERE 
-        o.created_at_column >= '2025-04-03'
+        o.created_at_column >= ?
     AND 
-        o.created_at_column < '2025-04-04'
+        o.created_at_column < ?
     GROUP BY 
         o.branch_column, DATE(o.created_at_column)
     ORDER BY 
