@@ -119,6 +119,7 @@ export class MenuService {
         'menuItems.product.variants.size',
         'menuItems.product.catalog',
         'menuItems.promotion',
+        'branch',
       ],
       order: {
         menuItems: {
