@@ -467,10 +467,6 @@ export class BranchRevenueService {
           hasBranchRevenues,
           branchRevenueFillZero,
         );
-      this.logger.log(
-        'createAndUpdateBranchRevenue',
-        JSON.stringify(createAndUpdateBranchRevenue),
-      );
       createAndUpdateBranchRevenues = createAndUpdateBranchRevenues.concat(
         createAndUpdateBranchRevenue,
       );
