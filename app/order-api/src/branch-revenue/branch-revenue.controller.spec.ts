@@ -12,7 +12,7 @@ import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
 import { BranchUtils } from 'src/branch/branch.utils';
 import { FileService } from 'src/file/file.service';
-
+import { File } from 'src/file/file.entity';
 describe('BranchRevenueController', () => {
   let controller: BranchRevenueController;
 
@@ -35,6 +35,10 @@ describe('BranchRevenueController', () => {
         },
         {
           provide: getRepositoryToken(Branch),
+          useValue: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(File),
           useValue: repositoryMockFactory,
         },
         {

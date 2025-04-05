@@ -8,7 +8,7 @@ import { Branch } from 'src/branch/branch.entity';
 import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
-
+import { File } from 'src/file/file.entity';
 import { DataSource } from 'typeorm';
 import { BranchUtils } from 'src/branch/branch.utils';
 import { FileService } from 'src/file/file.service';
@@ -30,6 +30,10 @@ describe('BranchRevenueService', () => {
         },
         {
           provide: getRepositoryToken(BranchRevenue),
+          useValue: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(File),
           useValue: repositoryMockFactory,
         },
         {
