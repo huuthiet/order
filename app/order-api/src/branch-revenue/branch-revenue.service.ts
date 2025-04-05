@@ -13,6 +13,7 @@ import { Mapper } from '@automapper/core';
 import {
   AggregateBranchRevenueResponseDto,
   BranchRevenueQueryResponseDto,
+  ExportBranchRevenueQueryDto,
   GetBranchRevenueQueryDto,
   RefreshSpecificRangeBranchRevenueQueryDto,
 } from './branch-revenue.dto';
@@ -29,9 +30,9 @@ import { BranchRevenueException } from './branch-revenue.exception';
 import { BranchRevenueValidation } from './branch-revenue.validation';
 import moment from 'moment';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
-import { Payment } from 'src/payment/payment.entity';
-import { Order } from 'src/order/order.entity';
-import { OrderItem } from 'src/order-item/order-item.entity';
+import { BranchUtils } from 'src/branch/branch.utils';
+import { FileService } from 'src/file/file.service';
+import ExcelJS from 'exceljs';
 
 @Injectable()
 export class BranchRevenueService {
@@ -40,18 +41,14 @@ export class BranchRevenueService {
     private readonly branchRevenueRepository: Repository<BranchRevenue>,
     @InjectRepository(Branch)
     private readonly branchRepository: Repository<Branch>,
-    @InjectRepository(Payment)
-    private readonly paymentRepository: Repository<Payment>,
-    @InjectRepository(Order)
-    private readonly orderRepository: Repository<Order>,
-    @InjectRepository(OrderItem)
-    private readonly orderItemRepository: Repository<OrderItem>,
     private readonly dataSource: DataSource,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: Logger,
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly transactionManagerService: TransactionManagerService,
+    private readonly branchUtils: BranchUtils,
+    private readonly fileService: FileService,
   ) {}
 
   async findAll(
@@ -552,11 +549,6 @@ export class BranchRevenueService {
     }, []);
 
     return groupedData;
-    // console.log({groupedData})
-    // console.log({groupedData: groupedData[0].items[0]})
-
-    // const result = groupedData.map(group => group.items);
-    // return result;
   }
 
   getCreateAndUpdateRevenuesInRangeDays(
@@ -592,5 +584,214 @@ export class BranchRevenueService {
       }
     });
     return createAndUpdateBranchRevenues;
+  }
+
+  async exportBranchRevenueToExcel(requestData: ExportBranchRevenueQueryDto) {
+    const context = `${BranchRevenueService.name}.${this.exportBranchRevenueToExcel.name}`;
+    this.logger.log('Start exporting branch revenue to Excel', context);
+
+    try {
+      const branch = await this.branchUtils.getBranch({
+        where: { slug: requestData.branch },
+      });
+      // Query data from database
+      const branchRevenues = await this.branchRevenueRepository.find({
+        where: {
+          branchId: branch.id,
+          date: Between(requestData.startDate, requestData.endDate),
+        },
+        order: {
+          date: 'ASC',
+        },
+      });
+
+      const cellData: {
+        cellPosition: string;
+        value: string | number;
+        type: string;
+        style?: Partial<ExcelJS.Style>;
+      }[] = [];
+
+      cellData.push(
+        {
+          cellPosition: `B2`,
+          value: branch.name.toString(),
+          type: 'data',
+        },
+        {
+          cellPosition: `B3`,
+          value: branch.address,
+          type: 'data',
+        },
+        {
+          cellPosition: `B4`,
+          value: moment(requestData.startDate).format('DD/MM/YYYY'),
+          type: 'data',
+        },
+        {
+          cellPosition: `B5`,
+          value: moment(requestData.endDate).format('DD/MM/YYYY'),
+          type: 'data',
+        },
+        {
+          cellPosition: `B6`,
+          value: moment().format('DD/MM/YYYY'),
+          type: 'data',
+        },
+      );
+
+      // Add data rows
+      let totalOriginalAmount = 0;
+      let totalPromotionAmount = 0;
+      let totalVoucherAmount = 0;
+      let totalAmount = 0;
+      let totalOrder = 0;
+
+      // Start from row 9 (below header row)
+      let currentRow = 9;
+      const cellStyle: Partial<ExcelJS.Style> = {
+        border: {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        },
+      };
+
+      branchRevenues.forEach((revenue, index) => {
+        cellData.push(
+          {
+            cellPosition: `A${currentRow}`,
+            value: (index + 1).toString(),
+            type: 'data',
+            style: cellStyle,
+          },
+          {
+            cellPosition: `B${currentRow}`,
+            value: moment(revenue.date).format('DD/MM/YYYY'),
+            type: 'data',
+            style: cellStyle,
+          },
+          {
+            cellPosition: `C${currentRow}`,
+            value: revenue.totalOrder,
+            type: 'data',
+            style: cellStyle,
+          },
+          {
+            cellPosition: `D${currentRow}`,
+            value: revenue.originalAmount,
+            type: 'data',
+            style: cellStyle,
+          },
+          {
+            cellPosition: `E${currentRow}`,
+            value: revenue.promotionAmount,
+            type: 'data',
+            style: cellStyle,
+          },
+          {
+            cellPosition: `F${currentRow}`,
+            value: revenue.voucherAmount,
+            type: 'data',
+            style: cellStyle,
+          },
+          {
+            cellPosition: `G${currentRow}`,
+            value: '',
+            type: 'data',
+            style: cellStyle,
+          },
+          {
+            cellPosition: `H${currentRow}`,
+            value: revenue.totalAmount,
+            type: 'data',
+            style: cellStyle,
+          },
+        );
+
+        totalOriginalAmount += revenue.originalAmount;
+        totalPromotionAmount += revenue.promotionAmount;
+        totalVoucherAmount += revenue.voucherAmount;
+        totalAmount += revenue.totalAmount;
+        totalOrder += revenue.totalOrder;
+        currentRow++;
+      });
+
+      const totalRowStyle: Partial<ExcelJS.Style> = {
+        font: { bold: true },
+        fill: {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'e6e665' },
+        },
+        ...cellStyle,
+      };
+      cellData.push(
+        {
+          cellPosition: `A${currentRow}`,
+          value: 'Tổng',
+          type: 'data',
+          style: totalRowStyle,
+        },
+        {
+          cellPosition: `B${currentRow}`,
+          value: '',
+          type: 'data',
+          style: totalRowStyle,
+        },
+        {
+          cellPosition: `C${currentRow}`,
+          value: totalOrder,
+          type: 'data',
+          style: totalRowStyle,
+        },
+        {
+          cellPosition: `D${currentRow}`,
+          value: totalOriginalAmount,
+          type: 'data',
+          style: totalRowStyle,
+        },
+        {
+          cellPosition: `E${currentRow}`,
+          value: totalPromotionAmount,
+          type: 'data',
+          style: totalRowStyle,
+        },
+        {
+          cellPosition: `F${currentRow}`,
+          value: totalVoucherAmount,
+          type: 'data',
+          style: totalRowStyle,
+        },
+        {
+          cellPosition: `G${currentRow}`,
+          value: '',
+          type: 'data',
+          style: totalRowStyle,
+        },
+        {
+          cellPosition: `H${currentRow}`,
+          value: totalAmount,
+          type: 'data',
+          style: totalRowStyle,
+        },
+      );
+
+      return this.fileService.generateExcelFile({
+        filename: 'export-revenue.xlsx',
+        cellData,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Error when exporting branch revenue to Excel: ${error.message}`,
+        error.stack,
+        context,
+      );
+      throw new BranchRevenueException(
+        BranchRevenueValidation.EXPORT_BRANCH_REVENUE_ERROR,
+        error.message,
+      );
+    }
   }
 }
