@@ -111,3 +111,28 @@ export class RefreshSpecificRangeBranchRevenueQueryDto {
   @Type(() => Date)
   endDate: Date;
 }
+export class ExportBranchRevenueQueryDto {
+  @AutoMap()
+  @ApiProperty({ required: true, example: 'branch-slug' })
+  @IsNotEmpty({
+    message: BranchRevenueValidation.BRANCH_SLUG_IS_NOT_EMPTY.message,
+  })
+  @Type(() => String)
+  branch: string;
+
+  @AutoMap()
+  @ApiProperty({ required: true, example: '2025-04-05' })
+  @IsNotEmpty({
+    message: BranchRevenueValidation.START_DATE_IS_NOT_EMPTY.message,
+  })
+  @Type(() => Date)
+  startDate: Date;
+
+  @AutoMap()
+  @ApiProperty({ required: true, example: '2025-04-06' })
+  @IsNotEmpty({
+    message: BranchRevenueValidation.END_DATE_IS_NOT_EMPTY.message,
+  })
+  @Type(() => Date)
+  endDate: Date;
+}
