@@ -10,6 +10,8 @@ import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
 
 import { DataSource } from 'typeorm';
+import { BranchUtils } from 'src/branch/branch.utils';
+import { FileService } from 'src/file/file.service';
 
 describe('BranchRevenueService', () => {
   let service: BranchRevenueService;
@@ -19,6 +21,8 @@ describe('BranchRevenueService', () => {
       providers: [
         BranchRevenueService,
         TransactionManagerService,
+        BranchUtils,
+        FileService,
         { provide: DataSource, useFactory: dataSourceMockFactory },
         {
           provide: MAPPER_MODULE_PROVIDER,
