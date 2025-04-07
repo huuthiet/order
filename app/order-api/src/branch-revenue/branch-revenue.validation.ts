@@ -11,7 +11,8 @@ export const END_DATE_IS_NOT_EMPTY = 'END_DATE_IS_NOT_EMPTY';
 export const START_DATE_ONLY_SMALLER_OR_EQUAL_END_DATE =
   'START_DATE_ONLY_SMALLER_OR_EQUAL_END_DATE';
 export const BRANCH_SLUG_IS_NOT_EMPTY = 'BRANCH_SLUG_IS_NOT_EMPTY';
-
+export const START_DATE_AND_END_DATE_MUST_BE_PROVIDED =
+  'START_DATE_AND_END_DATE_MUST_BE_PROVIDED';
 export type TBranchRevenueErrorCodeKey =
   | typeof REFRESH_BRANCH_REVENUE_ERROR
   | typeof MAY_BE_DUPLICATE_RECORD_BRANCH_REVENUE_ONE_DAY_IN_DATABASE
@@ -20,7 +21,8 @@ export type TBranchRevenueErrorCodeKey =
   | typeof END_DATE_IS_NOT_EMPTY
   | typeof START_DATE_ONLY_SMALLER_OR_EQUAL_END_DATE
   | typeof CREATE_BRANCH_REVENUE_ERROR
-  | typeof BRANCH_SLUG_IS_NOT_EMPTY;
+  | typeof BRANCH_SLUG_IS_NOT_EMPTY
+  | typeof START_DATE_AND_END_DATE_MUST_BE_PROVIDED;
 
 // 143001 – 143200
 export type TBranchRevenueErrorCode = {
@@ -33,6 +35,7 @@ export type TBranchRevenueErrorCode = {
   START_DATE_ONLY_SMALLER_OR_EQUAL_END_DATE: TErrorCodeValue;
   BRANCH_SLUG_IS_NOT_EMPTY: TErrorCodeValue;
   EXPORT_BRANCH_REVENUE_ERROR: TErrorCodeValue;
+  START_DATE_AND_END_DATE_MUST_BE_PROVIDED: TErrorCodeValue;
 };
 
 export const BranchRevenueValidation: TBranchRevenueErrorCode = {
@@ -62,5 +65,9 @@ export const BranchRevenueValidation: TBranchRevenueErrorCode = {
   EXPORT_BRANCH_REVENUE_ERROR: createErrorCode(
     143209,
     'Error when exporting branch revenue to Excel',
+  ),
+  START_DATE_AND_END_DATE_MUST_BE_PROVIDED: createErrorCode(
+    143210,
+    'Start date and end date must be provided',
   ),
 };
