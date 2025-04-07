@@ -9,56 +9,56 @@ import { repositoryMockFactory } from 'src/test-utils/repository-mock.factory';
 import { dataSourceMockFactory } from 'src/test-utils/datasource-mock.factory';
 import { TransactionManagerService } from 'src/db/transaction-manager.service';
 import { File } from 'src/file/file.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { BranchUtils } from 'src/branch/branch.utils';
 import { FileService } from 'src/file/file.service';
-import { Between } from 'typeorm';
-import { BranchRevenueException } from './branch-revenue.exception';
-import { MockType } from 'src/test-utils/repository-mock.factory';
+// import { Between } from 'typeorm';
+// import { BranchRevenueException } from './branch-revenue.exception';
+// import { MockType } from 'src/test-utils/repository-mock.factory';
 import { mapperMockFactory } from 'src/test-utils/mapper-mock.factory';
-import { Mapper } from '@automapper/core';
-import {
-  ExportBranchRevenueQueryDto,
-  GetBranchRevenueQueryDto,
-} from './branch-revenue.dto';
-import { BranchRevenueValidation } from './branch-revenue.validation';
+// import { Mapper } from '@automapper/core';
+// import {
+//   ExportBranchRevenueQueryDto,
+//   GetBranchRevenueQueryDto,
+// } from './branch-revenue.dto';
+// import { BranchRevenueValidation } from './branch-revenue.validation';
 
 describe('BranchRevenueService', () => {
   let service: BranchRevenueService;
-  let branchRevenueRepositoryMock: MockType<Repository<BranchRevenue>>;
-  let fileService: FileService;
-  let branchUtils: BranchUtils;
-  let mapperMock: MockType<Mapper>;
+  // let branchRevenueRepositoryMock: MockType<Repository<BranchRevenue>>;
+  // let fileService: FileService;
+  // let branchUtils: BranchUtils;
+  // let mapperMock: MockType<Mapper>;
 
-  const mockBranch = {
-    id: '1',
-    name: 'Test Branch',
-    address: 'Test Address',
-    slug: 'test-branch',
-  };
+  // const mockBranch = {
+  //   id: '1',
+  //   name: 'Test Branch',
+  //   address: 'Test Address',
+  //   slug: 'test-branch',
+  // };
 
-  const mockBranchRevenues = [
-    {
-      id: '1',
-      branchId: '1',
-      date: new Date('2024-01-01'),
-      totalOrder: 10,
-      originalAmount: 1000,
-      promotionAmount: 100,
-      voucherAmount: 50,
-      totalAmount: 850,
-    },
-    {
-      id: '2',
-      branchId: '1',
-      date: new Date('2024-01-02'),
-      totalOrder: 15,
-      originalAmount: 1500,
-      promotionAmount: 150,
-      voucherAmount: 75,
-      totalAmount: 1275,
-    },
-  ];
+  // const mockBranchRevenues = [
+  //   {
+  //     id: '1',
+  //     branchId: '1',
+  //     date: new Date('2024-01-01'),
+  //     totalOrder: 10,
+  //     originalAmount: 1000,
+  //     promotionAmount: 100,
+  //     voucherAmount: 50,
+  //     totalAmount: 850,
+  //   },
+  //   {
+  //     id: '2',
+  //     branchId: '1',
+  //     date: new Date('2024-01-02'),
+  //     totalOrder: 15,
+  //     originalAmount: 1500,
+  //     promotionAmount: 150,
+  //     voucherAmount: 75,
+  //     totalAmount: 1275,
+  //   },
+  // ];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -104,13 +104,13 @@ describe('BranchRevenueService', () => {
     }).compile();
 
     service = module.get<BranchRevenueService>(BranchRevenueService);
-    branchRevenueRepositoryMock = module.get(getRepositoryToken(BranchRevenue));
-    fileService = module.get<FileService>(FileService);
-    branchUtils = module.get<BranchUtils>(BranchUtils);
-    mapperMock = module.get(MAPPER_MODULE_PROVIDER);
+    // branchRevenueRepositoryMock = module.get(getRepositoryToken(BranchRevenue));
+    // fileService = module.get<FileService>(FileService);
+    // branchUtils = module.get<BranchUtils>(BranchUtils);
+    // mapperMock = module.get(MAPPER_MODULE_PROVIDER);
 
-    // Mock BranchUtils
-    branchUtils.getBranch = jest.fn().mockResolvedValue(mockBranch);
+    // // Mock BranchUtils
+    // branchUtils.getBranch = jest.fn().mockResolvedValue(mockBranch);
   });
 
   it('should be defined', () => {
