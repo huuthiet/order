@@ -190,9 +190,8 @@ export default function OrderItemDetailSheet({
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="w-[90%] p-0 flex flex-col max-h-screen">
-        <SheetHeader className="px-2 sticky top-0 z-10" >
-          <SheetTitle className="flex flex-wrap justify-between items-center mt-8">
-            {t('order.orderDetail')}
+        <SheetHeader className="px-2">
+          <SheetTitle className="flex flex-wrap justify-start items-center mt-8">
             <div className="flex gap-2">
               {selectedOrder?.result?.type === OrderTypeEnum.TAKE_OUT ? (
                 <CreateOrderTrackingByStaffDialog disabled={getSelectedItems().length === 0} />

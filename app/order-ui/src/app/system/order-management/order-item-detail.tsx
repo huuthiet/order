@@ -163,8 +163,9 @@ export default function OrderItemDetail({ order }: OrderItemDetailProps) {
         <div className="flex flex-col gap-3 py-4 px-2 sm:px-4 bg-white rounded-lg border shadow-sm">
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center">
-              <Badge className="h-9 text-md bg-primary/10 text-primary ">
-                {orderItem.variant.product.name}
+              <Badge className="h-9 text-md bg-primary/10 text-primary hover:bg-primary/10">
+                <span className='overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-[800px]'>
+                  {orderItem.variant.product.name}</span>
               </Badge>
               <Badge variant="outline" className="text-xs">
                 Size {orderItem.variant.size?.name.toUpperCase()}

@@ -54,10 +54,6 @@ export default function OrderManagementPage() {
     }
   }, [setSearchParams, slug, setIsSheetOpen, setOrderSlug, selectedRow])
 
-  const handleCloseSheet = () => {
-    setIsSheetOpen(false)
-  }
-
   const { data, isLoading, refetch } = useOrders({
     hasPaging: true,
     page: pagination.pageIndex,
@@ -156,7 +152,7 @@ export default function OrderManagementPage() {
 
         <OrderItemDetailSheet
           isOpen={isSheetOpen}
-          onClose={handleCloseSheet}
+          onClose={() => setIsSheetOpen(false)}
         />
       </div>
     </div>
