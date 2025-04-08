@@ -66,6 +66,7 @@
     "6": "Sunday",
     "noDayOfWeek": "None",
     "today": "Today",
+    "yesterday": "Yesterday",
     "inWeek": "In week",
     "inMonth": "In month",
     "inYear": "In year"

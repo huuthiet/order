@@ -16,6 +16,7 @@ import { IOrder, OrderStatus } from '@/types'
 import { usePendingOrdersColumns } from './DataTable/columns'
 import { OrderItemDetailSheet } from '@/components/app/sheet'
 import { OrderFilter } from './DataTable/filters'
+import moment from 'moment'
 
 export default function OrderManagementPage() {
   const { t } = useTranslation(['menu'])
@@ -37,8 +38,8 @@ export default function OrderManagementPage() {
   const [status, setStatus] = useState<OrderStatus | 'all'>('all')
   const [searchParams, setSearchParams] = useSearchParams()
   const [slug, setSlug] = useState(searchParams.get('slug') || selectedRow)
-  const [startDate, setStartDate] = useState<string | null>(null)
-  const [endDate, setEndDate] = useState<string | null>(null)
+  const [startDate, setStartDate] = useState<string>(moment().format('YYYY-MM-DD'))
+  const [endDate, setEndDate] = useState<string>(moment().format('YYYY-MM-DD'))
 
   useEffect(() => {
     setSearchParams((prev) => {
@@ -63,8 +64,8 @@ export default function OrderManagementPage() {
     size: pagination.pageSize,
     order: 'DESC',
     branchSlug: userInfo?.branch?.slug,
-    startDate: startDate || undefined,
-    endDate: endDate || undefined,
+    startDate: startDate,
+    endDate: endDate,
     status: status !== 'all' ? status : [OrderStatus.PAID, OrderStatus.SHIPPING, OrderStatus.FAILED].join(','),
   })
 
