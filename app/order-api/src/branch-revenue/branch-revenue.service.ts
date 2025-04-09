@@ -1074,13 +1074,13 @@ export class BranchRevenueService {
         getSpecificRangeBranchRevenueByHourClause,
         [startDateQuery, endDateQuery, branchData.id],
       );
-    console.log('results', results);
+    // console.log('results', results);
     const branchRevenues = this.mapper.mapArray(
       results,
       BranchRevenueQueryResponseForHourDto,
       BranchRevenue,
     );
-    console.log('branchRevenues', branchRevenues);
+    // console.log('branchRevenues', branchRevenues);
     let totalOriginalAmount = 0;
     let totalPromotionAmount = 0;
     let totalVoucherAmount = 0;
@@ -1106,7 +1106,7 @@ export class BranchRevenueService {
       totalAmountCash += revenue.totalAmountCash;
       totalAmountInternal += revenue.totalAmountInternal;
     });
-    console.log('totalOrderBank', totalOrderBank);
+    // console.log('totalOrderBank', totalOrderBank);
 
     const logoPath = resolve('public/images/logo.png');
     const logoBuffer = readFileSync(logoPath);
