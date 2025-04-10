@@ -63,29 +63,29 @@ export default function OrderItemList({
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${pending > 0 ? 'bg-yellow-100' : 'bg-gray-100'}`}>
                   <Clock className={`w-4 h-4 ${pending > 0 ? 'text-yellow-500' : 'text-gray-400'}`} />
                 </div>
-                <span className="mt-1 text-xs font-bold text-muted-foreground">{t('order.deliveryPending')}</span>
-                <span className="text-xs text-gray-500">{pending} {t('order.items')}</span>
+                <span className="mt-1 text-[0.5rem] sm:text-xs font-bold text-muted-foreground">{t('order.deliveryPending')}</span>
+                <span className="text-[0.5rem] sm:text-xs text-gray-500">{pending} {t('order.items')}</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${running > 0 ? 'bg-blue-100' : 'bg-gray-100'}`}>
                   <AlertCircle className={`w-4 h-4 ${running > 0 ? 'text-blue-500' : 'text-gray-400'}`} />
                 </div>
-                <span className="mt-1 text-xs font-bold text-muted-foreground">{t('order.shipping')}</span>
-                <span className="text-xs text-gray-500">{running} {t('order.items')}</span>
+                <span className="mt-1 text-[0.5rem] sm:text-xs font-bold text-muted-foreground">{t('order.shipping')}</span>
+                <span className="text-[0.5rem] sm:text-xs text-gray-500">{running} {t('order.items')}</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${completed > 0 ? 'bg-green-100' : 'bg-gray-100'}`}>
                   <CheckCircle2 className={`w-4 h-4 ${completed > 0 ? 'text-green-500' : 'text-gray-400'}`} />
                 </div>
-                <span className="mt-1 text-xs font-bold text-muted-foreground">{t('order.completed')}</span>
-                <span className="text-xs text-gray-500">{completed} {t('order.items')}</span>
+                <span className="mt-1 text-[0.5rem] sm:text-xs font-bold text-muted-foreground">{t('order.completed')}</span>
+                <span className="text-[0.5rem] sm:text-xs text-gray-500">{completed} {t('order.items')}</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${failed > 0 ? 'bg-red-100' : 'bg-gray-100'}`}>
                   <XCircle className={`w-4 h-4 ${failed > 0 ? 'text-red-500' : 'text-gray-400'}`} />
                 </div>
-                <span className="mt-1 text-xs font-bold text-muted-foreground">{t('order.failed')}</span>
-                <span className="text-xs text-gray-500">{failed} {t('order.items')}</span>
+                <span className="mt-1 text-[0.5rem] sm:text-xs font-bold text-muted-foreground">{t('order.failed')}</span>
+                <span className="text-[0.5rem] sm:text-xs text-gray-500">{failed} {t('order.items')}</span>
               </div>
             </div>
           </div>
