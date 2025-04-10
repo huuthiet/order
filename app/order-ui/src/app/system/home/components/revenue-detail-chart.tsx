@@ -28,13 +28,14 @@ export default function RevenueDetailChart({
 
   const formatDate = useCallback(
     (date: string) => {
+      const parsed = moment(date, 'YYYY-MM-DD', true)
       switch (revenueType) {
         case RevenueTypeQuery.DAILY:
-          return moment(date).format('DD/MM')
+          return parsed.format('DD/MM')
         case RevenueTypeQuery.HOURLY:
-          return moment(date).format('DD/MM HH:mm')
+          return parsed.format('DD/MM HH:mm')
         default:
-          return moment(date).format('DD/MM')
+          return parsed.format('DD/MM')
       }
     },
     [revenueType],
@@ -55,7 +56,7 @@ export default function RevenueDetailChart({
         tooltip: {
           trigger: 'axis' as const,
           formatter: function (params: TooltipParams[]) {
-            const date = formatDate(params[0].name as string)
+            const date = (params[0].name as string)
             const revenue = formatCurrency(params[1].value)
             const orders = params[0].value
             return `${date}<br/>${params[1].seriesName}: ${revenue}<br/>${params[0].seriesName}: ${orders} ${t('revenue.orderUnit')}`

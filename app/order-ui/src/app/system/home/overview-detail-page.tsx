@@ -87,7 +87,10 @@ export default function OverviewDetailPage() {
                 <span className='text-sm text-muted-foreground'>{t('dashboard.filter')}</span>
                 <Badge className='flex gap-1 items-center h-8 text-sm border-primary text-primary bg-primary/10' variant='outline'>
                   {startDate === endDate ? moment(startDate).format('DD/MM/YYYY') : `${moment(startDate).format('DD/MM/YYYY')} - ${moment(endDate).format('DD/MM/YYYY')}`}
-                  <span className='cursor-pointer' onClick={() => setStartDate(moment().format('YYYY-MM-DD'))}>
+                  <span className='cursor-pointer' onClick={() => {
+                    setStartDate(moment().format('YYYY-MM-DD'))
+                    setEndDate(moment().format('YYYY-MM-DD'))
+                  }}>
                     <CircleX className='w-4 h-4' />
                   </span>
                 </Badge>
