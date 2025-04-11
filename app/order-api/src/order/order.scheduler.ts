@@ -48,7 +48,7 @@ export class OrderScheduler {
     this.schedulerRegistry.addTimeout(jobName, job);
   }
 
-  @Timeout(1000)
+  @Timeout(10000)
   async updateReferenceNumberForPaidOrdersAndInvoices() {
     const context = `${OrderScheduler.name}.${this.updateReferenceNumberForPaidOrdersAndInvoices.name}`;
 
