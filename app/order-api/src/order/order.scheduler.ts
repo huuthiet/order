@@ -78,9 +78,11 @@ export class OrderScheduler {
           Object.assign(order, {
             referenceNumber: firstReferenceNumber,
           });
-          Object.assign(order.invoice, {
-            referenceNumber: firstReferenceNumber,
-          });
+          if (order.invoice) {
+            Object.assign(order.invoice, {
+              referenceNumber: firstReferenceNumber,
+            });
+          }
           firstReferenceNumber++;
         }
         // console.log({ orders });
