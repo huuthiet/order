@@ -41,8 +41,7 @@ export const getCurrentBranchRevenueClause = `
     GROUP BY 
         o.branch_column, DATE(o.created_at_column)
     ORDER BY 
-        o.branch_column, DATE(o.created_at_column) ASC
-    FOR UPDATE;
+        o.branch_column, DATE(o.created_at_column) ASC;
 `;
 
 export const getYesterdayBranchRevenueClause = `
