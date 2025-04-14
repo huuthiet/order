@@ -74,23 +74,12 @@ export class OrderScheduler {
             },
           },
           order: {
-            createdAt: 'ASC',
+            // createdAt: 'ASC',
+            payment: { updatedAt: 'ASC' },
           },
           relations: ['invoice'],
         });
-        this.logger.log(
-          `Update reference number for branch, number of order: ${orders.length}`,
-          context,
-        );
         for (const order of orders) {
-          this.logger.log(
-            `Update reference number for branch, order: ${order.id}`,
-            context,
-          );
-          this.logger.log(
-            `Update reference number for branch, invoice: ${order.invoice?.id}`,
-            context,
-          );
           Object.assign(order, {
             referenceNumber: firstReferenceNumber,
           });
@@ -101,13 +90,9 @@ export class OrderScheduler {
           }
           firstReferenceNumber++;
         }
-        // console.log({ orders });
-        // console.log('length', orders.length);
         updatedOrders.push(...orders);
       }
-      // console.log({ length: updatedOrders.length });
-      // console.log({ updatedOrders });
-      await this.orderRepository.save(updatedOrders);
+      // await this.orderRepository.save(updatedOrders);
       this.logger.log(
         `Update reference number for orders: ${updatedOrders.length}`,
         context,

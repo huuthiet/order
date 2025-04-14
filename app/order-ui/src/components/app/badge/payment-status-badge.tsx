@@ -14,9 +14,9 @@ export default function PaymentStatusBadge({
   const getBadgeColor = (status: paymentStatus) => {
     switch (status) {
       case paymentStatus.PENDING:
-        return 'bg-yellow-500 text-white'
+        return 'bg-yellow-400 text-white'
       case paymentStatus.COMPLETED:
-        return 'bg-green-500 text-white'
+        return 'bg-emerald-500 text-white'
       case paymentStatus.CANCELLED:
         return 'bg-destructive text-white'
     }
