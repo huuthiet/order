@@ -76,7 +76,7 @@ export const CreateOrderTrackingByStaffForm: React.FC<
           clearSelectedItems()
 
           // Show success toast
-          showToast(t('toast.createOrderTrackingSuccess'))
+          showToast(t('toast.createOrderTrackingByStaffSuccess'))
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           showToast(t('toast.errorUpdatingOrder'))
@@ -107,6 +107,7 @@ export const CreateOrderTrackingByStaffForm: React.FC<
                         className="flex-1"
                         disabled
                         value={name}
+                        readOnly={true}
                         onChange={(e) => {
                           const updatedNames = [
                             ...form.getValues('productName'),
