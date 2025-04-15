@@ -31,26 +31,26 @@ export default function MenuDetailManagementPage() {
         </title>
         <meta name='description' content={tHelmet('helmet.menu.title')} />
       </Helmet>
-      <div className="flex items-center w-full gap-1 mb-4 text-lg">
+      <div className="flex gap-1 items-center mb-4 w-full text-lg">
         <SquareMenu />
         {t('menu.title')}
         {' - '}
         {moment(menuDetailData?.date).format('DD/MM/YYYY')}
       </div>
       <div className="flex justify-end pr-2 mb-4">
-        <AddMenuItemSheet menuSlug={menuDetailData?.slug} />
+        <AddMenuItemSheet branch={menuDetailData?.branch.slug} menuSlug={menuDetailData?.slug} />
       </div>
       <div className="flex flex-row gap-2">
         {/* List menu items */}
         <div
           className={
-            `transition-all duration-300 ease-in-out w-full`}
+            `w-full transition-all duration-300 ease-in-out`}
         >
           <div
             className={`grid grid-cols-1 gap-4 md:grid-cols-4`}
           >
             {menuDetailData?.menuItems.map((item) => (
-              <MenuItemCard onSuccess={refetch} menuItem={item} isTemplate={menuDetailData.isTemplate}/>
+              <MenuItemCard onSuccess={refetch} menuItem={item} isTemplate={menuDetailData.isTemplate} />
             ))}
           </div>
         </div>

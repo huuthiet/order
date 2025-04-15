@@ -19,13 +19,13 @@ import { DateAndTimePicker, SimpleDatePicker } from '../picker'
 import { IRevenueQuery } from '@/types'
 import { useBranchStore } from '@/stores'
 
-interface IFormExportRevenueProps {
+interface IRevenueFilterFormProps {
     type: RevenueTypeQuery
     onSubmit: (data: IRevenueQuery) => void
     onSuccess: () => void
 }
 
-export const ExportRevenueForm: React.FC<IFormExportRevenueProps> = ({
+export const RevenueFilterForm: React.FC<IRevenueFilterFormProps> = ({
     onSubmit,
     type,
 }) => {
