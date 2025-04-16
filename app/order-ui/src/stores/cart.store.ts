@@ -172,7 +172,7 @@ export const useCartItemStore = create<ICartItemStore>()(
           })
         }
       },
-      
+
       removeCartItem: (cartItemId: string) => {
         const { cartItems } = get();
         if (cartItems) {
@@ -189,6 +189,7 @@ export const useCartItemStore = create<ICartItemStore>()(
                 ...cartItems,
                 orderItems: updatedOrderItems,
               },
+              lastModified: moment().valueOf(), // Thêm cập nhật lastModified để trigger re-render
             });
           }
 
