@@ -17,8 +17,6 @@ import { PdfService } from 'src/pdf/pdf.service';
 import { QrCodeService } from 'src/qr-code/qr-code.service';
 import { ChefOrderItemUtils } from 'src/chef-order-item/chef-order-item.utils';
 import { JobRecoveryService } from './job.recovery';
-import { MailModule } from 'src/mail/mail.module';
-import { NotificationModule } from 'src/notification/notification.module';
 import { ChefOrder } from 'src/chef-order/chef-order.entity';
 import { ChefOrderItem } from 'src/chef-order-item/chef-order-item.entity';
 import { Invoice } from 'src/invoice/invoice.entity';
