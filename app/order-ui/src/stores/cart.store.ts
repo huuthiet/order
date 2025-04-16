@@ -189,7 +189,8 @@ export const useCartItemStore = create<ICartItemStore>()(
                 ...cartItems,
                 orderItems: updatedOrderItems,
               },
-            })
+              lastModified: moment().valueOf(), // Thêm cập nhật lastModified để trigger re-render
+            });
           }
 
           showToast(i18next.t('toast.removeSuccess')) // Hiển thị thông báo thành công
