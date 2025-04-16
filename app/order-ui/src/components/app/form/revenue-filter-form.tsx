@@ -36,7 +36,7 @@ export const RevenueFilterForm: React.FC<IRevenueFilterFormProps> = ({
         resolver: zodResolver(exportRevenueSchema),
         defaultValues: {
             branch: branch?.slug,
-            startDate: type === RevenueTypeQuery.HOURLY ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD'),
+            startDate: type === RevenueTypeQuery.HOURLY ? moment().startOf('day').format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD'),
             endDate: type === RevenueTypeQuery.HOURLY ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD'),
             type: type || RevenueTypeQuery.DAILY,
         },
@@ -46,7 +46,7 @@ export const RevenueFilterForm: React.FC<IRevenueFilterFormProps> = ({
         form.reset({
             branch: branch?.slug,
             startDate: type === RevenueTypeQuery.HOURLY
-                ? moment().format('YYYY-MM-DD HH:mm:ss')
+                ? moment().startOf('day').format('YYYY-MM-DD HH:mm:ss')
                 : moment().format('YYYY-MM-DD'),
             endDate: type === RevenueTypeQuery.HOURLY
                 ? moment().format('YYYY-MM-DD HH:mm:ss')

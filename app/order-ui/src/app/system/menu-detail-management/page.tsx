@@ -46,13 +46,18 @@ export default function MenuDetailManagementPage() {
           className={
             `w-full transition-all duration-300 ease-in-out`}
         >
-          <div
-            className={`grid grid-cols-1 gap-4 md:grid-cols-4`}
-          >
-            {menuDetailData?.menuItems.map((item) => (
+
+          {menuDetailData && menuDetailData?.menuItems.length > 0 ? menuDetailData?.menuItems.map((item) => (
+            <div
+              className={`grid grid-cols-1 gap-4 md:grid-cols-4`}
+            >
               <MenuItemCard onSuccess={refetch} menuItem={item} isTemplate={menuDetailData.isTemplate} />
-            ))}
-          </div>
+            </div>
+          )) : <div className="flex justify-center items-center h-[calc(100vh-200px)]">
+            <p className="text-gray-500">
+              {t('menu.noMenuItems')}
+            </p>
+          </div>}
         </div>
       </div>
     </div>

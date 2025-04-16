@@ -19,15 +19,15 @@ export default function OverviewDetailPage() {
   const { t: tCommon } = useTranslation(['common'])
   const { t: tToast } = useTranslation('toast')
   const { branch } = useBranchStore()
-  const [revenueType, setRevenueType] = useState<RevenueTypeQuery>(RevenueTypeQuery.DAILY);
+  const [revenueType, setRevenueType] = useState<RevenueTypeQuery>(RevenueTypeQuery.HOURLY);
 
   const [startDate, setStartDate] = useState<string>(
-    moment().startOf(revenueType === RevenueTypeQuery.HOURLY ? 'hour' : 'day').format('YYYY-MM-DD HH:mm:ss')
-  );
+    moment().startOf('day').format('YYYY-MM-DD HH:mm:ss')
+  )
 
   const [endDate, setEndDate] = useState<string>(
-    moment().endOf(revenueType === RevenueTypeQuery.HOURLY ? 'hour' : 'day').format('YYYY-MM-DD HH:mm:ss')
-  );
+    moment().format('YYYY-MM-DD HH:mm:ss')
+  )
   const { mutate: refreshRevenue } = useLatestRevenue()
 
   const { data, isLoading, refetch: refetchRevenue } = useBranchRevenue({
