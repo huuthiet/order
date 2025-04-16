@@ -11,6 +11,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui'
+import { Role } from '@/constants'
 
 export default function CustomerSearchInput() {
     const { t } = useTranslation(['menu'])
@@ -29,6 +30,7 @@ export default function CustomerSearchInput() {
                 page: pagination.pageIndex,
                 pageSize: pagination.pageSize,
                 phonenumber: debouncedInputValue,
+                role: Role.CUSTOMER,
             }
             : null, // Not calling API if debouncedInputValue is empty
     )
