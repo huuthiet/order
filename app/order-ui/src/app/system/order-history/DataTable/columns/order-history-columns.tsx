@@ -226,7 +226,7 @@ export const useOrderHistoryColumns = (): ColumnDef<IOrder>[] => {
                 )}
 
                 {/* Export payment */}
-                {order?.payment?.slug && (
+                {order?.payment?.slug && order?.payment?.paymentMethod === PaymentMethod.BANK_TRANSFER && order?.payment?.statusCode === paymentStatus.PENDING && (
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
