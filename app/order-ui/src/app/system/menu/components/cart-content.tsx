@@ -36,7 +36,6 @@ export function CartContent() {
           <h1 className="text-lg font-semibold">{t('menu.order')}</h1>
           <CreateCustomerDialog />
         </div>
-
       </div>
 
       {/* Scrollable Content */}
