@@ -1,13 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { SchedulerRegistry, Timeout } from '@nestjs/schedule';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { OrderUtils } from './order.utils';
 import { Order } from './order.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Branch } from 'src/branch/branch.entity';
 import { Payment } from 'src/payment/payment.entity';
-import { PaymentStatus } from 'src/payment/payment.constants';
 
 @Injectable()
 export class OrderScheduler {
