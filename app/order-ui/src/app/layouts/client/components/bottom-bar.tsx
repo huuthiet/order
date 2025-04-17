@@ -10,8 +10,8 @@ export function BottomBar() {
     const { t } = useTranslation('sidebar')
 
     return (
-        <div className="fixed bottom-0 left-0 z-50 w-full h-16 my-auto bg-white">
-            <div className="grid h-full max-w-lg grid-cols-4 mx-auto">
+        <div className="fixed bottom-0 left-0 z-50 my-auto w-full h-16 bg-white dark:bg-black">
+            <div className="grid grid-cols-4 mx-auto max-w-lg h-full">
                 <NavLink
                     to={ROUTE.HOME}
                     className={cn(
