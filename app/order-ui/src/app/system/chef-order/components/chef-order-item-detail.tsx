@@ -75,7 +75,7 @@ export default function ChefOrderItemDetail({ chefOrderItem, chefOrderStatus, on
               </div>
             </div>
             <div className="flex gap-3 justify-end w-full sm:col-span-4">
-              {chefOrderStatus !== ChefOrderStatus.ACCEPTED && (
+              {chefOrderStatus !== ChefOrderStatus.ACCEPTED && chefOrderStatus !== ChefOrderStatus.COMPLETED && (
                 <span
                   className="flex gap-2 items-center w-full text-destructive sm:w-fit"
                 >
