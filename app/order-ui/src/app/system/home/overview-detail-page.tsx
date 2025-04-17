@@ -84,7 +84,6 @@ export default function OverviewDetailPage() {
     setRevenueType(data.type || RevenueTypeQuery.DAILY);
   };
 
-
   return (
     <div className="min-h-screen">
       <main className='flex flex-col gap-2 pb-4'>
