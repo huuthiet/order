@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui";
 
-import { DeliveryOrderType } from "@/types";
+import { OrderItemStatus } from "@/types";
 
 interface SelectDeliveryOrderTypeProps {
   defaultValue?: string;
@@ -31,23 +31,24 @@ export default function DeliveryOrderTypeSelect({ defaultValue, onChange }: Sele
   return (
     <Select onValueChange={onChange} value={selectedValue}>
       <SelectTrigger className="w-fit border-muted-foreground/40">
-        <SelectValue placeholder={t('branch.chooseBranch')} />
+        <SelectValue placeholder={t('order.deliveryOrderType')} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>
-            {t('order.deliveryOrderType')}
-          </SelectLabel>
-          <SelectItem value={DeliveryOrderType.PENDING}>
+          <SelectLabel>{t('order.deliveryOrderType')}</SelectLabel>
+          <SelectItem value={OrderItemStatus.ORDER_ITEM_LIST}>
+            {t('order.orderItemList')}
+          </SelectItem>
+          <SelectItem value={OrderItemStatus.PENDING}>
             {t('order.pending')}
           </SelectItem>
-          <SelectItem value={DeliveryOrderType.SHIPPING}>
-            {t('order.shipping')}
+          <SelectItem value={OrderItemStatus.RUNNING}>
+            {t('order.running')}
           </SelectItem>
-          <SelectItem value={DeliveryOrderType.COMPLETED}>
+          <SelectItem value={OrderItemStatus.COMPLETED}>
             {t('order.completed')}
           </SelectItem>
-          <SelectItem value={DeliveryOrderType.FAILED}>
+          <SelectItem value={OrderItemStatus.FAILED}>
             {t('order.failed')}
           </SelectItem>
         </SelectGroup>

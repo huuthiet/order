@@ -191,6 +191,7 @@ export enum OrderStatus {
 }
 
 export enum OrderItemStatus {
+  ORDER_ITEM_LIST = 'orderItemList',
   PENDING = 'PENDING',
   RUNNING = 'RUNNING',
   COMPLETED = 'COMPLETED',

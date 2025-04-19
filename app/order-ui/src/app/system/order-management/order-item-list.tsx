@@ -6,6 +6,7 @@ import OrderItemDetail from './order-item-detail'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
 import { useIsMobile } from '@/hooks'
 import { DeliveryOrderTypeSelect } from '@/components/app/select'
+import { OrderInformationAccordion } from '@/components/app/accordion'
 
 interface IOrderItemListProps {
   orderDetailData?: IOrder
@@ -115,7 +116,10 @@ export default function OrderItemList({
 
       {!isMobile && (
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as OrderItemStatus)} className="w-full h-full rounded-lg border-2 sm:p-4">
-          <TabsList className={`grid grid-cols-4 ${isMobile ? 'mr-2' : ''} px-1 py-0 text-[0.5rem] sm:text-sm`}>
+          <TabsList className={`grid grid-cols-5 ${isMobile ? 'mr-2' : ''} px-1 py-0 text-[0.5rem] sm:text-sm`}>
+            <TabsTrigger value={OrderItemStatus.ORDER_ITEM_LIST} className="min-w-[6rem] whitespace-nowrap">
+              {isMobile ? `${t('order.orderItemListMobile')}` : `${t('order.orderItemList')}`}
+            </TabsTrigger>
             <TabsTrigger value={OrderItemStatus.PENDING} className="min-w-[6rem] whitespace-nowrap">
               {isMobile ? `${t('order.deliveryPendingMobile')} (${pending})` : `${t('order.deliveryPending')} (${pending})`}
             </TabsTrigger>
@@ -130,7 +134,20 @@ export default function OrderItemList({
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value={OrderItemStatus.PENDING} className={`h-[calc(100vh-26rem)]`}>
+          <TabsContent value={OrderItemStatus.ORDER_ITEM_LIST} className={`h-fit`}>
+            {/* <ScrollArea className="h-[calc(100vh-20em)]"> */}
+            {orderDetailData?.orderItems?.length && orderDetailData?.orderItems?.length > 0 ? (
+              <div key={orderDetailData?.slug} className="grid gap-4 items-center w-full">
+                <OrderInformationAccordion orderDetailData={orderDetailData} />
+              </div>
+            ) : (
+              <p className={`flex justify-center items-center h-[calc(100vh-21rem)] text-muted-foreground`}>
+                {tCommon('common.noData')}
+              </p>
+            )}
+            {/* </ScrollArea> */}
+          </TabsContent>
+          <TabsContent value={OrderItemStatus.PENDING} className={`h-[calc(100vh-25rem)]`}>
             {/* <ScrollArea className="h-[calc(100vh-20em)]"> */}
             {filteredItems.length > 0 ? (
               filteredItems.map((item) => (
@@ -145,7 +162,7 @@ export default function OrderItemList({
             )}
             {/* </ScrollArea> */}
           </TabsContent>
-          <TabsContent value={OrderItemStatus.RUNNING} className='h-[calc(100vh-26rem)]'>
+          <TabsContent value={OrderItemStatus.RUNNING} className='h-[calc(100vh-25rem)]'>
             {filteredItems.length > 0 ? (
               filteredItems.map((item) => (
                 <OrderItemDetail order={item} />
@@ -156,7 +173,7 @@ export default function OrderItemList({
               </p>
             )}
           </TabsContent>
-          <TabsContent value={OrderItemStatus.COMPLETED} className='h-[calc(100vh-26rem)]'>
+          <TabsContent value={OrderItemStatus.COMPLETED} className='h-[calc(100vh-25rem)]'>
             {filteredItems.length > 0 ? (
               filteredItems.map((item) => (
                 <div key={item.slug} className="grid gap-4 items-center w-full">
@@ -169,7 +186,7 @@ export default function OrderItemList({
               </p>
             )}
           </TabsContent>
-          <TabsContent value={OrderItemStatus.FAILED} className='h-[calc(100vh-26rem)]'>
+          <TabsContent value={OrderItemStatus.FAILED} className='h-[calc(100vh-25rem)]'>
             {filteredItems.length > 0 ? (
               filteredItems.map((item) => (
                 <div key={item.slug} className="grid gap-4 items-center w-full">
