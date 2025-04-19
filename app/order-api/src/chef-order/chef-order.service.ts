@@ -156,6 +156,7 @@ export class ChefOrderService {
     const chefOrder = await this.chefOrderUtils.getChefOrder({
       where: { slug },
       relations: [
+        'chefArea',
         'order.branch',
         'order.table',
         'chefOrderItems.orderItem.variant.size',
@@ -175,6 +176,7 @@ export class ChefOrderService {
     );
     const tableName = chefOrder.order.table?.name ?? 'Take out';
     const referenceNumber = chefOrder.order.referenceNumber;
+    const areaName = chefOrder.chefArea.name;
     const data = await this.pdfService.generatePdf(
       'chef-order',
       {
@@ -184,6 +186,7 @@ export class ChefOrderService {
         qrcode,
         referenceNumber,
         tableName,
+        areaName,
       },
       {
         width: '80mm',
