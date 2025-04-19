@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -22,14 +22,19 @@ export default function DeliveryOrderTypeSelect({ defaultValue, onChange }: Sele
   const { t } = useTranslation('menu')
   const [selectedValue, setSelectedValue] = useState<string | undefined>(defaultValue);
 
-  // Set selected branch if defaultValue matches
-  useEffect(() => {
-    setSelectedValue(defaultValue); // Update local state
-    onChange?.(defaultValue || '');
-  }, [defaultValue, onChange]);
+  // Set selected type if defaultValue matches
+  // useEffect(() => {
+  //   setSelectedValue(defaultValue); // Update local state
+  //   onChange?.(defaultValue || '');
+  // }, [defaultValue, onChange]);
+
+  const handleChange = (value: string) => {
+    setSelectedValue(value);
+    onChange?.(value);
+  }
 
   return (
-    <Select onValueChange={onChange} value={selectedValue}>
+    <Select onValueChange={handleChange} value={selectedValue}>
       <SelectTrigger className="w-fit border-muted-foreground/40">
         <SelectValue placeholder={t('order.deliveryOrderType')} />
       </SelectTrigger>

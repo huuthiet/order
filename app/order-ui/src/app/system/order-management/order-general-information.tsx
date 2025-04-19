@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { IOrder } from "@/types"
 import { formatCurrency } from "@/utils"
 
-export default function OrderInformationAccordion({ orderDetailData }: { orderDetailData: IOrder }) {
+export default function OrderInformation({ orderDetailData }: { orderDetailData: IOrder }) {
     const { t } = useTranslation('menu')
 
     const hasItems = orderDetailData?.orderItems && orderDetailData.orderItems.length > 0
