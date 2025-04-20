@@ -60,15 +60,21 @@ export default function RevenueDetailChart({
         tooltip: {
           trigger: 'axis' as const,
           formatter: function (params: TooltipParams[]) {
-            // console.log("check params", params)
-            const date = (params[0].name as string)
-            const revenue = formatCurrency(params[1].value)
+            const date = params[0].name as string
             const orders = params[0].value
-            return `${date}<br/>${params[1].seriesName}: ${revenue}<br/>${params[0].seriesName}: ${orders} ${t('revenue.orderUnit')}`
+            const cash = formatCurrency(params[1].value)
+            const bank = formatCurrency(params[2].value)
+            const internal = formatCurrency(params[3].value)
+
+            return `${date}<br/>
+              ${params[0].seriesName}: ${orders} ${t('revenue.orderUnit')}<br/>
+              ${params[1].seriesName}: ${cash}<br/>
+              ${params[2].seriesName}: ${bank}<br/>
+              ${params[3].seriesName}: ${internal}`
           },
         },
         legend: {
-          data: [t('revenue.order'), t('revenue.cash'), t('revenue.bank'), t('revenue.internal')],
+          data: [t('revenue.order'), t('revenue.cash'), t('revenue.bank'), t('revenue.internalWallet')],
         },
         xAxis: {
           type: 'category',
@@ -155,7 +161,7 @@ export default function RevenueDetailChart({
             },
           },
           {
-            name: t('revenue.internal'),
+            name: t('revenue.internalWallet'),
             type: 'bar',
             stack: 'revenue',
             data: sortedData.map((item) => item.totalAmountInternal),
