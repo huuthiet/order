@@ -143,7 +143,6 @@ export default function RevenueDetailChart({
           {
             name: t('revenue.cash'),
             type: 'bar',
-            stack: 'revenue',
             data: sortedData.map((item) => item.totalAmountCash),
             itemStyle: {
               color: '#4169E1',
@@ -153,7 +152,6 @@ export default function RevenueDetailChart({
           {
             name: t('revenue.bank'),
             type: 'bar',
-            stack: 'revenue',
             data: sortedData.map((item) => item.totalAmountBank),
             itemStyle: {
               color: '#FF4500',
@@ -163,7 +161,6 @@ export default function RevenueDetailChart({
           {
             name: t('revenue.internalWallet'),
             type: 'bar',
-            stack: 'revenue',
             data: sortedData.map((item) => item.totalAmountInternal),
             itemStyle: {
               color: '#32CD32',
