@@ -25,6 +25,7 @@ import { BranchUtils } from 'src/branch/branch.utils';
 import { Branch } from 'src/branch/branch.entity';
 import { ChefOrderItemUtils } from 'src/chef-order-item/chef-order-item.utils';
 import { PdfService } from 'src/pdf/pdf.service';
+import { SystemConfigService } from 'src/system-config/system-config.service';
 
 describe('ChefOrderController', () => {
   let controller: ChefOrderController;
@@ -43,6 +44,7 @@ describe('ChefOrderController', () => {
         BranchUtils,
         ChefOrderItemUtils,
         PdfService,
+        SystemConfigService,
         {
           provide: DataSource,
           useFactory: dataSourceMockFactory,

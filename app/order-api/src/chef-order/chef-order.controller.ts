@@ -179,4 +179,30 @@ export class ChefOrderController {
       disposition: `attachment; filename="Chef-order-${new Date().toISOString()}.pdf"`,
     });
   }
+
+  @Get(':slug/export/ticket')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Print chef order item ticket',
+  })
+  @ApiResponseWithType({
+    status: HttpStatus.OK,
+    description: 'The chef order item ticket was printed successfully',
+    type: String,
+  })
+  @ApiParam({
+    name: 'slug',
+    description: 'The slug of the chef order to be printed',
+    required: true,
+    example: '',
+  })
+  async printer(@Param('slug') slug: string) {
+    await this.chefOrderService.printChefOrderItemTicketApi(slug);
+    return {
+      message: 'The chef order item ticket was printed successfully',
+      statusCode: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      result: 'Printing chef order item ticket successfully',
+    } as AppResponseDto<string>;
+  }
 }
