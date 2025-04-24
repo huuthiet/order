@@ -26,6 +26,7 @@ import { Branch } from 'src/branch/branch.entity';
 import { ChefOrderItemUtils } from 'src/chef-order-item/chef-order-item.utils';
 import { PdfService } from 'src/pdf/pdf.service';
 import { SystemConfigService } from 'src/system-config/system-config.service';
+import { SystemConfig } from 'src/system-config/system-config.entity';
 
 describe('ChefOrderController', () => {
   let controller: ChefOrderController;
@@ -51,6 +52,10 @@ describe('ChefOrderController', () => {
         },
         {
           provide: getRepositoryToken(Order),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(SystemConfig),
           useFactory: repositoryMockFactory,
         },
         {
