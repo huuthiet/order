@@ -31,7 +31,7 @@ export function SystemMenuTabs() {
           </TabsTrigger>
         )}
       </TabsList>
-      <TabsContent value="menu" className="w-full p-0">
+      <TabsContent value="menu" className="p-0 w-full">
         <SystemMenuTabscontent />
       </TabsContent>
       {cartItems?.type === OrderTypeEnum.AT_TABLE && (
