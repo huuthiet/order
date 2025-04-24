@@ -11,10 +11,10 @@ import {
     RemoveOrderItemInUpdateOrderDialog,
 } from '@/components/app/dialog'
 import { ROUTE } from '@/constants'
-import { Button } from '@/components/ui'
+import { Button, ScrollArea } from '@/components/ui'
 import { VoucherListSheet } from '@/components/app/sheet'
 import { useOrderBySlug, useUpdateOrderType } from '@/hooks'
-import UpdateOrderSkeleton from '../skeleton/page'
+// import UpdateOrderSkeleton from '@/components/app/skeleton/page'
 import { OrderTypeInUpdateOrderSelect } from '@/components/app/select'
 import { ITable, IUpdateOrderTypeRequest, OrderTypeEnum } from '@/types'
 import { formatCurrency, showToast } from '@/utils'
@@ -25,13 +25,13 @@ import UpdateOrderQuantity from './components/update-quantity'
 import { UpdateOrderItemNoteInput, UpdateOrderNoteInput } from './components'
 import { OrderCountdown } from '@/components/app/countdown/OrderCountdown'
 
-export default function ClientUpdateOrderPage() {
+export default function UpdateOrderPage() {
     const { t } = useTranslation('menu')
     const { t: tHelmet } = useTranslation('helmet')
     const { t: tToast } = useTranslation('toast')
     const { slug } = useParams()
     const { mutate: updateOrderType } = useUpdateOrderType()
-    const { data: order, isPending, refetch } = useOrderBySlug(slug as string)
+    const { data: order, refetch } = useOrderBySlug(slug as string)
     const [selectedTable, setSelectedTable] = useState<ITable | null>(null)
     const [type, setType] = useState<string>("")
     const navigate = useNavigate()
@@ -82,7 +82,7 @@ export default function ClientUpdateOrderPage() {
             }
         })
     }
-    if (isPending) { return <UpdateOrderSkeleton /> }
+    // if (isPending) { return <UpdateOrderSkeleton /> }
 
     if (isExpired) {
         return (
@@ -128,7 +128,9 @@ export default function ClientUpdateOrderPage() {
                         </div>
 
                         {/* Menu & Table select */}
-                        <ClientMenuTabs onSuccess={handleUpdateOrderTypeSuccess} order={orderItems} defaultValue={orderItems?.table !== null ? orderItems?.table.slug : ''} />
+                        <ScrollArea className="h-[200px]">
+                            <ClientMenuTabs onSuccess={handleUpdateOrderTypeSuccess} order={orderItems} defaultValue={orderItems?.table !== null ? orderItems?.table.slug : ''} />
+                        </ScrollArea>
                     </div>
 
                     {/* Right content */}

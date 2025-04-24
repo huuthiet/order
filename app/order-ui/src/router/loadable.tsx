@@ -106,6 +106,12 @@ export const OrderHistoryPage = React.lazy(() =>
   })),
 )
 
+//Update order page for staff
+export const UpdateOrderPage = React.lazy(() =>
+  import('@/app/system/update-order').then((module) => ({
+    default: module.UpdateOrderPage,
+  })),
+)
 //Order detail page
 export const OrderDetailPage = React.lazy(() =>
   import('@/app/system/order-history').then((module) => ({

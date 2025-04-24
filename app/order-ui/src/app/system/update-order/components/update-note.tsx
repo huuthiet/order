@@ -6,7 +6,6 @@ import { Input } from '@/components/ui'
 import { IOrderDetail } from '@/types'
 import { useDebouncedInput, useUpdateNoteOrderItem } from '@/hooks'
 import { useQueryClient } from '@tanstack/react-query'
-import { showToast } from '@/utils'
 
 interface OrderItemNoteInputProps {
     orderItem: IOrderDetail
@@ -14,21 +13,15 @@ interface OrderItemNoteInputProps {
 
 export default function UpdateOrderItemNoteInput({ orderItem }: OrderItemNoteInputProps) {
     const { t } = useTranslation('menu')
-    const { t: tToast } = useTranslation('toast')
     const { setInputValue, debouncedInputValue } = useDebouncedInput()
     const { mutate: updateNote } = useUpdateNoteOrderItem()
     const queryClient = useQueryClient();
     const handleUpdateNote = useCallback(() => {
         updateNote(
             { slug: orderItem.slug, data: { note: debouncedInputValue } },
-            {
-                onSuccess: () => {
-                    showToast(tToast('toast.updateOrderItemNoteSuccess'))
-                    queryClient.invalidateQueries({ queryKey: ['orders'] })
-                }
-            }
+            { onSuccess: () => queryClient.invalidateQueries({ queryKey: ['orders'] }) }
         )
-    }, [debouncedInputValue, orderItem.slug, updateNote, queryClient, tToast])
+    }, [debouncedInputValue, orderItem.slug, updateNote, queryClient])
 
     useEffect(() => {
         handleUpdateNote()

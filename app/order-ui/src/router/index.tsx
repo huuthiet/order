@@ -53,6 +53,7 @@ import {
   ChefAreaDetailPage,
   ChefOrderPage,
   ClientSecurityTermPage,
+  UpdateOrderPage,
   // ClientViewPage,
   // ClientViewLayout,
 } from './loadable'
@@ -319,6 +320,25 @@ export const router = createBrowserRouter([
               <ProtectedElement
                 // allowedRoles={[Role.STAFF, Role.MANAGER]}
                 element={<SuspenseElement component={OrderHistoryPage} />}
+              />
+            ),
+          },
+        ],
+      },
+      {
+        path: `${ROUTE.STAFF_UPDATE_ORDER}/:slug`,
+        element: (
+          <Suspense fallback={<SkeletonCart />}>
+            <SuspenseElement component={SystemLayout} />
+          </Suspense>
+        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedElement
+                // allowedRoles={[Role.STAFF, Role.MANAGER]}
+                element={<SuspenseElement component={UpdateOrderPage} />}
               />
             ),
           },
