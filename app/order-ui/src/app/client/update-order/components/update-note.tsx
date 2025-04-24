@@ -1,10 +1,10 @@
 import { NotepadText } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { Input } from '@/components/ui'
+import { Button, Input } from '@/components/ui'
 import { IOrderDetail } from '@/types'
-import { useDebouncedInput, useUpdateNoteOrderItem } from '@/hooks'
+import { useUpdateNoteOrderItem } from '@/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { showToast } from '@/utils'
 
@@ -15,12 +15,14 @@ interface OrderItemNoteInputProps {
 export default function UpdateOrderItemNoteInput({ orderItem }: OrderItemNoteInputProps) {
     const { t } = useTranslation('menu')
     const { t: tToast } = useTranslation('toast')
-    const { setInputValue, debouncedInputValue } = useDebouncedInput()
+    const [note, setNote] = useState(orderItem.note || '')
+    // const { setInputValue, debouncedInputValue } = useDebouncedInput()
     const { mutate: updateNote } = useUpdateNoteOrderItem()
     const queryClient = useQueryClient();
-    const handleUpdateNote = useCallback(() => {
+
+    const handleUpdateOrderItemNote = useCallback(() => {
         updateNote(
-            { slug: orderItem.slug, data: { note: debouncedInputValue } },
+            { slug: orderItem.slug, data: { note: note } },
             {
                 onSuccess: () => {
                     showToast(tToast('toast.updateOrderItemNoteSuccess'))
@@ -28,11 +30,16 @@ export default function UpdateOrderItemNoteInput({ orderItem }: OrderItemNoteInp
                 }
             }
         )
-    }, [debouncedInputValue, orderItem.slug, updateNote, queryClient, tToast])
+    }, [note, orderItem.slug, updateNote, queryClient, tToast])
 
+    // Set initial input value on mount or when note changes
     useEffect(() => {
-        handleUpdateNote()
-    }, [handleUpdateNote])
+        setNote(orderItem.note || '')
+    }, [orderItem.note, setNote])
+
+    // useEffect(() => {
+    //     handleUpdateNote()
+    // }, [handleUpdateNote])
     return (
         <div className="flex w-full flex-row items-center justify-center gap-2.5">
             <div className="flex flex-row flex-1 gap-2 justify-between items-center w-full">
@@ -42,8 +49,14 @@ export default function UpdateOrderItemNoteInput({ orderItem }: OrderItemNoteInp
                     type="text"
                     className='shadow-none'
                     placeholder={t('order.enterNote')}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    onChange={(e) => setNote(e.target.value)}
                 />
+                <Button
+                    size="sm"
+                    onClick={handleUpdateOrderItemNote}
+                >
+                    {t('order.updateNote')}
+                </Button>
             </div>
         </div>
     )

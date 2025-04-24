@@ -326,7 +326,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: `${ROUTE.STAFF_UPDATE_ORDER}/:slug`,
+        path: `${ROUTE.STAFF_ORDER_HISTORY}/:slug/update`,
         element: (
           <Suspense fallback={<SkeletonCart />}>
             <SuspenseElement component={SystemLayout} />

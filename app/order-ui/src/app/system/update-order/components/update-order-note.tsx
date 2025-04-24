@@ -41,6 +41,7 @@ export default function UpdateOrderNoteInput({ order, onSuccess }: OrderNoteInpu
             <div className="flex flex-row flex-1 gap-2 justify-between items-center w-full">
                 <NotepadText className="text-muted-foreground" />
                 <Input
+                    defaultValue={order?.description || ''}
                     value={note}
                     type="text"
                     className='shadow-none'

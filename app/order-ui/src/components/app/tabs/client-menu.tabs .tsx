@@ -2,12 +2,9 @@ import { useTranslation } from 'react-i18next'
 
 import { ScrollArea, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
 import { ClientMenuTabscontent } from '../tabscontent/client-menu.tabscontent'
-import { IOrder } from '@/types'
 // import { ClientUpdateOrderTableSelect } from '@/app/system/menu'
 
 interface ClientMenusProps {
-  order?: IOrder
-  defaultValue?: string
   onSuccess: () => void
 }
 

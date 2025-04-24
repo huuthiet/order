@@ -1,16 +1,34 @@
-// ClientViewPage.tsx
+import { useEffect } from "react"
 import { QrCode } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Badge } from "@/components/ui"
-import { useSyncedCartItems } from "@/hooks/use-sync-external-store"
 import { formatCurrency } from "@/utils"
+import { useCartItemStore } from "@/stores"
+import { ROUTE } from "@/constants"
 
 export default function ClientViewPage() {
     const { t } = useTranslation("menu")
     // const { t: tCommon } = useTranslation("common")
-    const cartItems = useSyncedCartItems()
-    // console.log('ClientViewPage - cartItems:', cartItems)
+    const { getCartItems } = useCartItemStore()
+    const cartItems = getCartItems()
+
+    useEffect(() => {
+        const handleStorage = (e: StorageEvent) => {
+            if (e.key === 'cart-store') {
+                useCartItemStore.persist.rehydrate()
+            }
+        }
+
+        const pathname = window.location.pathname
+        if (pathname === ROUTE.STAFF_CLIENT_VIEW) {
+            window.addEventListener('storage', handleStorage)
+        }
+
+        return () => {
+            window.removeEventListener('storage', handleStorage)
+        }
+    }, [])
 
     const totalPrice =
         cartItems?.orderItems.reduce(

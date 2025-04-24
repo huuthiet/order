@@ -128,7 +128,7 @@ export default function ClientUpdateOrderPage() {
                         </div>
 
                         {/* Menu & Table select */}
-                        <ClientMenuTabs onSuccess={handleUpdateOrderTypeSuccess} order={orderItems} defaultValue={orderItems?.table !== null ? orderItems?.table.slug : ''} />
+                        <ClientMenuTabs onSuccess={handleUpdateOrderTypeSuccess} />
                     </div>
 
                     {/* Right content */}
@@ -254,7 +254,6 @@ export default function ClientUpdateOrderPage() {
                     </div>
                 </div>
             }
-
         </div>
     )
 }
