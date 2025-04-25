@@ -29,7 +29,7 @@ import sharp from 'sharp';
 import * as net from 'net';
 import { SystemConfigService } from 'src/system-config/system-config.service';
 import { SystemConfigKey } from 'src/system-config/system-config.constant';
-
+import { PDFDocument } from 'pdf-lib';
 @Injectable()
 export class ChefOrderService {
   constructor(
@@ -209,6 +209,78 @@ export class ChefOrderService {
     this.logger.log(`Chef order ${chefOrder.slug} exported`, context);
 
     return data;
+  }
+
+  async exportChefOrderItemTicketPdfManual(slug: string): Promise<Buffer> {
+    const context = `${ChefOrderService.name}.${this.exportChefOrderItemTicketPdfManual.name}`;
+    const chefOrder = await this.chefOrderUtils.getChefOrder({
+      where: { slug },
+      relations: [
+        'chefOrderItems.orderItem.variant.size',
+        'chefOrderItems.orderItem.variant.product',
+        'order.table',
+      ],
+    });
+
+    if (chefOrder.status !== ChefOrderStatus.ACCEPTED) {
+      this.logger.warn(
+        ChefOrderValidation.CHEF_ORDER_MUST_BE_ACCEPTED.message,
+        context,
+      );
+      throw new ChefOrderException(
+        ChefOrderValidation.CHEF_ORDER_MUST_BE_ACCEPTED,
+      );
+    }
+
+    const logoPath = resolve('public/images/logo.png');
+    const logoBuffer = readFileSync(logoPath);
+
+    // Convert the buffer to a Base64 string
+    const logoString = logoBuffer.toString('base64');
+
+    const buffers: Buffer[] = [];
+    for (const chefOrderItem of chefOrder.chefOrderItems) {
+      const data = await this.pdfService.generatePdf(
+        'chef-order-item-ticket',
+        {
+          productName:
+            chefOrderItem?.orderItem?.variant?.product?.name ?? 'N/A',
+          referenceNumber: chefOrder?.order?.referenceNumber ?? 'N/A',
+          note: chefOrderItem?.orderItem?.note ?? 'N/A',
+          logoString,
+        },
+        {
+          width: '50mm',
+          height: '30mm',
+          preferCSSPageSize: true,
+          margin: {
+            top: '0cm',
+            bottom: '0cm',
+            left: '0cm',
+            right: '0cm',
+          },
+          scale: 1,
+        },
+      );
+      buffers.push(data);
+    }
+
+    const mergedPdf = await this.mergePdfBuffers(buffers);
+
+    return mergedPdf;
+  }
+
+  public async mergePdfBuffers(buffers: Buffer[]): Promise<Buffer> {
+    const mergedPdf = await PDFDocument.create();
+
+    for (const buffer of buffers) {
+      const pdf = await PDFDocument.load(buffer);
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach((page) => mergedPdf.addPage(page));
+    }
+
+    const finalPdf = await mergedPdf.save();
+    return Buffer.from(finalPdf);
   }
 
   async convertImageToBitmap(imageBuffer: Buffer): Promise<Buffer> {
