@@ -169,6 +169,13 @@ export class ChefOrderController {
   }
 
   @Get(':slug/export')
+  @HasRoles(
+    RoleEnum.Staff,
+    RoleEnum.Chef,
+    RoleEnum.Manager,
+    RoleEnum.Admin,
+    RoleEnum.SuperAdmin,
+  )
   @ApiOperation({ summary: 'Export chef order' })
   @HttpCode(HttpStatus.OK)
   async exportChefOrder(@Param('slug') slug: string): Promise<StreamableFile> {
@@ -180,7 +187,36 @@ export class ChefOrderController {
     });
   }
 
-  @Get(':slug/export/ticket')
+  @Get(':slug/export-manual/tickets')
+  @HasRoles(
+    RoleEnum.Staff,
+    RoleEnum.Chef,
+    RoleEnum.Manager,
+    RoleEnum.Admin,
+    RoleEnum.SuperAdmin,
+  )
+  @ApiOperation({ summary: 'Export chef order item ticket' })
+  @HttpCode(HttpStatus.OK)
+  async exportChefOrderItemTicket(
+    @Param('slug') slug: string,
+  ): Promise<StreamableFile> {
+    const result =
+      await this.chefOrderService.exportChefOrderItemTicketPdfManual(slug);
+    return new StreamableFile(result, {
+      type: 'application/pdf',
+      length: result.length,
+      disposition: `attachment; filename="Chef-order-${new Date().toISOString()}.pdf"`,
+    });
+  }
+
+  @Get(':slug/export-auto/tickets')
+  @HasRoles(
+    RoleEnum.Staff,
+    RoleEnum.Chef,
+    RoleEnum.Manager,
+    RoleEnum.Admin,
+    RoleEnum.SuperAdmin,
+  )
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Print chef order item ticket',
