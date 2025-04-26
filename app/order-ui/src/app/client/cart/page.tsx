@@ -67,10 +67,12 @@ export default function ClientCartPage() {
               {t('order.selectTableNote')}
             </span>
           </div>
-          <div className='flex gap-1'>
+          <div className='grid grid-cols-1 gap-1 sm:grid-cols-2'>
             <OrderTypeSelect />
-            <TableInCartSelect />
-            <DeleteAllCartDialog />
+            <div className='flex gap-1'>
+              <TableInCartSelect />
+              <DeleteAllCartDialog />
+            </div>
           </div>
           {/* Table list order items */}
           <div className="my-4">
