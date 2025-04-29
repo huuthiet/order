@@ -134,7 +134,7 @@ export default function ClientAddToCartDrawer({ product, onSuccess, isUpdateOrde
   }, [isOpen]);
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <Button className="flex [&_svg]:size-4 flex-row items-center justify-center gap-1 text-white rounded-full w-full shadow-none">
           <ShoppingCart className='icon' />
