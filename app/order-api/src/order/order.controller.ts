@@ -55,14 +55,8 @@ export class OrderController {
       }),
     )
     requestData: CreateOrderRequestDto,
-    @Session() session: Record<string, any>,
   ) {
-    if (!session.orders) {
-      session.orders = [] as string[];
-    }
     const result = await this.orderService.createOrder(requestData);
-    session.orders.push(result.slug);
-    console.log({ session });
     return {
       message: 'Order have been created successfully',
       statusCode: HttpStatus.CREATED,
