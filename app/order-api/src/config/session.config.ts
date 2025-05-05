@@ -1,4 +1,6 @@
 import session from 'express-session';
+import { RedisStore } from 'connect-redis';
+import { createClient } from 'redis';
 // import MySQLStoreFactory from 'express-mysql-session';
 // import { config as dotenvConfig } from 'dotenv';
 
@@ -37,14 +39,24 @@ const nodeEnv = process.env.NODE_ENV;
 //   }
 // });
 
+const redisClient = createClient();
+redisClient.connect();
+
+const redisStore = new RedisStore({
+  client: redisClient,
+  prefix: 'sess:',
+});
+
 export const sessionConfig = session({
   secret: secretSession,
   resave: false,
   saveUninitialized: false,
+  store: redisStore,
   // store: sessionStore,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24, // 1 day
     httpOnly: true,
-    secure: nodeEnv === 'production',
+    // secure: nodeEnv === 'production',
+    secure: false,
   },
 });
