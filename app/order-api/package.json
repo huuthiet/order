@@ -82,7 +82,7 @@
     "pdf-lib": "^1.17.1",
     "puppeteer": "^23.9.0",
     "qrcode": "^1.5.4",
-    "redis": "^5.0.1",
+    "redis": "^4.7.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "sharp": "^0.34.1",
