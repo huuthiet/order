@@ -22,7 +22,7 @@ export default function ClientLayout() {
       clearStore()
     }
 
-    if (userInfo && userInfo.role.name !== Role.CUSTOMER) {
+    if (userInfo && userInfo?.role && userInfo?.role?.name !== Role.CUSTOMER) {
       navigate(ROUTE.LOGIN)
     }
   }, [location.pathname, clearStore, userInfo, navigate])

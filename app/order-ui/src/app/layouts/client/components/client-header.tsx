@@ -53,6 +53,16 @@ export function ClientHeader() {
               </span>
             </NavLink>
             <NavLink
+              to={ROUTE.CLIENT_ORDERS_PUBLIC}
+              className={({ isActive }) =>
+                `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+              }
+            >
+              <span className="text-sm">
+                {t('header.myOrders')}
+              </span>
+            </NavLink>
+            <NavLink
               to={ROUTE.ABOUT}
               className={({ isActive }) =>
                 `flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`

@@ -112,6 +112,13 @@ export const OrdersPublicPage = React.lazy(() =>
     default: module.OrdersPublicPage,
   })),
 )
+
+//Order public detail page
+export const PublicOrderDetailPage = React.lazy(() =>
+  import('@/app/client/public-order-detail').then((module) => ({
+    default: module.PublicOrderDetailPage,
+  })),
+)
 //Update order page for staff
 export const UpdateOrderPage = React.lazy(() =>
   import('@/app/system/update-order').then((module) => ({

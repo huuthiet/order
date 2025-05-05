@@ -205,6 +205,14 @@ export const useDeleteOrder = () => {
   })
 }
 
+export const useDeletePublicOrder = () => {
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      return deleteOrderWithoutLogin(slug)
+    },
+  })
+}
+
 // order without login
 export const useCreateOrderWithoutLogin = () => {
   return useMutation({
@@ -218,13 +226,5 @@ export const useGetAllOrderWithoutLogin = () => {
   return useQuery({
     queryKey: ['orders-without-login'],
     queryFn: () => getAllOrderWithoutLogin(),
-  })
-}
-
-export const useDeleteOrderWithoutLogin = () => {
-  return useMutation({
-    mutationFn: async (slug: string) => {
-      return deleteOrderWithoutLogin(slug)
-    },
   })
 }

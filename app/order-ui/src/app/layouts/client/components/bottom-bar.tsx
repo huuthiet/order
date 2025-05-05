@@ -53,7 +53,7 @@ export function BottomBar() {
                     </span>
                 </NavLink> */}
 
-                {userInfo && userInfo?.role.name === Role.CUSTOMER ? (
+                {userInfo && userInfo?.role && userInfo?.role?.name === Role.CUSTOMER ? (
                     <NavLink
                         to={`${ROUTE.CLIENT_PROFILE}?tab=history`}
                         className={`inline-flex rounded-md flex-col items-center gap-1 justify-center px-5 relative ${location.pathname.includes(`${ROUTE.CLIENT_PROFILE}`) && location.search.includes('order') ? 'text-primary' : ''}`}
