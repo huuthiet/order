@@ -341,6 +341,7 @@ export default function PublicOrderDetailPage() {
                         <InvoiceTemplate
                             order={orderInfo}
                         />
+
                         <Button onClick={() => {
                             handleExportInvoice()
                         }}>

@@ -234,7 +234,8 @@
     "close": "Đóng",
     "orderReferenceNumber": "Mã đơn",
     "updateNote": "Cập nhật",
-    "updateOrder": "Cập nhật đơn hàng"
+    "updateOrder": "Cập nhật đơn hàng",
+    "invoiceNote": "Lưu ý: Nếu bạn không tải được hóa đơn, vui lòng chụp lại màn hình"
   },
   "table": {
     "title": "Danh sách bàn"

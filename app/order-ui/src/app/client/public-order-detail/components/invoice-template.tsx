@@ -109,6 +109,9 @@ export default function Invoice({
                 Giá sản phẩm đã bao gồm VAT 10%. Vui lòng giữ lại hóa đơn, để
                 xác thực đó là đơn hàng của bạn.
             </p>
+            <span className='text-sm italic text-destructive'>
+                {t('order.invoiceNote')}
+            </span>
         </div>
     );
 }
