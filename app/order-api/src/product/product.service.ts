@@ -540,6 +540,8 @@ export class ProductService {
       throw new ProductException(ProductValidation.PRODUCT_HAS_RELATION);
     }
 
+    await this.deleteVariantsRelatedProduct(product.variants);
+
     const deleted = await this.productRepository.softDelete({ slug });
     this.logger.log(`Product ${slug} deleted successfully`, context);
 
