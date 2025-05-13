@@ -98,12 +98,12 @@ export class UpdateOrderRequestDto {
 
   @AutoMap()
   @ApiProperty({ description: 'The slug of table' })
-  @IsOptional()
+  @IsOptional({ message: INVALID_TABLE_SLUG })
   table?: string;
 
   @AutoMap()
   @ApiProperty({ description: 'The slug of voucher' })
-  @IsOptional()
+  @IsOptional({ message: INVALID_VOUCHER_SLUG })
   voucher?: string;
 
   @AutoMap()
