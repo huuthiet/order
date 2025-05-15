@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './payment.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CashStrategy } from './strategy/cash.strategy';
 import { BankTransferStrategy } from './strategy/bank-transfer.strategy';
 import { InjectMapper } from '@automapper/nestjs';
@@ -37,6 +37,8 @@ import { OrderValidation } from 'src/order/order.validation';
 import { OrderStatus } from 'src/order/order.constants';
 import { PdfService } from 'src/pdf/pdf.service';
 import { RoleEnum } from 'src/role/role.enum';
+import { UserUtils } from 'src/user/user.utils';
+import { CurrentUserDto } from 'src/user/user.dto';
 
 @Injectable()
 export class PaymentService {
@@ -52,6 +54,7 @@ export class PaymentService {
     private readonly bankTransferStrategy: BankTransferStrategy,
     private readonly eventEmitter: EventEmitter2,
     private readonly pdfService: PdfService,
+    private readonly userUtils: UserUtils,
   ) {}
 
   async exportPayment(slug: string) {
@@ -107,13 +110,25 @@ export class PaymentService {
    */
   async initiate(
     createPaymentDto: CreatePaymentDto,
+    currentUser: CurrentUserDto,
   ): Promise<PaymentResponseDto> {
     const context = `${PaymentService.name}.${this.initiate.name}`;
+
+    // created by
+    const user = await this.userUtils.getUser({
+      where: { id: currentUser.userId ?? IsNull() },
+      relations: ['role'],
+    });
     // get order
     const order = await this.orderRepository.findOne({
       where: { slug: createPaymentDto.orderSlug },
-      relations: ['owner.role', 'payment'],
+      relations: ['owner', 'payment'],
     });
+
+    this.logger.log(
+      `Initiate payment for order: ${JSON.stringify(order)}`,
+      context,
+    );
     if (!order) {
       this.logger.error('Order not found', null, context);
       throw new OrderException(OrderValidation.ORDER_NOT_FOUND);
@@ -129,20 +144,22 @@ export class PaymentService {
 
     let payment: Payment;
 
-    if (order.owner?.role?.name === RoleEnum.Customer) {
+    if (user.role?.name === RoleEnum.Customer) {
       switch (createPaymentDto.paymentMethod) {
         case PaymentMethod.BANK_TRANSFER:
           payment = await this.bankTransferStrategy.process(order);
           break;
         default:
-          this.logger.error('Invalid payment method', null, context);
-          throw new PaymentException(PaymentValidation.PAYMENT_METHOD_INVALID);
+          this.logger.error('Customer only use bank transfer', null, context);
+          throw new PaymentException(
+            PaymentValidation.CUSTOMER_ONLY_USE_BANK_TRANSFER,
+          );
       }
     } else if (
-      order.owner?.role?.name === RoleEnum.Staff ||
-      order.owner?.role?.name === RoleEnum.Manager ||
-      order.owner?.role?.name === RoleEnum.Admin ||
-      order.owner?.role?.name === RoleEnum.SuperAdmin
+      user.role?.name === RoleEnum.Staff ||
+      user.role?.name === RoleEnum.Manager ||
+      user.role?.name === RoleEnum.Admin ||
+      user.role?.name === RoleEnum.SuperAdmin
     ) {
       switch (createPaymentDto.paymentMethod) {
         case PaymentMethod.BANK_TRANSFER:
